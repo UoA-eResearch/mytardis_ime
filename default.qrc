@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/">
+    <file>resources/noun-file-4877058.svg</file>
+    <file>resources/noun-folder-open-4877102.svg</file>
+    <file>resources/noun-file-add-4877075.svg</file>
+  </qresource>
+</RCC>
