@@ -1,6 +1,7 @@
-# This Python file uses the following encoding: utf-8
 import sys
-from PySide2.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWizard, QWizardPage, QVBoxLayout, QLabel
+from PyQt5 import uic
+from mainwindow import Ui_MainWindow
 
 
 class MyTardisMetadataEditor(QMainWindow):
@@ -10,6 +11,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication([])
-    window = MyTardisMetadataEditor()
+    window = uic.loadUi('MainWindow.ui')
     window.show()
+    # window.show()
     sys.exit(app.exec_())
