@@ -7,6 +7,7 @@ authors = ["Noel <noel.zeng@auckland.ac.nz>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 PyQt5 = "^5.15.6"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.13.9"
