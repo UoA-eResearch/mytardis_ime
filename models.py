@@ -5,9 +5,10 @@ from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
 
+
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
-    def from_yaml(cls : Type, loader: Loader, node: Node) -> Any:
+    def from_yaml(cls: Type, loader: Loader, node: Node) -> Any:
         """
         Convert a representation node to a Python object,
         calling __init__ to create a new object.
@@ -17,17 +18,19 @@ class YAMLSerializable(yaml.YAMLObject):
         By default, YAMLObject does not call __init__, so yaml.safe_load throws an exception
         on documents that don't have all required fields. (see https://github.com/yaml/pyyaml/issues/510,
         https://stackoverflow.com/questions/13331222/yaml-does-not-call-the-constructor)
-        So we override the from_yaml method here to call __init__ (see 
+        So we override the from_yaml method here to call __init__ (see
         https://stackoverflow.com/questions/7224033/default-constructor-parameters-in-pyyaml)
         """
         fields = loader.construct_mapping(node)
         return cls(**fields)
 
+
 @dataclass
-class IAccessControl():
+class IAccessControl:
     """
     A class representing fields related to ACL controls.
     """
+
     admin_groups: List[str] = field(default_factory=list)
     admin_users: List[str] = field(default_factory=list)
     read_groups: List[str] = field(default_factory=list)
@@ -37,11 +40,13 @@ class IAccessControl():
     sensitive_groups: List[str] = field(default_factory=list)
     sensitive_users: List[str] = field(default_factory=list)
 
+
 @dataclass
-class IMetadata():
+class IMetadata:
     """
     A class representing fields related to schema parameters.
     """
+
     metadata: Dict[str, str] = field(default_factory=dict)
 
 
@@ -50,7 +55,8 @@ class Project(YAMLSerializable, IAccessControl, IMetadata):
     """
     A class representing MyTardis Project objects.
     """
-    yaml_tag = u'!Project'
+
+    yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     project_name: str = ""
@@ -59,12 +65,14 @@ class Project(YAMLSerializable, IAccessControl, IMetadata):
     description: str = ""
     lead_researcher: str = ""
 
+
 @dataclass
 class Experiment(YAMLSerializable, IAccessControl, IMetadata):
     """
     A class representing MyTardis Experiment objects.
     """
-    yaml_tag = u'!Experiment'
+
+    yaml_tag = "!Experiment"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     experiment_name: str = ""
@@ -73,12 +81,14 @@ class Experiment(YAMLSerializable, IAccessControl, IMetadata):
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
 
+
 @dataclass
 class Dataset(YAMLSerializable, IAccessControl, IMetadata):
     """
     A class representing MyTardis Dataset objects.
     """
-    yaml_tag = u'!Dataset'
+
+    yaml_tag = "!Dataset"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     dataset_name: str = ""
@@ -86,12 +96,14 @@ class Dataset(YAMLSerializable, IAccessControl, IMetadata):
     dataset_id: str = ""
     instrument_id: str = ""
 
+
 @dataclass
 class FileInfo(YAMLSerializable, IAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
-    yaml_tag = u'!FileInfo'
+
+    yaml_tag = "!FileInfo"
     # yaml_dumper = yaml.SafeDumper
     yaml_loader = yaml.SafeLoader
     name: str = ""
@@ -102,24 +114,27 @@ class Datafile(YAMLSerializable):
     """
     A class representing a set of MyTardis datafile objects.
     """
-    yaml_tag = u'!Datafile'
+
+    yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     dataset_id: str = ""
     files: List[FileInfo] = field(default_factory=list)
 
+
 @dataclass
-class IngestionMetadata():
+class IngestionMetadata:
     """
     A class representing a collection of metadata, with
     objects of different MyTardis types. It can be serialised
     to become a YAML file for ingestion into MyTardis.
     """
+
     # A list of objects of each type.
-    projects : List[Project] = field(default_factory=list)
-    experiments : List[Experiment] = field(default_factory=list)
-    datasets : List[Dataset] = field(default_factory=list)
-    datafiles : List[Datafile] = field(default_factory=list)
+    projects: List[Project] = field(default_factory=list)
+    experiments: List[Experiment] = field(default_factory=list)
+    datasets: List[Dataset] = field(default_factory=list)
+    datafiles: List[Datafile] = field(default_factory=list)
 
     def to_yaml(self):
         """
@@ -133,9 +148,9 @@ class IngestionMetadata():
         return yaml_file
 
     @staticmethod
-    def from_yaml(yaml_rep : str):
+    def from_yaml(yaml_rep: str):
         """Returns a IngestionMetadata object by loading metadata from content of a YAML file.
-        
+
         Parameters
         ----------
         yaml_rep : str
@@ -157,8 +172,11 @@ class IngestionMetadata():
             elif isinstance(obj, Datafile):
                 metadata.datafiles.append(obj)
             else:
-                logging.warning("Encountered unknown object while reading YAML" + 
-                                ", ignored. Object was %s", obj)
+                logging.warning(
+                    "Encountered unknown object while reading YAML"
+                    + ", ignored. Object was %s",
+                    obj,
+                )
         return metadata
 
 
