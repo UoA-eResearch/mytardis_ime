@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1183</width>
-    <height>892</height>
+    <height>762</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,11 +16,11 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTabWidget" name="projectTab">
+     <widget class="QTabWidget" name="Tabs">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="datasetTab">
        <attribute name="title">
         <string>Datasets</string>
        </attribute>
@@ -28,7 +28,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QTreeWidget" name="treeWidget">
+           <widget class="QTreeWidget" name="datasetTreeWidget">
             <column>
              <property name="text">
               <string>Name</string>
@@ -76,15 +76,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
-          <widget class="QWidget" name="page">
+          <widget class="QWidget" name="datasetDescriptionPage">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>568</width>
-             <height>643</height>
+             <width>551</width>
+             <height>492</height>
             </rect>
            </property>
            <attribute name="label">
@@ -138,13 +138,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_2">
+          <widget class="QWidget" name="datasetUserGroup">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>305</width>
-             <height>642</height>
+             <width>551</width>
+             <height>772</height>
             </rect>
            </property>
            <attribute name="label">
@@ -270,13 +270,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_3">
+          <widget class="QWidget" name="datasetMetadata">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>551</width>
+             <height>492</height>
             </rect>
            </property>
            <attribute name="label">
@@ -287,13 +287,13 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="experimentTab">
        <attribute name="title">
         <string>Experiments</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QTreeWidget" name="treeWidget_3">
+         <widget class="QTreeWidget" name="experimentTreeWidget">
           <column>
            <property name="text">
             <string>Name</string>
@@ -331,15 +331,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
-          <widget class="QWidget" name="page_4">
+          <widget class="QWidget" name="experimentDescriptionPage">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>568</width>
-             <height>643</height>
+             <width>216</width>
+             <height>195</height>
             </rect>
            </property>
            <attribute name="label">
@@ -388,13 +388,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_5">
+          <widget class="QWidget" name="experimentUserGroup">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>292</width>
-             <height>642</height>
+             <width>285</width>
+             <height>765</height>
             </rect>
            </property>
            <attribute name="label">
@@ -520,13 +520,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_6">
+          <widget class="QWidget" name="experimentMetadata">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>551</width>
+             <height>492</height>
             </rect>
            </property>
            <attribute name="label">
@@ -537,13 +537,13 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="projectTab">
        <attribute name="title">
         <string>Projects</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QTreeWidget" name="treeWidget_4">
+         <widget class="QTreeWidget" name="projectTreeWidget">
           <column>
            <property name="text">
             <string>Name</string>
@@ -573,15 +573,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
-          <widget class="QWidget" name="page_7">
+          <widget class="QWidget" name="projectDescription">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>568</width>
-             <height>643</height>
+             <width>216</width>
+             <height>221</height>
             </rect>
            </property>
            <attribute name="label">
@@ -642,13 +642,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_8">
+          <widget class="QWidget" name="projectUserGroup">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>223</width>
-             <height>596</height>
+             <width>243</width>
+             <height>687</height>
             </rect>
            </property>
            <attribute name="label">
@@ -749,13 +749,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_9">
+          <widget class="QWidget" name="projectMetadata">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>551</width>
+             <height>492</height>
             </rect>
            </property>
            <attribute name="label">
@@ -777,7 +777,7 @@
      <x>0</x>
      <y>0</y>
      <width>1183</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -815,6 +815,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionImport_data_files"/>
+   <addaction name="actionSave"/>
   </widget>
   <action name="actionOpen_metadata_file">
    <property name="text">
@@ -848,7 +849,7 @@
   </action>
   <action name="actionImport_data_files">
    <property name="icon">
-    <iconset resource="default.qrc">
+    <iconset resource="../mytardis_ime_old/default.qrc">
      <normaloff>:/resources/noun-file-add-4877075.svg</normaloff>:/resources/noun-file-add-4877075.svg</iconset>
    </property>
    <property name="text">
@@ -860,7 +861,7 @@
   </action>
  </widget>
  <resources>
-  <include location="default.qrc"/>
+  <include location="../mytardis_ime_old/default.qrc"/>
  </resources>
  <connections/>
 </ui>

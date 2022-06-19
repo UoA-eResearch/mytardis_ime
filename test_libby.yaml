@@ -1,0 +1,47 @@
+- !Project
+  admin_groups: []
+  admin_users: []
+  alternate_ids: []
+  description: ''
+  download_groups: []
+  download_users: []
+  lead_researcher: ''
+  metadata: {}
+  project_id: ''
+  project_name: testP1
+  read_groups: []
+  read_users: []
+  sensitive_groups: []
+  sensitive_users: []
+- !Experiment
+  admin_groups: []
+  admin_users: []
+  alternate_ids: []
+  description: ''
+  download_groups: []
+  download_users: []
+  experiment_id: ''
+  experiment_name: testE1
+  metadata: {}
+  project_id: ''
+  read_groups: []
+  read_users: []
+  sensitive_groups: []
+  sensitive_users: []
+- !Dataset
+  admin_groups: []
+  admin_users: []
+  dataset_id: ''
+  dataset_name: ''
+  download_groups: []
+  download_users: []
+  experiment_id: []
+  instrument_id: ''
+  metadata: {}
+  read_groups: []
+  read_users: []
+  sensitive_groups: []
+  sensitive_users: []
+- !Datafile
+  dataset_id: ''
+  files: []
