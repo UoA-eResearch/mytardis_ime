@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1183</width>
-    <height>762</height>
+    <height>734</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,23 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QTabWidget" name="Tabs">
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
+      </property>
+      <property name="usesScrollButtons">
+       <bool>false</bool>
+      </property>
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
       </property>
       <widget class="QWidget" name="datasetTab">
        <attribute name="title">
@@ -44,25 +59,6 @@
               <string>Linked Experiment</string>
              </property>
             </column>
-            <item>
-             <property name="text">
-              <string>PV Calibration 10X 1</string>
-             </property>
-             <property name="text">
-              <string>32.1MB</string>
-             </property>
-             <property name="text">
-              <string>Calibration 2X</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>20200105_1.TIFF</string>
-              </property>
-              <property name="text">
-               <string>4.3MB</string>
-              </property>
-             </item>
-            </item>
            </widget>
           </item>
          </layout>
@@ -84,7 +80,7 @@
              <x>0</x>
              <y>0</y>
              <width>551</width>
-             <height>492</height>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -143,8 +139,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>551</width>
-             <height>772</height>
+             <width>536</width>
+             <height>765</height>
             </rect>
            </property>
            <attribute name="label">
@@ -276,7 +272,7 @@
              <x>0</x>
              <y>0</y>
              <width>551</width>
-             <height>492</height>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -291,8 +287,8 @@
        <attribute name="title">
         <string>Experiments</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
          <widget class="QTreeWidget" name="experimentTreeWidget">
           <column>
            <property name="text">
@@ -309,20 +305,9 @@
             <string>Linked Project</string>
            </property>
           </column>
-          <item>
-           <property name="text">
-            <string>Calibration 2X</string>
-           </property>
-           <property name="text">
-            <string>32.1MB</string>
-           </property>
-           <property name="text">
-            <string>Rakeiora</string>
-           </property>
-          </item>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QToolBox" name="toolBox_2">
           <property name="minimumSize">
            <size>
@@ -526,7 +511,7 @@
              <x>0</x>
              <y>0</y>
              <width>551</width>
-             <height>492</height>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -554,14 +539,6 @@
             <string>Size</string>
            </property>
           </column>
-          <item>
-           <property name="text">
-            <string>Rakeiora</string>
-           </property>
-           <property name="text">
-            <string>32.1MB</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item>
@@ -755,7 +732,7 @@
              <x>0</x>
              <y>0</y>
              <width>551</width>
-             <height>492</height>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -857,6 +834,14 @@
    </property>
    <property name="toolTip">
     <string>Launch guide to import new data files</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh</string>
    </property>
   </action>
  </widget>
