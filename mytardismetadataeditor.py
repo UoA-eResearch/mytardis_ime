@@ -1,9 +1,9 @@
 from fileinput import filename
-from importlib.metadata import files
+#from importlib.metadata import files
 from os import fpathconf
 import os, sys
+from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
-from PyQt5 import uic,QtWidgets,QtCore,QtGui
 from PyQt5.QtCore import QPersistentModelIndex,QModelIndex
 from isort import file
 import yaml
@@ -16,16 +16,22 @@ class MyTardisMetadataEditor(QMainWindow):
 
         # load the ui file
         uic.loadUi('MainWindow.ui', self)
+        self.metadata = models.IngestionMetadata()
 
         # define our widgets
         self.actionImport_data_files.triggered.connect(self.openWizardWindow)
-        #self.actionSave.triggered.connect(self.save_to_yaml)
+        self.actionSave.triggered.connect(self.save_to_yaml)
         self.show()
 
     # Need to modify to enable file/dataset... sizes displaying
     @QtCore.pyqtSlot('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
     def reFresh(self,project_info, experiment_info, dataset_info, datafile_info):
         self.project,self.experiment,self.dataset,self.datafile = project_info, experiment_info, dataset_info, datafile_info 
+        self.metadata.projects.append(project_info)
+        self.metadata.experiments.append(experiment_info)
+        self.metadata.datasets.append(dataset_info)
+        self.metadata.datafiles.append(datafile_info)
+
         l1 = QTreeWidgetItem([self.dataset.dataset_name,"1",self.experiment.experiment_name])
         l2 = QTreeWidgetItem([self.experiment.experiment_name,"3",self.project.project_name])
         l3 = QTreeWidgetItem([self.project.project_name,"4"])
@@ -41,17 +47,18 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui = WindowWizard()
         self.ui.submitted.connect(self.reFresh)
         self.ui.show()
-
+    
     # Save to yaml files
-    #@QtCore.pyqtSlot('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
-    #def save_to_yaml(self,project_info, experiment_info, dataset_info, datafile_info):
-    #    with open('test/test_libby.yaml') as f:
-    #        metadata = [project_info, experiment_info, dataset_info, datafile_info]
-    #        yaml.dump_all(metadata,f)
+    #@QtCore.pyqtSlot('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject',name = "save_to_yaml")
+    def save_to_yaml(self):
+        name = QFileDialog.getSaveFileName(self,"Save File",directory = "test.yaml", initialFilter='Yaml File(*.yaml)')[0]
+        with open(name, 'w') as file:
+            file.write(self.metadata.to_yaml())
 
 class WindowWizard(QWizard):
 
     submitted = QtCore.pyqtSignal('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
+    #saved = QtCore.pyqtSignal('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
 
     def __init__(self):
         super(QWizard, self).__init__()
