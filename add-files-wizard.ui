@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Wizard</class>
- <widget class="QWizard" name="Wizard">
+ <class>ImportDataFiles</class>
+ <widget class="QWizard" name="ImportDataFiles">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>794</width>
-    <height>776</height>
+    <height>748</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>Import Data</string>
   </property>
   <widget class="QWizardPage" name="wizardPage">
    <layout class="QGridLayout" name="gridLayout_4">
