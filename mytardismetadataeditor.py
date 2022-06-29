@@ -1,6 +1,3 @@
-from fileinput import filename
-#from importlib.metadata import files
-from os import fpathconf
 import os, sys
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
@@ -49,7 +46,6 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.show()
     
     # Save to yaml files
-    #@QtCore.pyqtSlot('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject',name = "save_to_yaml")
     def save_to_yaml(self):
         name = QFileDialog.getSaveFileName(self,"Save File",directory = "test.yaml", initialFilter='Yaml File(*.yaml)')[0]
         with open(name, 'w') as file:
@@ -58,7 +54,6 @@ class MyTardisMetadataEditor(QMainWindow):
 class WindowWizard(QWizard):
 
     submitted = QtCore.pyqtSignal('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
-    #saved = QtCore.pyqtSignal('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
 
     def __init__(self):
         super(QWizard, self).__init__()
