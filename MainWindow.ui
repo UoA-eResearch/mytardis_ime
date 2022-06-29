@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MyData</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -24,7 +24,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -72,7 +72,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="datasetDescriptionPage">
            <property name="geometry">
@@ -88,21 +88,21 @@
            </attribute>
            <layout class="QFormLayout" name="formLayout">
             <item row="0" column="0">
-             <widget class="QLabel" name="label_21">
+             <widget class="QLabel" name="datasetNameLabel">
               <property name="text">
                <string>Dataset name</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_9">
+             <widget class="QLineEdit" name="datasetNameLineEdit">
               <property name="text">
-               <string>PV Calibration 10X 1</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_22">
+             <widget class="QLabel" name="LinkedExperimentLabel">
               <property name="text">
                <string>Linked Experiment</string>
               </property>
@@ -111,7 +111,7 @@
             <item row="1" column="1">
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Linked to Calibration 2X.</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -123,14 +123,14 @@
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="label_24">
+             <widget class="QLabel" name="instrumentIDLabel">
               <property name="text">
                <string>Instrument ID</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QLineEdit" name="lineEdit_11"/>
+             <widget class="QLineEdit" name="instrumentIDLineEdit"/>
             </item>
            </layout>
           </widget>
@@ -316,15 +316,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="experimentDescriptionPage">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>216</width>
-             <height>195</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -332,27 +332,27 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
-             <widget class="QLabel" name="label_15">
+             <widget class="QLabel" name="experimentNameLabel">
               <property name="text">
                <string>Experiment name</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_5"/>
+             <widget class="QLineEdit" name="experimentNameLineEdit"/>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_17">
+             <widget class="QLabel" name="experimentIDLabel">
               <property name="text">
                <string>Experiment ID</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_7"/>
+             <widget class="QLineEdit" name="experimentIDLineEdit"/>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="label_18">
+             <widget class="QLabel" name="experimentAlternateIdLabel">
               <property name="text">
                <string>Alternate IDs</string>
               </property>
@@ -362,14 +362,14 @@
              <widget class="QTableWidget" name="tableWidget_10"/>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="label_19">
+             <widget class="QLabel" name="experimentDescriptionLabel">
               <property name="text">
                <string>Description</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QLineEdit" name="lineEdit_8"/>
+             <widget class="QLineEdit" name="experimentDescriptionLineEdit"/>
             </item>
            </layout>
           </widget>
@@ -378,7 +378,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>285</width>
+             <width>536</width>
              <height>765</height>
             </rect>
            </property>
@@ -550,15 +550,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="projectDescription">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>216</width>
-             <height>221</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -575,44 +575,44 @@
               </property>
               <layout class="QFormLayout" name="formLayout_4">
                <item row="0" column="0">
-                <widget class="QLabel" name="label_3">
+                <widget class="QLabel" name="projectNameLabel">
                  <property name="text">
                   <string>Project name</string>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLineEdit" name="lineEdit"/>
+                <widget class="QLineEdit" name="projectNameLineEdit"/>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_4">
+                <widget class="QLabel" name="projectProjectIdLabel">
                  <property name="text">
                   <string>Project ID</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="lineEdit_2"/>
+                <widget class="QLineEdit" name="projectIDLineEdit"/>
                </item>
                <item row="2" column="0">
-                <widget class="QLabel" name="label_5">
+                <widget class="QLabel" name="projectAlternateIDLabel">
                  <property name="text">
                   <string>Alternate IDs</string>
                  </property>
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QTableView" name="tableView"/>
+                <widget class="QTableView" name="projectAlternateIDTableView"/>
                </item>
                <item row="3" column="0">
-                <widget class="QLabel" name="label_27">
+                <widget class="QLabel" name="projectDescriptionLabel">
                  <property name="text">
                   <string>Description</string>
                  </property>
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="lineEdit_3"/>
+                <widget class="QLineEdit" name="projectDescriptionLineEdit"/>
                </item>
               </layout>
              </widget>
@@ -624,7 +624,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>243</width>
+             <width>536</width>
              <height>687</height>
             </rect>
            </property>
