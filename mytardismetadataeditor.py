@@ -47,9 +47,10 @@ class MyTardisMetadataEditor(QMainWindow):
     
     # Save to yaml files
     def save_to_yaml(self):
-        name = QFileDialog.getSaveFileName(self,"Save File",directory = "test.yaml", initialFilter='Yaml File(*.yaml)')[0]
-        with open(name, 'w') as file:
-            file.write(self.metadata.to_yaml())
+        filename = QFileDialog.getSaveFileName(self,"Save File",directory = "test.yaml", initialFilter='Yaml File(*.yaml)')[0]
+        if filename:
+            with open(filename, 'w') as file:
+                file.write(self.metadata.to_yaml())
 
 class WindowWizard(QWizard):
 
