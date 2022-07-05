@@ -1,1 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+.venv
+=======
 .vscode
+>>>>>>> 49e064d2ecffead54c07436d560d234329dd3945
+=======
+.vscode
+>>>>>>> 49e064d2ecffead54c07436d560d234329dd3945
+.gitignore
+.DS_Store
+**/__pycache__/

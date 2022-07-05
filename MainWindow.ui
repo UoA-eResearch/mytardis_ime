@@ -7,20 +7,35 @@
     <x>0</x>
     <y>0</y>
     <width>1183</width>
-    <height>892</height>
+    <height>734</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MyData</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTabWidget" name="projectTab">
+     <widget class="QTabWidget" name="Tabs">
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
       <property name="currentIndex">
        <number>2</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <property name="usesScrollButtons">
+       <bool>false</bool>
+      </property>
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="datasetTab">
        <attribute name="title">
         <string>Datasets</string>
        </attribute>
@@ -28,7 +43,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QTreeWidget" name="treeWidget">
+           <widget class="QTreeWidget" name="datasetTreeWidget">
             <column>
              <property name="text">
               <string>Name</string>
@@ -44,25 +59,6 @@
               <string>Linked Experiment</string>
              </property>
             </column>
-            <item>
-             <property name="text">
-              <string>PV Calibration 10X 1</string>
-             </property>
-             <property name="text">
-              <string>32.1MB</string>
-             </property>
-             <property name="text">
-              <string>Calibration 2X</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>20200105_1.TIFF</string>
-              </property>
-              <property name="text">
-               <string>4.3MB</string>
-              </property>
-             </item>
-            </item>
            </widget>
           </item>
          </layout>
@@ -78,13 +74,13 @@
           <property name="currentIndex">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="page">
+          <widget class="QWidget" name="datasetDescriptionPage">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>568</width>
-             <height>643</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -92,21 +88,21 @@
            </attribute>
            <layout class="QFormLayout" name="formLayout">
             <item row="0" column="0">
-             <widget class="QLabel" name="label_21">
+             <widget class="QLabel" name="datasetNameLabel">
               <property name="text">
                <string>Dataset name</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_9">
+             <widget class="QLineEdit" name="datasetNameLineEdit">
               <property name="text">
-               <string>PV Calibration 10X 1</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_22">
+             <widget class="QLabel" name="LinkedExperimentLabel">
               <property name="text">
                <string>Linked Experiment</string>
               </property>
@@ -115,7 +111,7 @@
             <item row="1" column="1">
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Linked to Calibration 2X.</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -127,24 +123,24 @@
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="label_24">
+             <widget class="QLabel" name="instrumentIDLabel">
               <property name="text">
                <string>Instrument ID</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QLineEdit" name="lineEdit_11"/>
+             <widget class="QLineEdit" name="instrumentIDLineEdit"/>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_2">
+          <widget class="QWidget" name="datasetUserGroup">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>305</width>
-             <height>642</height>
+             <width>536</width>
+             <height>765</height>
             </rect>
            </property>
            <attribute name="label">
@@ -270,13 +266,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_3">
+          <widget class="QWidget" name="datasetMetadata">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -287,13 +283,13 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="experimentTab">
        <attribute name="title">
         <string>Experiments</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QTreeWidget" name="treeWidget_3">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QTreeWidget" name="experimentTreeWidget">
           <column>
            <property name="text">
             <string>Name</string>
@@ -309,20 +305,9 @@
             <string>Linked Project</string>
            </property>
           </column>
-          <item>
-           <property name="text">
-            <string>Calibration 2X</string>
-           </property>
-           <property name="text">
-            <string>32.1MB</string>
-           </property>
-           <property name="text">
-            <string>Rakeiora</string>
-           </property>
-          </item>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QToolBox" name="toolBox_2">
           <property name="minimumSize">
            <size>
@@ -331,15 +316,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
-          <widget class="QWidget" name="page_4">
+          <widget class="QWidget" name="experimentDescriptionPage">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>568</width>
-             <height>643</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -347,27 +332,27 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
-             <widget class="QLabel" name="label_15">
+             <widget class="QLabel" name="experimentNameLabel">
               <property name="text">
                <string>Experiment name</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_5"/>
+             <widget class="QLineEdit" name="experimentNameLineEdit"/>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_17">
+             <widget class="QLabel" name="experimentIDLabel">
               <property name="text">
                <string>Experiment ID</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_7"/>
+             <widget class="QLineEdit" name="experimentIDLineEdit"/>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="label_18">
+             <widget class="QLabel" name="experimentAlternateIdLabel">
               <property name="text">
                <string>Alternate IDs</string>
               </property>
@@ -377,24 +362,24 @@
              <widget class="QTableWidget" name="tableWidget_10"/>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="label_19">
+             <widget class="QLabel" name="experimentDescriptionLabel">
               <property name="text">
                <string>Description</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QLineEdit" name="lineEdit_8"/>
+             <widget class="QLineEdit" name="experimentDescriptionLineEdit"/>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_5">
+          <widget class="QWidget" name="experimentUserGroup">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>292</width>
-             <height>642</height>
+             <width>536</width>
+             <height>765</height>
             </rect>
            </property>
            <attribute name="label">
@@ -520,13 +505,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_6">
+          <widget class="QWidget" name="experimentMetadata">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -537,13 +522,13 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="projectTab">
        <attribute name="title">
         <string>Projects</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QTreeWidget" name="treeWidget_4">
+         <widget class="QTreeWidget" name="projectTreeWidget">
           <column>
            <property name="text">
             <string>Name</string>
@@ -554,14 +539,6 @@
             <string>Size</string>
            </property>
           </column>
-          <item>
-           <property name="text">
-            <string>Rakeiora</string>
-           </property>
-           <property name="text">
-            <string>32.1MB</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item>
@@ -573,15 +550,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
-          <widget class="QWidget" name="page_7">
+          <widget class="QWidget" name="projectDescription">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>568</width>
-             <height>643</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -598,57 +575,57 @@
               </property>
               <layout class="QFormLayout" name="formLayout_4">
                <item row="0" column="0">
-                <widget class="QLabel" name="label_3">
+                <widget class="QLabel" name="projectNameLabel">
                  <property name="text">
                   <string>Project name</string>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLineEdit" name="lineEdit"/>
+                <widget class="QLineEdit" name="projectNameLineEdit"/>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_4">
+                <widget class="QLabel" name="projectProjectIdLabel">
                  <property name="text">
                   <string>Project ID</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="lineEdit_2"/>
+                <widget class="QLineEdit" name="projectIDLineEdit"/>
                </item>
                <item row="2" column="0">
-                <widget class="QLabel" name="label_5">
+                <widget class="QLabel" name="projectAlternateIDLabel">
                  <property name="text">
                   <string>Alternate IDs</string>
                  </property>
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QTableView" name="tableView"/>
+                <widget class="QTableView" name="projectAlternateIDTableView"/>
                </item>
                <item row="3" column="0">
-                <widget class="QLabel" name="label_27">
+                <widget class="QLabel" name="projectDescriptionLabel">
                  <property name="text">
                   <string>Description</string>
                  </property>
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="lineEdit_3"/>
+                <widget class="QLineEdit" name="projectDescriptionLineEdit"/>
                </item>
               </layout>
              </widget>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_8">
+          <widget class="QWidget" name="projectUserGroup">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>223</width>
-             <height>596</height>
+             <width>536</width>
+             <height>687</height>
             </rect>
            </property>
            <attribute name="label">
@@ -749,13 +726,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_9">
+          <widget class="QWidget" name="projectMetadata">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>551</width>
+             <height>464</height>
             </rect>
            </property>
            <attribute name="label">
@@ -777,7 +754,7 @@
      <x>0</x>
      <y>0</y>
      <width>1183</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -815,6 +792,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionImport_data_files"/>
+   <addaction name="actionSave"/>
   </widget>
   <action name="actionOpen_metadata_file">
    <property name="text">
@@ -848,7 +826,7 @@
   </action>
   <action name="actionImport_data_files">
    <property name="icon">
-    <iconset resource="default.qrc">
+    <iconset resource="../mytardis_ime_old/default.qrc">
      <normaloff>:/resources/noun-file-add-4877075.svg</normaloff>:/resources/noun-file-add-4877075.svg</iconset>
    </property>
    <property name="text">
@@ -858,9 +836,17 @@
     <string>Launch guide to import new data files</string>
    </property>
   </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="default.qrc"/>
+  <include location="../mytardis_ime_old/default.qrc"/>
  </resources>
  <connections/>
 </ui>
