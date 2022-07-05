@@ -18,7 +18,48 @@ class MyTardisMetadataEditor(QMainWindow):
         # define our widgets
         self.actionImport_data_files.triggered.connect(self.openWizardWindow)
         self.actionSave.triggered.connect(self.save_to_yaml)
+
+        self.datasetTreeWidget.itemClicked.connect(self.onClickedDataset)
+        self.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
+        self.projectTreeWidget.itemClicked.connect(self.onClickedProject)
+
         self.show()
+
+    def onClickedDataset(self):
+            item = self.datasetTreeWidget.currentItem()
+            #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
+            self.datasetNameLineEdit.setText(item.text(0))
+            #print(self.metadata)
+            for ds in self.metadata.datasets:
+                if ds.dataset_name == item.text(0):
+                    self.instrumentIDLineEdit.setText(ds.instrument_id)
+                else:
+                    continue
+            #self.instrumentIDLineEdit.setText(self.metadata.datasets.instrument_id)
+
+    def onClickedExperiment(self):
+            item = self.experimentTreeWidget.currentItem()
+            #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
+            self.experimentNameLineEdit.setText(item.text(0))
+            #print(self.metadata)
+            for ds in self.metadata.experiments:
+                if ds.experiment_name == item.text(0):
+                    self.experimentIDLineEdit.setText(ds.experiment_id)
+                    self.experimentDescriptionLineEdit.setText(ds.description)
+                else:
+                    continue
+
+    def onClickedProject(self):
+            item = self.projectTreeWidget.currentItem()
+            #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
+            self.projectNameLineEdit.setText(item.text(0))
+            #print(self.metadata)
+            for ds in self.metadata.projects:
+                if ds.project_name == item.text(0):
+                    self.projectIDLineEdit.setText(ds.project_id)
+                    self.projectDescriptionLineEdit.setText(ds.description)
+                else:
+                    continue
 
     @QtCore.pyqtSlot('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
     def reFresh(self,project_info, experiment_info, dataset_info, datafile_info):
@@ -134,7 +175,7 @@ class WindowWizard(QWizard):
         experiment_info.project_id = self.projectIDLineEdit.text()
         experiment_info.description = self.experimentdescriptionLineEdit.text()
         dataset_info.dataset_name = self.datasetNameLineEdit.text()
-        dataset_info.dataset_id = self.instrumentIDLineEdit.text()
+        dataset_info.instrument_id = self.instrumentIDLineEdit.text()
         dataset_info.experiment_id = self.experimentIDLineEdit.text()
 
         table = self.datafiletableWidget
