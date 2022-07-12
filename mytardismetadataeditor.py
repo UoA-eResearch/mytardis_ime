@@ -1,9 +1,8 @@
 import os, sys
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
-from PyQt5.QtCore import QPersistentModelIndex,QModelIndex
+from PyQt5.QtCore import QAbstractTableModel
 from isort import file
-import yaml
 # from mainwindow import Ui_MainWindow
 from models import IngestionMetadata, Project, Experiment, Dataset, Datafile, FileInfo
 
@@ -19,20 +18,20 @@ class MyTardisMetadataEditor(QMainWindow):
         self.actionImport_data_files.triggered.connect(self.openWizardWindow)
         self.actionSave.triggered.connect(self.save_to_yaml)
         self.show()
+    
 
-    @QtCore.pyqtSlot('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
-    def reFresh(self,project_info, experiment_info, dataset_info, datafile_info):
-        self.project,self.experiment,self.dataset,self.datafile = project_info, experiment_info, dataset_info, datafile_info 
+    @QtCore.pyqtSlot(Project,Experiment,Dataset,Datafile)
+    def reFresh(self,project_info: Project, experiment_info: Experiment, dataset_info: Dataset, datafile_info: Datafile):
         self.metadata.projects.append(project_info)
         self.metadata.experiments.append(experiment_info)
         self.metadata.datasets.append(dataset_info)
         self.metadata.datafiles.append(datafile_info)
 
-        l1 = QTreeWidgetItem([self.dataset.dataset_name,self.dataset.metadata['Size'],self.experiment.experiment_name])
-        l2 = QTreeWidgetItem([self.experiment.experiment_name,self.experiment.metadata['Size'],self.project.project_name])
-        l3 = QTreeWidgetItem([self.project.project_name,self.project.metadata['Size']])
+        l1 = QTreeWidgetItem([dataset_info.dataset_name,dataset_info.metadata['Size'],experiment_info.experiment_name])
+        l2 = QTreeWidgetItem([experiment_info.experiment_name,experiment_info.metadata['Size'],project_info.project_name])
+        l3 = QTreeWidgetItem([project_info.project_name,project_info.metadata['Size']])
         
-        for file in self.datafile.files:
+        for file in datafile_info.files:
             file_name = file.name
             file_size = file.metadata['Size']
             l1_child = QTreeWidgetItem([file_name,file_size,""])
@@ -55,7 +54,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
 class WindowWizard(QWizard):
 
-    submitted = QtCore.pyqtSignal('PyQt_PyObject','PyQt_PyObject','PyQt_PyObject','PyQt_PyObject')
+    submitted = QtCore.pyqtSignal(Project, Experiment, Dataset, Datafile)
 
     def __init__(self):
         super(QWizard, self).__init__()
