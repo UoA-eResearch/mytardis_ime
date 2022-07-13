@@ -7,288 +7,478 @@
     <x>0</x>
     <y>0</y>
     <width>1183</width>
-    <height>734</height>
+    <height>1043</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MyData</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QTabWidget" name="Tabs">
-      <property name="tabPosition">
-       <enum>QTabWidget::North</enum>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
+     <widget class="QTabWidget" name="editorTabs">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
-      <property name="usesScrollButtons">
-       <bool>false</bool>
-      </property>
-      <property name="documentMode">
-       <bool>false</bool>
-      </property>
-      <property name="tabsClosable">
-       <bool>false</bool>
-      </property>
-      <widget class="QWidget" name="datasetTab">
+      <widget class="QWidget" name="dataset_tab">
        <attribute name="title">
         <string>Datasets</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QTreeWidget" name="datasetTreeWidget">
-            <column>
-             <property name="text">
-              <string>Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Size</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Linked Experiment</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QTreeWidget" name="datasetTreeWidget">
+          <column>
+           <property name="text">
+            <string>ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Size</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Linked experiment</string>
+           </property>
+          </column>
+         </widget>
         </item>
         <item>
-         <widget class="QToolBox" name="toolBox">
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>0</height>
-           </size>
-          </property>
+         <widget class="QStackedWidget" name="datasetTabProps">
           <property name="currentIndex">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="datasetDescriptionPage">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>551</width>
-             <height>464</height>
-            </rect>
-           </property>
-           <attribute name="label">
-            <string>Description</string>
-           </attribute>
-           <layout class="QFormLayout" name="formLayout">
+          <widget class="QWidget" name="datasetProperties">
+           <layout class="QGridLayout" name="gridLayout_6">
             <item row="0" column="0">
-             <widget class="QLabel" name="datasetNameLabel">
-              <property name="text">
-               <string>Dataset name</string>
+             <widget class="QToolBox" name="toolBox">
+              <property name="minimumSize">
+               <size>
+                <width>500</width>
+                <height>0</height>
+               </size>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="datasetNameLineEdit">
-              <property name="text">
-               <string/>
+              <property name="currentIndex">
+               <number>0</number>
               </property>
+              <widget class="QWidget" name="page">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>550</width>
+                 <height>736</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>Description</string>
+               </attribute>
+               <layout class="QFormLayout" name="formLayout">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_21">
+                  <property name="text">
+                   <string>Dataset name</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="datasetNameLineEdit">
+                  <property name="text">
+                   <string>PV Calibration 10X 1</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_22">
+                  <property name="text">
+                   <string>Linked Experiment</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Linked to Calibration 2X.</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QPushButton" name="pushButton_2">
+                  <property name="text">
+                   <string>Change linked experiment...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_24">
+                  <property name="text">
+                   <string>Instrument ID</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLineEdit" name="instrumentIDLineEdit"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>Dataset ID</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="datasetIDLineEdit"/>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_2">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>550</width>
+                 <height>736</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>Users and groups</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <widget class="QCheckBox" name="checkBox">
+                  <property name="text">
+                   <string>Override inherited user and group settings</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QFormLayout" name="formLayout_2">
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="label_6">
+                     <property name="text">
+                      <string>Admin groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QTableWidget" name="tableWidget">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="label_7">
+                     <property name="text">
+                      <string>Admin users</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QTableWidget" name="tableWidget_2">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="label_8">
+                     <property name="text">
+                      <string>Read groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="1">
+                    <widget class="QTableWidget" name="tableWidget_3">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="0">
+                    <widget class="QLabel" name="label_9">
+                     <property name="text">
+                      <string>Read users</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="1">
+                    <widget class="QTableWidget" name="tableWidget_4">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="0">
+                    <widget class="QLabel" name="label_10">
+                     <property name="text">
+                      <string>Download groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="1">
+                    <widget class="QTableWidget" name="tableWidget_5">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="12" column="0">
+                    <widget class="QLabel" name="label_11">
+                     <property name="text">
+                      <string>Download users</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="12" column="1">
+                    <widget class="QTableWidget" name="tableWidget_6">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="14" column="0">
+                    <widget class="QLabel" name="label_12">
+                     <property name="text">
+                      <string>Sensitive groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="14" column="1">
+                    <widget class="QTableWidget" name="tableWidget_7">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_3">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>550</width>
+                 <height>736</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>Metadata</string>
+               </attribute>
+              </widget>
              </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="LinkedExperimentLabel">
-              <property name="text">
-               <string>Linked Experiment</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="text">
-               <string>Change linked experiment...</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="instrumentIDLabel">
-              <property name="text">
-               <string>Instrument ID</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="instrumentIDLineEdit"/>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="datasetUserGroup">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>536</width>
-             <height>765</height>
-            </rect>
-           </property>
-           <attribute name="label">
-            <string>Users and groups</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QCheckBox" name="checkBox">
-              <property name="text">
-               <string>Override inherited user and group settings</string>
+          <widget class="QWidget" name="datafileProperties">
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="QToolBox" name="toolBox_4">
+              <property name="minimumSize">
+               <size>
+                <width>500</width>
+                <height>0</height>
+               </size>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QFrame" name="frame">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
+              <property name="currentIndex">
+               <number>0</number>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QFormLayout" name="formLayout_2">
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_6">
-                 <property name="text">
-                  <string>Admin groups</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QTableWidget" name="tableWidget">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_7">
-                 <property name="text">
-                  <string>Admin users</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QTableWidget" name="tableWidget_2">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>Read groups</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QTableWidget" name="tableWidget_3">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="label_9">
-                 <property name="text">
-                  <string>Read users</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="1">
-                <widget class="QTableWidget" name="tableWidget_4">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="0">
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>Download groups</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="1">
-                <widget class="QTableWidget" name="tableWidget_5">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="0">
-                <widget class="QLabel" name="label_11">
-                 <property name="text">
-                  <string>Download users</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="1">
-                <widget class="QTableWidget" name="tableWidget_6">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="14" column="0">
-                <widget class="QLabel" name="label_12">
-                 <property name="text">
-                  <string>Sensitive groups</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="14" column="1">
-                <widget class="QTableWidget" name="tableWidget_7">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QWidget" name="fileinfoDescription">
+               <attribute name="label">
+                <string>Description</string>
+               </attribute>
+               <layout class="QGridLayout" name="gridLayout_7">
+                <item row="0" column="0">
+                 <layout class="QFormLayout" name="formLayout_7">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="fileInfoFilenameLabel">
+                    <property name="text">
+                     <string>Filename</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="fileInfoFilenameLineEdit"/>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_10">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>550</width>
+                 <height>736</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>Users and groups</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
+                <item>
+                 <widget class="QCheckBox" name="checkBox_3">
+                  <property name="text">
+                   <string>Override Dataset user and group settings</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_5">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QFormLayout" name="formLayout_6">
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="label_36">
+                     <property name="text">
+                      <string>Admin groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QTableWidget" name="tableWidget_23">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="label_37">
+                     <property name="text">
+                      <string>Admin users</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QTableWidget" name="tableWidget_24">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="label_38">
+                     <property name="text">
+                      <string>Read groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="1">
+                    <widget class="QTableWidget" name="tableWidget_25">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="0">
+                    <widget class="QLabel" name="label_39">
+                     <property name="text">
+                      <string>Read users</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="1">
+                    <widget class="QTableWidget" name="tableWidget_26">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="0">
+                    <widget class="QLabel" name="label_40">
+                     <property name="text">
+                      <string>Download groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="1">
+                    <widget class="QTableWidget" name="tableWidget_27">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="12" column="0">
+                    <widget class="QLabel" name="label_41">
+                     <property name="text">
+                      <string>Download users</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="12" column="1">
+                    <widget class="QTableWidget" name="tableWidget_28">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="14" column="0">
+                    <widget class="QLabel" name="label_42">
+                     <property name="text">
+                      <string>Sensitive groups</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="14" column="1">
+                    <widget class="QTableWidget" name="tableWidget_29">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_11">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>550</width>
+                 <height>736</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>Metadata</string>
+               </attribute>
+              </widget>
              </widget>
             </item>
            </layout>
-          </widget>
-          <widget class="QWidget" name="datasetMetadata">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>551</width>
-             <height>464</height>
-            </rect>
-           </property>
-           <attribute name="label">
-            <string>Metadata</string>
-           </attribute>
           </widget>
          </widget>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="experimentTab">
+      <widget class="QWidget" name="experiment_tab">
        <attribute name="title">
         <string>Experiments</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
          <widget class="QTreeWidget" name="experimentTreeWidget">
           <column>
            <property name="text">
@@ -305,9 +495,20 @@
             <string>Linked Project</string>
            </property>
           </column>
+          <item>
+           <property name="text">
+            <string>Calibration 2X</string>
+           </property>
+           <property name="text">
+            <string>32.1MB</string>
+           </property>
+           <property name="text">
+            <string>Rakeiora</string>
+           </property>
+          </item>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item>
          <widget class="QToolBox" name="toolBox_2">
           <property name="minimumSize">
            <size>
@@ -316,15 +517,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
-          <widget class="QWidget" name="experimentDescriptionPage">
+          <widget class="QWidget" name="page_4">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>551</width>
-             <height>464</height>
+             <width>568</width>
+             <height>754</height>
             </rect>
            </property>
            <attribute name="label">
@@ -332,27 +533,27 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
-             <widget class="QLabel" name="experimentNameLabel">
+             <widget class="QLabel" name="label_15">
               <property name="text">
                <string>Experiment name</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="experimentNameLineEdit"/>
+             <widget class="QLineEdit" name="lineEdit_5"/>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="experimentIDLabel">
+             <widget class="QLabel" name="label_17">
               <property name="text">
                <string>Experiment ID</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="experimentIDLineEdit"/>
+             <widget class="QLineEdit" name="lineEdit_7"/>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="experimentAlternateIdLabel">
+             <widget class="QLabel" name="label_18">
               <property name="text">
                <string>Alternate IDs</string>
               </property>
@@ -362,24 +563,24 @@
              <widget class="QTableWidget" name="tableWidget_10"/>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="experimentDescriptionLabel">
+             <widget class="QLabel" name="label_19">
               <property name="text">
                <string>Description</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QLineEdit" name="experimentDescriptionLineEdit"/>
+             <widget class="QLineEdit" name="lineEdit_8"/>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="experimentUserGroup">
+          <widget class="QWidget" name="page_5">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>536</width>
-             <height>765</height>
+             <width>292</width>
+             <height>642</height>
             </rect>
            </property>
            <attribute name="label">
@@ -505,13 +706,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="experimentMetadata">
+          <widget class="QWidget" name="page_6">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>551</width>
-             <height>464</height>
+             <width>98</width>
+             <height>28</height>
             </rect>
            </property>
            <attribute name="label">
@@ -522,7 +723,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="projectTab">
+      <widget class="QWidget" name="project_tab">
        <attribute name="title">
         <string>Projects</string>
        </attribute>
@@ -539,6 +740,14 @@
             <string>Size</string>
            </property>
           </column>
+          <item>
+           <property name="text">
+            <string>Rakeiora</string>
+           </property>
+           <property name="text">
+            <string>32.1MB</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
@@ -550,15 +759,15 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
-          <widget class="QWidget" name="projectDescription">
+          <widget class="QWidget" name="page_7">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>551</width>
-             <height>464</height>
+             <width>568</width>
+             <height>754</height>
             </rect>
            </property>
            <attribute name="label">
@@ -575,7 +784,7 @@
               </property>
               <layout class="QFormLayout" name="formLayout_4">
                <item row="0" column="0">
-                <widget class="QLabel" name="projectNameLabel">
+                <widget class="QLabel" name="label_3">
                  <property name="text">
                   <string>Project name</string>
                  </property>
@@ -585,47 +794,47 @@
                 <widget class="QLineEdit" name="projectNameLineEdit"/>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="projectProjectIdLabel">
+                <widget class="QLabel" name="label_4">
                  <property name="text">
                   <string>Project ID</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="projectIDLineEdit"/>
+                <widget class="QLineEdit" name="projectIdLineEdit"/>
                </item>
                <item row="2" column="0">
-                <widget class="QLabel" name="projectAlternateIDLabel">
+                <widget class="QLabel" name="label_5">
                  <property name="text">
                   <string>Alternate IDs</string>
                  </property>
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QTableView" name="projectAlternateIDTableView"/>
+                <widget class="QTableView" name="tableView"/>
                </item>
                <item row="3" column="0">
-                <widget class="QLabel" name="projectDescriptionLabel">
+                <widget class="QLabel" name="label_27">
                  <property name="text">
                   <string>Description</string>
                  </property>
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="projectDescriptionLineEdit"/>
+                <widget class="QLineEdit" name="lineEdit_3"/>
                </item>
               </layout>
              </widget>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="projectUserGroup">
+          <widget class="QWidget" name="page_8">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>536</width>
-             <height>687</height>
+             <width>223</width>
+             <height>596</height>
             </rect>
            </property>
            <attribute name="label">
@@ -726,13 +935,13 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="projectMetadata">
+          <widget class="QWidget" name="page_9">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>551</width>
-             <height>464</height>
+             <width>98</width>
+             <height>28</height>
             </rect>
            </property>
            <attribute name="label">
@@ -746,6 +955,16 @@
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -754,7 +973,7 @@
      <x>0</x>
      <y>0</y>
      <width>1183</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -826,7 +1045,7 @@
   </action>
   <action name="actionImport_data_files">
    <property name="icon">
-    <iconset resource="../mytardis_ime_old/default.qrc">
+    <iconset resource="default.qrc">
      <normaloff>:/resources/noun-file-add-4877075.svg</normaloff>:/resources/noun-file-add-4877075.svg</iconset>
    </property>
    <property name="text">
@@ -836,17 +1055,9 @@
     <string>Launch guide to import new data files</string>
    </property>
   </action>
-  <action name="actionRefresh">
-   <property name="text">
-    <string>Refresh</string>
-   </property>
-   <property name="toolTip">
-    <string>Refresh</string>
-   </property>
-  </action>
  </widget>
  <resources>
-  <include location="../mytardis_ime_old/default.qrc"/>
+  <include location="default.qrc"/>
  </resources>
  <connections/>
 </ui>
