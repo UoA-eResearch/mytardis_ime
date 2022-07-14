@@ -5,9 +5,11 @@ from PyQt5.QtCore import QPersistentModelIndex,QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from isort import file
 import yaml
-# from mainwindow import Ui_MainWindow
+# from MainWindow import Ui_MainWindow
 from models import IngestionMetadata, Project, Experiment, Dataset, Datafile, FileInfo
 import logging
+# Import the resources file
+import default_rc
 class MyTardisMetadataEditor(QMainWindow):
     def __init__(self):
         super(QMainWindow, self).__init__()
@@ -90,6 +92,8 @@ class MyTardisMetadataEditor(QMainWindow):
             item = self.experimentTreeWidget.currentItem()
             #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
             self.experimentNameLineEdit.setText(item.text(0))
+            props_widget : QStackedWidget = self.experimentTabProps
+            props_widget.setCurrentIndex(0)
             #print(self.metadata)
             for ds in self.metadata.experiments:
                 if ds.experiment_name == item.text(0):
@@ -100,6 +104,9 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def onClickedProject(self):
             item = self.projectTreeWidget.currentItem()
+            props_widget : QStackedWidget = self.projectTabProps
+            props_widget.setCurrentIndex(0)
+
             #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
             self.projectNameLineEdit.setText(item.text(0))
             #print(self.metadata)
@@ -224,11 +231,11 @@ class WindowWizard(QWizard):
 
         project_info.project_name = self.projectNameLineEdit.text()
         project_info.project_id = self.projectIDLineEdit.text()
-        project_info.description = self.projectDescriptionLineEdit.text()
+        project_info.description = self.projectDescriptionLineEdit.toPlainText()
         experiment_info.experiment_name = self.experimentNameLineEdit.text()
         experiment_info.experiment_id = self.experimentIDLineEdit.text()
         experiment_info.project_id = self.projectIDLineEdit.text()
-        experiment_info.description = self.experimentdescriptionLineEdit.text()
+        experiment_info.description = self.experimentDescriptionLineEdit.toPlainText()
         dataset_info.dataset_name = self.datasetNameLineEdit.text()
         dataset_info.dataset_id = self.datasetIDLineEdit.text()
         dataset_info.experiment_id = self.experimentIDLineEdit.text()
@@ -268,6 +275,7 @@ class WindowWizard(QWizard):
 
         self.submitted.emit(project_info, experiment_info, dataset_info, datafile_info)
         self.close()
+
 
 if __name__ == "__main__":
     app = QApplication([])
