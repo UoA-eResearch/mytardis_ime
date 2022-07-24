@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>794</width>
+    <width>688</width>
     <height>748</height>
    </rect>
   </property>
@@ -19,15 +19,13 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QLabel" name="label_9">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>Welcome! This dialog will get you started with importing your data and organising them.</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>In MyTardis, data are organised in a hierarchy. Files are grouped into Datasets. Datasets are organised into Experiments. Experiments belong to a Project. You can attach metadata at each level to make it easier for you and your collaborators to find and reuse your data. </string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -35,7 +33,93 @@
        </widget>
       </item>
       <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Preferred</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QFrame" name="mytardisdatamodelexplanation">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>310</height>
+         </size>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_12">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>253</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../default.qrc">:/resources/text66-1-7.png</pixmap>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>In MyTardis, data are organised in a hierarchy. Files are grouped into Datasets. Datasets are organised into Experiments. Experiments belong to a Project. You can attach metadata at each level to make it easier for you and your collaborators to find and reuse your data. </string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Preferred</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QLabel" name="label_11">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>This dialog will help you create the Project, Experiment and Dataset to put your files under. You can re-run this dialog for other files that need to be organised separately.</string>
         </property>
@@ -55,7 +139,30 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>First, let's create the project you are adding the dataset to.</string>
+         <string>First, let's find or create the project you are adding the data files to.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Add this data into an existing project.</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_2">
+        <property name="text">
+         <string>Create a new project for this data.</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -69,7 +176,11 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="projectNameLineEdit"/>
+         <widget class="QLineEdit" name="projectNameLineEdit">
+          <property name="placeholderText">
+           <string>A human-readable name for your project</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="projectIDLabel">
@@ -79,7 +190,18 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="projectIDLineEdit"/>
+         <widget class="QLineEdit" name="projectIDLineEdit">
+          <property name="placeholderText">
+           <string>An unique identifier for the project</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QTextEdit" name="projectDescriptionLineEdit">
+          <property name="placeholderText">
+           <string>Optional description of your project to differentiate it from others</string>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="projectDescriptionLabel">
@@ -87,9 +209,6 @@
            <string>Description</string>
           </property>
          </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="projectDescriptionLineEdit"/>
         </item>
        </layout>
       </item>
@@ -111,7 +230,27 @@
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Now, let's find the experiment the dataset fits under.</string>
+         <string>Now, let's find or create the experiment the data files fits under.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_4">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Add this data to an existing experiment.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_3">
+        <property name="text">
+         <string>Create a new experiment for this data.</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -127,7 +266,11 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="experimentNameLineEdit"/>
+       <widget class="QLineEdit" name="experimentNameLineEdit">
+        <property name="placeholderText">
+         <string>A human-readable name for your experiment</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="experimentIDLabel">
@@ -137,7 +280,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="experimentIDLineEdit"/>
+       <widget class="QLineEdit" name="experimentIDLineEdit">
+        <property name="placeholderText">
+         <string>An unique identifier for the experiment</string>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="experimentdescriptionLabel">
@@ -147,7 +294,11 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="experimentdescriptionLineEdit"/>
+       <widget class="QTextEdit" name="experimentDescriptionLineEdit">
+        <property name="placeholderText">
+         <string>Optional description of the experiment</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -167,7 +318,30 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Nearly there! Describe the dataset you are trying to add.</string>
+         <string>Nearly there! Let's find or create the dataset for your data files</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_5">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Add this data to an existing dataset.</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_6">
+        <property name="text">
+         <string>Create a new dataset for this data.</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -181,17 +355,25 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="datasetNameLineEdit"/>
+         <widget class="QLineEdit" name="datasetNameLineEdit">
+          <property name="placeholderText">
+           <string>A human-readable name for your dataset</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="instrumentIDLabel">
+         <widget class="QLabel" name="datasetIDLabel">
           <property name="text">
-           <string>Instrument ID</string>
+           <string>Dataset ID</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="instrumentIDLineEdit"/>
+         <widget class="QLineEdit" name="datasetIDLineEdit">
+          <property name="placeholderText">
+           <string>An unique identifier for the dataset</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -307,6 +489,9 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../default.qrc"/>
+  <include location="../default.qrc"/>
+ </resources>
  <connections/>
 </ui>
