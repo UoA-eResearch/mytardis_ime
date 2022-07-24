@@ -75,7 +75,7 @@
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="default.qrc">:/resources/text66-1-7.png</pixmap>
+            <pixmap resource="../default.qrc">:/resources/text66-1-7.png</pixmap>
            </property>
           </widget>
          </item>
@@ -490,7 +490,8 @@
   </widget>
  </widget>
  <resources>
-  <include location="default.qrc"/>
+  <include location="../default.qrc"/>
+  <include location="../default.qrc"/>
  </resources>
  <connections/>
 </ui>
