@@ -49,7 +49,6 @@ class IMetadata:
 
     metadata: Dict[str, str] = field(default_factory=dict)
 
-
 @dataclass
 class Project(YAMLSerializable, IAccessControl, IMetadata):
     """
@@ -104,9 +103,10 @@ class FileInfo(YAMLSerializable, IAccessControl, IMetadata):
     """
 
     yaml_tag = "!FileInfo"
-    # yaml_dumper = yaml.SafeDumper
     yaml_loader = yaml.SafeLoader
     name: str = ""
+    # Size property is not serialised.
+    size: int = field(repr=False, default=0)
 
 
 @dataclass
@@ -146,6 +146,44 @@ class IngestionMetadata:
         concatenated.extend(self.datafiles)
         yaml_file = yaml.dump_all(concatenated)
         return yaml_file
+    
+    def get_files_by_dataset(self, dataset: Dataset) -> List[FileInfo]:
+        """
+        Returns datafiles that belong to a dataset.
+        """
+        id = dataset.dataset_id
+        all_files: List[FileInfo] = []
+        for file in self.datafiles:
+            if not file.dataset_id == id:
+                continue
+            # Concatenate list of fileinfo matching dataset
+            # with current list
+            all_files += file.files
+        return all_files
+
+    def get_datasets_by_experiment(self, exp: Experiment) -> List[Dataset]:
+        """
+        Returns datasets that belong to a experiment.
+        """
+        id = exp.experiment_id
+        all_datasets: List[Dataset] = []
+        for dataset in self.datasets:
+            if id not in dataset.experiment_id:
+                continue
+            all_datasets.append(dataset)
+        return all_datasets
+    
+    def get_experiments_by_project(self, proj: Project) -> List[Experiment]:
+        """
+        Returns experiments that belong to a project.
+        """
+        id = proj.project_id
+        all_exps: List[Experiment] = []
+        for exp in self.experiments:
+            if not exp.project_id == id:
+                continue
+            all_exps.append(exp)
+        return all_exps
 
     @staticmethod
     def from_yaml(yaml_rep: str):

@@ -6,6 +6,7 @@ from PyQt5.QtCore import QPersistentModelIndex,QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from isort import file
 import yaml
+from itertools import chain
 
 from ui.MainWindow import Ui_MainWindow
 from ui.AddFilesWizard import Ui_ImportDataFiles
@@ -138,19 +139,38 @@ class MyTardisMetadataEditor(QMainWindow):
         self.metadata.datasets.append(dataset_info)
         self.metadata.datafiles.append(datafile_info)
 
-        l1 = QTreeWidgetItem([dataset_info.dataset_name,dataset_info.metadata['Size'],experiment_info.experiment_name])
+        # Calculate dataset size by summing all the files' sizes
+        dataset_files = self.metadata.get_files_by_dataset(dataset_info)
+        dataset_size = sum([file.size for file in dataset_files])
+        # Create tree widget item for the dataset
+        # TODO Handle if it's an existing dataset
+        l1 = QTreeWidgetItem([dataset_info.dataset_name,file_size_to_str(dataset_size),experiment_info.experiment_name])
         l1.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset_info.dataset_id)
 
-        l2 = QTreeWidgetItem([experiment_info.experiment_name,experiment_info.metadata['Size'],project_info.project_name])
+
+        # Calculate experiment size by summing all its datasets' sizes
+        exp_datasets = self.metadata.get_datasets_by_experiment(experiment_info)
+        exp_files = [self.metadata.get_files_by_dataset(dataset) for dataset in exp_datasets]
+        exp_size = sum([f.size for f in chain(*exp_files)])
+        # Create tree widget item for the experiment
+        # TODO Handle if it's an existing experiment
+        l2 = QTreeWidgetItem([experiment_info.experiment_name,file_size_to_str(exp_size),project_info.project_name])
         l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, experiment_info.experiment_id)
 
-        l3 = QTreeWidgetItem([project_info.project_name,project_info.metadata['Size']])
+        # Calculate project size by summing all its experiments' sizes
+        proj_exps = self.metadata.get_experiments_by_project(project_info)
+        proj_datasets = [self.metadata.get_datasets_by_experiment(exp) for exp in proj_exps]
+        proj_files = [self.metadata.get_files_by_dataset(dataset) for dataset in chain(*proj_datasets)]
+        proj_size = sum(f.size for f in chain(*proj_files))
+        # Create tree widget item for the project
+        # TODO Handle if it's an existing project
+        l3 = QTreeWidgetItem([project_info.project_name,file_size_to_str(proj_size)])
         l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, project_info.project_id)
         
 
         for file in datafile_info.files:
             file_name = file.name
-            file_size = file.metadata['Size']
+            file_size = file_size_to_str(file.size)
             l1_child = QTreeWidgetItem([file_name,file_size,""])
             l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
             l1.addChild(l1_child)
@@ -259,20 +279,12 @@ class WindowWizard(QWizard):
         datafile_info.dataset_id = dataset_info.dataset_id
 
         table = self.ui.datafiletableWidget
-        # Calculate the size of dataset, experiment, project.
-        total_size = 0
         for row in range(table.rowCount()):
             file_name = table.item(row,0).text()
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             file_info = FileInfo(name = file_name)
             file_info.size = size
             datafile_info.files.append(file_info)
-            total_size += size
-
-        # Add the total size of the datafiles to projects, experiments and datasets they belong to.
-        dataset_info.size += total_size
-        experiment_info.size += total_size
-        project_info.size += total_size
 
         self.submitted.emit(project_info, experiment_info, dataset_info, datafile_info)
         self.close()
