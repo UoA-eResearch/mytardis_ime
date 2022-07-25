@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1183</width>
-    <height>955</height>
+    <height>731</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,15 +60,15 @@
                </size>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="page">
                <property name="geometry">
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>550</width>
-                 <height>734</height>
+                 <width>527</width>
+                 <height>482</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -86,6 +86,9 @@
                  <widget class="QLineEdit" name="datasetNameLineEdit">
                   <property name="text">
                    <string/>
+                  </property>
+                  <property name="placeholderText">
+                   <string>The dataset name</string>
                   </property>
                  </widget>
                 </item>
@@ -118,7 +121,11 @@
                  </widget>
                 </item>
                 <item row="4" column="1">
-                 <widget class="QLineEdit" name="instrumentIDLineEdit"/>
+                 <widget class="QLineEdit" name="instrumentIDLineEdit">
+                  <property name="placeholderText">
+                   <string>A unique identifier to the instrument that the data was generated on. Currently there is no standard persistent identifier that has widespread community adoption (DOIs are the most likely candidate).</string>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="label">
@@ -128,7 +135,11 @@
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QLineEdit" name="datasetIDLineEdit"/>
+                 <widget class="QLineEdit" name="datasetIDLineEdit">
+                  <property name="placeholderText">
+                   <string>A unique dataset identifier, RAiD for UoA datasets, could also be Dataset DOIs</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -137,8 +148,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>550</width>
-                 <height>734</height>
+                 <width>527</width>
+                 <height>772</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -269,8 +280,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>550</width>
-                 <height>734</height>
+                 <width>527</width>
+                 <height>482</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -299,8 +310,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>121</width>
-                 <height>46</height>
+                 <width>104</width>
+                 <height>47</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -328,8 +339,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>296</width>
-                 <height>642</height>
+                 <width>289</width>
+                 <height>772</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -633,8 +644,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>203</width>
-                 <height>184</height>
+                 <width>217</width>
+                 <height>196</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -688,8 +699,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>292</width>
-                 <height>642</height>
+                 <width>285</width>
+                 <height>772</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -821,7 +832,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>98</width>
-                 <height>28</height>
+                 <height>34</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -993,8 +1004,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>195</width>
-                 <height>204</height>
+                 <width>217</width>
+                 <height>222</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1060,8 +1071,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>223</width>
-                 <height>596</height>
+                 <width>244</width>
+                 <height>694</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -1371,7 +1382,6 @@
  <resources>
   <include location="../default.qrc"/>
   <include location="../default.qrc"/>
-  <include location="default.qrc"/>
  </resources>
  <connections/>
 </ui>
