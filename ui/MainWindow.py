@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MainWindow.ui'
+# Form implementation generated from reading ui file 'ui/Mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1183, 955)
+        MainWindow.resize(1183, 731)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
         self.toolBox.setMinimumSize(QtCore.QSize(500, 0))
         self.toolBox.setObjectName("toolBox")
         self.page = QtWidgets.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.page.setGeometry(QtCore.QRect(0, 0, 527, 482))
         self.page.setObjectName("page")
         self.formLayout = QtWidgets.QFormLayout(self.page)
         self.formLayout.setObjectName("formLayout")
@@ -72,7 +72,7 @@ class Ui_MainWindow(object):
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.datasetIDLineEdit)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtWidgets.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 305, 642))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 527, 772))
         self.page_2.setObjectName("page_2")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.page_2)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -151,7 +151,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.frame)
         self.toolBox.addItem(self.page_2, "")
         self.page_3 = QtWidgets.QWidget()
-        self.page_3.setGeometry(QtCore.QRect(0, 0, 100, 30))
+        self.page_3.setGeometry(QtCore.QRect(0, 0, 527, 482))
         self.page_3.setObjectName("page_3")
         self.toolBox.addItem(self.page_3, "")
         self.gridLayout_6.addWidget(self.toolBox, 0, 0, 1, 1)
@@ -164,7 +164,7 @@ class Ui_MainWindow(object):
         self.toolBox_4.setMinimumSize(QtCore.QSize(500, 0))
         self.toolBox_4.setObjectName("toolBox_4")
         self.fileinfoDescription = QtWidgets.QWidget()
-        self.fileinfoDescription.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.fileinfoDescription.setGeometry(QtCore.QRect(0, 0, 104, 47))
         self.fileinfoDescription.setObjectName("fileinfoDescription")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.fileinfoDescription)
         self.gridLayout_7.setObjectName("gridLayout_7")
@@ -179,7 +179,7 @@ class Ui_MainWindow(object):
         self.gridLayout_7.addLayout(self.formLayout_7, 0, 0, 1, 1)
         self.toolBox_4.addItem(self.fileinfoDescription, "")
         self.page_10 = QtWidgets.QWidget()
-        self.page_10.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.page_10.setGeometry(QtCore.QRect(0, 0, 289, 772))
         self.page_10.setObjectName("page_10")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.page_10)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -258,7 +258,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addWidget(self.frame_5)
         self.toolBox_4.addItem(self.page_10, "")
         self.page_11 = QtWidgets.QWidget()
-        self.page_11.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.page_11.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.page_11.setObjectName("page_11")
         self.toolBox_4.addItem(self.page_11, "")
         self.gridLayout.addWidget(self.toolBox_4, 0, 0, 1, 1)
@@ -330,7 +330,7 @@ class Ui_MainWindow(object):
         self.toolBox_2.setMinimumSize(QtCore.QSize(500, 0))
         self.toolBox_2.setObjectName("toolBox_2")
         self.page_4 = QtWidgets.QWidget()
-        self.page_4.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.page_4.setGeometry(QtCore.QRect(0, 0, 217, 196))
         self.page_4.setObjectName("page_4")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.page_4)
         self.gridLayout_3.setObjectName("gridLayout_3")
@@ -362,7 +362,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.experimentDescriptionLineEdit, 3, 1, 1, 1)
         self.toolBox_2.addItem(self.page_4, "")
         self.page_5 = QtWidgets.QWidget()
-        self.page_5.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.page_5.setGeometry(QtCore.QRect(0, 0, 285, 772))
         self.page_5.setObjectName("page_5")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.page_5)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -441,7 +441,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.frame_2)
         self.toolBox_2.addItem(self.page_5, "")
         self.page_6 = QtWidgets.QWidget()
-        self.page_6.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.page_6.setGeometry(QtCore.QRect(0, 0, 98, 34))
         self.page_6.setObjectName("page_6")
         self.gridLayout_13 = QtWidgets.QGridLayout(self.page_6)
         self.gridLayout_13.setObjectName("gridLayout_13")
@@ -518,7 +518,7 @@ class Ui_MainWindow(object):
         self.toolBox_3.setMinimumSize(QtCore.QSize(500, 0))
         self.toolBox_3.setObjectName("toolBox_3")
         self.page_7 = QtWidgets.QWidget()
-        self.page_7.setGeometry(QtCore.QRect(0, 0, 550, 701))
+        self.page_7.setGeometry(QtCore.QRect(0, 0, 217, 222))
         self.page_7.setObjectName("page_7")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.page_7)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -555,7 +555,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.frame_3, 0, 0, 1, 1)
         self.toolBox_3.addItem(self.page_7, "")
         self.page_8 = QtWidgets.QWidget()
-        self.page_8.setGeometry(QtCore.QRect(0, 0, 223, 596))
+        self.page_8.setGeometry(QtCore.QRect(0, 0, 244, 694))
         self.page_8.setObjectName("page_8")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.page_8)
         self.gridLayout_4.setObjectName("gridLayout_4")
@@ -630,7 +630,7 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addWidget(self.frame_4, 0, 0, 1, 1)
         self.toolBox_3.addItem(self.page_8, "")
         self.page_9 = QtWidgets.QWidget()
-        self.page_9.setGeometry(QtCore.QRect(0, 0, 100, 30))
+        self.page_9.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.page_9.setObjectName("page_9")
         self.gridLayout_5 = QtWidgets.QGridLayout(self.page_9)
         self.gridLayout_5.setObjectName("gridLayout_5")
@@ -717,7 +717,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.editorTabs.setCurrentIndex(0)
-        self.datasetTabProps.setCurrentIndex(2)
+        self.datasetTabProps.setCurrentIndex(0)
         self.toolBox.setCurrentIndex(0)
         self.toolBox_4.setCurrentIndex(0)
         self.experimentTabProps.setCurrentIndex(1)
@@ -733,11 +733,14 @@ class Ui_MainWindow(object):
         self.datasetTreeWidget.headerItem().setText(1, _translate("MainWindow", "Size"))
         self.datasetTreeWidget.headerItem().setText(2, _translate("MainWindow", "Linked experiment"))
         self.label_21.setText(_translate("MainWindow", "Dataset name"))
+        self.datasetNameLineEdit.setPlaceholderText(_translate("MainWindow", "The dataset name"))
         self.label_22.setText(_translate("MainWindow", "Linked Experiment"))
         self.label_2.setText(_translate("MainWindow", "Linked to None."))
         self.pushButton_2.setText(_translate("MainWindow", "Change linked experiment..."))
         self.label_24.setText(_translate("MainWindow", "Instrument ID"))
+        self.instrumentIDLineEdit.setPlaceholderText(_translate("MainWindow", "A unique identifier to the instrument that the data was generated on. Currently there is no standard persistent identifier that has widespread community adoption (DOIs are the most likely candidate)."))
         self.label.setText(_translate("MainWindow", "Dataset ID"))
+        self.datasetIDLineEdit.setPlaceholderText(_translate("MainWindow", "A unique dataset identifier, RAiD for UoA datasets, could also be Dataset DOIs"))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page), _translate("MainWindow", "Description"))
         self.checkBox.setText(_translate("MainWindow", "Override inherited user and group settings"))
         self.label_6.setText(_translate("MainWindow", "Admin groups"))
@@ -818,3 +821,13 @@ class Ui_MainWindow(object):
         self.actionImport_data_files.setToolTip(_translate("MainWindow", "Launch guide to import new data files"))
         self.actionImport_data_files.setShortcut(_translate("MainWindow", "Ctrl+Shift+I"))
 import default_rc
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
