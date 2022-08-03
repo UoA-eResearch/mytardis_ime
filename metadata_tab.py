@@ -1,53 +1,83 @@
 from typing import List
-from PyQt5.QtCore import QLine
+from PyQt5.QtCore import QItemSelection, QLine, QSignalBlocker, pyqtSlot
 from ui.MetadataTab import Ui_MetadataTab
 from PyQt5.QtWidgets import QHBoxLayout, QTableWidgetItem, QUndoStack, QWidget, QLineEdit
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from models import IMetadata
 import logging
 
-# class MetadataRow():
-#     def __init__(self, key: str, val: str):
-#         self.keywidget = QLineEdit()
-#         self.valwidget = QLineEdit()
-#         self.rowwidget = QHBoxLayout()
-#         self.keywidget.setText(str(key))
-#         self.valwidget.setText(str(val))
-#         self.rowwidget.addChildWidget(self.keywidget)
-#         self.rowwidget.addChildWidget(self.valwidget)
-
-#     def render(self, parent: QWidget):
-#         parent.
-#         self.rowwidget.setParent(parent)
-
 class MetadataTab(QWidget):
+    metadata_object: IMetadata
+    ui: Ui_MetadataTab
+
     def __init__(self):
         super(QWidget, self).__init__()
         self.ui = Ui_MetadataTab()
         self.ui.setupUi(self)
+        self.ui.metadata_table.cellChanged.connect(self.handle_cell_changed)
+        self.ui.metadata_table.selectionModel().selectionChanged.connect(self.handle_selection_changed)
+        self.ui.remove_rows_btn.clicked.connect(self.handle_remove_rows_click)
 
     def add_insert_metadata_row(self):
         table = self.ui.metadata_table
-        key_item, val_item = self.get_metadata_row("", "")
+        # key_item, val_item = self.get_metadata_row("", "")
+        key_item = QTableWidgetItem("")
+        val_item = QTableWidgetItem("")
         row_idx = table.rowCount()
         table.setRowCount(row_idx + 1)
         table.setItem(row_idx, 0, key_item)
         table.setItem(row_idx, 1, val_item)
     
     def get_metadata_row(self, key: str, val: str):
-            # key_edit = QLineEdit()
-            # key_edit.setText(key)
-            # key_edit.setPlaceholderText("Name for the field, e.g. Batch number")
-            key_item = QTableWidgetItem(key)
-            # val_edit = QLineEdit()
-            # val_edit.setText(val)
-            # val_edit.setPlaceholderText("Value for the field, e.g. 400")
-            val_item = QTableWidgetItem(val)
-            return key_item, val_item
+        # key_edit = QLineEdit()
+        # key_edit.setText(key)
+        # key_edit.setPlaceholderText("Name for the field, e.g. Batch number")
+        key_item = QTableWidgetItem(key)
+        key_item.setFlags(Qt.ItemFlag.ItemIsSelectable)
+        # val_edit = QLineEdit()
+        # val_edit.setText(val)
+        # val_edit.setPlaceholderText("Value for the field, e.g. 400")
+        val_item = QTableWidgetItem(val)
+        return key_item, val_item
 
+    def handle_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
+        selected_rows = self.ui.metadata_table.selectionModel().selectedRows()
+        self.ui.remove_rows_btn.setEnabled(len(selected_rows) > 0)
 
-    def update_object(self, metadata_obj: IMetadata):
+    def handle_cell_changed(self, row: int, col: int):
+        table = self.ui.metadata_table
+        cell = table.item(row, col)
+        cell_val = cell.text()
+        if col == 0:
+            block_signal = QSignalBlocker(self.ui.metadata_table)
+            # This is a new metadata key being inserted!
+            self.metadata_object.metadata[cell_val] = ""
+            # Disable editing of key name
+            cell.setFlags(Qt.ItemFlag.ItemIsSelectable)
+            # Add a new row to the bottom.
+            # Use a signal blocker to prevent a signal being sent
+            # causing recursion
+            self.add_insert_metadata_row()
+        else:
+            # The user has edited a metadata value
+            # TODO Empty key fields should be checked and enforced!
+            # TODO Enforce unique keys.
+            key = table.itemAt(row, 0).text()
+            self.metadata_object.metadata[key] = cell_val
+
+    def handle_remove_rows_click(self):
+        table = self.ui.metadata_table
+        items = table.selectedItems()
+        for item in items:
+            row = item.row()
+            key = table.item(row, 0).text()
+            self.metadata_object.metadata.pop(key)
+            table.removeRow(row)
+
+    def update_metadata_object(self, metadata_obj: IMetadata):
         """Updates the object this tab is modifying."""
+        # Block table change signals while object is being updated.
+        block_signal = QSignalBlocker(self.ui.metadata_table)
         table = self.ui.metadata_table
         # First, clear all existing rows (if any) that's already
         # in the tab.
@@ -64,3 +94,5 @@ class MetadataTab(QWidget):
             table.setItem(row_idx, 1, val_item)
             row_idx += 1
         self.add_insert_metadata_row()
+        self.metadata_object = metadata_obj
+        
