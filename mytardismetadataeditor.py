@@ -1,7 +1,11 @@
+from ast import Lambda
+from cProfile import label
+from dataclasses import field
+from mailbox import NotEmptyError
 import os, sys
 from typing import List
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox,QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
 from PyQt5.QtCore import QPersistentModelIndex,QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from isort import file
@@ -198,7 +202,19 @@ class WindowWizard(QWizard):
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles()
         self.ui.setupUi(self)
+        
         # define out widgets
+        pro_page = self.ui.wizardPage1
+        pro_page.registerField("projectIDLineEdit*", self.ui.projectIDLineEdit)
+        pro_page.registerField("projectNameLineEdit*", self.ui.projectNameLineEdit)
+        exp_page = self.ui.wizardPage2
+        exp_page.registerField("experimentNameLineEdit*",self.ui.experimentNameLineEdit)
+        exp_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
+        ds_page = self.ui.datasetInfo
+        ds_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
+        ds_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
+
+        #self.button(QtWidgets.QWizard.NextButton).clicked.connect(self.register_fields)
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
@@ -288,7 +304,6 @@ class WindowWizard(QWizard):
 
         self.submitted.emit(project_info, experiment_info, dataset_info, datafile_info)
         self.close()
-
 
 if __name__ == "__main__":
     app = QApplication([])
