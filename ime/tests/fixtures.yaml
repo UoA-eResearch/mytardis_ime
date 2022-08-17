@@ -51,7 +51,6 @@ metadata:
   excitation: 488
   resolution: 1.4
   technician: Jacqui Ross
-
 ---
 !Project
 # Project template. Please replace <key> with the metadata keys defined in the schema and <value> with its value

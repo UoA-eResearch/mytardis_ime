@@ -2,15 +2,16 @@ import os, sys
 from typing import List
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
-from PyQt5.QtCore import QPersistentModelIndex,QModelIndex
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from isort import file
-import yaml
 from itertools import chain
 
-from ui.MainWindow import Ui_MainWindow
-from ui.AddFilesWizard import Ui_ImportDataFiles
-from models import IngestionMetadata, Project, Experiment, Dataset, Datafile, FileInfo
+from ime.bindable import BoundObject
+from .qt_models import ExperimentDataModel
+from .ui.MainWindow import Ui_MainWindow
+from .ui.AddFilesWizard import Ui_ImportDataFiles
+from .models import IngestionMetadata, Project, Experiment, Dataset, Datafile, FileInfo
 import logging
 # Import the resources file
 import default_rc
@@ -24,6 +25,7 @@ def file_size_to_str(size: float) -> str:
         return "%3.1f %s" % (size, "TB")
 
 class MyTardisMetadataEditor(QMainWindow):
+
     def __init__(self):
         super(QMainWindow, self).__init__()
 
@@ -35,6 +37,8 @@ class MyTardisMetadataEditor(QMainWindow):
         
         self.metadata = IngestionMetadata()
 
+        self._initialise_bindings()
+
         # define our widgets
         self.ui.actionImport_data_files.triggered.connect(self.openWizardWindow)
         self.ui.actionSave.triggered.connect(self.save_to_yaml)
@@ -42,35 +46,46 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.datasetTreeWidget.itemClicked.connect(self.onClickedDataset)
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
-
         self.show()
 
-    def onSelectDataset(self, item_id: str):
-        # First, look up the dataset value
-        dataset_lookup = [
-            dataset
-            for dataset in self.metadata.datasets
-            if dataset.dataset_id == item_id
-        ]
-        if (len(dataset_lookup) != 1):
-            logging.warning("Dataset ID %s could not be found or there are" + 
-            "more than one entries.", item_id)
-        dataset = dataset_lookup[0]
-        # Set controls with value
-        self.ui.datasetNameLineEdit.setText(dataset.dataset_name)
-        self.ui.datasetIDLineEdit.setText(dataset.dataset_id)
-        self.ui.instrumentIDLineEdit.setText(dataset.instrument_id)
+    def _initialise_bindings(self):
+        self.bound_dataset = BoundObject()
+        self.bound_datafile = BoundObject()
+        self.bound_project = BoundObject()
+        self.bound_experiment = BoundObject()
+        self.ui.datasetProperties.set_bound_dataset(self.bound_dataset)
+        self.ui.datafileProperties.set_bound_file(self.bound_datafile)
+        self.ui.expProperties.set_bound_experiment(self.bound_experiment)
+        self.ui.projectProperties.set_bound_project(self.bound_project)
 
-    def onSelectDatafile(self, dataset_id: str, file_name: str):
+    def onSelectDataset(self, dataset: Dataset):
+        # First, look up the dataset value
+        # dataset_lookup = [
+        #     dataset
+        #     for dataset in self.metadata.datasets
+        #     if dataset.dataset_id == item_id
+        # ]
+        # if (len(dataset_lookup) != 1):
+        #     logging.warning("Dataset ID %s could not be found or there are" + 
+        #     "more than one entries.", item_id)
+        # dataset = dataset_lookup[0]
+        # Replace bound dataset with new object
+        self.bound_dataset.set_object(dataset)
+        # self.ui.datasetProperties.update_dataset(BoundObject(dataset))
+        # self.ui.datasetNameLineEdit.setText(dataset.dataset_name)
+        # self.ui.datasetIDLineEdit.setText(dataset.dataset_id)
+        # self.ui.instrumentIDLineEdit.setText(dataset.instrument_id)
+
+    def onSelectDatafile(self, dataset: Dataset, file_name: str):
         # First, look up the dataset value
         datafile_lookup = [
             datafile
             for datafile in self.metadata.datafiles
-            if datafile.dataset_id == dataset_id
+            if datafile.dataset_id == dataset.dataset_id
         ]
         if (len(datafile_lookup) != 1):
             logging.warning("Dataset ID %s could not be found or there are" + 
-            "more than one entries.", dataset_id)
+            "more than one entries.", dataset.dataset_id)
         datafile = datafile_lookup[0]
         # Next, look up FileInfo
         fileinfo_lookup = [
@@ -83,55 +98,77 @@ class MyTardisMetadataEditor(QMainWindow):
             "more than one entries.", file_name)
         fileinfo = fileinfo_lookup[0]
         # Set controls with value
-        self.ui.fileInfoFilenameLineEdit.setText(fileinfo.name)
+        self.bound_datafile.set_object(fileinfo)
+        # self.ui.datafileProperties.update_file_info(BoundObject(fileinfo))
 
 
     def onClickedDataset(self):
             item: QTreeWidgetItem = self.ui.datasetTreeWidget.currentItem()
-            item_id = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+            item_data = item.data(0, Qt.ItemDataRole.UserRole)
             props_widget : QStackedWidget = self.ui.datasetTabProps
             if item.parent() is None:
                 # This indicates we are looking at a dataset,
                 # change stacked widget to show dataset properties
                 props_widget.setCurrentIndex(0)
-                self.onSelectDataset(item_id)
+                self.onSelectDataset(item_data)
             else:
                 parent = item.parent()
-                dataset_id = parent.data(0, QtCore.Qt.ItemDataRole.UserRole)
+                dataset = parent.data(0, Qt.ItemDataRole.UserRole)
                 props_widget.setCurrentIndex(1)
-                self.onSelectDatafile(dataset_id, item_id)
-
-
-            #self.instrumentIDLineEdit.setText(self.metadata.datasets.instrument_id)
+                self.onSelectDatafile(dataset, item_data)
 
     def onClickedExperiment(self):
             item = self.ui.experimentTreeWidget.currentItem()
-            #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
-            self.ui.experimentNameLineEdit.setText(item.text(0))
+            exp = item.data(0, Qt.ItemDataRole.UserRole)
+            # exp_lookup = [
+            #     exp
+            #     for exp in self.metadata.experiments
+            #     if exp.experiment_id == item_id
+            # ]
+            # if (len(exp_lookup) != 1):
+            #     logging.warning("Dataset ID %s could not be found or there are" + 
+            #         "more than one entries.", item_id)
+            # exp = exp_lookup[0]
             props_widget : QStackedWidget = self.ui.experimentTabProps
             props_widget.setCurrentIndex(0)
-            #print(self.metadata)
-            for ds in self.metadata.experiments:
-                if ds.experiment_name == item.text(0):
-                    self.ui.experimentIDLineEdit.setText(ds.experiment_id)
-                    self.ui.experimentDescriptionLineEdit.setText(ds.description)
-                else:
-                    continue
+            self.bound_experiment.set_object(exp)
+            #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
+            # self.ui.experimentNameLineEdit.setText(item.text(0))
+            # props_widget : QStackedWidget = self.ui.experimentTabProps
+            # props_widget.setCurrentIndex(0)
+            # #print(self.metadata)
+            # for ds in self.metadata.experiments:
+            #     if ds.experiment_name == item.text(0):
+            #         self.ui.experimentIDLineEdit.setText(ds.experiment_id)
+            #         self.ui.experimentDescriptionLineEdit.setText(ds.description)
+            #     else:
+            #         continue
 
     def onClickedProject(self):
             item = self.ui.projectTreeWidget.currentItem()
+            project: Project = item.data(0, Qt.ItemDataRole.UserRole)
             props_widget : QStackedWidget = self.ui.projectTabProps
             props_widget.setCurrentIndex(0)
-
+            # proj_lookup = [
+            #     proj
+            #     for proj in self.metadata.projects
+            #     if proj.project_id == item_id
+            # ]
+            # if (len(proj_lookup) != 1):
+            #     logging.warning("Dataset ID %s could not be found or there are" + 
+            #         "more than one entries.", item_id)
+            # project = proj_lookup[0]
+            self.bound_project.set_object(project)
+            # self.ui.projectProperties.update_project(BoundObject(project))
             #print("Key=%s,value=%s"%(item.text(0),item.text(1)))
-            self.ui.projectNameLineEdit.setText(item.text(0))
-            #print(self.metadata)
-            for ds in self.metadata.projects:
-                if ds.project_name == item.text(0):
-                    self.ui.projectIDLineEdit.setText(ds.project_id)
-                    self.ui.projectDescriptionLineEdit.setText(ds.description)
-                else:
-                    continue
+            # self.ui.projectNameLineEdit.setText(item.text(0))
+            # #print(self.metadata)
+            # for ds in self.metadata.projects:
+            #     if ds.project_name == item.text(0):
+            #         self.ui.projectIDLineEdit.setText(ds.project_id)
+            #         self.ui.projectDescriptionLineEdit.setText(ds.description)
+            #     else:
+            #         continue
 
     def reFresh(self,project_info: Project, experiment_info: Experiment, dataset_info: Dataset, datafile_info: Datafile):
         self.metadata.projects.append(project_info)
@@ -145,7 +182,7 @@ class MyTardisMetadataEditor(QMainWindow):
         # Create tree widget item for the dataset
         # TODO Handle if it's an existing dataset
         l1 = QTreeWidgetItem([dataset_info.dataset_name,file_size_to_str(dataset_size),experiment_info.experiment_name])
-        l1.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset_info.dataset_id)
+        l1.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset_info)
 
 
         # Calculate experiment size by summing all its datasets' sizes
@@ -155,7 +192,7 @@ class MyTardisMetadataEditor(QMainWindow):
         # Create tree widget item for the experiment
         # TODO Handle if it's an existing experiment
         l2 = QTreeWidgetItem([experiment_info.experiment_name,file_size_to_str(exp_size),project_info.project_name])
-        l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, experiment_info.experiment_id)
+        l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, experiment_info)
 
         # Calculate project size by summing all its experiments' sizes
         proj_exps = self.metadata.get_experiments_by_project(project_info)
@@ -165,7 +202,7 @@ class MyTardisMetadataEditor(QMainWindow):
         # Create tree widget item for the project
         # TODO Handle if it's an existing project
         l3 = QTreeWidgetItem([project_info.project_name,file_size_to_str(proj_size)])
-        l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, project_info.project_id)
+        l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, project_info)
         
 
         for file in datafile_info.files:
@@ -194,10 +231,21 @@ class WindowWizard(QWizard):
 
     submitted = QtCore.pyqtSignal(Project, Experiment, Dataset, Datafile)
 
+    def _register_fields(self):
+        proj_page = self.ui.wizardPage1
+        proj_page.registerField("projectIDLineEdit*", self.ui.projectIDLineEdit)
+        proj_page.registerField("projectNameLineEdit*", self.ui.projectNameLineEdit)
+        exp_page = self.ui.wizardPage2
+        exp_page.registerField("experimentNameLineEdit*", self.ui.experimentNameLineEdit)
+        exp_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
+        ds_page = self.ui.datasetInfo
+        # ds_page.registerField("")
+
     def __init__(self):
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles()
         self.ui.setupUi(self)
+        self._register_fields()
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
@@ -288,10 +336,3 @@ class WindowWizard(QWizard):
 
         self.submitted.emit(project_info, experiment_info, dataset_info, datafile_info)
         self.close()
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    window = MyTardisMetadataEditor()
-    window.show()
-    sys.exit(app.exec_())

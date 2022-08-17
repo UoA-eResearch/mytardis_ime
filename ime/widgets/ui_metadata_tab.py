@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MetadataTab.ui'
+# Form implementation generated from reading ui file 'ui_metadata_tab.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -15,6 +15,11 @@ class Ui_MetadataTab(object):
     def setupUi(self, MetadataTab):
         MetadataTab.setObjectName("MetadataTab")
         MetadataTab.resize(766, 639)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MetadataTab.sizePolicy().hasHeightForWidth())
+        MetadataTab.setSizePolicy(sizePolicy)
         self.verticalLayout = QtWidgets.QVBoxLayout(MetadataTab)
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(MetadataTab)

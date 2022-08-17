@@ -1,20 +1,10 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QTableWidget, QUndoStack
-from PyQt5.QtCore import QItemSelection, QItemSelectionModel, Qt
-from metadata_tab import MetadataTab
-from models import IngestionMetadata
+from ime.widgets.metadata_tab import MetadataTab
+from ime.models import IngestionMetadata
 from pytestqt.qtbot import QtBot
 import pytest
-
-
-
-@pytest.fixture
-def metadata():
-    with open('test/fixtures.yaml') as f:
-        content = f.read()
-        fixtures = IngestionMetadata.from_yaml(content)
-        return fixtures
-    
 
 @pytest.fixture
 def widget():
@@ -65,9 +55,11 @@ def test_update_metadata_key_changes_object(qtbot: QtBot, metadata: IngestionMet
     # Test creating a new entry by typing into the key field
     new_key_field = table.item(nrows,0)
     new_key_field.setText('Sample')
+    new_val_field = table.item(nrows, 1)
+    new_val_field.setText('45')
     assert 'Sample' in exp.metadata
+    assert exp.metadata['Sample'] == '45'
     assert table.rowCount() == nrows + 2
-    qtbot.stop()
 
 def test_update_metadata_object_updates_value(qtbot: QtBot, metadata: IngestionMetadata, widget: MetadataTab, table: QTableWidget):
     exp = metadata.experiments[0]
@@ -92,7 +84,6 @@ def test_delete_metadata_rows(qtbot: QtBot, metadata: IngestionMetadata, widget:
     old_count = table.rowCount()
     old_text = table.item(2,1).text()
     table.selectRow(2)
-    qtbot.stop()
     assert widget.ui.remove_rows_btn.isEnabled()
     widget.ui.remove_rows_btn.click()
     assert table.rowCount() == old_count - 1

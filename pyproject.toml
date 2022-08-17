@@ -5,7 +5,7 @@ description = "An ingestion metadata editor for MyTardis"
 authors = ["Noel <noel.zeng@auckland.ac.nz>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.11"
 PyQt5 = "^5.15.6"
 PyYAML = "^6.0"
 
@@ -15,7 +15,12 @@ rope = "^1.1.1"
 black = "^22.3.0"
 pytest = "^7.1.2"
 pytest-qt = "^4.1.0"
+pyinstaller = "^5.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib"
+pythonpath="."
