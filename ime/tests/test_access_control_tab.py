@@ -22,6 +22,7 @@ def test_show_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     view = QDialog()
     experiment = experiments[0]
     tab = AccessControlTab(view)
+    tab.set_has_inheritance(False)
     tab.set_item(experiment)
     qtbot.add_widget(view)
     view.show()
@@ -36,11 +37,11 @@ def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
-    model = tab.read_groups_model
+    model = tab.ui.readGroupsList.list_model
     edit_location = model.index(0,0)
     assert model.data(edit_location) == "ghil983"
-    edit_location = tab.read_groups_model.index(0,0)
-    tab.read_groups_model.setData(edit_location,"Testing editing")
+    edit_location = model.index(0,0)
+    model.setData(edit_location,"Testing editing")
     assert experiment.read_groups[0] == "Testing editing"
 
 def test_tab_with_inheritance(qtbot: QtBot, experiments: List[Experiment]):
@@ -52,7 +53,6 @@ def test_tab_with_inheritance(qtbot: QtBot, experiments: List[Experiment]):
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
-    qtbot.stop()
     assert tab.ui.adminGroupsList.ui.aclList.isEnabled()
 
 def disabled_test_qml_embed(qtbot: QtBot, experiments: List[Experiment]):
@@ -70,4 +70,3 @@ def disabled_test_qml_embed(qtbot: QtBot, experiments: List[Experiment]):
     container.setMinimumSize(200,200)
     widget.show()
     qtbot.wait_exposed(widget)
-    qtbot.stop()

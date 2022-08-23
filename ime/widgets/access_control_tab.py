@@ -8,7 +8,7 @@ class AccessControlTab(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
         self.ui = Ui_AccessControlTab()
-        self.ui.setupUi(self)        
+        self.ui.setupUi(self)
 
     def set_has_inheritance(self, has_inheritance: bool):
         self.ui.adminGroupsList.set_has_inheritance(has_inheritance)

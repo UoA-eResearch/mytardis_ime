@@ -8,6 +8,7 @@ from ime.qt_models import ListModel
 from PyQt5.QtWidgets import QMessageBox, QWidget
 
 class AccessControlList(QWidget):
+
     def __init__(self, parent = None):
         super().__init__(parent)
         self.ui = Ui_AccessControlList()
@@ -19,6 +20,7 @@ class AccessControlList(QWidget):
         self.ui.overrideCheckBox.installEventFilter(self)
         self.ui.overrideCheckBox.setVisible(False)
         self.ui.overrideCheckBox.toggled.connect(self.handle_override_changed)
+        self.has_inheritance = False
 
     def set_has_inheritance(self, has_inheritance: bool):
         self.has_inheritance = has_inheritance
