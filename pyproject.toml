@@ -9,9 +9,6 @@ python = ">=3.8,<3.11"
 PyQt5 = "^5.15.6"
 PyYAML = "^6.0"
 
-[tools.poetry.scripts]
-watchuic = 'scripts.uic:run'
-
 [tool.poetry.dev-dependencies]
 pylint = "^2.13.9"
 rope = "^1.1.1"
