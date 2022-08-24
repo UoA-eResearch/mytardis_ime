@@ -1,8 +1,8 @@
 import os, sys
 from typing import List
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox,QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
+from PyQt5.QtCore import Qt, QPersistentModelIndex,QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from isort import file
 from itertools import chain
@@ -23,7 +23,6 @@ def file_size_to_str(size: float) -> str:
         return "%3.1f %s" % (size, "TB")
 
 class MyTardisMetadataEditor(QMainWindow):
-
     def __init__(self):
         super(QMainWindow, self).__init__()
 
@@ -172,6 +171,8 @@ class WindowWizard(QWizard):
         exp_page.registerField("experimentNameLineEdit*", self.ui.experimentNameLineEdit)
         exp_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
         ds_page = self.ui.datasetInfo
+        ds_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
+        ds_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
         # ds_page.registerField("")
 
     def __init__(self):

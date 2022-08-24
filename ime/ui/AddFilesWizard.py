@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'add-files-wizard.ui'
+# Form implementation generated from reading ui file 'ui/add-files-wizard.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ImportDataFiles(object):
     def setupUi(self, ImportDataFiles):
         ImportDataFiles.setObjectName("ImportDataFiles")
-        ImportDataFiles.resize(688, 748)
+        ImportDataFiles.resize(688, 720)
         self.wizardPage = QtWidgets.QWizardPage()
         self.wizardPage.setObjectName("wizardPage")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.wizardPage)
@@ -89,16 +89,24 @@ class Ui_ImportDataFiles(object):
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.projectNameLineEdit)
         self.projectIDLabel = QtWidgets.QLabel(self.wizardPage1)
         self.projectIDLabel.setObjectName("projectIDLabel")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.projectIDLabel)
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.projectIDLabel)
         self.projectIDLineEdit = QtWidgets.QLineEdit(self.wizardPage1)
         self.projectIDLineEdit.setObjectName("projectIDLineEdit")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.projectIDLineEdit)
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.projectIDLineEdit)
         self.projectDescriptionLineEdit = QtWidgets.QTextEdit(self.wizardPage1)
         self.projectDescriptionLineEdit.setObjectName("projectDescriptionLineEdit")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.projectDescriptionLineEdit)
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.projectDescriptionLineEdit)
         self.projectDescriptionLabel = QtWidgets.QLabel(self.wizardPage1)
         self.projectDescriptionLabel.setObjectName("projectDescriptionLabel")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.projectDescriptionLabel)
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.projectDescriptionLabel)
+        self.label_13 = QtWidgets.QLabel(self.wizardPage1)
+        self.label_13.setText("")
+        self.label_13.setObjectName("label_13")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.label_13)
+        self.label_14 = QtWidgets.QLabel(self.wizardPage1)
+        self.label_14.setText("")
+        self.label_14.setObjectName("label_14")
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.label_14)
         self.verticalLayout_2.addLayout(self.formLayout)
         self.gridLayout.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
         self.label_2 = QtWidgets.QLabel(self.wizardPage1)
@@ -280,3 +288,13 @@ class Ui_ImportDataFiles(object):
         self.datafileDeletePushButton.setText(_translate("ImportDataFiles", "Delete files"))
         self.label_8.setText(_translate("ImportDataFiles", "You can override inherited metadata and access controls later."))
 import default_rc
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    ImportDataFiles = QtWidgets.QWizard()
+    ui = Ui_ImportDataFiles()
+    ui.setupUi(ImportDataFiles)
+    ImportDataFiles.show()
+    sys.exit(app.exec_())
