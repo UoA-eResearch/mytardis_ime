@@ -1,6 +1,6 @@
 from typing import List
 from PyQt5.QtWidgets import QWidget
-from .ui_access_control_tab import Ui_AccessControlTab
+from ime.ui.ui_access_control_tab import Ui_AccessControlTab
 from ime.models import IAccessControl
 from ime.widgets.access_control_list import AccessControlList
 
