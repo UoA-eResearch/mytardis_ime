@@ -3,7 +3,7 @@ import typing
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import QEvent, QObject, QSignalBlocker
-from .ui_access_control_list import Ui_AccessControlList
+from ime.ui.ui_access_control_list import Ui_AccessControlList
 from ime.qt_models import ListModel
 from PyQt5.QtWidgets import QMessageBox, QWidget
 

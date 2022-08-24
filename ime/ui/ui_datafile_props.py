@@ -21,7 +21,7 @@ class Ui_DatafilePropertyEditor(object):
         self.toolBox_4.setMinimumSize(QtCore.QSize(500, 0))
         self.toolBox_4.setObjectName("toolBox_4")
         self.fileinfoDescription = QtWidgets.QWidget()
-        self.fileinfoDescription.setGeometry(QtCore.QRect(0, 0, 121, 46))
+        self.fileinfoDescription.setGeometry(QtCore.QRect(0, 0, 500, 186))
         self.fileinfoDescription.setObjectName("fileinfoDescription")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.fileinfoDescription)
         self.gridLayout_7.setObjectName("gridLayout_7")
@@ -45,13 +45,13 @@ class Ui_DatafilePropertyEditor(object):
         self.gridLayout_2.addWidget(self.accessControlTab, 0, 0, 1, 1)
         self.toolBox_4.addItem(self.page_10, "")
         self.metadata_tab = MetadataTab()
-        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 98, 28))
+        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 500, 186))
         self.metadata_tab.setObjectName("metadata_tab")
         self.toolBox_4.addItem(self.metadata_tab, "")
         self.gridLayout.addWidget(self.toolBox_4, 0, 0, 1, 1)
 
         self.retranslateUi(DatafilePropertyEditor)
-        self.toolBox_4.setCurrentIndex(1)
+        self.toolBox_4.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(DatafilePropertyEditor)
 
     def retranslateUi(self, DatafilePropertyEditor):
