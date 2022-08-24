@@ -7,8 +7,8 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from isort import file
 from itertools import chain
 
-from ime.widgets.ui_main_window import Ui_MainWindow
-from ime.widgets.ui_add_files_wizard import Ui_ImportDataFiles
+from ime.ui.ui_main_window import Ui_MainWindow
+from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from .models import IngestionMetadata, Project, Experiment, Dataset, Datafile, FileInfo
 import logging
 # Import the resources file
