@@ -1,0 +1,32 @@
+---
+    !Experiment
+    experiment_name: Calibration 10 X
+    project_id: test # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
+    experiment_id: 2022-08-01-calibration-10-x
+    alternate_ids:
+      - <a list of alternative identifiers that are used for this object>
+    description: Calibration run of the Zeiss LSM 800 Airyscan
+    admin_groups:
+     - szen012
+     - cris291
+    admin_users:
+    - fcal331
+    - heli122
+    read_groups:
+    - ghil983
+    - bnbi919
+    read_users:
+    - deli112
+    - moon392
+    download_groups:
+    - bana001
+    - hhai192
+    download_users:
+    - ghit381
+    - bnhi007
+    sensitive_groups:
+    - hooi991
+    - noo1
+    sensitive_users:
+    - dele193
+    - band391
