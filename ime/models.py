@@ -5,7 +5,6 @@ from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
 
-
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
     def from_yaml(cls: Type, loader: Loader, node: Node) -> Any:
@@ -47,7 +46,7 @@ class IMetadata:
     A class representing fields related to schema parameters.
     """
 
-    metadata: Dict[str, str] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
 class Project(YAMLSerializable, IAccessControl, IMetadata):
@@ -101,7 +100,6 @@ class FileInfo(YAMLSerializable, IAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
-
     yaml_tag = "!FileInfo"
     yaml_loader = yaml.SafeLoader
     name: str = ""

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/add-files-wizard.ui'
+# Form implementation generated from reading ui file 'add-files-wizard.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ImportDataFiles(object):
     def setupUi(self, ImportDataFiles):
         ImportDataFiles.setObjectName("ImportDataFiles")
-        ImportDataFiles.resize(688, 720)
+        ImportDataFiles.resize(688, 692)
         self.wizardPage = QtWidgets.QWizardPage()
         self.wizardPage.setObjectName("wizardPage")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.wizardPage)
@@ -65,6 +65,9 @@ class Ui_ImportDataFiles(object):
         self.wizardPage1.setObjectName("wizardPage1")
         self.gridLayout = QtWidgets.QGridLayout(self.wizardPage1)
         self.gridLayout.setObjectName("gridLayout")
+        self.label_2 = QtWidgets.QLabel(self.wizardPage1)
+        self.label_2.setObjectName("label_2")
+        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.label = QtWidgets.QLabel(self.wizardPage1)
@@ -89,29 +92,18 @@ class Ui_ImportDataFiles(object):
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.projectNameLineEdit)
         self.projectIDLabel = QtWidgets.QLabel(self.wizardPage1)
         self.projectIDLabel.setObjectName("projectIDLabel")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.projectIDLabel)
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.projectIDLabel)
         self.projectIDLineEdit = QtWidgets.QLineEdit(self.wizardPage1)
         self.projectIDLineEdit.setObjectName("projectIDLineEdit")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.projectIDLineEdit)
-        self.projectDescriptionLineEdit = QtWidgets.QTextEdit(self.wizardPage1)
-        self.projectDescriptionLineEdit.setObjectName("projectDescriptionLineEdit")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.projectDescriptionLineEdit)
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.projectIDLineEdit)
         self.projectDescriptionLabel = QtWidgets.QLabel(self.wizardPage1)
         self.projectDescriptionLabel.setObjectName("projectDescriptionLabel")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.projectDescriptionLabel)
-        self.label_13 = QtWidgets.QLabel(self.wizardPage1)
-        self.label_13.setText("")
-        self.label_13.setObjectName("label_13")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.label_13)
-        self.label_14 = QtWidgets.QLabel(self.wizardPage1)
-        self.label_14.setText("")
-        self.label_14.setObjectName("label_14")
-        self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.label_14)
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.projectDescriptionLabel)
+        self.projectDescriptionLineEdit = QtWidgets.QTextEdit(self.wizardPage1)
+        self.projectDescriptionLineEdit.setObjectName("projectDescriptionLineEdit")
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.projectDescriptionLineEdit)
         self.verticalLayout_2.addLayout(self.formLayout)
         self.gridLayout.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
-        self.label_2 = QtWidgets.QLabel(self.wizardPage1)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
         ImportDataFiles.addPage(self.wizardPage1)
         self.wizardPage2 = QtWidgets.QWizardPage()
         self.wizardPage2.setObjectName("wizardPage2")
@@ -248,6 +240,7 @@ class Ui_ImportDataFiles(object):
         self.label_9.setText(_translate("ImportDataFiles", "Welcome! This dialog will get you started with importing your data and organising them."))
         self.label_10.setText(_translate("ImportDataFiles", "In MyTardis, data are organised in a hierarchy. Files are grouped into Datasets. Datasets are organised into Experiments. Experiments belong to a Project. You can attach metadata at each level to make it easier for you and your collaborators to find and reuse your data. "))
         self.label_11.setText(_translate("ImportDataFiles", "This dialog will help you create the Project, Experiment and Dataset to put your files under. You can re-run this dialog for other files that need to be organised separately."))
+        self.label_2.setText(_translate("ImportDataFiles", "You can add more metadata and access controls for the project later."))
         self.label.setText(_translate("ImportDataFiles", "First, let\'s find or create the project you are adding the data files to."))
         self.radioButton.setText(_translate("ImportDataFiles", "Add this data into an existing project."))
         self.radioButton_2.setText(_translate("ImportDataFiles", "Create a new project for this data."))
@@ -255,9 +248,8 @@ class Ui_ImportDataFiles(object):
         self.projectNameLineEdit.setPlaceholderText(_translate("ImportDataFiles", "A human-readable name for your project"))
         self.projectIDLabel.setText(_translate("ImportDataFiles", "Project ID"))
         self.projectIDLineEdit.setPlaceholderText(_translate("ImportDataFiles", "An unique identifier for the project"))
-        self.projectDescriptionLineEdit.setPlaceholderText(_translate("ImportDataFiles", "Optional description of your project to differentiate it from others"))
         self.projectDescriptionLabel.setText(_translate("ImportDataFiles", "Description"))
-        self.label_2.setText(_translate("ImportDataFiles", "You can add more metadata and access controls for the project later."))
+        self.projectDescriptionLineEdit.setPlaceholderText(_translate("ImportDataFiles", "Optional description of your project to differentiate it from others"))
         self.label_3.setText(_translate("ImportDataFiles", "Now, let\'s find or create the experiment the data files fits under."))
         self.radioButton_4.setText(_translate("ImportDataFiles", "Add this data to an existing experiment."))
         self.radioButton_3.setText(_translate("ImportDataFiles", "Create a new experiment for this data."))
@@ -288,13 +280,3 @@ class Ui_ImportDataFiles(object):
         self.datafileDeletePushButton.setText(_translate("ImportDataFiles", "Delete files"))
         self.label_8.setText(_translate("ImportDataFiles", "You can override inherited metadata and access controls later."))
 import default_rc
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ImportDataFiles = QtWidgets.QWizard()
-    ui = Ui_ImportDataFiles()
-    ui.setupUi(ImportDataFiles)
-    ImportDataFiles.show()
-    sys.exit(app.exec_())

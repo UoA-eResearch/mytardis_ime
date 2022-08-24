@@ -1,0 +1,101 @@
+---
+!Experiment
+# Experiment/Sample template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
+#
+# Necessary info
+experiment_name: Calibration 10 X
+project_id: test # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
+experiment_id: 2022-08-01-calibration-10-x
+alternate_ids:
+  - <a list of alternative identifiers that are used for this object>
+description: Calibration run of the Zeiss LSM 800 Airyscan
+# schema: <value> - un-comment if multiple schema have been defined and set the appropriate type of schema
+#
+# Access control. Access, unless specified otherwise, cascades from the projects associated with the experiment.
+# If different access controls are needed, they need to be explicitly defined.
+# To do so, uncomment the relevant section and fill it out.
+# Groups are preferred over individual users for the purposes of admin
+#
+admin_groups:
+ - szen012
+ - cris291 # Add new rows prepended with - as needed, or remove as needed
+#admin_users:
+#  - <value>
+#  - <value>
+#read_groups:
+#  - <value>
+#  - <value>
+#read_users:
+#  - <value>
+#  - <value>
+#download_groups:
+#  - <value>
+#  - <value>
+#download_users:
+#  - <value>
+#  - <value>
+#sensitive_groups:
+#  - <value>
+#  - <value>
+#sensitive_users:
+#  - <value>
+#  - <value>
+#
+# General metadata
+#
+metadata:
+  lens: 4
+  excitation: 488
+  resolution: 1.4
+  technician: Jacqui Ross
+
+---
+!Experiment
+# Experiment/Sample template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
+#
+# Necessary info
+experiment_name: Calibration 20 X
+project_id: # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
+experiment_id: 2022-08-01-calibration-10-x
+alternate_ids:
+  - <a list of alternative identifiers that are used for this object>
+description: Calibration run of the Zeiss LSM 800 Airyscan
+# schema: <value> - un-comment if multiple schema have been defined and set the appropriate type of schema
+#
+# Access control. Access, unless specified otherwise, cascades from the projects associated with the experiment.
+# If different access controls are needed, they need to be explicitly defined.
+# To do so, uncomment the relevant section and fill it out.
+# Groups are preferred over individual users for the purposes of admin
+#
+#admin_groups:
+#  - <value>
+#  - <value> # Add new rows prepended with - as needed, or remove as needed
+#admin_users:
+#  - <value>
+#  - <value>
+#read_groups:
+#  - <value>
+#  - <value>
+#read_users:
+#  - <value>
+#  - <value>
+#download_groups:
+#  - <value>
+#  - <value>
+#download_users:
+#  - <value>
+#  - <value>
+#sensitive_groups:
+#  - <value>
+#  - <value>
+#sensitive_users:
+#  - <value>
+#  - <value>
+#
+# General metadata
+#
+metadata:
+  lens: 4
+  excitation: 488
+  resolution: 1.4
+  technician: Jacqui Ross
