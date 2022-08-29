@@ -5,7 +5,6 @@ from pytestqt.qtbot import QtBot
 import pytest
 from ime.qt_models import ExperimentDataModel, ListModel, ViewOnlyDataModel
 from ime.models import Experiment, IngestionMetadata
-from ime.widgets.ui_experiment_props import Ui_ExperimentPropertyEditor
 
 @pytest.fixture
 def experiments():

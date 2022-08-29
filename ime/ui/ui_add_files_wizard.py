@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ime/widgets/ui_add_files_wizard.ui'
+# Form implementation generated from reading ui file 'ime/ui/ui_add_files_wizard.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #

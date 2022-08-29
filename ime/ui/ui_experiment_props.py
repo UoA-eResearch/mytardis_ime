@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ime/widgets/ui_experiment_props.ui'
+# Form implementation generated from reading ui file 'ime/ui/ui_experiment_props.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
