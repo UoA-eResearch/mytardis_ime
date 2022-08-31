@@ -3,7 +3,7 @@ from PyQt5.QtCore import QModelIndex
 from PyQt5.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView
 from pytestqt.qtbot import QtBot
 import pytest
-from ime.qt_models import ExperimentDataModel, ListModel, ViewOnlyDataModel
+from ime.qt_models import MyTardisObjectModel, ListModel, ViewOnlyDataModel
 from ime.models import Experiment, IngestionMetadata
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def experiments():
 
 def test_show_experiment_table(qtbot: QtBot, experiments: List[Experiment]):
     view = QTableView()
-    model = ExperimentDataModel(experiments)
+    model = MyTardisObjectModel(experiments)
     viewOnlyModel = ViewOnlyDataModel()
     viewOnlyModel.setSourceModel(model)
     view.setModel(viewOnlyModel)
@@ -33,7 +33,7 @@ def test_simple_edit_experiment_table(qtbot: QtBot, experiments: List[Experiment
     view = QDialog()
     name_label = QLabel("Experiment name", view)
     name_edit = QLineEdit(view)
-    model = ExperimentDataModel(experiments)
+    model = MyTardisObjectModel(experiments)
     mapper = QDataWidgetMapper()
     mapper.setModel(model)
     mapper.setSubmitPolicy(QDataWidgetMapper.SubmitPolicy.AutoSubmit)

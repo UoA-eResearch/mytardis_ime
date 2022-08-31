@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Union
 import typing
 from PyQt5.QtCore import QAbstractItemModel, QAbstractListModel, QAbstractTableModel, QIdentityProxyModel, QModelIndex, QObject
-from .models import Experiment, IAccessControl, IMetadata
+from .models import Dataset, Experiment, IAccessControl, IMetadata, IngestionMetadata, Project
 from dataclasses import dataclass, fields
 from PyQt5.QtCore import Qt
 
@@ -71,7 +71,13 @@ class ListModel(QAbstractListModel):
         except:
             return False
 
-class ExperimentDataModel(QAbstractTableModel):
+class IngestionMetadataModel():
+    def __init__(self, metadata: IngestionMetadata):
+        self.metadata = metadata
+        
+
+
+class MyTardisObjectModel(QAbstractTableModel):
 
     _keys = EXPERIMENT_FIELDS
 
@@ -81,9 +87,9 @@ class ExperimentDataModel(QAbstractTableModel):
                 return i
         return -1
 
-    experiments: List[Experiment]
+    experiments: List[Union[Project, Experiment, Dataset]]
 
-    def __init__(self, experiments: List[Experiment], parent=None):
+    def __init__(self, experiments: List[Union[Project, Experiment, Dataset]], parent=None):
         super().__init__(parent)
         self.experiments = experiments
 
