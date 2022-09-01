@@ -5,75 +5,50 @@ import typing
 from PyQt5.QtWidgets import QWidget, QWizardPage
 
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
+import ime.widgets.add_files_wizard as afw
 
 
 class ProjectPage(QWizardPage):
     def __init__(self, parent: typing.Optional[QWidget] = None) -> None:
         super().__init__(parent)
 
-    def initializePage(self) -> None:
-        self.setField('isExistingProject', True)
-        wizard : Ui_ImportDataFiles = self.wizard().ui
-        wizard.existingProjectForm.setVisible(True)
-        wizard.newProjectForm.setVisible(False)
+    def nextId(self) -> int:
+        wizard = typing.cast(afw.AddFilesWizard, self.wizard())
+        if self.field('isNewProject'):
+            # Go to the new project page
+            return wizard.page_ids['newProjectPage']
+        else:
+            return wizard.page_ids['existingProjectPage']
 
     def isComplete(self) -> bool:
-        return ((self.field('isNewProject') and 
-                self.field('projectNameLineEdit').strip() != "" and
-                self.field('projectIDLineEdit').strip() != "") or
-                (self.field('isExistingProject') and
-                self.field('existingProject') != -1))
+        return self.field('isNewProject') or self.field('isExistingProject')
 
 class ExperimentPage(QWizardPage):
     def __init__(self, parent: typing.Optional[QWidget] = None) -> None:
         super().__init__(parent)
 
-    def initializePage(self) -> None:
-        wizard : Ui_ImportDataFiles = self.wizard().ui
-        # First decide we need to show both new and existing.
-        should_disable_existing = self.field('isNewProject')
-        wizard.existingExperimentRadioButton.setDisabled(should_disable_existing)
-        if should_disable_existing:
-            self.setField('isNewExperiment', True)
-            self.setField('isExistingExperiment', False)
-            wizard.existingExperimentForm.setVisible(False)
-            wizard.newExperimentForm.setVisible(True)
+    def nextId(self) -> int:
+        wizard = typing.cast(afw.AddFilesWizard, self.wizard())
+        if self.field('isNewExperiment'):
+            # Go to the new project page
+            return wizard.page_ids['newExperimentPage']
         else:
-            self.setField('isNewExperiment', False)
-            self.setField('isExistingExperiment', True)
-            wizard.existingExperimentForm.setVisible(True)
-            wizard.newExperimentForm.setVisible(False)
+            return wizard.page_ids['existingExperimentPage']
 
     def isComplete(self) -> bool:
-        return ((self.field('isNewExperiment') and 
-                self.field('experimentNameLineEdit').strip() != "" and
-                self.field('experimentIDLineEdit').strip() != "") or
-                (self.field('isExistingExperiment') and
-                self.field('existingExperiment') != -1))
+        return self.field('isNewExperiment') or self.field('isExistingExperiment')
 
 class DatasetPage(QWizardPage):
     def __init__(self, parent: typing.Optional[QWidget] = None) -> None:
         super().__init__(parent)
 
-    def initializePage(self) -> None:
-        wizard : Ui_ImportDataFiles = self.wizard().ui
-        self.setField('isExistingDataset', False)
-        should_disable_existing = self.field('isNewExperiment')
-        wizard.existingDatasetRadioButton.setDisabled(should_disable_existing)
-        if should_disable_existing:
-            self.setField('isNewDataset', True)
-            self.setField('isExistingDataset', False)
-            wizard.existingDatasetForm.setVisible(False)
-            wizard.newDatasetForm.setVisible(True)
+    def nextId(self) -> int:
+        wizard = typing.cast(afw.AddFilesWizard, self.wizard())
+        if self.field('isNewDataset'):
+            # Go to the new project page
+            return wizard.page_ids['newDatasetPage']
         else:
-            self.setField('isNewDataset', False)
-            self.setField('isExistingDataset', True)
-            wizard.existingDatasetForm.setVisible(True)
-            wizard.newDatasetForm.setVisible(False)
+            return wizard.page_ids['existingDatasetPage']
 
     def isComplete(self) -> bool:
-        return ((self.field('isNewDataset') and 
-                self.field('datasetNameLineEdit').strip() != "" and
-                self.field('datasetIDLineEdit').strip() != "") or
-                (self.field('isExistingDataset') and
-                self.field('existingDataset') != -1))
+        return self.field('isNewDataset') or self.field('isExistingDataset')

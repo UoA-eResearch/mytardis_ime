@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
@@ -8,39 +8,71 @@ from ime.models import Project, Experiment, Dataset, Datafile, FileInfo
 class AddFilesWizard(QWizard):
 
     submitted = QtCore.pyqtSignal(Project, Experiment, Dataset, Datafile)
+    page_ids: Dict[str, int] = {}
 
     def _register_fields(self):
-        proj_page = self.ui.wizardPage1
+        # Project pages
+        proj_page = self.ui.projectPage
+        proj_new_page = self.ui.newProjectPage
+        proj_existing_page = self.ui.existingProjectPage
         proj_page.registerField("isNewProject", self.ui.newProjectRadioButton)
         proj_page.registerField("isExistingProject", self.ui.existingProjectRadioButton)
-        proj_page.registerField("existingProject", self.ui.existingProjectComboBox)
-        proj_page.registerField("projectIDLineEdit", self.ui.projectIDLineEdit)
-        proj_page.registerField("projectNameLineEdit", self.ui.projectNameLineEdit)
-        self.ui.projectIDLineEdit.textChanged.connect(proj_page.completeChanged)
-        
-        self.ui.existingProjectRadioButton.toggled.connect(lambda checked: self.ui.existingProjectForm.setVisible(checked))
-        self.ui.newProjectRadioButton.toggled.connect(lambda checked: self.ui.newProjectForm.setVisible(checked))
-        exp_page = self.ui.wizardPage2
+        self.ui.newProjectRadioButton.clicked.connect(proj_page.completeChanged)
+        self.ui.existingProjectRadioButton.clicked.connect(proj_page.completeChanged)
+        proj_existing_page.registerField("existingProject*", self.ui.existingProjectList)
+        proj_new_page.registerField("projectIDLineEdit*", self.ui.projectIDLineEdit)
+        proj_new_page.registerField("projectNameLineEdit*", self.ui.projectNameLineEdit)
+        # Experiment pages
+        exp_page = self.ui.experimentPage
+        exp_new_page = self.ui.newExperimentPage
+        exp_existing_page = self.ui.existingExperimentPage
         exp_page.registerField("isNewExperiment", self.ui.newExperimentRadioButton)
         exp_page.registerField("isExistingExperiment", self.ui.existingExperimentRadioButton)
-        exp_page.registerField("existingExperiment", self.ui.existingDatasetComboBox)
-        exp_page.registerField("experimentNameLineEdit", self.ui.experimentNameLineEdit)
-        exp_page.registerField("experimentIDLineEdit", self.ui.experimentIDLineEdit)
-        self.ui.existingExperimentRadioButton.toggled.connect(lambda checked: self.ui.existingExperimentForm.setVisible(checked))
-        self.ui.newExperimentRadioButton.toggled.connect(lambda checked: self.ui.newExperimentForm.setVisible(checked))
+        self.ui.newExperimentRadioButton.clicked.connect(exp_page.completeChanged)
+        self.ui.existingExperimentRadioButton.clicked.connect(exp_page.completeChanged)
+        exp_existing_page.registerField("existingExperiment*", self.ui.existingExperimentList)
+        exp_new_page.registerField("experimentNameLineEdit*", self.ui.experimentNameLineEdit)
+        exp_new_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
+        # Dataset pages
         ds_page = self.ui.datasetInfo
+        ds_new_page = self.ui.newDatasetPage
+        ds_existing_page = self.ui.existingDatasetPage
         ds_page.registerField("isNewDataset", self.ui.newDatasetRadioButton)
         ds_page.registerField("isExistingDataset", self.ui.existingDatasetRadioButton)
-        ds_page.registerField("existingDataset", self.ui.existingDatasetComboBox)
-        ds_page.registerField("datasetIDLineEdit",self.ui.datasetIDLineEdit)
-        ds_page.registerField("datasetNameLineEdit",self.ui.datasetNameLineEdit)
-        self.ui.existingDatasetRadioButton.toggled.connect(lambda checked: self.ui.existingDatasetForm.setVisible(checked))
-        self.ui.newDatasetRadioButton.toggled.connect(lambda checked: self.ui.newDatasetForm.setVisible(checked))
+        self.ui.newDatasetRadioButton.clicked.connect(ds_page.completeChanged)
+        self.ui.existingDatasetRadioButton.clicked.connect(ds_page.completeChanged)
+        ds_existing_page.registerField("existingDataset*", self.ui.existingDatasetList)
+        ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
+        ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
+
+    def _make_page_ids(self):
+        # Create a dict of page names and their IDs.
+        for id in self.pageIds():
+            self.page_ids[self.page(id).objectName()] = id
+
+    def nextId(self) -> int:
+        current = self.currentId()
+        pages = self.page_ids
+        if current == pages['newProjectPage']:
+            return pages['newExperimentPage']
+        elif current == pages['newExperimentPage']:
+            return pages['newDatasetPage']
+        elif current == pages['newDatasetPage']:
+            return pages['includedFilesPage']
+        elif current == pages['existingProjectPage']:
+            return pages['experimentPage']
+        elif current == pages['existingExperimentPage']:
+            return pages['datasetPage']
+        elif current == pages['existingDatasetPage']:
+            return pages['includedFilesPage']
+        else:
+            return super().nextId()
 
     def __init__(self):
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles()
         self.ui.setupUi(self)
+        self._make_page_ids()
         self._register_fields()
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)

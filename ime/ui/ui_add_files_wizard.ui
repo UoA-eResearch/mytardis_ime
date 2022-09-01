@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
+    <width>677</width>
     <height>692</height>
    </rect>
   </property>
@@ -14,6 +14,9 @@
    <string>Import Data</string>
   </property>
   <widget class="QWizardPage" name="wizardPage">
+   <attribute name="pageId">
+    <string notr="true">0</string>
+   </attribute>
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -132,14 +135,23 @@
     </item>
    </layout>
   </widget>
-  <widget class="ProjectPage" name="wizardPage1">
+  <widget class="ProjectPage" name="projectPage">
+   <attribute name="pageId">
+    <string notr="true">2</string>
+   </attribute>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>You can add more metadata and access controls for the project later.</string>
+    <item row="1" column="0">
+     <spacer name="verticalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-     </widget>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -167,15 +179,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="existingProjectForm" native="true">
-        <layout class="QGridLayout" name="gridLayout_9">
-         <item row="0" column="0">
-          <widget class="QComboBox" name="existingProjectComboBox"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
        <widget class="QRadioButton" name="newProjectRadioButton">
         <property name="text">
          <string>Create a new project for this data.</string>
@@ -185,58 +188,113 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QWidget" name="newProjectForm" native="true">
-        <layout class="QFormLayout" name="_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="projectNameLabel">
-           <property name="text">
-            <string>Project name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="projectNameLineEdit">
-           <property name="placeholderText">
-            <string>A human-readable name for your project</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="projectIDLabel">
-           <property name="text">
-            <string>Project ID</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="projectIDLineEdit">
-           <property name="placeholderText">
-            <string>An unique identifier for the project</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="projectDescriptionLabel">
-           <property name="text">
-            <string>Description</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QTextEdit" name="projectDescriptionLineEdit">
-           <property name="placeholderText">
-            <string>Optional description of your project to differentiate it from others</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
      </layout>
     </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="newProjectPage">
+   <attribute name="pageId">
+    <string notr="true">10</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_10">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>You've chosen to create a new project. Enter some basic details, then click next.</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0">
-     <spacer name="verticalSpacer_3">
+     <widget class="QWidget" name="newProjectForm" native="true">
+      <layout class="QFormLayout" name="_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="projectNameLabel">
+         <property name="text">
+          <string>Project name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="projectNameLineEdit">
+         <property name="placeholderText">
+          <string>A human-readable name for your project</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="projectIDLabel">
+         <property name="text">
+          <string>Project ID</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="projectIDLineEdit">
+         <property name="placeholderText">
+          <string>An unique identifier for the project</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="projectDescriptionLabel">
+         <property name="text">
+          <string>Description</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QTextEdit" name="projectDescriptionLineEdit">
+         <property name="placeholderText">
+          <string>Optional description of your project to differentiate it from others</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>You can add more metadata and access controls for the project later.</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="existingProjectPage">
+   <attribute name="pageId">
+    <string notr="true">3</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_5">
+    <item>
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>You've chosen to add the data into an existing project. Select a project, then click next.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingProjectForm" native="true">
+      <layout class="QGridLayout" name="gridLayout_9">
+       <item row="0" column="0">
+        <widget class="QListView" name="existingProjectList">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="ExperimentPage" name="experimentPage">
+   <attribute name="pageId">
+    <string notr="true">4</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="2" column="0">
+     <spacer name="verticalSpacer_4">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -248,10 +306,6 @@
       </property>
      </spacer>
     </item>
-   </layout>
-  </widget>
-  <widget class="ExperimentPage" name="wizardPage2">
-   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -275,15 +329,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="existingExperimentForm" native="true">
-        <layout class="QGridLayout" name="gridLayout_8">
-         <item row="0" column="0">
-          <widget class="QComboBox" name="existingExperimentComboBox"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
        <widget class="QRadioButton" name="newExperimentRadioButton">
         <property name="text">
          <string>Create a new experiment for this data.</string>
@@ -293,87 +338,111 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QWidget" name="newExperimentForm" native="true">
-        <layout class="QFormLayout" name="_2">
-         <item row="0" column="0">
-          <widget class="QLabel" name="experimentNameLabel">
-           <property name="text">
-            <string>Experiment name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="experimentNameLineEdit">
-           <property name="placeholderText">
-            <string>A human-readable name for your experiment</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="experimentIDLabel">
-           <property name="text">
-            <string>Experiment ID</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="experimentIDLineEdit">
-           <property name="placeholderText">
-            <string>An unique identifier for the experiment</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="experimentdescriptionLabel">
-           <property name="text">
-            <string>Description</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QTextEdit" name="experimentDescriptionLineEdit">
-           <property name="placeholderText">
-            <string>Optional description of the experiment</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
      </layout>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="newExperimentPage">
+   <attribute name="pageId">
+    <string notr="true">11</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_6">
+    <item>
+     <widget class="QLabel" name="label_16">
+      <property name="text">
+       <string>You've chosen to create a new experiment. Enter some basic details, then click next.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="newExperimentForm" native="true">
+      <layout class="QFormLayout" name="_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="experimentNameLabel">
+         <property name="text">
+          <string>Experiment name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="experimentNameLineEdit">
+         <property name="placeholderText">
+          <string>A human-readable name for your experiment</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="experimentIDLabel">
+         <property name="text">
+          <string>Experiment ID</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="experimentIDLineEdit">
+         <property name="placeholderText">
+          <string>An unique identifier for the experiment</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="experimentdescriptionLabel">
+         <property name="text">
+          <string>Description</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QTextEdit" name="experimentDescriptionLineEdit">
+         <property name="placeholderText">
+          <string>Optional description of the experiment</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_17">
       <property name="text">
        <string>You can add more metadata and access controls for the experiment later.</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <spacer name="verticalSpacer_4">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="existingExperimentPage">
+   <attribute name="pageId">
+    <string notr="true">5</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_7">
+    <item>
+     <widget class="QLabel" name="label_18">
+      <property name="text">
+       <string>You've chosen to add the data into an existing experiment. Select an experiment, then click next.</string>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingProjectForm_2" native="true">
+      <layout class="QGridLayout" name="gridLayout_11">
+       <item row="0" column="0">
+        <widget class="QListView" name="existingExperimentList">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>
   <widget class="DatasetPage" name="datasetInfo">
+   <attribute name="pageId">
+    <string notr="true">6</string>
+   </attribute>
    <layout class="QGridLayout" name="gridLayout_3">
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>You can add more metadata and access controls for the dataset later.</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
@@ -397,15 +466,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="existingDatasetForm" native="true">
-        <layout class="QGridLayout" name="gridLayout_7">
-         <item row="0" column="0">
-          <widget class="QComboBox" name="existingDatasetComboBox"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
        <widget class="QRadioButton" name="newDatasetRadioButton">
         <property name="text">
          <string>Create a new dataset for this data.</string>
@@ -413,40 +473,6 @@
         <property name="checked">
          <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="newDatasetForm" native="true">
-        <layout class="QFormLayout" name="_4">
-         <item row="0" column="0">
-          <widget class="QLabel" name="datasetNameLabel">
-           <property name="text">
-            <string>Dataset name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="datasetNameLineEdit">
-           <property name="placeholderText">
-            <string>A human-readable name for your dataset</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="datasetIDLabel">
-           <property name="text">
-            <string>Dataset ID</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="datasetIDLineEdit">
-           <property name="placeholderText">
-            <string>An unique identifier for the dataset</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </widget>
       </item>
      </layout>
@@ -466,7 +492,105 @@
     </item>
    </layout>
   </widget>
+  <widget class="QWizardPage" name="newDatasetPage">
+   <attribute name="pageId">
+    <string notr="true">12</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_8">
+    <item>
+     <widget class="QLabel" name="label_19">
+      <property name="text">
+       <string>You've chosen to create a new dataset. Enter some basic details, then click next.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="newDatasetForm_2" native="true">
+      <layout class="QFormLayout" name="_6">
+       <item row="0" column="0">
+        <widget class="QLabel" name="datasetNameLabel_2">
+         <property name="text">
+          <string>Dataset name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="datasetNameLineEdit">
+         <property name="placeholderText">
+          <string>A human-readable name for your dataset</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="datasetIDLabel_2">
+         <property name="text">
+          <string>Dataset ID</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="datasetIDLineEdit">
+         <property name="placeholderText">
+          <string>An unique identifier for the dataset</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_6">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>You can add more metadata and access controls for the dataset later.</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="existingDatasetPage">
+   <attribute name="pageId">
+    <string notr="true">7</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_9">
+    <item>
+     <widget class="QLabel" name="label_21">
+      <property name="text">
+       <string>You've chosen to add the data into an existing experiment. Select an experiment, then click next.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingDatasetForm" native="true">
+      <layout class="QGridLayout" name="gridLayout_12">
+       <item row="0" column="0">
+        <widget class="QListView" name="existingDatasetList">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QWizardPage" name="includedFilesPage">
+   <attribute name="pageId">
+    <string notr="true">669</string>
+   </attribute>
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_6">
