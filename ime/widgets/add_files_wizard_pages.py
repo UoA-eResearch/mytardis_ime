@@ -6,12 +6,10 @@ from PyQt5.QtWidgets import QWidget, QWizardPage
 
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 import ime.widgets.add_files_wizard as afw
+from ime.qt_models import IngestionMetadataModel
 
 
 class ProjectPage(QWizardPage):
-    def __init__(self, parent: typing.Optional[QWidget] = None) -> None:
-        super().__init__(parent)
-
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizard, self.wizard())
         if self.field('isNewProject'):
@@ -24,9 +22,6 @@ class ProjectPage(QWizardPage):
         return self.field('isNewProject') or self.field('isExistingProject')
 
 class ExperimentPage(QWizardPage):
-    def __init__(self, parent: typing.Optional[QWidget] = None) -> None:
-        super().__init__(parent)
-
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizard, self.wizard())
         if self.field('isNewExperiment'):
@@ -39,9 +34,6 @@ class ExperimentPage(QWizardPage):
         return self.field('isNewExperiment') or self.field('isExistingExperiment')
 
 class DatasetPage(QWizardPage):
-    def __init__(self, parent: typing.Optional[QWidget] = None) -> None:
-        super().__init__(parent)
-
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizard, self.wizard())
         if self.field('isNewDataset'):
@@ -52,3 +44,30 @@ class DatasetPage(QWizardPage):
 
     def isComplete(self) -> bool:
         return self.field('isNewDataset') or self.field('isExistingDataset')
+
+class ExistingProjectPage(QWizardPage):
+    def initializePage(self) -> None:
+        wizard = typing.cast(afw.AddFilesWizard, self.wizard())
+        list_view = wizard.ui.existingProjectList
+        model = wizard.metadataModel.projects.get_read_only_proxy(['project_name'])
+        list_view.setModel(model)
+
+class ExistingExperimentPage(QWizardPage):
+    def initializePage(self) -> None:
+        wizard = typing.cast(afw.AddFilesWizard, self.wizard())
+        project_idx = self.field('existingProject')
+        project = wizard.metadataModel.projects.instance(project_idx)
+        model = wizard.metadataModel.experiments_for_project(project)
+        model.set_read_only(True)
+        model.set_show_fields(['experiment_name'])
+        wizard.ui.existingExperimentList.setModel(model)
+
+class ExistingDatasetPage(QWizardPage):
+    def initializePage(self) -> None:
+        wizard = typing.cast(afw.AddFilesWizard, self.wizard())
+        exp_idx = self.field('existingExperiment')
+        exp = wizard.metadataModel.experiments.instance(exp_idx)
+        model = wizard.metadataModel.datasets_for_experiment(exp)
+        model.set_read_only(True)
+        model.set_show_fields(['dataset_name'])
+        wizard.ui.existingDatasetList.setModel(model)

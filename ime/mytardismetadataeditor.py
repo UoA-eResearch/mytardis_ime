@@ -4,9 +4,11 @@ from PyQt5.QtCore import Qt
 from itertools import chain
 
 from ime.ui.ui_main_window import Ui_MainWindow
-from .models import IngestionMetadata, Project, Experiment, Dataset, Datafile
+from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
 from ime.widgets.add_files_wizard import AddFilesWizard
+from ime.qt_models import IngestionMetadataModel
+
 # Import the resources file
 import default_rc
 from .utils import file_size_to_str
@@ -137,7 +139,8 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.projectTreeWidget.addTopLevelItem(l3)
 
     def openWizardWindow(self):  
-        self.import_wizard_ui = AddFilesWizard()
+        model = IngestionMetadataModel(self.metadata)
+        self.import_wizard_ui = AddFilesWizard(model)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
     

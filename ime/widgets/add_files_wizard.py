@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFi
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from ime.utils import file_size_to_str
 from ime.models import Project, Experiment, Dataset, Datafile, FileInfo
+from ime.qt_models import IngestionMetadataModel
 
 class AddFilesWizard(QWizard):
 
@@ -34,7 +35,7 @@ class AddFilesWizard(QWizard):
         exp_new_page.registerField("experimentNameLineEdit*", self.ui.experimentNameLineEdit)
         exp_new_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
         # Dataset pages
-        ds_page = self.ui.datasetInfo
+        ds_page = self.ui.datasetPage
         ds_new_page = self.ui.newDatasetPage
         ds_existing_page = self.ui.existingDatasetPage
         ds_page.registerField("isNewDataset", self.ui.newDatasetRadioButton)
@@ -53,6 +54,13 @@ class AddFilesWizard(QWizard):
     def nextId(self) -> int:
         current = self.currentId()
         pages = self.page_ids
+        if current == pages['introductionPage']:
+            # Check if there are existing projects.
+            # If there are, go to the choice page, otherwise go to the new project page.
+            if self.metadataModel.projects.rowCount() > 0:
+                return pages['projectPage']
+            else:
+                return pages['newProjectPage']
         if current == pages['newProjectPage']:
             return pages['newExperimentPage']
         elif current == pages['newExperimentPage']:
@@ -68,9 +76,10 @@ class AddFilesWizard(QWizard):
         else:
             return super().nextId()
 
-    def __init__(self):
+    def __init__(self, metadataModel: IngestionMetadataModel):
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles()
+        self.metadataModel = metadataModel
         self.ui.setupUi(self)
         self._make_page_ids()
         self._register_fields()

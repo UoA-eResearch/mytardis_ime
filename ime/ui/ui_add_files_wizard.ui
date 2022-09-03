@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Import Data</string>
   </property>
-  <widget class="QWizardPage" name="wizardPage">
+  <widget class="QWizardPage" name="introductionPage">
    <attribute name="pageId">
     <string notr="true">0</string>
    </attribute>
@@ -261,7 +261,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="existingProjectPage">
+  <widget class="ExistingProjectPage" name="existingProjectPage">
    <attribute name="pageId">
     <string notr="true">3</string>
    </attribute>
@@ -277,14 +277,23 @@
      <widget class="QWidget" name="existingProjectForm" native="true">
       <layout class="QGridLayout" name="gridLayout_9">
        <item row="0" column="0">
-        <widget class="QListView" name="existingProjectList">
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-        </widget>
+        <widget class="QComboBox" name="existingProjectList"/>
        </item>
       </layout>
      </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -411,7 +420,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="existingExperimentPage">
+  <widget class="ExistingExperimentPage" name="existingExperimentPage">
    <attribute name="pageId">
     <string notr="true">5</string>
    </attribute>
@@ -425,20 +434,29 @@
     </item>
     <item>
      <widget class="QWidget" name="existingProjectForm_2" native="true">
-      <layout class="QGridLayout" name="gridLayout_11">
+      <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
-        <widget class="QListView" name="existingExperimentList">
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-        </widget>
+        <widget class="QComboBox" name="existingExperimentList"/>
        </item>
       </layout>
      </widget>
     </item>
+    <item>
+     <spacer name="verticalSpacer_8">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
-  <widget class="DatasetPage" name="datasetInfo">
+  <widget class="DatasetPage" name="datasetPage">
    <attribute name="pageId">
     <string notr="true">6</string>
    </attribute>
@@ -560,7 +578,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="existingDatasetPage">
+  <widget class="ExistingDatasetPage" name="existingDatasetPage">
    <attribute name="pageId">
     <string notr="true">7</string>
    </attribute>
@@ -576,14 +594,23 @@
      <widget class="QWidget" name="existingDatasetForm" native="true">
       <layout class="QGridLayout" name="gridLayout_12">
        <item row="0" column="0">
-        <widget class="QListView" name="existingDatasetList">
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-        </widget>
+        <widget class="QComboBox" name="existingDatasetList"/>
        </item>
       </layout>
      </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_9">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -706,6 +733,24 @@
   </customwidget>
   <customwidget>
    <class>DatasetPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard_pages</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ExistingProjectPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard_pages</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ExistingExperimentPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard_pages</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ExistingDatasetPage</class>
    <extends>QWizardPage</extends>
    <header>ime.widgets.add_files_wizard_pages</header>
    <container>1</container>
