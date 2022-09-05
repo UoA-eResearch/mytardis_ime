@@ -139,8 +139,50 @@
    <attribute name="pageId">
     <string notr="true">2</string>
    </attribute>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>First, let's find or create the project you are adding the data files to.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="existingProjectRadioButton">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Add this data into an existing project.</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingProjectForm" native="true">
+      <layout class="QGridLayout" name="gridLayout_9">
+       <item row="0" column="0">
+        <widget class="QComboBox" name="existingProjectList"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="newProjectRadioButton">
+      <property name="text">
+       <string>Create a new project for this data.</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
      <spacer name="verticalSpacer_3">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -152,43 +194,6 @@
        </size>
       </property>
      </spacer>
-    </item>
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>First, let's find or create the project you are adding the data files to.</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="existingProjectRadioButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Add this data into an existing project.</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="newProjectRadioButton">
-        <property name="text">
-         <string>Create a new project for this data.</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </item>
    </layout>
   </widget>
@@ -261,48 +266,51 @@
     </item>
    </layout>
   </widget>
-  <widget class="ExistingProjectPage" name="existingProjectPage">
+  <widget class="ExperimentPage" name="experimentPage">
    <attribute name="pageId">
-    <string notr="true">3</string>
+    <string notr="true">4</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_5">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <widget class="QLabel" name="label_14">
+     <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>You've chosen to add the data into an existing project. Select a project, then click next.</string>
+       <string>Now, let's find or create the experiment the data files fits under.</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="existingProjectForm" native="true">
-      <layout class="QGridLayout" name="gridLayout_9">
+     <widget class="QRadioButton" name="existingExperimentRadioButton">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Add this data to an existing experiment.</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingProjectForm_2" native="true">
+      <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
-        <widget class="QComboBox" name="existingProjectList"/>
+        <widget class="QComboBox" name="existingExperimentList"/>
        </item>
       </layout>
      </widget>
     </item>
     <item>
-     <spacer name="verticalSpacer_7">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+     <widget class="QRadioButton" name="newExperimentRadioButton">
+      <property name="text">
+       <string>Create a new experiment for this data.</string>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
+      <property name="checked">
+       <bool>false</bool>
       </property>
-     </spacer>
+     </widget>
     </item>
-   </layout>
-  </widget>
-  <widget class="ExperimentPage" name="experimentPage">
-   <attribute name="pageId">
-    <string notr="true">4</string>
-   </attribute>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="2" column="0">
+    <item>
      <spacer name="verticalSpacer_4">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -314,40 +322,6 @@
        </size>
       </property>
      </spacer>
-    </item>
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Now, let's find or create the experiment the data files fits under.</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="existingExperimentRadioButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Add this data to an existing experiment.</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="newExperimentRadioButton">
-        <property name="text">
-         <string>Create a new experiment for this data.</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </item>
    </layout>
   </widget>
@@ -420,82 +394,51 @@
     </item>
    </layout>
   </widget>
-  <widget class="ExistingExperimentPage" name="existingExperimentPage">
+  <widget class="DatasetPage" name="datasetPage">
    <attribute name="pageId">
-    <string notr="true">5</string>
+    <string notr="true">6</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_7">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
-     <widget class="QLabel" name="label_18">
+     <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>You've chosen to add the data into an existing experiment. Select an experiment, then click next.</string>
+       <string>Nearly there! Let's find or create the dataset for your data files</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="existingProjectForm_2" native="true">
-      <layout class="QGridLayout" name="gridLayout_7">
+     <widget class="QRadioButton" name="existingDatasetRadioButton">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Add this data to an existing dataset.</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingDatasetForm" native="true">
+      <layout class="QGridLayout" name="gridLayout_12">
        <item row="0" column="0">
-        <widget class="QComboBox" name="existingExperimentList"/>
+        <widget class="QComboBox" name="existingDatasetList"/>
        </item>
       </layout>
      </widget>
     </item>
     <item>
-     <spacer name="verticalSpacer_8">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+     <widget class="QRadioButton" name="newDatasetRadioButton">
+      <property name="text">
+       <string>Create a new dataset for this data.</string>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
+      <property name="checked">
+       <bool>true</bool>
       </property>
-     </spacer>
+     </widget>
     </item>
-   </layout>
-  </widget>
-  <widget class="DatasetPage" name="datasetPage">
-   <attribute name="pageId">
-    <string notr="true">6</string>
-   </attribute>
-   <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Nearly there! Let's find or create the dataset for your data files</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="existingDatasetRadioButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Add this data to an existing dataset.</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="newDatasetRadioButton">
-        <property name="text">
-         <string>Create a new dataset for this data.</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
+    <item>
      <spacer name="verticalSpacer_5">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -575,42 +518,6 @@
        <string>You can add more metadata and access controls for the dataset later.</string>
       </property>
      </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="ExistingDatasetPage" name="existingDatasetPage">
-   <attribute name="pageId">
-    <string notr="true">7</string>
-   </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_9">
-    <item>
-     <widget class="QLabel" name="label_21">
-      <property name="text">
-       <string>You've chosen to add the data into an existing experiment. Select an experiment, then click next.</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QWidget" name="existingDatasetForm" native="true">
-      <layout class="QGridLayout" name="gridLayout_12">
-       <item row="0" column="0">
-        <widget class="QComboBox" name="existingDatasetList"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <spacer name="verticalSpacer_9">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
     </item>
    </layout>
   </widget>
@@ -733,24 +640,6 @@
   </customwidget>
   <customwidget>
    <class>DatasetPage</class>
-   <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ExistingProjectPage</class>
-   <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ExistingExperimentPage</class>
-   <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ExistingDatasetPage</class>
    <extends>QWizardPage</extends>
    <header>ime.widgets.add_files_wizard_pages</header>
    <container>1</container>

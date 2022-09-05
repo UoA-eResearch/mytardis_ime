@@ -20,7 +20,7 @@ from PyQt5.QtCore import Qt
 T = TypeVar("T")
 
 class IngestionMetadataModel:
-    def __init__(self, metadata: IngestionMetadata):
+    def __init__(self, metadata = IngestionMetadata()):
         self.metadata = metadata
         self.projects = DataclassTableModel(Project)
         self.projects.set_instance_list(metadata.projects)
@@ -33,8 +33,7 @@ class IngestionMetadataModel:
         id = project.project_id
         proxy = DataclassTableProxy(Experiment)
         proxy.setSourceModel(self.experiments)
-        proxy.setFilterKeyColumn(self.experiments.column_for_field("project_id"))
-        proxy.setFilterFixedString(id)
+        proxy.set_filter_by_instance(lambda exp: exp.project_id == id)
         return proxy
 
     def datasets_for_experiment(self, experiment: Experiment):
@@ -61,7 +60,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
     def field_for_column(self, column: int) -> str:
         return self.fields[column]
 
-    def get_read_only_proxy(self, fields: List[str] = []):
+    def read_only_proxy(self, fields: List[str] = []):
         """
         Return a read-only model of the whole model, mainly for
         displaying in a View.
@@ -160,6 +159,10 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         self.beginInsertColumns
         self.filter_by_instance = predicate
+
+    def instance(self, row: int) -> T:
+        source_row = self.mapToSource(self.index(row,0)).row()
+        return self.sourceModel().instance(source_row)
 
     def setSourceModel(self, sourceModel: DataclassTableModel[T]) -> None:
         if not isinstance(sourceModel, DataclassTableModel):

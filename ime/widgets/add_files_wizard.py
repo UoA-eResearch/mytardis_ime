@@ -1,3 +1,4 @@
+from dataclasses import dataclass, field
 from typing import Dict, List
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
@@ -6,43 +7,55 @@ from ime.utils import file_size_to_str
 from ime.models import Project, Experiment, Dataset, Datafile, FileInfo
 from ime.qt_models import IngestionMetadataModel
 
+class AddFilesWizardResult:
+    project: Project
+    is_new_project: bool
+    experiment: Experiment
+    is_new_experiment: bool
+    dataset: Dataset
+    is_new_dataset: bool
+    datafile: Datafile
+
 class AddFilesWizard(QWizard):
 
-    submitted = QtCore.pyqtSignal(Project, Experiment, Dataset, Datafile)
+    submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
+    selected_existing_project: Project
+    selected_existing_experiment: Experiment
+    selected_existing_dataset: Dataset
 
     def _register_fields(self):
         # Project pages
         proj_page = self.ui.projectPage
         proj_new_page = self.ui.newProjectPage
-        proj_existing_page = self.ui.existingProjectPage
         proj_page.registerField("isNewProject", self.ui.newProjectRadioButton)
         proj_page.registerField("isExistingProject", self.ui.existingProjectRadioButton)
         self.ui.newProjectRadioButton.clicked.connect(proj_page.completeChanged)
         self.ui.existingProjectRadioButton.clicked.connect(proj_page.completeChanged)
-        proj_existing_page.registerField("existingProject*", self.ui.existingProjectList)
+        self.ui.existingProjectList.currentIndexChanged.connect(proj_page.completeChanged)
+        proj_page.registerField("existingProject", self.ui.existingProjectList)
         proj_new_page.registerField("projectIDLineEdit*", self.ui.projectIDLineEdit)
         proj_new_page.registerField("projectNameLineEdit*", self.ui.projectNameLineEdit)
         # Experiment pages
         exp_page = self.ui.experimentPage
         exp_new_page = self.ui.newExperimentPage
-        exp_existing_page = self.ui.existingExperimentPage
         exp_page.registerField("isNewExperiment", self.ui.newExperimentRadioButton)
         exp_page.registerField("isExistingExperiment", self.ui.existingExperimentRadioButton)
         self.ui.newExperimentRadioButton.clicked.connect(exp_page.completeChanged)
         self.ui.existingExperimentRadioButton.clicked.connect(exp_page.completeChanged)
-        exp_existing_page.registerField("existingExperiment*", self.ui.existingExperimentList)
+        self.ui.existingExperimentList.currentIndexChanged.connect(exp_page.completeChanged)
+        exp_page.registerField("existingExperiment", self.ui.existingExperimentList)
         exp_new_page.registerField("experimentNameLineEdit*", self.ui.experimentNameLineEdit)
         exp_new_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
         # Dataset pages
         ds_page = self.ui.datasetPage
         ds_new_page = self.ui.newDatasetPage
-        ds_existing_page = self.ui.existingDatasetPage
         ds_page.registerField("isNewDataset", self.ui.newDatasetRadioButton)
         ds_page.registerField("isExistingDataset", self.ui.existingDatasetRadioButton)
         self.ui.newDatasetRadioButton.clicked.connect(ds_page.completeChanged)
         self.ui.existingDatasetRadioButton.clicked.connect(ds_page.completeChanged)
-        ds_existing_page.registerField("existingDataset*", self.ui.existingDatasetList)
+        self.ui.existingDatasetList.currentIndexChanged.connect(ds_page.completeChanged)
+        ds_page.registerField("existingDataset", self.ui.existingDatasetList)
         ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
@@ -60,18 +73,18 @@ class AddFilesWizard(QWizard):
             if self.metadataModel.projects.rowCount() > 0:
                 return pages['projectPage']
             else:
+                self.setField('isNewProject', True)
+                self.setField('isExistingProject', False)
                 return pages['newProjectPage']
         if current == pages['newProjectPage']:
+            self.setField('isNewExperiment', True)
+            self.setField('isExistingExperiment', False)
             return pages['newExperimentPage']
         elif current == pages['newExperimentPage']:
+            self.setField('isNewDataset', True)
+            self.setField('isExistingDataset', False)
             return pages['newDatasetPage']
         elif current == pages['newDatasetPage']:
-            return pages['includedFilesPage']
-        elif current == pages['existingProjectPage']:
-            return pages['experimentPage']
-        elif current == pages['existingExperimentPage']:
-            return pages['datasetPage']
-        elif current == pages['existingDatasetPage']:
             return pages['includedFilesPage']
         else:
             return super().nextId()
@@ -143,25 +156,43 @@ class AddFilesWizard(QWizard):
             new_row_index += 1
     
     def on_submit(self):
-        project_info = Project()
-        experiment_info = Experiment()
-        dataset_info = Dataset()
-        datafile_info = Datafile()
+        result = AddFilesWizardResult()
+        result.is_new_project = self.field('isNewProject')
+        result.is_new_experiment = self.field('isNewExperiment')
+        result.is_new_dataset = self.field('isNewDataset')
+        # Note: When there are no projects in the file,
+        # the wizard skips straight to the page for creating a new project.
+        # In that case, self.field('newProject') is False because
+        # the wizard did not visit the Project choice page. Have to 
+        # be careful of this when using it. 
+        if self.field('isExistingProject'):
+            result.project = self.selected_existing_project
+        else:
+            result.project = Project()
+            result.project.project_name = self.ui.projectNameLineEdit.text()
+            result.project.project_id = self.ui.projectIDLineEdit.text()
+            result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
+            
+        if self.field('isExistingExperiment'):
+            result.experiment = self.selected_existing_experiment
+        else:
+            result.experiment = Experiment()
+            result.experiment.experiment_name = self.ui.experimentNameLineEdit.text()
+            result.experiment.experiment_id = self.ui.experimentIDLineEdit.text()
+            result.experiment.project_id = result.project.project_id
+            result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
-        project_info.project_name = self.ui.projectNameLineEdit.text()
-        project_info.project_id = self.ui.projectIDLineEdit.text()
-        project_info.description = self.ui.projectDescriptionLineEdit.toPlainText()
-        experiment_info.experiment_name = self.ui.experimentNameLineEdit.text()
-        experiment_info.experiment_id = self.ui.experimentIDLineEdit.text()
-        experiment_info.project_id = self.ui.projectIDLineEdit.text()
-        experiment_info.description = self.ui.experimentDescriptionLineEdit.toPlainText()
-        dataset_info.dataset_name = self.ui.datasetNameLineEdit.text()
-        dataset_info.dataset_id = self.ui.datasetIDLineEdit.text()
-        # Because a dataset can belong to multiple experiments,
-        # we are creating a list around the experiment we captured.
-        dataset_info.experiment_id = [self.ui.experimentIDLineEdit.text()]
-
-        datafile_info.dataset_id = dataset_info.dataset_id
+        if self.field('isExistingDataset'):
+            result.dataset = self.selected_existing_dataset
+        else:
+            result.dataset = Dataset()
+            result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
+            result.dataset.dataset_id = self.ui.datasetIDLineEdit.text()
+            # Because a dataset can belong to multiple experiments,
+            # we are creating a list around the experiment we captured.
+            result.dataset.experiment_id = [result.experiment.experiment_id]
+        result.datafile = Datafile()
+        result.datafile.dataset_id = result.dataset.dataset_id
 
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
@@ -169,8 +200,9 @@ class AddFilesWizard(QWizard):
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             file_info = FileInfo(name = file_name)
             file_info.size = size
-            datafile_info.files.append(file_info)
+            result.datafile.files.append(file_info)
 
-        self.submitted.emit(project_info, experiment_info, dataset_info, datafile_info)
+        self.submitted.emit(result)
         self.close()
+
 

@@ -162,6 +162,7 @@ class IngestionMetadata:
     def get_datasets_by_experiment(self, exp: Experiment) -> List[Dataset]:
         """
         Returns datasets that belong to a experiment.
+        BUG - also ensure project is the same.
         """
         id = exp.experiment_id
         all_datasets: List[Dataset] = []
