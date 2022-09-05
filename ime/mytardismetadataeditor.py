@@ -2,10 +2,9 @@ from typing import Any, Callable
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import  QMainWindow, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem
 from PyQt5.QtCore import Qt
-from itertools import chain
 
 from ime.ui.ui_main_window import Ui_MainWindow
-from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
+from ime.models import IngestionMetadata, Project, Experiment, Dataset
 import logging
 from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult
 from ime.qt_models import IngestionMetadataModel
@@ -42,20 +41,11 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def onSelectDatafile(self, dataset: Dataset, file_name: str):
         # First, look up the dataset value
-        # TODO handle multiple datafiles.
-        datafile_lookup = [
-            datafile
-            for datafile in self.metadata.datafiles
-            if datafile.dataset_id == dataset.dataset_id
-        ]
-        if (len(datafile_lookup) != 1):
-            logging.warning("Dataset ID %s could not be found or there are" + 
-            "more than one entries.", dataset.dataset_id)
-        datafile = datafile_lookup[0]
+        files = self.metadata.get_files_by_dataset(dataset)
         # Next, look up FileInfo
         fileinfo_lookup = [
             fileinfo
-            for fileinfo in datafile.files
+            for fileinfo in files
             if fileinfo.name == file_name
         ]
         if (len(fileinfo_lookup) != 1):
@@ -117,6 +107,10 @@ class MyTardisMetadataEditor(QMainWindow):
         raise Exception("Could not find item in tree.")
 
     def reFresh(self,result: AddFilesWizardResult):
+        """
+        Method for adding the newly created classes from the wizard into IngestionMetadata,
+        and refreshing the project/experiment/dataset/datafile widgets with the new data.
+        """
         # Modify IngestionMetadata to insert or modify models
         if result.is_new_dataset:
             self.metadata.datasets.append(result.dataset)
@@ -164,7 +158,7 @@ class MyTardisMetadataEditor(QMainWindow):
             l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, result.project)
             self.ui.projectTreeWidget.addTopLevelItem(l3)
         else:
-            proj_item = self.find_item_in_tree(self.ui.experimentTreeWidget, lambda data:(
+            proj_item = self.find_item_in_tree(self.ui.projectTreeWidget, lambda data:(
                 data.project_id == result.project.project_id
             ))
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)

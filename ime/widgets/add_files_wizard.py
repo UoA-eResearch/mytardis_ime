@@ -8,6 +8,9 @@ from ime.models import Project, Experiment, Dataset, Datafile, FileInfo
 from ime.qt_models import IngestionMetadataModel
 
 class AddFilesWizardResult:
+    """
+    A class with the user's choices in the wizard..
+    """
     project: Project
     is_new_project: bool
     experiment: Experiment
@@ -25,6 +28,7 @@ class AddFilesWizard(QWizard):
     selected_existing_dataset: Dataset
 
     def _register_fields(self):
+        # Set up the fields and connect signals for isComplete states.
         # Project pages
         proj_page = self.ui.projectPage
         proj_new_page = self.ui.newProjectPage
@@ -65,6 +69,10 @@ class AddFilesWizard(QWizard):
             self.page_ids[self.page(id).objectName()] = id
 
     def nextId(self) -> int:
+        # Function for determining which page the wizard should advance to.
+        # Custom WizardPages in add_files_wizard_pages have their own nextId()
+        # logic and they are used in the else clause, which calls the default
+        # nextId function.
         current = self.currentId()
         pages = self.page_ids
         if current == pages['introductionPage']:
@@ -73,6 +81,9 @@ class AddFilesWizard(QWizard):
             if self.metadataModel.projects.rowCount() > 0:
                 return pages['projectPage']
             else:
+                # Need to set the fields manually since we're not showing
+                # user the project choice page. Ditto for the fields
+                # in experiment and dataset pages. 
                 self.setField('isNewProject', True)
                 self.setField('isExistingProject', False)
                 return pages['newProjectPage']
@@ -156,15 +167,13 @@ class AddFilesWizard(QWizard):
             new_row_index += 1
     
     def on_submit(self):
+        """
+        Builds a result class based on user's choices and emits them through the signal.
+        """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
         result.is_new_experiment = self.field('isNewExperiment')
         result.is_new_dataset = self.field('isNewDataset')
-        # Note: When there are no projects in the file,
-        # the wizard skips straight to the page for creating a new project.
-        # In that case, self.field('newProject') is False because
-        # the wizard did not visit the Project choice page. Have to 
-        # be careful of this when using it. 
         if self.field('isExistingProject'):
             result.project = self.selected_existing_project
         else:

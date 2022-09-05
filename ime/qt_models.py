@@ -1,7 +1,17 @@
-from typing import Callable, Generic, List, TypeVar, Type
+"""
+qt_models.py - Adaptor classes for Qt's Model/View architecture.
+These classes connect the MyTardis object models in models.py
+into Qt's Model View architecture, so they can be used by
+Qt Tree/Table/ListView widgets and act as a single source of 
+truth for data in the UI.
+The clases are split into: DataclassTableModel and DataclassTableProxy
+which implement/extend Qt model and proxy interfaces; and an IngestionMetadataModel
+model which adapts IngestionMetadata from models.py for Qt, using the two other
+models.
+"""
+from typing import Any, Callable, Generic, List, TypeVar, Type
 import typing
 from PyQt5.QtCore import (
-    QAbstractListModel,
     QAbstractTableModel,
     QModelIndex,
     QObject,
@@ -20,6 +30,13 @@ from PyQt5.QtCore import Qt
 T = TypeVar("T")
 
 class IngestionMetadataModel:
+    """
+    An adaptor class for IngestionMetadata from models.py.
+    Wraps projects/experiments/datasets with DataclassTableModel
+    so that they can be used for Qt Tree/Table/ListViews. You can
+    also derive read-only or filtered versions of each model using
+    DataclassTableProxy - see below.
+    """
     def __init__(self, metadata = IngestionMetadata()):
         self.metadata = metadata
         self.projects = DataclassTableModel(Project)
@@ -30,6 +47,10 @@ class IngestionMetadataModel:
         self.datasets.set_instance_list(metadata.datasets)
 
     def experiments_for_project(self, project: Project):
+        """
+        Returns a filtered data model of all Experiments that belong 
+        to a Project in this model. 
+        """
         id = project.project_id
         proxy = DataclassTableProxy(Experiment)
         proxy.setSourceModel(self.experiments)
@@ -37,6 +58,10 @@ class IngestionMetadataModel:
         return proxy
 
     def datasets_for_experiment(self, experiment: Experiment):
+        """
+        Returns a filtered data model of all Datasets that belong to an
+        Experiment in this model.
+        """
         id = experiment.experiment_id
         proxy = DataclassTableProxy(Dataset)
         proxy.setSourceModel(self.datasets)
@@ -46,25 +71,48 @@ class IngestionMetadataModel:
         return proxy
 
 
+
+
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
+    """
+    An Qt Model adaptor class for a Python list of dataclasses, implemented as a
+    TableModel. Each row represents an "instance" of dataclass in the list, and each 
+    column represents a "field" in the instance. 
+    Field name and its column order are determined by the name and order of dataclasses 
+    fields returned by the fields() function.
+    To instantiate the class:
+    ```
+    object_list = [MyDataclass("hello"), MyDataclass("world!")] # construct the data list.
+
+    model = DataclassTableModel(MyDataclass) # specify which class we're using
+
+    model.set_instance_list(object_list) # add the data list into the model.
+    ```
+    """
 
     instance_list: List[T]
     fields: List[str]
 
     def column_for_field(self, field: str) -> int:
+        """
+        Given a field name, return its column index.
+        """
         for i, key in enumerate(self.fields):
             if key == field:
                 return i
         return -1
 
     def field_for_column(self, column: int) -> str:
+        """
+        Given a column index, return the corresponding 
+        """
         return self.fields[column]
 
     def read_only_proxy(self, fields: List[str] = []):
         """
-        Return a read-only model of the whole model, mainly for
-        displaying in a View.
-        Optionally you may specify a list of fields to show in this table.
+        Convenient function that return a read-only model of the whole model, 
+        useful for displaying in a View.
+        Optionally you may specify a list of `fields` to show in this table.
         """
         proxy = DataclassTableProxy(self.type)
         proxy.set_read_only(True)
@@ -73,17 +121,35 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         return proxy
 
     def __init__(self, type: Type[T], parent=None):
+        """
+        Instantiate DataclassTableModel. The `type` passed in will be
+        inspected for its dataclass fields.
+        """
         self.type = type
         self.fields = [field.name for field in fields(type)]
         super().__init__(parent)
 
     def instance(self, row: int) -> T:
+        """
+        Given the row index, return the instance of dataclass represented
+        in that row.
+        """
         return self.instance_list[row]
 
     def set_instance_list(self, instance_list: List[T]):
+        """
+        Set the backing dataclass list this model will represent. 
+        """
         self.instance_list = instance_list
+    
+    def add_computed_field(self, field_name: str, compute_fn: Callable[[T,Qt.ItemDataRole],Any]) -> int:
+        # TODO This will be useful for computed values like project/experiment/dataset size.
+        # And perhaps the effective ACL users and groups?
+        # Perhaps this should be implemented in the proxymodel.
+        raise NotImplementedError()
 
-    # Implementations and overrides of QAbstractTableModel methods.
+    # Implementations and overrides of QAbstractTableModel methods follow.
+    # These methods are mainly for use by native Qt Views.
     def rowCount(self, parent=QModelIndex()) -> int:
         if not parent.isValid():
             return len(self.instance_list)
@@ -137,6 +203,23 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
 
 
 class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
+    """
+    A class that extends the QSortFilterProxyModel with dataclass-specific and other
+    utility functions.
+    
+    In Qt, a ProxyModel class is a copy of a Model that is synced up with the Model's
+    changes. A Proxy can filter out some of the data or add different ways of displaying things. 
+    A ProxyModel can be used in any Qt View in the same way as Models. They are useful for 
+    showing the same data in different ways, for example a list view and a detail view.
+    
+    To instantiate the class:
+    ```
+    model = DataclassTableModel(MyDataclass) # create the source model.
+    proxy = DataclassTableProxy(MyDataclass) # create the proxy, with the same class type as the model.
+    proxy.setSourceModel(model) # Add the model as source for the proxy.
+    ```
+
+    """
     read_only: bool = False
     show_fields: List[str] = []
 
@@ -145,31 +228,53 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         super().__init__(parent)
 
     def set_show_fields(self, show_fields: List[str]):
+        """
+        Given a list of field names, sets which dataclass fields should be 
+        shown by the proxy model. If show_fields is an empty list, then all fields
+        will be shown.
+        """
         self.show_fields = show_fields
 
     def set_read_only(self, read_only: bool):
+        """
+        Sets whether the proxy model should use read-only flags. 
+        This primarily affects native Qt View widgets, which shows an editing widget or
+        a plain label for each item depending on the flags.
+        """
         self.read_only = read_only
 
     def set_filter_by_instance(self, predicate: Callable[[T], bool]):
         """
-        Sets a custom filter function for situations where the default
-        fixed string and regexp filters are not adequate.
-        predicate should take source_row index and source_parent, a QModelIndex,
+        Applies a predicate (a function that takes an argument and returns
+        True or False) to each dataclass instance in the model, and filter out
+        instances that predicate returns False on. 
+        predicate should take an instance of the dataclass T,
         and return True or False of whether it should be included.
+        Note, if a predicate is set, then QSortFilterProxyModel's built-in filters
+        (e.g. filterFixedString()) will not be applied even if set.
         """
         self.beginInsertColumns
         self.filter_by_instance = predicate
 
     def instance(self, row: int) -> T:
+        """
+        Given a row index in the Proxy Model, returns the dataclass instance
+        represented by the row.
+        """
         source_row = self.mapToSource(self.index(row,0)).row()
         return self.sourceModel().instance(source_row)
 
+    # Implementations and overrides of QAbstractTableModel methods follow.
+    # These methods are mainly for use by native Qt Views.
     def setSourceModel(self, sourceModel: DataclassTableModel[T]) -> None:
+        # Ensure only DataclassTableModel is used as source models.
         if not isinstance(sourceModel, DataclassTableModel):
             raise ValueError("You must use MyTaridsObjectModel as source model.")
         return super().setSourceModel(sourceModel)
 
     def sourceModel(self) -> DataclassTableModel[T]:
+        # Change the sourceModel function so that it gives richer type completion
+        # in type checkers.
         return typing.cast(DataclassTableModel, super().sourceModel())
 
     def filterAcceptsColumn(
@@ -181,7 +286,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         return self.sourceModel().field_for_column(source_column) in self.show_fields
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
-        if not hasattr(self, "custom_filter"):
+        if not hasattr(self, "filter_by_instance"):
             return super().filterAcceptsRow(source_row, source_parent)
         instance = self.sourceModel().instance(source_row)
         return self.filter_by_instance(instance)
