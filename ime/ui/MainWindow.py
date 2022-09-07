@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ime/ui/MainWindow.ui'
+# Form implementation generated from reading ui file 'MainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -241,8 +241,11 @@ class Ui_MainWindow(object):
         icon.addPixmap(QtGui.QPixmap(":/resources/noun-file-add-4877075.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionImport_data_files.setIcon(icon)
         self.actionImport_data_files.setObjectName("actionImport_data_files")
+        self.actionLoad = QtWidgets.QAction(MainWindow)
+        self.actionLoad.setObjectName("actionLoad")
         self.toolBar.addAction(self.actionNewFile)
         self.toolBar.addAction(self.actionSave)
+        self.toolBar.addAction(self.actionLoad)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImport_data_files)
 
@@ -285,5 +288,17 @@ class Ui_MainWindow(object):
         self.actionImport_data_files.setText(_translate("MainWindow", "Import data files"))
         self.actionImport_data_files.setToolTip(_translate("MainWindow", "Launch guide to import new data files"))
         self.actionImport_data_files.setShortcut(_translate("MainWindow", "Ctrl+Shift+I"))
+        self.actionLoad.setText(_translate("MainWindow", "Load..."))
+        self.actionLoad.setShortcut(_translate("MainWindow", "Ctrl+L"))
 from ime.widgets.prop_editor import DatafilePropertyEditor, DatasetPropertyEditor, ExperimentPropertyEditor, ProjectPropertyEditor
 import default_rc
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
