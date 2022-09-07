@@ -23,7 +23,8 @@ class ProjectPage(QWizardPage):
         wizard = self.wizard()
         # Display the list of projects.
         list_view = wizard.ui.existingProjectList
-        self.model = wizard.metadataModel.projects.read_only_proxy(['project_name'])
+        self.model = wizard.metadataModel.projects.proxy(['project_name'])
+        self.model.set_read_only(True)
         list_view.setModel(self.model)
         self.selected_existing_project_changed(wizard.ui.existingProjectList.currentIndex())
         list_view.currentIndexChanged.connect(self.selected_existing_project_changed)

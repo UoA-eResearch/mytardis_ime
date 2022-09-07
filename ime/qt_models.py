@@ -15,7 +15,7 @@ from PyQt5.QtCore import (
     QAbstractTableModel,
     QModelIndex,
     QObject,
-    QSortFilterProxyModel,
+    QSortFilterProxyModel
 )
 
 from .models import (
@@ -52,8 +52,7 @@ class IngestionMetadataModel:
         to a Project in this model. 
         """
         id = project.project_id
-        proxy = DataclassTableProxy(Experiment)
-        proxy.setSourceModel(self.experiments)
+        proxy = self.experiments.proxy()
         proxy.set_filter_by_instance(lambda exp: exp.project_id == id)
         return proxy
 
@@ -63,15 +62,11 @@ class IngestionMetadataModel:
         Experiment in this model.
         """
         id = experiment.experiment_id
-        proxy = DataclassTableProxy(Dataset)
-        proxy.setSourceModel(self.datasets)
+        proxy = self.datasets.proxy()
         # Since the experiment_id field is a list, we add
         # a filter function to go through the list.
         proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
         return proxy
-
-
-
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
     """
@@ -104,18 +99,19 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
 
     def field_for_column(self, column: int) -> str:
         """
-        Given a column index, return the corresponding 
+        Given a column index, return the corresponding field name.
         """
         return self.fields[column]
 
-    def read_only_proxy(self, fields: List[str] = []):
+    def proxy(self, fields: List[str] = []):
         """
-        Convenient function that return a read-only model of the whole model, 
-        useful for displaying in a View.
-        Optionally you may specify a list of `fields` to show in this table.
+        Convenience function that returns a proxy model of the whole model, 
+        useful for a filtered view or displaying in a View.
+        Optionally you may specify a list of `fields` to show in this table. Fields will
+        be ordered in the proxy model according to the order of the list.
         """
-        proxy = DataclassTableProxy(self.type)
-        proxy.set_read_only(True)
+        instance_type = self.type
+        proxy = DataclassTableProxy[instance_type]()
         proxy.setSourceModel(self)
         proxy.set_show_fields(fields)
         return proxy
@@ -145,7 +141,15 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
     def add_computed_field(self, field_name: str, compute_fn: Callable[[T,Qt.ItemDataRole],Any]) -> int:
         # TODO This will be useful for computed values like project/experiment/dataset size.
         # And perhaps the effective ACL users and groups?
-        # Perhaps this should be implemented in the proxymodel.
+        # compute_fn will be re-evaluated for an instance when any of its fields has changed.
+        # If an external dependency of the function changes, the model needs to be notified, 
+        # so compute_fn can be re-evaluated.
+        # e.g.  DataclassTableModel.field_changed(row, fields)? But may be circular.
+        raise NotImplementedError()
+
+    def field_changed(self, row: int, field: str):
+        # Notifies the model that this instance's field has changed.
+        # A wrapper around dataChanged().
         raise NotImplementedError()
 
     # Implementations and overrides of QAbstractTableModel methods follow.
@@ -201,7 +205,9 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             field = getattr(experiment, self.fields[index.column()])
             return field
 
-
+a = str
+b: List[a] = []
+b
 class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     """
     A class that extends the QSortFilterProxyModel with dataclass-specific and other
@@ -212,10 +218,11 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     A ProxyModel can be used in any Qt View in the same way as Models. They are useful for 
     showing the same data in different ways, for example a list view and a detail view.
     
-    To instantiate the class:
+    Usually, you create an instance using the DataclassTableModel.proxy() method.
+    To directly instantiate the class:
     ```
     model = DataclassTableModel(MyDataclass) # create the source model.
-    proxy = DataclassTableProxy(MyDataclass) # create the proxy, with the same class type as the model.
+    proxy = DataclassTableProxy[MyDataclass]() # create the proxy, with the same class type as the model.
     proxy.setSourceModel(model) # Add the model as source for the proxy.
     ```
 
@@ -223,8 +230,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     read_only: bool = False
     show_fields: List[str] = []
 
-    def __init__(self, type: Type[T], parent: typing.Optional[QObject] = None) -> None:
-        self.type = type
+    def __init__(self, parent: typing.Optional[QObject] = None) -> None:
         super().__init__(parent)
 
     def set_show_fields(self, show_fields: List[str]):
@@ -296,3 +302,34 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         if not self.read_only:
             flags |= Qt.ItemFlag.ItemIsEditable
         return typing.cast(Qt.ItemFlags, flags)
+
+    def columnCount(self, parent = QModelIndex()) -> int:
+        if len(self.show_fields) > 0:
+            return len(self.show_fields)
+        return super().rowCount(parent)
+
+    def headerData(
+        self,
+        section: int,
+        orientation: Qt.Orientation,
+        role: int = Qt.ItemDataRole.DisplayRole,
+    ) -> typing.Any:
+        if (
+            len(self.show_fields) > 0 and
+            orientation == Qt.Orientation.Horizontal
+            and role == Qt.ItemDataRole.DisplayRole
+        ):
+            return self.show_fields[section]
+        return super().headerData(section, orientation, role)
+
+    def data(
+        self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
+    ) -> typing.Any:
+        if (
+            len(self.show_fields) > 0 and
+            role == Qt.ItemDataRole.DisplayRole
+        ):
+            instance = self.instance(index.row())
+            field = getattr(instance, self.show_fields[index.column()])
+            return field
+        return super().data(index, role)
