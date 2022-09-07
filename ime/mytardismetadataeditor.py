@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, yaml
 from typing import List
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox,QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
@@ -37,6 +37,7 @@ class MyTardisMetadataEditor(QMainWindow):
         # define our widgets
         self.ui.actionImport_data_files.triggered.connect(self.openWizardWindow)
         self.ui.actionSave.triggered.connect(self.save_to_yaml)
+        self.ui.actionLoad.triggered.connect(self.loadYaml)
 
         self.ui.datasetTreeWidget.itemClicked.connect(self.onClickedDataset)
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
@@ -151,7 +152,30 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui = WindowWizard()
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
-    
+
+    # Import metadata from a yaml file
+    def loadYaml(self):
+        fileName = QFileDialog.getOpenFileName(self, "Open File",'', "Yaml(*.yaml);;AllFiles(*.*)")[0]
+        f = open(fileName)
+        data_load = f.read()
+        data_yaml = IngestionMetadata.from_yaml(data_load)
+        self.display_load_data(data_yaml)
+  
+    # Display loaded metadata
+    def display_load_data(self,data_loaded):
+        ### load metadata with only one project
+        projects =  data_loaded.projects[0]
+        experiments  = data_loaded.experiments[0]
+        datasets = data_loaded.datasets[0]
+        datafiles = data_loaded.datafiles[0]
+
+        self.metadata.projects.append(projects)
+        self.metadata.experiments.append(experiments)
+        self.metadata.datasets.append(datasets)
+        self.metadata.datafiles.append(datafiles)
+
+        self.reFresh(projects, experiments, datasets, datafiles)
+
     # Save to yaml files
     def save_to_yaml(self):
         filename = QFileDialog.getSaveFileName(self,"Save File",directory = "test.yaml", initialFilter='Yaml File(*.yaml)')[0]
