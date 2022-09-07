@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QWidget
 from ime.bindable import BoundObject
 from ime.models import Dataset, Experiment, FileInfo, Project
-from ime.widgets.ui_dataset_props import Ui_DatasetProps
-from ime.widgets.ui_datafile_props import Ui_DatafilePropertyEditor
-from ime.widgets.ui_experiment_props import Ui_ExperimentPropertyEditor
-from ime.widgets.ui_project_props import Ui_ProjectPropertyEditor
+from ime.ui.ui_dataset_props import Ui_DatasetProps
+from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
+from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
+from ime.ui.ui_project_props import Ui_ProjectPropertyEditor
 from ime.widgets.metadata_tab import MetadataTab
 
 class DatasetPropertyEditor(QWidget):
