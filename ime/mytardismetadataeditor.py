@@ -1,26 +1,17 @@
-import os, sys, yaml
-from typing import List
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox,QToolBar, QAction, QWizard, QTableWidget, QTableWidgetItem, QLineEdit,QWizardPage, QVBoxLayout, QLabel,QFileDialog, QTreeWidget,QTreeWidgetItem
-from PyQt5.QtCore import Qt, QPersistentModelIndex,QModelIndex
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from isort import file
-from itertools import chain
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem
+from PyQt5.QtCore import Qt
+from typing import Any, Callable
 
-from .ui.MainWindow import Ui_MainWindow
-from .ui.AddFilesWizard import Ui_ImportDataFiles
-from .models import IngestionMetadata, Project, Experiment, Dataset, Datafile, FileInfo
+from ime.ui.ui_main_window import Ui_MainWindow
+from ime.models import IngestionMetadata, Project, Experiment, Dataset
 import logging
+from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult
+from ime.qt_models import IngestionMetadataModel
+
 # Import the resources file
 import default_rc
-
-def file_size_to_str(size: float) -> str:
-        for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-            if size < 1024.0:
-                return "%3.1f %s" % (size, x)
-            size /= 1024.0
-        # If size exceeds 1024 TB, return in terms of TB.
-        return "%3.1f %s" % (size, "TB")
+from .utils import file_size_to_str
 
 class MyTardisMetadataEditor(QMainWindow):
     def __init__(self):
@@ -51,19 +42,11 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def onSelectDatafile(self, dataset: Dataset, file_name: str):
         # First, look up the dataset value
-        datafile_lookup = [
-            datafile
-            for datafile in self.metadata.datafiles
-            if datafile.dataset_id == dataset.dataset_id
-        ]
-        if (len(datafile_lookup) != 1):
-            logging.warning("Dataset ID %s could not be found or there are" + 
-            "more than one entries.", dataset.dataset_id)
-        datafile = datafile_lookup[0]
+        files = self.metadata.get_files_by_dataset(dataset)
         # Next, look up FileInfo
         fileinfo_lookup = [
             fileinfo
-            for fileinfo in datafile.files
+            for fileinfo in files
             if fileinfo.name == file_name
         ]
         if (len(fileinfo_lookup) != 1):
@@ -103,53 +86,87 @@ class MyTardisMetadataEditor(QMainWindow):
             props_widget.setCurrentIndex(0)
             self.ui.projectProperties.set_project(project)
 
-    def reFresh(self,project_info: Project, experiment_info: Experiment, dataset_info: Dataset, datafile_info: Datafile):
-        self.metadata.projects.append(project_info)
-        self.metadata.experiments.append(experiment_info)
-        self.metadata.datasets.append(dataset_info)
-        self.metadata.datafiles.append(datafile_info)
+    def dataset_size(self, dataset: Dataset):
+        dataset_files = self.metadata.get_files_by_dataset(dataset)
+        return sum([file.size for file in dataset_files])
 
-        # Calculate dataset size by summing all the files' sizes
-        dataset_files = self.metadata.get_files_by_dataset(dataset_info)
-        dataset_size = sum([file.size for file in dataset_files])
+    def experiment_size(self, exp: Experiment):
+        exp_datasets = self.metadata.get_datasets_by_experiment(exp)
+        return sum([self.dataset_size(dataset) for dataset in exp_datasets])
+
+    def project_size(self, project: Project):
+        proj_exps = self.metadata.get_experiments_by_project(project)
+        return sum([self.experiment_size(exp) for exp in proj_exps])
+
+    def find_item_in_tree(self, treeWidget: QTreeWidget, predicate: Callable[[Any],bool]):
+        count = treeWidget.topLevelItemCount()
+        for i in range(0, count):
+            item = treeWidget.topLevelItem(i)
+            data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+            if predicate(data):
+                return item
+        raise Exception("Could not find item in tree.")
+
+    def reFresh(self,result: AddFilesWizardResult):
+        """
+        Method for adding the newly created classes from the wizard into IngestionMetadata,
+        and refreshing the project/experiment/dataset/datafile widgets with the new data.
+        """
+        # Modify IngestionMetadata to insert or modify models
+        if result.is_new_dataset:
+            self.metadata.datasets.append(result.dataset)
+        if result.is_new_project:
+            self.metadata.projects.append(result.project)
+        if result.is_new_experiment:
+            self.metadata.experiments.append(result.experiment)
+        self.metadata.datafiles.append(result.datafile)
+        # Calculate sizes by summing all the files' sizes
+        dataset_size = file_size_to_str(self.dataset_size(result.dataset))
+        exp_size = file_size_to_str(self.experiment_size(result.experiment))
+        proj_size = file_size_to_str(self.project_size(result.project))
         # Create tree widget item for the dataset
-        # TODO Handle if it's an existing dataset
-        l1 = QTreeWidgetItem([dataset_info.dataset_name,file_size_to_str(dataset_size),experiment_info.experiment_name])
-        l1.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset_info)
-
-
-        # Calculate experiment size by summing all its datasets' sizes
-        exp_datasets = self.metadata.get_datasets_by_experiment(experiment_info)
-        exp_files = [self.metadata.get_files_by_dataset(dataset) for dataset in exp_datasets]
-        exp_size = sum([f.size for f in chain(*exp_files)])
-        # Create tree widget item for the experiment
-        # TODO Handle if it's an existing experiment
-        l2 = QTreeWidgetItem([experiment_info.experiment_name,file_size_to_str(exp_size),project_info.project_name])
-        l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, experiment_info)
-
-        # Calculate project size by summing all its experiments' sizes
-        proj_exps = self.metadata.get_experiments_by_project(project_info)
-        proj_datasets = [self.metadata.get_datasets_by_experiment(exp) for exp in proj_exps]
-        proj_files = [self.metadata.get_files_by_dataset(dataset) for dataset in chain(*proj_datasets)]
-        proj_size = sum(f.size for f in chain(*proj_files))
-        # Create tree widget item for the project
-        # TODO Handle if it's an existing project
-        l3 = QTreeWidgetItem([project_info.project_name,file_size_to_str(proj_size)])
-        l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, project_info)
-        
-
-        for file in datafile_info.files:
+        ds_item = None
+        if result.is_new_dataset:
+            ds_item = QTreeWidgetItem([result.dataset.dataset_name, dataset_size,result.experiment.experiment_name])
+            ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, result.dataset)
+            self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
+        else:
+            # Update dataset size.
+            ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda data: (
+                data.dataset_id == result.dataset.dataset_id
+            ))
+            ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
+        # Add datafile under dataset
+        for file in result.datafile.files:
             file_name = file.name
             file_size = file_size_to_str(file.size)
             l1_child = QTreeWidgetItem([file_name,file_size,""])
             l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
-            l1.addChild(l1_child)
-        self.ui.datasetTreeWidget.addTopLevelItem(l1)
-        self.ui.experimentTreeWidget.addTopLevelItem(l2)
-        self.ui.projectTreeWidget.addTopLevelItem(l3)
+            ds_item.addChild(l1_child)
+        # Create or tree widget item for the experiment, or find existing and update size.
+        if result.is_new_experiment:
+            l2 = QTreeWidgetItem([result.experiment.experiment_name,exp_size,result.project.project_name])
+            l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, result.experiment)
+            self.ui.experimentTreeWidget.addTopLevelItem(l2)
+        else:
+            exp_item = self.find_item_in_tree(self.ui.experimentTreeWidget, lambda data:(
+                data.experiment_id == result.experiment.experiment_id
+            ))
+            exp_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, exp_size)
+        # Create tree widget item for the project, or find existing and update size.
+        if result.is_new_project:
+            l3 = QTreeWidgetItem([result.project.project_name,proj_size])
+            l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, result.project)
+            self.ui.projectTreeWidget.addTopLevelItem(l3)
+        else:
+            proj_item = self.find_item_in_tree(self.ui.projectTreeWidget, lambda data:(
+                data.project_id == result.project.project_id
+            ))
+            proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
 
     def openWizardWindow(self):  
-        self.import_wizard_ui = WindowWizard()
+        model = IngestionMetadataModel(self.metadata)
+        self.import_wizard_ui = AddFilesWizard(model)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -182,115 +199,3 @@ class MyTardisMetadataEditor(QMainWindow):
         if filename:
             with open(filename, 'w') as file:
                 file.write(self.metadata.to_yaml())
-
-class WindowWizard(QWizard):
-
-    submitted = QtCore.pyqtSignal(Project, Experiment, Dataset, Datafile)
-
-    def _register_fields(self):
-        proj_page = self.ui.wizardPage1
-        proj_page.registerField("projectIDLineEdit*", self.ui.projectIDLineEdit)
-        proj_page.registerField("projectNameLineEdit*", self.ui.projectNameLineEdit)
-        exp_page = self.ui.wizardPage2
-        exp_page.registerField("experimentNameLineEdit*", self.ui.experimentNameLineEdit)
-        exp_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
-        ds_page = self.ui.datasetInfo
-        ds_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
-        ds_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
-        # ds_page.registerField("")
-
-    def __init__(self):
-        super(QWizard, self).__init__()
-        self.ui = Ui_ImportDataFiles()
-        self.ui.setupUi(self)
-        self._register_fields()
-        # define out widgets
-        self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
-        self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
-        self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
-
-    def addFiles_handler(self):
-        table = self.ui.datafiletableWidget
-        files_to_add = self.open_add_files_dialog()
-        self.add_file_table_rows(table,files_to_add)
-
-    def deleteFiles_handler(self):
-        index_list = []
-        for model_index in self.ui.datafiletableWidget.selectionModel().selectedRows():
-            index = QtCore.QPersistentModelIndex(model_index)
-            index_list.append(index)
-        for index in index_list:
-            self.ui.datafiletableWidget.removeRow(index.row())
-
-    # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
-
-    def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
-        file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        filename = file_dialog.getOpenFileNames(self, "Open files")  
-        fpath = filename[0]
-
-        new_files = []
-        for f in fpath:
-            if f == "":
-                continue
-            info = QtCore.QFileInfo(f)
-            if info in new_files:
-                continue
-            new_files.append(info)
-        return new_files
-    
-    def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
-        # Need to start inserting rows after existing rows.
-        initial_row_count = table.rowCount()
-        # Grow the table to fit new rows.
-        table.setRowCount(initial_row_count + len(files_to_add))
-        new_row_index = 0
-        for file in files_to_add:
-            # Create corresponding cells for file and insert them into table.
-            name_cell = QTableWidgetItem(file.fileName())
-            size = file.size()
-            size_str = file_size_to_str(size)
-            size_cell = QTableWidgetItem(size_str)
-            # Store actual size value in cell. 
-            size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
-            fpath_cell = QTableWidgetItem(file.filePath())
-            # Insert cells into the table.
-            row_index = initial_row_count + new_row_index
-            table.setItem(row_index, 0, name_cell)
-            table.setItem(row_index, 1, size_cell)
-            table.setItem(row_index, 2, fpath_cell)
-            # Increment for the next row
-            new_row_index += 1
-    
-    def on_submit(self):
-        project_info = Project()
-        experiment_info = Experiment()
-        dataset_info = Dataset()
-        datafile_info = Datafile()
-
-        project_info.project_name = self.ui.projectNameLineEdit.text()
-        project_info.project_id = self.ui.projectIDLineEdit.text()
-        project_info.description = self.ui.projectDescriptionLineEdit.toPlainText()
-        experiment_info.experiment_name = self.ui.experimentNameLineEdit.text()
-        experiment_info.experiment_id = self.ui.experimentIDLineEdit.text()
-        experiment_info.project_id = self.ui.projectIDLineEdit.text()
-        experiment_info.description = self.ui.experimentDescriptionLineEdit.toPlainText()
-        dataset_info.dataset_name = self.ui.datasetNameLineEdit.text()
-        dataset_info.dataset_id = self.ui.datasetIDLineEdit.text()
-        # Because a dataset can belong to multiple experiments,
-        # we are creating a list around the experiment we captured.
-        dataset_info.experiment_id = [self.ui.experimentIDLineEdit.text()]
-
-        datafile_info.dataset_id = dataset_info.dataset_id
-
-        table = self.ui.datafiletableWidget
-        for row in range(table.rowCount()):
-            file_name = table.item(row,0).text()
-            size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            file_info = FileInfo(name = file_name)
-            file_info.size = size
-            datafile_info.files.append(file_info)
-
-        self.submitted.emit(project_info, experiment_info, dataset_info, datafile_info)
-        self.close()
