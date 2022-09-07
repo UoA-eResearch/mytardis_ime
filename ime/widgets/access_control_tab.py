@@ -11,6 +11,8 @@ class AccessControlTab(QWidget):
         self.ui.setupUi(self)
 
     def set_has_inheritance(self, has_inheritance: bool):
+        # TODO Add logic to swap and copy from inherited
+        # parental ACL.
         self.ui.adminGroupsList.set_has_inheritance(has_inheritance)
         self.ui.adminUsersList.set_has_inheritance(has_inheritance)
         self.ui.readGroupsList.set_has_inheritance(has_inheritance)

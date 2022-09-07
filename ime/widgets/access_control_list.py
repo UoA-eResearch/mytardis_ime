@@ -2,9 +2,8 @@ from typing import List
 import typing
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QEvent, QObject, QSignalBlocker
+from PyQt5.QtCore import QEvent, QObject, QSignalBlocker, QStringListModel
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from ime.qt_models import ListModel
 from PyQt5.QtWidgets import QMessageBox, QWidget
 
 class AccessControlList(QWidget):
@@ -67,27 +66,21 @@ class AccessControlList(QWidget):
         model_idx = self.list_model.index(idx, 0)
         self.ui.aclList.setCurrentIndex(model_idx)
         self.ui.aclList.edit(model_idx)
-        
-
-    # def focusOutEvent(self, a0: QtGui.QFocusEvent) -> None:
-    #     # Clear selection if user clicks away
-    #     self.ui.aclList.clearSelection()
-
-    # def eventFilter(self, a0: QObject, a1: QEvent) -> bool:
-    #     if a0 is self.ui.overrideCheckBox and a1.type() == QEvent.Type.:
-    #         print("Check box event!")
-    #     return False
 
     def handle_remove(self):
         if getattr(self, 'list_model', None) is None:
             return
         idx_list = self.ui.aclList.selectedIndexes()
-        values = [self.list_model.data(idx) for idx in idx_list]
-        for val in values:
-            self.list_model.remove_value(val)
+        rows_to_remove = [idx.row() for idx in idx_list]
+        # Reverse sort the rows to remove, so we're not affected
+        # by row index changes.
+        rows_to_remove.sort(reverse=True)
+        for row in rows_to_remove:
+            self.list_model.removeRow(row)
 
     def set_list(self, ac_list: List[str]):
-        self.list_model = ListModel(ac_list, self)
+        self.list_model = QStringListModel(self)
+        self.list_model.setStringList(ac_list)
         self.ui.aclList.setModel(self.list_model)
         # Reapply in case this list has value
         self.set_has_inheritance(self.has_inheritance)
