@@ -29,7 +29,7 @@ class MyTardisMetadataEditor(QMainWindow):
         # define our widgets
         self.ui.actionImport_data_files.triggered.connect(self.openWizardWindow)
         self.ui.actionSave.triggered.connect(self.save_to_yaml)
-        self.ui.actionLoad.triggered.connect(self.loadYaml)
+        self.ui.actionOpen.triggered.connect(self.loadYaml)
 
         self.ui.datasetTreeWidget.itemClicked.connect(self.onClickedDataset)
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
@@ -218,8 +218,12 @@ class MyTardisMetadataEditor(QMainWindow):
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
+                # If user did not want to proceed, then exit.
                 return
         fileName = QFileDialog.getOpenFileName(self, "Open File",'', "Yaml(*.yaml);;AllFiles(*.*)")[0]
+        if fileName == '':
+            # If user dismissed the Open File dialog, then exit.
+            return
         with open(fileName) as f:
             data_load = f.read()
             try:
