@@ -39,7 +39,6 @@ class IAccessControl:
     sensitive_groups: List[str] = field(default_factory=list)
     sensitive_users: List[str] = field(default_factory=list)
 
-
 @dataclass
 class IMetadata:
     """
@@ -132,7 +131,14 @@ class IngestionMetadata:
     projects: List[Project] = field(default_factory=list)
     experiments: List[Experiment] = field(default_factory=list)
     datasets: List[Dataset] = field(default_factory=list)
-    datafiles: List[Datafile] = field(default_factory=list)
+    datafiles: List[Datafile] = field(default_factory=list)        
+
+    def is_empty(self) -> bool:
+        return (len(self.projects) == 0 and
+            len(self.experiments) == 0 and
+            len(self.datasets) == 0 and
+            len(self.datafiles) == 0
+        )
 
     def to_yaml(self):
         """
@@ -214,6 +220,7 @@ class IngestionMetadata:
                     obj,
                 )
         return metadata
+
 
 
 # # To use:

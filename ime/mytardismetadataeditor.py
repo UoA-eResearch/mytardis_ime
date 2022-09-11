@@ -1,3 +1,4 @@
+import typing
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem
 from PyQt5.QtCore import Qt
@@ -168,45 +169,33 @@ class MyTardisMetadataEditor(QMainWindow):
         if result.is_new_experiment:
             self.metadata.experiments.append(result.experiment)
         self.metadata.datafiles.append(result.datafile)
-        # Calculate sizes by summing all the files' sizes
-        dataset_size = file_size_to_str(self.dataset_size(result.dataset))
-        exp_size = file_size_to_str(self.experiment_size(result.experiment))
-        proj_size = file_size_to_str(self.project_size(result.project))
         # Create tree widget item for the dataset
         ds_item = None
         if result.is_new_dataset:
-            ds_item = QTreeWidgetItem([result.dataset.dataset_name, dataset_size,result.experiment.experiment_name])
-            ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, result.dataset)
-            self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
+            self.add_dataset_to_tree(result.dataset)
         else:
             # Update dataset size.
+            dataset_size = file_size_to_str(self.dataset_size(result.dataset))
             ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda data: (
                 data.dataset_id == result.dataset.dataset_id
             ))
             ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
         # Add datafile under dataset
-        for file in result.datafile.files:
-            file_name = file.name
-            file_size = file_size_to_str(file.size)
-            l1_child = QTreeWidgetItem([file_name,file_size,""])
-            l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
-            ds_item.addChild(l1_child)
+        self.add_datafile_to_tree(result.datafile)
         # Create or tree widget item for the experiment, or find existing and update size.
         if result.is_new_experiment:
-            l2 = QTreeWidgetItem([result.experiment.experiment_name,exp_size,result.project.project_name])
-            l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, result.experiment)
-            self.ui.experimentTreeWidget.addTopLevelItem(l2)
+            self.add_experiment_to_tree(result.experiment)
         else:
+            exp_size = file_size_to_str(self.experiment_size(result.experiment))
             exp_item = self.find_item_in_tree(self.ui.experimentTreeWidget, lambda data:(
                 data.experiment_id == result.experiment.experiment_id
             ))
             exp_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, exp_size)
         # Create tree widget item for the project, or find existing and update size.
         if result.is_new_project:
-            l3 = QTreeWidgetItem([result.project.project_name,proj_size])
-            l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, result.project)
-            self.ui.projectTreeWidget.addTopLevelItem(l3)
+            self.add_project_to_tree(result.project)
         else:
+            proj_size = file_size_to_str(self.project_size(result.project))
             proj_item = self.find_item_in_tree(self.ui.projectTreeWidget, lambda data:(
                 data.project_id == result.project.project_id
             ))
@@ -220,24 +209,39 @@ class MyTardisMetadataEditor(QMainWindow):
 
     # Import metadata from a yaml file
     def loadYaml(self):
+        if not self.metadata.is_empty():
+            # Check user is OK with opening another file
+            confirm_msg = QMessageBox()
+            confirm_msg.setWindowTitle("Open another file?")
+            confirm_msg.setText('Discard unsaved changes and open another file?')
+            confirm_msg.setInformativeText("Unsaved changes in the current file will be lost.")
+            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+            res = confirm_msg.exec()
+            if res == QMessageBox.StandardButton.Cancel:
+                return
         fileName = QFileDialog.getOpenFileName(self, "Open File",'', "Yaml(*.yaml);;AllFiles(*.*)")[0]
         with open(fileName) as f:
             data_load = f.read()
-            # try:
-            data_yaml = IngestionMetadata.from_yaml(data_load)
-            self.display_load_data(data_yaml)
-            # except Exception as e:
-            #     msg_box = QMessageBox()
-            #     msg_box.setWindowTitle("Error loading file")
-            #     msg_box.setText("There was an error loading the metadata file. Please check to ensure it's valid.")
-            #     msg_box.exec()
+            try:
+                data_yaml = IngestionMetadata.from_yaml(data_load)
+                self.display_load_data(data_yaml)
+            except Exception as e:
+                msg_box = QMessageBox()
+                msg_box.setWindowTitle("Error loading file")
+                msg_box.setText("There was an error loading the metadata file. Please check to ensure it's valid.")
+                msg_box.exec()
+
     # Display loaded metadata
-    def display_load_data(self,data_loaded):
-        # Concatenate files.
-        self.metadata.projects += data_loaded.projects
-        self.metadata.experiments += data_loaded.experiments
-        self.metadata.datasets += data_loaded.datasets
-        self.metadata.datafiles += data_loaded.datafiles
+    def display_load_data(self,data_loaded: IngestionMetadata):
+        # Clear existing metadata.
+        self.metadata = data_loaded
+        self.ui.projectTreeWidget.clear()
+        self.ui.experimentTreeWidget.clear()
+        self.ui.datasetTreeWidget.clear()
+        # self.metadata.projects += data_loaded.projects
+        # self.metadata.experiments += data_loaded.experiments
+        # self.metadata.datasets += data_loaded.datasets
+        # self.metadata.datafiles += data_loaded.datafiles
         for project in data_loaded.projects:
             self.add_project_to_tree(project)
         for experiment in data_loaded.experiments:
