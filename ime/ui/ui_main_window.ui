@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="editorTabs">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="dataset_tab">
        <attribute name="title">
@@ -474,16 +474,11 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNewFile"/>
+   <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
-   <addaction name="actionLoad"/>
    <addaction name="separator"/>
    <addaction name="actionImport_data_files"/>
   </widget>
-  <action name="actionOpen_metadata_file">
-   <property name="text">
-    <string>Open</string>
-   </property>
-  </action>
   <action name="actionNewFile">
    <property name="text">
     <string>New...</string>
@@ -530,12 +525,15 @@
     <string>Ctrl+Shift+I</string>
    </property>
   </action>
-  <action name="actionLoad">
+  <action name="actionOpen">
    <property name="text">
-    <string>Load...</string>
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+L</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
  </widget>

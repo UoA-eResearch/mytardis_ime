@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ime/ui/ui_main_window.ui'
+<<<<<<< HEAD:ime/ui/MainWindow.py
+# Form implementation generated from reading ui file 'MainWindow.ui'
+=======
+# Form implementation generated from reading ui file 'ime/ui/ui_main_window.ui'
+>>>>>>> main:ime/ui/ui_main_window.py
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -224,6 +228,8 @@ class Ui_MainWindow(object):
         self.toolBar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.actionOpen_metadata_file = QtWidgets.QAction(MainWindow)
+        self.actionOpen_metadata_file.setObjectName("actionOpen_metadata_file")
         self.actionNewFile = QtWidgets.QAction(MainWindow)
         self.actionNewFile.setObjectName("actionNewFile")
         self.actionFrom_a_template = QtWidgets.QAction(MainWindow)
@@ -239,16 +245,16 @@ class Ui_MainWindow(object):
         icon.addPixmap(QtGui.QPixmap(":/resources/noun-file-add-4877075.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionImport_data_files.setIcon(icon)
         self.actionImport_data_files.setObjectName("actionImport_data_files")
-        self.actionOpen = QtWidgets.QAction(MainWindow)
-        self.actionOpen.setObjectName("actionOpen")
+        self.actionLoad = QtWidgets.QAction(MainWindow)
+        self.actionLoad.setObjectName("actionLoad")
         self.toolBar.addAction(self.actionNewFile)
-        self.toolBar.addAction(self.actionOpen)
         self.toolBar.addAction(self.actionSave)
+        self.toolBar.addAction(self.actionLoad)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImport_data_files)
 
         self.retranslateUi(MainWindow)
-        self.editorTabs.setCurrentIndex(0)
+        self.editorTabs.setCurrentIndex(1)
         self.datasetTabProps.setCurrentIndex(2)
         self.experimentTabProps.setCurrentIndex(1)
         self.projectTabProps.setCurrentIndex(1)
@@ -275,6 +281,7 @@ class Ui_MainWindow(object):
         self.label_54.setText(_translate("MainWindow", "Select a project to edit metadata and access control properties."))
         self.editorTabs.setTabText(self.editorTabs.indexOf(self.project_tab), _translate("MainWindow", "Projects"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
+        self.actionOpen_metadata_file.setText(_translate("MainWindow", "Open"))
         self.actionNewFile.setText(_translate("MainWindow", "New..."))
         self.actionNewFile.setToolTip(_translate("MainWindow", "Create a new metadata file"))
         self.actionFrom_a_template.setText(_translate("MainWindow", "From a template..."))
@@ -285,8 +292,17 @@ class Ui_MainWindow(object):
         self.actionImport_data_files.setText(_translate("MainWindow", "Import data files"))
         self.actionImport_data_files.setToolTip(_translate("MainWindow", "Launch guide to import new data files"))
         self.actionImport_data_files.setShortcut(_translate("MainWindow", "Ctrl+Shift+I"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
-        self.actionOpen.setToolTip(_translate("MainWindow", "Open"))
-        self.actionOpen.setShortcut(_translate("MainWindow", "Ctrl+O"))
+        self.actionLoad.setText(_translate("MainWindow", "Load..."))
+        self.actionLoad.setShortcut(_translate("MainWindow", "Ctrl+L"))
 from ime.widgets.prop_editor import DatafilePropertyEditor, DatasetPropertyEditor, ExperimentPropertyEditor, ProjectPropertyEditor
 import default_rc
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
