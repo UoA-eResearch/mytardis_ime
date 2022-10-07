@@ -35,14 +35,6 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.datasetTreeWidget.itemClicked.connect(self.onClickedDataset)
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
-<<<<<<< HEAD
-        self.ui.datasetTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.menuContextTree)
-        self.ui.experimentTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.menuContextTree)
-        self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.projectTreeWidget.customContextMenuRequested.connect(self.menuContextTree)
-=======
 
         self.ui.datasetTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.dataestMenuContextTree)
@@ -50,7 +42,6 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
         self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
->>>>>>> 24fc639b485b2fa0215e36bad7d0ea5fe139eeee
         self.show()
     
     def dataestMenuContextTree(self, point):
@@ -108,35 +99,6 @@ class MyTardisMetadataEditor(QMainWindow):
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
         action = menu.addAction("Delete this Project")
-
-        menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
-
-    def menuContextTree(self, point):
-        # Infos about the node selected.
-        index = self.ui.datasetTreeWidget.indexAt(point)
-        index2 = self.ui.experimentTreeWidget.indexAt(point)
-        index3 = self.ui.projectTreeWidget.indexAt(point)
-
-        if not index.isValid():
-            return
-
-        item = self.ui.datasetTreeWidget.itemAt(point)
-        item2 = self.ui.experimentTreeWidget.itemAt(point)
-        item3 = self.ui.projectTreeWidget.itemAt(point)
-        name = item.text(0)  # The text of the node.
-
-        # We build the menu.
-        menu = QMenu()
-        action = menu.addAction("Add new")
-        #action = menu.addAction(name)
-        action = menu.addAction("Delete")
-        #menu.addSeparator()
-        #action_1 = menu.addAction("Choix 1")
-        #action_2 = menu.addAction("Choix 2")
-        #action_3 = menu.addAction("Choix 3")
-
-        menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
-        menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
         menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
 
     def onSelectDataset(self, dataset: Dataset):
