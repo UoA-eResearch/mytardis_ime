@@ -1,3 +1,4 @@
+from pyexpat import model
 import typing
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
@@ -7,7 +8,7 @@ from typing import Any, Callable
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
-from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult
+from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardSkip,AddFilesWizardResult
 from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
@@ -34,13 +35,81 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.datasetTreeWidget.itemClicked.connect(self.onClickedDataset)
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
+<<<<<<< HEAD
         self.ui.datasetTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.menuContextTree)
         self.ui.experimentTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.menuContextTree)
         self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.menuContextTree)
+=======
+
+        self.ui.datasetTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.dataestMenuContextTree)
+        self.ui.experimentTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
+        self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
+>>>>>>> 24fc639b485b2fa0215e36bad7d0ea5fe139eeee
         self.show()
+    
+    def dataestMenuContextTree(self, point):
+        index = self.ui.datasetTreeWidget.indexAt(point)
+
+        if not index.isValid():
+            return
+
+        item = self.ui.datasetTreeWidget.itemAt(point)
+        #experiment = self.experiment_for_dataset(dataset)
+        name = item.text(0)  # The text of the node.
+
+        # We build the menu.
+        menu = QMenu()
+        action = menu.addAction("Add New File...")
+        #action.triggered.connect(self.openWizardWindowSkip)
+        action = menu.addAction("Delete this Dataset")
+
+        menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
+
+    def experimentMenuTreeWidget(self, point):
+        index = self.ui.experimentTreeWidget.indexAt(point)
+
+        if not index.isValid():
+            return
+
+        item = self.ui.experimentTreeWidget.itemAt(point)
+        name = item.text(0)  # The text of the node.
+
+        # We build the menu.
+        menu = QMenu()
+        action = menu.addAction("Add New Dataset...")
+        action.triggered.connect(self.openWizardWindowSkip)
+        action = menu.addAction("Delete this Experiment")
+
+        menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
+
+    def openWizardWindowSkip(self):  
+        model = IngestionMetadataModel(self.metadata)
+        print(model)
+        self.import_wizard_ui = AddFilesWizardSkip(model)
+        self.import_wizard_ui.submitted.connect(self.reFresh)
+        self.import_wizard_ui.show()
+
+    def projectMenuTreeWidget(self, point):
+        index = self.ui.projectTreeWidget.indexAt(point)
+
+        if not index.isValid():
+            return
+
+        item = self.ui.projectTreeWidget.itemAt(point)
+        name = item.text(0)  # The text of the node.
+
+        # We build the menu.
+        menu = QMenu()
+        action = menu.addAction("Add New Experiment...")
+        action = menu.addAction("Delete this Project")
+
+        menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
 
     def menuContextTree(self, point):
         # Infos about the node selected.
