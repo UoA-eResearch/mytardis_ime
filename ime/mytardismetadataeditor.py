@@ -68,8 +68,11 @@ class MyTardisMetadataEditor(QMainWindow):
         if not index.isValid():
             return
 
-        item = self.ui.experimentTreeWidget.itemAt(point)
-        name = item.text(0)  # The text of the node.
+        #item = self.ui.experimentTreeWidget.itemAt(point)
+        item = self.ui.experimentTreeWidget.currentItem()
+        exp_selected = item.data(0, Qt.ItemDataRole.UserRole)
+        print(exp_selected)
+        #name = item.text(0)  # The text of the node.
 
         # We build the menu.
         menu = QMenu()
@@ -81,7 +84,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def openWizardWindowSkip(self):  
         model = IngestionMetadataModel(self.metadata)
-        print(model)
         self.import_wizard_ui = AddFilesWizardSkip(model)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
@@ -238,6 +240,7 @@ class MyTardisMetadataEditor(QMainWindow):
         ds_item = None
         if result.is_new_dataset:
             self.add_dataset_to_tree(result.dataset)
+            # Update experiment and project size.___Libby
         else:
             # Update dataset size.
             dataset_size = file_size_to_str(self.dataset_size(result.dataset))
