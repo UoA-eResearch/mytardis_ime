@@ -252,7 +252,7 @@ class AddFilesWizardSkip(QWizard):
         # Create a dict of page names and their IDs.
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
-
+    '''
     def nextId(self) -> int:
         # Function for determining which page the wizard should advance to.
         # Custom WizardPages in add_files_wizard_pages have their own nextId()
@@ -287,6 +287,7 @@ class AddFilesWizardSkip(QWizard):
             return pages['includedFilesPage']
         else:
             return super().nextId()
+        '''
 
     def __init__(self, metadataModel: IngestionMetadataModel):
         super(QWizard, self).__init__()
