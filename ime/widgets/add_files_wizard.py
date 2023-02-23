@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
-
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import (QFileDialog, QTableWidget, QTableWidgetItem,
-                             QWidget, QWizard, QWizardPage)
-
-from ime.models import Datafile, Dataset, Experiment, FileInfo, Project
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
+from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
+from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
+from ime.utils import file_size_to_str
+from ime.models import Project, Experiment, Dataset, Datafile, FileInfo
 from ime.qt_models import IngestionMetadataModel
 #from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
@@ -243,7 +243,7 @@ class AddFilesWizardSkip(QWizard):
         # Dataset pages
         ds_new_page = self.ui.newDatasetPage
         # temporary!!!!!!!
-        exp_page.registerField("isNewDataset", self.ui.existingExperimentList_1)
+        exp_page.registerField("isNewDataset", self.ui.existingProjectList_2)
         
         ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
@@ -260,12 +260,31 @@ class AddFilesWizardSkip(QWizard):
         # nextId function.
         current = self.currentId()
         pages = self.page_ids
+        #self.setStartId(1)
+        #item = self.ui.experimentTreeWidget.currentItem()
+        #exp_selected = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        if current == pages['introductionPage']:
+            # Check if there are existing projects.
+            # If there are, go to the choice page, otherwise go to the new project page.
+            if self.metadataModel.experiments.rowCount() > 0:
+                #self.setField('isExistingProject', True)
+                #self.setField('isExistingExperiment', True)
+                #self.setField('isExistingDataset', True)
+                return pages['pePage']
+            else:
 
-        if current == pages['pePage']:
-            self.setField('isNewProject', False)
-            self.setField('isNewExperiment', False)
+                return
+        #if current == pages['newProjectPage']:
+        #    #self.setField('isNewExperiment', True)
+        #    self.setField('isExistingExperiment', False)
+        #    return pages['newExperimentPage']
+        #elif current == pages['newExperimentPage']:
+        #    self.setField('isNewDataset', True)
+        #    self.setField('isExistingDataset', False)
+        #    return pages['newDatasetPage']
+        elif current == pages['newDatasetPage']:
             self.setField('isNewDataset', True)
-            return pages['newDatasetPage']
+            return pages['includedFilesPage']
         else:
             return super().nextId()
 

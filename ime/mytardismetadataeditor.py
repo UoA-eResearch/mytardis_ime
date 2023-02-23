@@ -79,15 +79,16 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.datasetTreeWidget.takeTopLevelItem(self.datasetTreeWidget.indexFromItem(self.datasetTreeWidget.currentItem(), 0).row())
 
     def experimentMenuTreeWidget(self, point):
-        '''
         index = self.ui.experimentTreeWidget.indexAt(point)
 
         if not index.isValid():
             return
-        '''
+
         #item = self.ui.experimentTreeWidget.itemAt(point)
         item = self.ui.experimentTreeWidget.currentItem()
         exp_selected = item.data(0, Qt.ItemDataRole.UserRole)
+        print(exp_selected)
+        #name = item.text(0)  # The text of the node.
 
         # We build the menu.
         menu = QMenu()
@@ -99,9 +100,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def openWizardWindowSkip(self):  
         model = IngestionMetadataModel(self.metadata)
-        item = self.ui.experimentTreeWidget.currentItem()
-        data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
-        print(data, data.experiment_name, data.project_id)
         self.import_wizard_ui = AddFilesWizardSkip(model)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()

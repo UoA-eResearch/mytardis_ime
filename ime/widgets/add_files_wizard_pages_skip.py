@@ -45,20 +45,11 @@ class ProjectPage(QWizardPage):
         return self.field('isExistingProject') is not None
 
 class PExperimentPage(QWizardPage):
-    def selected_existing_pe_changed(self,idx):
+    def selected_existing_pe_changed(self):
         # Look up and record the selected existing project and experiment.
         wizard = self.wizard()
         #project = self.model_pro.instance(idx_p)
         #experiment = self.model_exp.instance(idx_e)
-        #wizard.ui.existingExperimentList_1.clear()
-
-        idx_current_pro = wizard.ui.existingProjectList_2.currentIndex()
-        project = self.model_pro.instance(idx_current_pro)
-        self.model_exp = wizard.metadataModel.experiments_for_project(project)
-        self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['experiment_name'])
-        wizard.ui.existingExperimentList_1.setModel(self.model_exp)
-
         exp = self.model_exp.instance(wizard.ui.existingExperimentList_1.currentIndex())
         project = self.model_pro.instance(wizard.ui.existingProjectList_2.currentIndex())
         wizard.selected_existing_project = project
@@ -89,9 +80,9 @@ class PExperimentPage(QWizardPage):
         list_view_exp.setModel(self.model_exp)
 
         #wizard.ui.existingProjectList_2.setModel(self.model)
-        self.selected_existing_pe_changed(wizard.ui.existingProjectList_2.currentIndex())
+        #self.selected_existing_pe_changed(wizard.ui.existingProjectList_2.currentIndex(), wizard.ui.existingExperimentList_1.currentIndex())
         list_view_pro.currentIndexChanged.connect(self.selected_existing_pe_changed)
-        #list_view_exp.currentIndexChanged.connect(self.selected_existing_pe_changed)
+        list_view_exp.currentIndexChanged.connect(self.selected_existing_pe_changed)
 
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizardSkip, self.wizard())
