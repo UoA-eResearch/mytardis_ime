@@ -177,13 +177,14 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         self.dataChanged.emit(index, index)
         return True
 
-    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+    def flags(self, index: QModelIndex) -> Qt.ItemFlag:
         flags = (
             Qt.ItemFlag.ItemIsEditable
             | Qt.ItemFlag.ItemIsEnabled
             | Qt.ItemFlag.ItemIsSelectable
         )
-        return typing.cast(Qt.ItemFlags, flags)
+        return flags
+        # return typing.cast(Qt.ItemFlags, flags)
 
     def headerData(
         self,
@@ -196,7 +197,6 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             and role == Qt.ItemDataRole.DisplayRole
         ):
             return self.fields[section]
-
     def data(
         self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
     ) -> typing.Any:
@@ -297,11 +297,11 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         instance = self.sourceModel().instance(source_row)
         return self.filter_by_instance(instance)
 
-    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+    def flags(self, index: QModelIndex) -> Qt.ItemFlag:
         flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         if not self.read_only:
             flags |= Qt.ItemFlag.ItemIsEditable
-        return typing.cast(Qt.ItemFlags, flags)
+        return flags
 
     def columnCount(self, parent = QModelIndex()) -> int:
         if len(self.show_fields) > 0:

@@ -7,134 +7,12 @@
     <x>0</x>
     <y>0</y>
     <width>794</width>
-    <height>692</height>
+    <height>664</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import Data</string>
   </property>
-  <widget class="QWizardPage" name="introductionPage">
-   <attribute name="pageId">
-    <string notr="true">0</string>
-   </attribute>
-   <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_9">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Welcome! This dialog will get you started with importing your data and organising them.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Preferred</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QFrame" name="mytardisdatamodelexplanation">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>310</height>
-         </size>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="label_12">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>253</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>300</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../default.qrc">:/resources/text66-1-7.png</pixmap>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_10">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>In MyTardis, data are organised in a hierarchy. Files are grouped into Datasets. Datasets are organised into Experiments. Experiments belong to a Project. You can attach metadata at each level to make it easier for you and your collaborators to find and reuse your data. </string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Preferred</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_11">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>This dialog will help you create the Project, Experiment and Dataset to put your files under. You can re-run this dialog for other files that need to be organised separately.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
   <widget class="ProjectPage" name="pPage">
    <attribute name="pageId">
     <string notr="true">2</string>
@@ -412,7 +290,7 @@
         <widget class="QComboBox" name="existingExperimentList_2"/>
        </item>
        <item row="2" column="1">
-        <widget class="QComboBox" name="existingDatasetList"/>
+        <widget class="QComboBox" name="existingDatasetList_1"/>
        </item>
       </layout>
      </widget>

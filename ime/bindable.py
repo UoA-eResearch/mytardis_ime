@@ -67,7 +67,7 @@ class BoundObject(QObject, Generic[T]):
     def unbind(self):
         for field_name in self._bound_inputs:
             for input in self._bound_inputs[field_name]:
-                if input.value_changed is None or input._value_changed_slot is None:
+                if input.value_changed is None or getattr(input, "_value_changed_slot", None) is None:
                     continue
                 # Disconnect the slot we've created
                 input.value_changed.disconnect(input._value_changed_slot)

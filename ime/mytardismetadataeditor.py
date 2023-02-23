@@ -8,7 +8,7 @@ from typing import Any, Callable
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
-from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardSkip,AddFilesWizardResult
+from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardSkip,AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipProject
 from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
@@ -37,39 +37,57 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
 
         self.ui.datasetTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.dataestMenuContextTree)
+        self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.datasetMenuContextTree)
         self.ui.experimentTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
         self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
         self.show()
     
-    def dataestMenuContextTree(self, point):
+    def datasetMenuContextTree(self, point):
+        '''
         index = self.ui.datasetTreeWidget.indexAt(point)
 
         if not index.isValid():
             return
 
         item = self.ui.datasetTreeWidget.itemAt(point)
-        #experiment = self.experiment_for_dataset(dataset)
-        name = item.text(0)  # The text of the node.
-
+        '''
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New File...")
-        #action.triggered.connect(self.openWizardWindowSkip)
+        action.triggered.connect(self.openWizardWindowSkipDataset)
         action = menu.addAction("Delete this Dataset")
 
         menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
+    
+    def openWizardWindowSkipDataset(self):  
+        model = IngestionMetadataModel(self.metadata)
+        item = self.ui.datasetTreeWidget.currentItem()
+        data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        # print(data, data.dataset_name, data.experiment_id)
+        # To do: create a dic with info about related exp, project
+        exp_data = self.experiment_for_dataset(data)
+        pro_data = self.project_for_experiment(exp_data)
+        #print(data, exp_data,pro_data)
+        
+        self.import_wizard_ui = AddFilesWizardSkipDataset(model,data,exp_data,pro_data)
+        self.import_wizard_ui.submitted.connect(self.reFresh)
+        self.import_wizard_ui.show()
+    
+    def deleteItems(self):
+        self.ui.datasetTreeWidget.takeTopLevelItem(self.datasetTreeWidget.indexFromItem(self.datasetTreeWidget.currentItem(), 0).row())
 
     def experimentMenuTreeWidget(self, point):
+        '''
         index = self.ui.experimentTreeWidget.indexAt(point)
 
         if not index.isValid():
             return
-
-        item = self.ui.experimentTreeWidget.itemAt(point)
-        name = item.text(0)  # The text of the node.
+        '''
+        #item = self.ui.experimentTreeWidget.itemAt(point)
+        item = self.ui.experimentTreeWidget.currentItem()
+        exp_selected = item.data(0, Qt.ItemDataRole.UserRole)
 
         # We build the menu.
         menu = QMenu()
@@ -81,7 +99,9 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def openWizardWindowSkip(self):  
         model = IngestionMetadataModel(self.metadata)
-        print(model)
+        item = self.ui.experimentTreeWidget.currentItem()
+        data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        print(data, data.experiment_name, data.project_id)
         self.import_wizard_ui = AddFilesWizardSkip(model)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
@@ -93,19 +113,24 @@ class MyTardisMetadataEditor(QMainWindow):
             return
 
         item = self.ui.projectTreeWidget.itemAt(point)
-        name = item.text(0)  # The text of the node.
+        name = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
 
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
+        action.triggered.connect(self.openWizardWindowSkipProject)
         action = menu.addAction("Delete this Project")
-
         menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
+
+    def openWizardWindowSkipProject(self):  
+        model = IngestionMetadataModel(self.metadata)
+        self.import_wizard_ui = AddFilesWizardSkipProject(model)
+        self.import_wizard_ui.submitted.connect(self.reFresh)
+        self.import_wizard_ui.show()
 
     def onSelectDataset(self, dataset: Dataset):
         # Update property editor with new object
         self.ui.datasetProperties.set_dataset(dataset)
-
 
     def onSelectDatafile(self, dataset: Dataset, file_name: str):
         # First, look up the dataset value
@@ -239,6 +264,7 @@ class MyTardisMetadataEditor(QMainWindow):
         ds_item = None
         if result.is_new_dataset:
             self.add_dataset_to_tree(result.dataset)
+            # Update experiment and project size.___Libby
         else:
             # Update dataset size.
             dataset_size = file_size_to_str(self.dataset_size(result.dataset))
