@@ -4,7 +4,7 @@ import typing
 from PyQt5 import QtGui
 from PyQt5.QtCore import QEvent, QObject, QSignalBlocker, QStringListModel
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from PyQt5.QtWidgets import QMessageBox, QWidget
+from PyQt5.QtWidgets import QMessageBox, QWidget, QLineEdit
 
 class AccessControlList(QWidget):
 
@@ -12,7 +12,14 @@ class AccessControlList(QWidget):
         super().__init__(parent)
         self.ui = Ui_AccessControlList()
         self.ui.setupUi(self)
+        #Libby to add line edit
+        #self.ui.input_box = QLineEdit(self)
+
+        #Libby Initialize the flag to False
+        self.item_added = False
+
         self.ui.btnAdd.clicked.connect(self.handle_insert_new)
+        #self.ui.btnAdd.setEnabled(False) # Display the button by default
         self.ui.btnDelete.clicked.connect(self.handle_remove)
         # To monitor focus out events and deselect
         # self.ui.aclList.installEventFilter(self)
@@ -61,11 +68,31 @@ class AccessControlList(QWidget):
     def handle_insert_new(self):
         if getattr(self, 'list_model', None) is None:
             return
-        idx = self.list_model.rowCount()
-        self.list_model.insertRow(idx)
-        model_idx = self.list_model.index(idx, 0)
-        self.ui.aclList.setCurrentIndex(model_idx)
-        self.ui.aclList.edit(model_idx)
+        ### Libby to add text value to the listmodel
+        #list_model = self.set_list([])
+    
+        checked = self.ui.overrideCheckBox.isChecked()
+        #self.list_model.stringList().removeAll("")
+        #print(self.list_model.stringList)
+        if checked and (not self.item_added):
+            row = self.list_model.rowCount() # get the number of rows in model --> int
+            self.list_model.insertRows(row,1) # Enable add one or more row.
+            model_idx = self.list_model.index(row)
+            self.ui.aclList.setCurrentIndex(model_idx)
+            self.ui.aclList.edit(model_idx)
+            # Set the flag to True after an item has been added
+            self.item_added = True
+
+        # If an item has been added, remove any empty or null strings from the model
+        elif checked and (self.item_added):
+            self.remove_empty_strings(self.list_model)
+            row = self.list_model.rowCount() # get the number of rows in model --> int
+            self.list_model.insertRows(row,1) # Enable add one or more row.
+            model_idx = self.list_model.index(row)
+            self.ui.aclList.setCurrentIndex(model_idx)
+            self.ui.aclList.edit(model_idx)
+            self.item_added = True
+
 
     def handle_remove(self):
         if getattr(self, 'list_model', None) is None:
@@ -79,8 +106,17 @@ class AccessControlList(QWidget):
             self.list_model.removeRow(row)
 
     def set_list(self, ac_list: List[str]):
-        self.list_model = QStringListModel(self)
-        self.list_model.setStringList(ac_list)
-        self.ui.aclList.setModel(self.list_model)
+        self.list_model = QStringListModel(self) # create stringlistmodel object
+        self.list_model.setStringList(ac_list)  # assign values to the model
+        self.ui.aclList.setModel(self.list_model) # connect view and model
         # Reapply in case this list has value
         self.set_has_inheritance(self.has_inheritance)
+
+    def remove_empty_strings(self,model):
+        # Get the string list from the model
+        string_list = model.stringList()
+
+        # Iterate through the string list and remove any empty or null strings
+        for i in reversed(range(len(string_list))):
+            if string_list[i] == '' or string_list[i] is None:
+                model.removeRows(i, 1)
