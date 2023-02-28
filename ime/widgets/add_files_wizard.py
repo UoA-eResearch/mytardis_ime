@@ -437,7 +437,7 @@ class AddFilesWizardSkipDataset(QWizard):
         #proj_name = self.project_for_experiment(exp_name)
 
         # customise the pedPage, pePage, and pPage with item_data
-        self.ui.existingDatasetList_1 = ds_data.dataset_name
+        #self.ui.existingDatasetList_1 = ds_data.dataset_name
         #self.ui.existingExperimentList_2 = exp_data.experiment_name
         #self.ui.existingProjectList_3 = pro_data.project_name
 
