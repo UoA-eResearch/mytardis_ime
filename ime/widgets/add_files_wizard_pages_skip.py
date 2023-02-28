@@ -120,7 +120,7 @@ class PEDatasetPage(QWizardPage):
 
         project = self.model_pro.instance(wizard.ui.existingProjectList_3.currentIndex())
         exp = self.model_exp.instance(wizard.ui.existingExperimentList_2.currentIndex())
-        #ds = self.model_ds.instance(wizard.ui.existingDatasetList_1.currentIndex())
+        ds = self.model_ds.instance(wizard.ui.existingDatasetList_1.currentIndex())
 
         wizard.selected_existing_project = project
         wizard.selected_existing_experiment = exp
@@ -136,8 +136,8 @@ class PEDatasetPage(QWizardPage):
         list_view_ds = wizard.ui.existingDatasetList_1
         self.model_ds = wizard.metadataModel.datasets.proxy(['dataset_name'])
         self.model_ds.set_read_only(True)
-        #self.model_ds.set_show_fields(['dataset_name'])
-        #list_view_ds.setModel(self.model_ds)
+        self.model_ds.set_show_fields(['dataset_name'])
+        list_view_ds.setModel(self.model_ds)
 
         list_view_pro = wizard.ui.existingProjectList_3
         self.model_pro = wizard.metadataModel.projects.proxy(['project_name'])
