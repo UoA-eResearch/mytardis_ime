@@ -21,8 +21,7 @@ def test_show_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     view = QDialog()
     experiment = experiments[0]
     tab = AccessControlTab(view)
-    tab.set_has_inheritance(False)
-    tab.set_item(experiment)
+    tab.data = experiment
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
@@ -32,23 +31,24 @@ def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     view = QDialog()
     experiment = experiments[0]
     tab = AccessControlTab(view)
-    tab.set_item(experiment)
+    tab.data = experiment
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
-    model = tab.ui.readGroupsList.list_model
+    model = tab.ui.readGroupsList._model
     edit_location = model.index(0,0)
     assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "ghil983"
     edit_location = model.index(0,0)
     model.setData(edit_location,"Testing editing")
+    qtbot.stop()
+    assert experiment.read_groups is not None
     assert experiment.read_groups[0] == "Testing editing"
 
 def test_tab_with_inheritance(qtbot: QtBot, experiments: List[Experiment]):
     view = QDialog()
     experiment = experiments[0]
     tab = AccessControlTab(view)
-    tab.set_has_inheritance(True)
-    tab.set_item(experiment)
+    tab.data = experiment
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
