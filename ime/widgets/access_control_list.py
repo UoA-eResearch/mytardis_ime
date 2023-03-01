@@ -19,7 +19,6 @@ class AccessControlList(QWidget):
         self.item_added = False
 
         self.ui.btnAdd.clicked.connect(self.handle_insert_new)
-        #self.ui.btnAdd.setEnabled(False) # Display the button by default
         self.ui.btnDelete.clicked.connect(self.handle_remove)
         # To monitor focus out events and deselect
         # self.ui.aclList.installEventFilter(self)
@@ -69,11 +68,8 @@ class AccessControlList(QWidget):
         if getattr(self, 'list_model', None) is None:
             return
         ### Libby to add text value to the listmodel
-        #list_model = self.set_list([])
     
         checked = self.ui.overrideCheckBox.isChecked()
-        #self.list_model.stringList().removeAll("")
-        #print(self.list_model.stringList)
         if checked and (not self.item_added):
             row = self.list_model.rowCount() # get the number of rows in model --> int
             self.list_model.insertRows(row,1) # Enable add one or more row.
