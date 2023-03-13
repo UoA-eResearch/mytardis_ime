@@ -21,6 +21,20 @@ poetry install
 poetry shell # This activates the virtual envrionment
 python -m app
 ``` 
+Note:
+If you are using an M1 Macbook, you need to install PyQt5 by creating a virtual environment and install PyQt5 using Rosetta Terminal.
+To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwaj.medium.com/m1-mac-switching-terminal-between-x86-64-and-arm64-e45f324184d9
+
+```
+env /usr/bin/arch -x86_64 /bin/zsh --login
+arch
+```
+Set up your default Python version to 3.9.X by following https://towardsdatascience.com/how-to-use-manage-multiple-python-versions-on-an-apple-silicon-m1-mac-d69ee6ed0250
+```
+poetry install
+source .venv/bin/activate
+```
+
 ## UI files
 You can automate the generation of PyQt Python files from `.ui` files by running:
 ```
