@@ -243,8 +243,8 @@ class AddFilesWizardSkip(QWizard):
         # Dataset pages
         ds_new_page = self.ui.newDatasetPage
         # temporary!!!!!!!
-        exp_page.registerField("isNewDataset", self.ui.existingProjectList_2)
-        
+        #exp_page.registerField("isNewDataset", self.ui.existingProjectList_2)
+        ds_new_page.registerField('isNewDataset',self.ui.datasetNameLabel_2)
         ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
@@ -252,7 +252,7 @@ class AddFilesWizardSkip(QWizard):
         # Create a dict of page names and their IDs.
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
-    '''
+
     def nextId(self) -> int:
         # Function for determining which page the wizard should advance to.
         # Custom WizardPages in add_files_wizard_pages have their own nextId()
@@ -260,34 +260,16 @@ class AddFilesWizardSkip(QWizard):
         # nextId function.
         current = self.currentId()
         pages = self.page_ids
-        #self.setStartId(1)
-        #item = self.ui.experimentTreeWidget.currentItem()
-        #exp_selected = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
-        if current == pages['introductionPage']:
-            # Check if there are existing projects.
-            # If there are, go to the choice page, otherwise go to the new project page.
-            if self.metadataModel.experiments.rowCount() > 0:
-                #self.setField('isExistingProject', True)
-                #self.setField('isExistingExperiment', True)
-                #self.setField('isExistingDataset', True)
-                return pages['pePage']
-            else:
 
-                return
-        #if current == pages['newProjectPage']:
-        #    #self.setField('isNewExperiment', True)
-        #    self.setField('isExistingExperiment', False)
-        #    return pages['newExperimentPage']
-        #elif current == pages['newExperimentPage']:
-        #    self.setField('isNewDataset', True)
-        #    self.setField('isExistingDataset', False)
-        #    return pages['newDatasetPage']
-        elif current == pages['newDatasetPage']:
+        if current == pages['pePage']:
+            self.setField('isNewProject', False)
+            self.setField('isNewExperiment', False)
             self.setField('isNewDataset', True)
+            return pages['newDatasetPage']
+        elif current == pages['newDatasetPage']:
             return pages['includedFilesPage']
         else:
             return super().nextId()
-        '''
 
     def __init__(self, metadataModel: IngestionMetadataModel):
         super(QWizard, self).__init__()
@@ -317,7 +299,6 @@ class AddFilesWizardSkip(QWizard):
             self.ui.datafiletableWidget.removeRow(index.row())
 
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
-
     def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
@@ -365,8 +346,10 @@ class AddFilesWizardSkip(QWizard):
         result.is_new_project = self.field('isNewProject')
         result.is_new_experiment = self.field('isNewExperiment')
         result.is_new_dataset = self.field('isNewDataset')
+
         result.project = self.selected_existing_project
         result.experiment = self.selected_existing_experiment
+        #print(result.project,result.experiment)
 
         ### assume new dataset
         result.dataset = Dataset()
@@ -378,6 +361,7 @@ class AddFilesWizardSkip(QWizard):
 
         result.datafile = Datafile()
         result.datafile.dataset_id = result.dataset.dataset_id
+        #print(result.dataset,result.datafile)
 
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
@@ -386,7 +370,7 @@ class AddFilesWizardSkip(QWizard):
             file_info = FileInfo(name = file_name)
             file_info.size = size
             result.datafile.files.append(file_info)
-        #print(result.dataset,result.experiment,result.project)
+        #print(result.experiment,result.project)
         self.submitted.emit(result)
         self.close()
 
@@ -508,13 +492,10 @@ class AddFilesWizardSkipDataset(QWizard):
         result.is_new_project = self.field('isNewProject')
         result.is_new_experiment = self.field('isNewExperiment')
         result.is_new_dataset = self.field('isNewDataset')
+
         result.project = self.selected_existing_project
         result.experiment = self.selected_existing_experiment
         result.dataset = self.selected_existing_dataset
-
-        # Because a dataset can belong to multiple experiments,
-        # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.experiment_id]
 
         result.datafile = Datafile()
         result.datafile.dataset_id = result.dataset.dataset_id
@@ -526,7 +507,7 @@ class AddFilesWizardSkipDataset(QWizard):
             file_info = FileInfo(name = file_name)
             file_info.size = size
             result.datafile.files.append(file_info)
-        print(result.dataset,result.experiment,result.project)
+        #print(result.dataset)
         self.submitted.emit(result)
         self.close()
 
