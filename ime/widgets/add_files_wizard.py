@@ -386,7 +386,7 @@ class AddFilesWizardSkip(QWizard):
             file_info = FileInfo(name = file_name)
             file_info.size = size
             result.datafile.files.append(file_info)
-        print(result.dataset,result.experiment,result.project)
+        #print(result.dataset,result.experiment,result.project)
         self.submitted.emit(result)
         self.close()
 
