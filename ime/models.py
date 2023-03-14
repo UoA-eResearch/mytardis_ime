@@ -4,6 +4,7 @@ import yaml
 from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
+from pathlib import Path ### added
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
@@ -56,11 +57,14 @@ class Project(YAMLSerializable, IAccessControl, IMetadata):
     yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
-    project_name: str = ""
+    project_name: str = "" 
     project_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     lead_researcher: str = ""
+    ## fields below were added
+    name: str = ""
+    principal_investigator: str = "abcd123"
 
 
 @dataclass
@@ -77,6 +81,8 @@ class Experiment(YAMLSerializable, IAccessControl, IMetadata):
     experiment_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
+    ### fields below were added
+    title: str = ""
 
 
 @dataclass
@@ -92,6 +98,10 @@ class Dataset(YAMLSerializable, IAccessControl, IMetadata):
     experiment_id: List[str] = field(default_factory=list)
     dataset_id: str = ""
     instrument_id: str = ""
+    ## fields below were added
+    description: str = "" ## description field was added
+    instrument: str = "" ## instrument field was added
+    experiments: List[str] = field(default_factory=list) ## experiments field was added
 
 
 @dataclass
@@ -101,9 +111,15 @@ class FileInfo(YAMLSerializable, IAccessControl, IMetadata):
     """
     yaml_tag = "!FileInfo"
     yaml_loader = yaml.SafeLoader
-    name: str = ""
+    name: str = "" 
     # Size property is not serialised.
     size: int = field(repr=False, default=0)
+    ### fields below were added
+    filename: str = ""
+    directory: str = ""
+    md5sum: str = ""
+    mimetype: str = ""
+    dataset: str = ""
 
 
 @dataclass
@@ -117,6 +133,13 @@ class Datafile(YAMLSerializable):
     # yaml_dumper = yaml.SafeDumper
     dataset_id: str = ""
     files: List[FileInfo] = field(default_factory=list)
+    ## fields below were added
+    filename: str = ""
+    directory: str = ""
+    md5sum: str = ""
+    mimetype: str = ""
+    dataset: str = ""
+    size: int = field(repr=False, default=0)
 
 
 @dataclass
