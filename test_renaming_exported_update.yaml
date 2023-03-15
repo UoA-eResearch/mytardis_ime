@@ -157,144 +157,106 @@ dataset: ''
 dataset_id: ds11
 directory: ''
 filename: ''
-files:
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: app.py
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 250
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: default_rc.py
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 169959
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: default.qrc
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 303
-md5sum: ''
-mimetype: ''
-size: 0
---- !Datafile
+admin_groups: []
+admin_users: []
 dataset: ''
-dataset_id: ds22
 directory: ''
+download_groups: []
+download_users: []
 filename: ''
-files:
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: poetry.lock
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 45942
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: pyproject.toml
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 615
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: README.md
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 1198
 md5sum: ''
+metadata: {}
 mimetype: ''
-size: 0
+name: app.py
+read_groups: []
+read_users: []
+sensitive_groups: []
+sensitive_users: []
+size: 250
 --- !Datafile
 dataset: ''
 dataset_id: ds11
 directory: ''
 filename: ''
-files:
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: test.yaml
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 2916
+admin_groups: []
+admin_users: []
+dataset: ''
+directory: ''
+download_groups: []
+download_users: []
+filename: ''
+md5sum: ''
+metadata: {}
+mimetype: ''
+name: default_rc.py
+read_groups: []
+read_users: []
+sensitive_groups: []
+sensitive_users: []
+size: 169959
+--- !Datafile
+dataset: ''
+dataset_id: ds11
+directory: ''
+filename: ''
+admin_groups: []
+admin_users: []
+dataset: ''
+directory: ''
+download_groups: []
+download_users: []
+filename: ''
+md5sum: ''
+metadata: {}
+mimetype: ''
+name: poetry.lock
+read_groups: []
+read_users: []
+sensitive_groups: []
+sensitive_users: []
+size: 45942
+--- !Datafile
+dataset: ''
+dataset_id: ds11
+directory: ''
+filename: ''
+admin_groups: []
+admin_users: []
+dataset: ''
+directory: ''
+download_groups: []
+download_users: []
+filename: ''
+md5sum: ''
+metadata: {}
+mimetype: ''
+name: pyproject.toml
+read_groups: []
+read_users: []
+sensitive_groups: []
+sensitive_users: []
+size: 615
+--- !Datafile
+dataset: ''
+dataset_id: ds11
+directory: ''
+filename: ''
+admin_groups: []
+admin_users: []
+dataset: ''
+directory: ''
+download_groups: []
+download_users: []
+filename: ''
+md5sum: ''
+metadata: {}
+mimetype: ''
+name: README.md
+read_groups: []
+read_users: []
+sensitive_groups: []
+sensitive_users: []
+size: 1198
 md5sum: ''
 mimetype: ''
 size: 0
@@ -303,50 +265,41 @@ dataset: ''
 dataset_id: ds33
 directory: ''
 filename: ''
-files:
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: test.yaml
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 2916
+admin_groups: []
+admin_users: []
+dataset: ''
+directory: ''
+download_groups: []
+download_users: []
+filename: ''
 md5sum: ''
+metadata: {}
 mimetype: ''
-size: 0
+name: test.yaml
+read_groups: []
+read_users: []
+sensitive_groups: []
+sensitive_users: []
+size: 2916
 --- !Datafile
 dataset: ''
 dataset_id: ds44
 directory: ''
 filename: ''
-files:
-- !FileInfo
-  admin_groups: []
-  admin_users: []
-  dataset: ''
-  directory: ''
-  download_groups: []
-  download_users: []
-  filename: ''
-  md5sum: ''
-  metadata: {}
-  mimetype: ''
-  name: test.yaml
-  read_groups: []
-  read_users: []
-  sensitive_groups: []
-  sensitive_users: []
-  size: 2916
+admin_groups: []
+admin_users: []
+dataset: ''
+directory: ''
+download_groups: []
+download_users: []
+filename: ''
 md5sum: ''
+metadata: {}
 mimetype: ''
-size: 0
+name: yes.yaml
+read_groups: []
+read_users: []
+sensitive_groups: []
+sensitive_users: []
+size: 2916
+
