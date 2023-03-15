@@ -76,7 +76,7 @@ class Experiment(YAMLSerializable, IAccessControl, IMetadata):
     yaml_tag = "!Experiment"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
-    experiment_name: str = ""
+    title: str = ""
     project_id: str = ""
     experiment_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)

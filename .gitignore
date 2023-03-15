@@ -1,6 +1,7 @@
 .venv
-.vscode
 .venv_3.9
+.vscode
+venv_3.9/
 .gitignore
 lib/
 .DS_Store
