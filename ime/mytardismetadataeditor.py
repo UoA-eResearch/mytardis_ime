@@ -231,21 +231,21 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def add_project_to_tree(self, project: Project):
         proj_size = file_size_to_str(self.project_size(project))
-        l3 = QTreeWidgetItem([project.name,proj_size])
+        l3 = QTreeWidgetItem([project.project_name,proj_size])
         l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, project)
         self.ui.projectTreeWidget.addTopLevelItem(l3)
 
     def add_experiment_to_tree(self, experiment: Experiment):
         exp_size = file_size_to_str(self.experiment_size(experiment))
         project = self.project_for_experiment(experiment)
-        l2 = QTreeWidgetItem([experiment.title,exp_size,project.name])
+        l2 = QTreeWidgetItem([experiment.experiment_name,exp_size,project.project_name])
         l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, experiment)
         self.ui.experimentTreeWidget.addTopLevelItem(l2)
 
     def add_dataset_to_tree(self, dataset: Dataset):
         dataset_size = file_size_to_str(self.dataset_size(dataset))
         experiment = self.experiment_for_dataset(dataset)
-        ds_item = QTreeWidgetItem([dataset.dataset_name, dataset_size,experiment.title])
+        ds_item = QTreeWidgetItem([dataset.dataset_name, dataset_size,experiment.experiment_name])
         ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset)
         self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
     
