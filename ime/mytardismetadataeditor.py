@@ -205,9 +205,22 @@ class MyTardisMetadataEditor(QMainWindow):
             if dataset.dataset_id == datafile.dataset_id:
                 return dataset
         raise ValueError()
-
+    
 
     def find_item_in_tree(self, treeWidget: QTreeWidget, predicate: Callable[[Any],bool]):
+        """
+        Finds and returns the first top-level item in the specified QTreeWidget for which the given predicate function returns True.
+
+        Args:
+            treeWidget (QTreeWidget): The QTreeWidget to search for items in.
+            predicate (Callable[[Any],bool]): A callable that takes an item's data as input and returns a boolean indicating whether the item meets the search criteria.
+
+        Returns:
+            QTreeWidgetItem: The first top-level item in the treeWidget that satisfies the search criteria.
+
+        Raises:
+            Exception: If no items in the treeWidget satisfy the search criteria.
+        """
         count = treeWidget.topLevelItemCount()
         for i in range(0, count):
             item = treeWidget.topLevelItem(i)
@@ -235,15 +248,35 @@ class MyTardisMetadataEditor(QMainWindow):
         ds_item = QTreeWidgetItem([dataset.dataset_name, dataset_size,experiment.experiment_name])
         ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset)
         self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
+    
+    ### create new add_datafile_to_tree function
+    def add_datafile_to_tree(self, datafile: Datafile):
+        """
+        Adds a new child item to the QTreeWidget for the dataset that contains the specified Datafile.
 
+        Args:
+            datafile (Datafile): The Datafile object to add to the tree.
+
+        Returns:
+            None
+        """
+        ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == datafile.dataset_id)
+        file_name = datafile.name
+        file_size = file_size_to_str(datafile.size)
+        l1_child = QTreeWidgetItem([file_name,file_size,""])
+        l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
+        ds_item.addChild(l1_child)
+
+    '''
     def add_datafile_to_tree(self, datafile: Datafile):
         ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == datafile.dataset_id)
-        for file in datafile.files:
+        for file in datafile.files: ###### this is the problem
             file_name = file.name
             file_size = file_size_to_str(file.size)
             l1_child = QTreeWidgetItem([file_name,file_size,""])
             l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
             ds_item.addChild(l1_child)
+    '''
 
     def reFresh(self,result: AddFilesWizardResult):
         """
@@ -316,8 +349,10 @@ class MyTardisMetadataEditor(QMainWindow):
             return
         with open(fileName) as f:
             data_load = f.read()
+            #print(data_load)
             try:
                 data_yaml = IngestionMetadata.from_yaml(data_load)
+                #print(data_yaml)
                 self.display_load_data(data_yaml)
             except Exception as e:
                 msg_box = QMessageBox()
@@ -336,14 +371,25 @@ class MyTardisMetadataEditor(QMainWindow):
         # self.metadata.experiments += data_loaded.experiments
         # self.metadata.datasets += data_loaded.datasets
         # self.metadata.datafiles += data_loaded.datafiles
-        for project in data_loaded.projects:
-            self.add_project_to_tree(project)
-        for experiment in data_loaded.experiments:
-            self.add_experiment_to_tree(experiment)
-        for dataset in data_loaded.datasets:
-            self.add_dataset_to_tree(dataset)
-        for datafile in data_loaded.datafiles:
-            self.add_datafile_to_tree(datafile)
+
+        # Add loaded metadata to the tree widgets.
+        for pro in data_loaded.projects:
+            self.add_project_to_tree(pro)
+        for exp in data_loaded.experiments:
+            self.add_experiment_to_tree(exp)
+        for ds in data_loaded.datasets:
+            self.add_dataset_to_tree(ds)
+        for file in data_loaded.datafiles:
+            self.add_datafile_to_tree(file)
+        '''
+        for file in data_loaded.datafiles:
+            ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == file.dataset_id)
+            #print(type(ds_item))
+            file_name = file.name
+            file_size = file_size_to_str(file.size)
+            print(file.name)
+            #self.add_datafile_to_tree(file)
+        '''
 
     # Save to yaml files
     def save_to_yaml(self):

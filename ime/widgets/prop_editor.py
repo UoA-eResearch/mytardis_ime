@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget
 from ime.bindable import BoundObject
-from ime.models import Dataset, Experiment, FileInfo, Project
+from ime.models import Dataset, Experiment, Datafile, FileInfo, Project
 from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
 from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
@@ -31,7 +31,8 @@ class DatasetPropertyEditor(QWidget):
         self.dataset.bind_input("instrument_id", self.ui.instrumentIDLineEdit)
 
 class DatafilePropertyEditor(QWidget):
-    file_info:BoundObject[FileInfo]
+    ### change variable names to create new Datafile
+    df:BoundObject[Datafile]
     metadata_tab: MetadataTab
 
     def __init__(self, parent=None):
@@ -41,15 +42,25 @@ class DatafilePropertyEditor(QWidget):
         self.metadata_tab = self.ui.metadata_tab
         self.ui.accessControlTab.set_has_inheritance(True)
         self._set_bound_file(BoundObject())
-
+    ### create new Datafile
+    def set_datafile(self, datafile: Datafile):
+        self.df.set_object(datafile)
+        self.metadata_tab.update_metadata_object(datafile)
+        self.ui.accessControlTab.set_item(datafile)
+    
+    def _set_bound_file(self, datafile: BoundObject[Datafile]):
+        self.df = datafile
+        self.df.bind_input("name", self.ui.fileInfoFilenameLineEdit)
+    '''
     def set_fileinfo(self, file_info: FileInfo):
         self.file_info.set_object(file_info)
         self.metadata_tab.update_metadata_object(file_info)
         self.ui.accessControlTab.set_item(file_info)
-
+    
     def _set_bound_file(self, file_info: BoundObject[FileInfo]):
         self.file_info = file_info
         self.file_info.bind_input("name", self.ui.fileInfoFilenameLineEdit)
+    '''
 
 class ExperimentPropertyEditor(QWidget):
     exp: BoundObject[Experiment]

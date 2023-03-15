@@ -121,7 +121,26 @@ class FileInfo(YAMLSerializable, IAccessControl, IMetadata):
     mimetype: str = ""
     dataset: str = ""
 
-
+### create new Datafile class to match fields in ingestion script
+@dataclass
+class Datafile(YAMLSerializable, IAccessControl, IMetadata):
+    """
+    A class representing MyTardis Datafile objects.
+    """
+    yaml_tag = "!Datafile"
+    yaml_loader = yaml.SafeLoader
+    # yaml_dumper = yaml.SafeDumper
+    name: str = "" 
+    # Size property is not serialised.
+    size: float = ""
+    ### fields below were added
+    filename: str = ""
+    directory: str = ""
+    md5sum: str = ""
+    mimetype: str = ""
+    dataset: str = ""
+    dataset_id: str = ""
+'''
 @dataclass
 class Datafile(YAMLSerializable):
     """
@@ -132,7 +151,7 @@ class Datafile(YAMLSerializable):
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     dataset_id: str = ""
-    files: List[FileInfo] = field(default_factory=list)
+    files: List[FileInfo] = field(default_factory=list) 
     ## fields below were added
     filename: str = ""
     directory: str = ""
@@ -140,6 +159,7 @@ class Datafile(YAMLSerializable):
     mimetype: str = ""
     dataset: str = ""
     size: int = field(repr=False, default=0)
+'''
 
 
 @dataclass
@@ -174,18 +194,20 @@ class IngestionMetadata:
         yaml_file = yaml.dump_all(concatenated)
         return yaml_file
     
-    def get_files_by_dataset(self, dataset: Dataset) -> List[FileInfo]:
+    def get_files_by_dataset(self, dataset: Dataset) -> List[Datafile]:
         """
         Returns datafiles that belong to a dataset.
         """
         id = dataset.dataset_id
-        all_files: List[FileInfo] = []
+        #update with Datafile
+        all_files: List[Datafile] = []
+        # all_files: List[FileInfo] = []
         for file in self.datafiles:
             if not file.dataset_id == id:
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
-            all_files += file.files
+            all_files.append(file)
         return all_files
 
     def get_datasets_by_experiment(self, exp: Experiment) -> List[Dataset]:
@@ -242,7 +264,9 @@ class IngestionMetadata:
                     + ", ignored. Object was %s",
                     obj,
                 )
+        #print(metadata.datafiles)
         return metadata
+
 
 
 
