@@ -130,6 +130,23 @@ class MyTardisMetadataEditor(QMainWindow):
         # Update property editor with new object
         self.ui.datasetProperties.set_dataset(dataset)
 
+    # update with Datafile
+    def onSelectDatafile(self, dataset: Dataset, file_name: str):  
+        # First, look up the dataset value
+        datafiles = self.metadata.get_files_by_dataset(dataset)
+        # Next, look up FileInfo
+        datafile_lookup = [
+            fileinfo
+            for fileinfo in datafiles
+            if fileinfo.name == file_name
+        ]
+        if (len(datafile_lookup) != 1):
+            logging.warning("Datafile name %s could not be found or there are " + 
+            "more than one entries.", file_name)
+        fileinfo = datafile_lookup[0]
+        # Set controls with value
+        self.ui.datafileProperties.set_datafile(fileinfo)  
+    '''
     def onSelectDatafile(self, dataset: Dataset, file_name: str):
         # First, look up the dataset value
         files = self.metadata.get_files_by_dataset(dataset)
@@ -145,7 +162,7 @@ class MyTardisMetadataEditor(QMainWindow):
         fileinfo = fileinfo_lookup[0]
         # Set controls with value
         self.ui.datafileProperties.set_fileinfo(fileinfo)
-
+    '''
 
     def onClickedDataset(self):
             item: QTreeWidgetItem = self.ui.datasetTreeWidget.currentItem()
