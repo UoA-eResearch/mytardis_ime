@@ -213,9 +213,8 @@ class AddFilesWizard(QWizard):
         for row in range(table.rowCount()):
             file_name = table.item(row,0).text()
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            file_info = FileInfo(name = file_name)
-            file_info.size = size
-            result.datafile.files.append(file_info)
+            result.datafile.name=file_name
+            result.datafile.size=size
 
         self.submitted.emit(result)
 
@@ -367,9 +366,8 @@ class AddFilesWizardSkip(QWizard):
         for row in range(table.rowCount()):
             file_name = table.item(row,0).text()
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            file_info = FileInfo(name = file_name)
-            file_info.size = size
-            result.datafile.files.append(file_info)
+            result.datafile.name=file_name
+            result.datafile.size=size
         #print(result.experiment,result.project)
         self.submitted.emit(result)
         self.close()
@@ -500,13 +498,19 @@ class AddFilesWizardSkipDataset(QWizard):
         result.datafile = Datafile()
         result.datafile.dataset_id = result.dataset.dataset_id
 
+        ### Create new Datafile object and append to result.datafile.files
+        
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             file_name = table.item(row,0).text()
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            file_info = FileInfo(name = file_name)
-            file_info.size = size
-            result.datafile.files.append(file_info)
+            result.datafile.name=file_name
+            result.datafile.size=size
+
+            #file_info = FileInfo(name = file_name)
+            #file_info.size = size
+            #result.datafile.files.append(df)
+        
         #print(result.dataset)
         self.submitted.emit(result)
         self.close()
@@ -667,9 +671,8 @@ class AddFilesWizardSkipProject(QWizard):
         for row in range(table.rowCount()):
             file_name = table.item(row,0).text()
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            file_info = FileInfo(name = file_name)
-            file_info.size = size
-            result.datafile.files.append(file_info)
-        print(result.dataset,result.experiment,result.project)
+            result.datafile.name=file_name
+            result.datafile.size=size
+        #print(result.dataset,result.experiment,result.project)
         self.submitted.emit(result)
         self.close()
