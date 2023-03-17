@@ -46,14 +46,6 @@ class MyTardisMetadataEditor(QMainWindow):
         self.show()
     
     def datasetMenuContextTree(self, point):
-        '''
-        index = self.ui.datasetTreeWidget.indexAt(point)
-
-        if not index.isValid():
-            return
-
-        item = self.ui.datasetTreeWidget.itemAt(point)
-        '''
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New File...")
@@ -147,23 +139,6 @@ class MyTardisMetadataEditor(QMainWindow):
         fileinfo = datafile_lookup[0]
         # Set controls with value
         self.ui.datafileProperties.set_datafile(fileinfo)  
-    '''
-    def onSelectDatafile(self, dataset: Dataset, file_name: str):
-        # First, look up the dataset value
-        files = self.metadata.get_files_by_dataset(dataset)
-        # Next, look up FileInfo
-        fileinfo_lookup = [
-            fileinfo
-            for fileinfo in files
-            if fileinfo.name == file_name
-        ]
-        if (len(fileinfo_lookup) != 1):
-            logging.warning("Datafile name %s could not be found or there are " + 
-            "more than one entries.", file_name)
-        fileinfo = fileinfo_lookup[0]
-        # Set controls with value
-        self.ui.datafileProperties.set_fileinfo(fileinfo)
-    '''
 
     def onClickedDataset(self):
             item: QTreeWidgetItem = self.ui.datasetTreeWidget.currentItem()
@@ -298,17 +273,6 @@ class MyTardisMetadataEditor(QMainWindow):
         l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
         ds_item.addChild(l1_child)
 
-    '''
-    def add_datafile_to_tree(self, datafile: Datafile):
-        ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == datafile.dataset_id)
-        for file in datafile.files: ###### this is the problem
-            file_name = file.name
-            file_size = file_size_to_str(file.size)
-            l1_child = QTreeWidgetItem([file_name,file_size,""])
-            l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
-            ds_item.addChild(l1_child)
-    '''
-
     def reFresh(self,result: AddFilesWizardResult):
         """
         Method for adding the newly created classes from the wizard into IngestionMetadata,
@@ -412,15 +376,6 @@ class MyTardisMetadataEditor(QMainWindow):
             self.add_dataset_to_tree(ds)
         for file in data_loaded.datafiles:
             self.add_datafile_to_tree(file)
-        '''
-        for file in data_loaded.datafiles:
-            ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == file.dataset_id)
-            #print(type(ds_item))
-            file_name = file.name
-            file_size = file_size_to_str(file.size)
-            print(file.name)
-            #self.add_datafile_to_tree(file)
-        '''
 
     # Save to yaml files
     def save_to_yaml(self):
