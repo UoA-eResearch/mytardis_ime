@@ -145,7 +145,7 @@ class FileInfo(YAMLSerializable, IDerivedAccessControl, IMetadata):
 
 ### create new Datafile class to match fields in ingestion script
 @dataclass
-class Datafile(YAMLSerializable, IAccessControl, IMetadata):
+class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
