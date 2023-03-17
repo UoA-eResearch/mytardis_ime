@@ -1,9 +1,10 @@
-from typing import List, Dict, Any, Type
+from typing import List, Dict, Any, Literal, Optional, Type, TypeVar
 from dataclasses import dataclass, field
 import yaml
 from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
+from pathlib import Path ### added
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
@@ -23,13 +24,13 @@ class YAMLSerializable(yaml.YAMLObject):
         fields = loader.construct_mapping(node)
         return cls(**fields)
 
-
 @dataclass
-class IAccessControl:
+class IOriginAccessControl:
     """
-    A class representing fields related to ACL controls.
+    A class representing fields related to the origin access
+    control type. (i.e. projects, which must have a value since
+    experiments, datasets and datafiles inherit from it.)
     """
-
     admin_groups: List[str] = field(default_factory=list)
     admin_users: List[str] = field(default_factory=list)
     read_groups: List[str] = field(default_factory=list)
@@ -39,16 +40,37 @@ class IAccessControl:
     sensitive_groups: List[str] = field(default_factory=list)
     sensitive_users: List[str] = field(default_factory=list)
 
+
+@dataclass
+class IDerivedAccessControl:
+    """
+    A class representing fields related to ACL controls.
+    """
+    admin_groups: Optional[List[str]] = field(default=None)
+    admin_users: Optional[List[str]] = field(default=None)
+    read_groups: Optional[List[str]] = field(default=None)
+    read_users: Optional[List[str]] = field(default=None)
+    download_groups: Optional[List[str]] = field(default=None)
+    download_users: Optional[List[str]] = field(default=None)
+    sensitive_groups: Optional[List[str]] = field(default=None)
+    sensitive_users: Optional[List[str]] = field(default=None)
+
+
+"""
+A union type variable for both types of Access Control types.
+"""
+IAccessControl = TypeVar('IAccessControl', IOriginAccessControl, IDerivedAccessControl)    
+
 @dataclass
 class IMetadata:
     """
     A class representing fields related to schema parameters.
     """
-
+    # change to Optional[]
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable, IAccessControl, IMetadata):
+class Project(YAMLSerializable, IOriginAccessControl, IMetadata):
     """
     A class representing MyTardis Project objects.
     """
@@ -57,14 +79,18 @@ class Project(YAMLSerializable, IAccessControl, IMetadata):
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     project_name: str = ""
+    description: str = ""
     project_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     lead_researcher: str = ""
+    ## fields below were added
+    name: str = ""
+    principal_investigator: str = "abcd123"
 
 
 @dataclass
-class Experiment(YAMLSerializable, IAccessControl, IMetadata):
+class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -77,10 +103,12 @@ class Experiment(YAMLSerializable, IAccessControl, IMetadata):
     experiment_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
+    ### fields below were added
+    title: str = ""
 
 
 @dataclass
-class Dataset(YAMLSerializable, IAccessControl, IMetadata):
+class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -92,20 +120,49 @@ class Dataset(YAMLSerializable, IAccessControl, IMetadata):
     experiment_id: List[str] = field(default_factory=list)
     dataset_id: str = ""
     instrument_id: str = ""
+    ## fields below were added
+    description: str = "" ## description field was added
+    instrument: str = "" ## instrument field was added
+    experiments: List[str] = field(default_factory=list) ## experiments field was added
 
 
 @dataclass
-class FileInfo(YAMLSerializable, IAccessControl, IMetadata):
+class FileInfo(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
     yaml_tag = "!FileInfo"
     yaml_loader = yaml.SafeLoader
-    name: str = ""
+    name: str = "" 
     # Size property is not serialised.
     size: int = field(repr=False, default=0)
+    ### fields below were added
+    filename: str = ""
+    directory: str = ""
+    md5sum: str = ""
+    mimetype: str = ""
+    dataset: str = ""
 
-
+### create new Datafile class to match fields in ingestion script
+@dataclass
+class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
+    """
+    A class representing MyTardis Datafile objects.
+    """
+    yaml_tag = "!Datafile"
+    yaml_loader = yaml.SafeLoader
+    # yaml_dumper = yaml.SafeDumper
+    name: str = "" 
+    # Size property is not serialised.
+    size: float = ""
+    ### fields below were added
+    filename: str = ""
+    directory: str = ""
+    md5sum: str = ""
+    mimetype: str = ""
+    dataset: str = ""
+    dataset_id: str = ""
+'''
 @dataclass
 class Datafile(YAMLSerializable):
     """
@@ -116,7 +173,15 @@ class Datafile(YAMLSerializable):
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     dataset_id: str = ""
-    files: List[FileInfo] = field(default_factory=list)
+    files: List[FileInfo] = field(default_factory=list) 
+    ## fields below were added
+    filename: str = ""
+    directory: str = ""
+    md5sum: str = ""
+    mimetype: str = ""
+    dataset: str = ""
+    size: int = field(repr=False, default=0)
+'''
 
 
 @dataclass
@@ -151,18 +216,20 @@ class IngestionMetadata:
         yaml_file = yaml.dump_all(concatenated)
         return yaml_file
     
-    def get_files_by_dataset(self, dataset: Dataset) -> List[FileInfo]:
+    def get_files_by_dataset(self, dataset: Dataset) -> List[Datafile]:
         """
         Returns datafiles that belong to a dataset.
         """
         id = dataset.dataset_id
-        all_files: List[FileInfo] = []
+        #update with Datafile
+        all_files: List[Datafile] = []
+        # all_files: List[FileInfo] = []
         for file in self.datafiles:
             if not file.dataset_id == id:
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
-            all_files += file.files
+            all_files.append(file)
         return all_files
 
     def get_datasets_by_experiment(self, exp: Experiment) -> List[Dataset]:
@@ -219,7 +286,9 @@ class IngestionMetadata:
                     + ", ignored. Object was %s",
                     obj,
                 )
+        #print(metadata.datafiles)
         return metadata
+
 
 
 

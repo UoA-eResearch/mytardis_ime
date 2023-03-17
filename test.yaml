@@ -8,7 +8,7 @@ download_users: []
 lead_researcher: ''
 metadata: {}
 project_id: p11
-project_name: p1
+name: p1
 read_groups: []
 read_users: []
 sensitive_groups: []
@@ -23,7 +23,7 @@ download_users: []
 lead_researcher: ''
 metadata: {}
 project_id: P22
-project_name: P2
+name: P2
 read_groups: []
 read_users: []
 sensitive_groups: []
@@ -36,7 +36,7 @@ description: ''
 download_groups: []
 download_users: []
 experiment_id: e11
-experiment_name: e1
+title: e1
 metadata: {}
 project_id: p11
 read_groups: []
@@ -51,7 +51,7 @@ description: ''
 download_groups: []
 download_users: []
 experiment_id: E22
-experiment_name: E2
+title: E2
 metadata: {}
 project_id: P22
 read_groups: []

@@ -8,7 +8,8 @@ from typing import Any, Callable
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
-from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardSkip,AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipProject
+from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipExperiment, AddFilesWizardSkipProject
+from ime.widgets.add_files_wizard_pages_skip import ProjectPage, PExperimentPage, PEDatasetPage
 from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
@@ -45,14 +46,6 @@ class MyTardisMetadataEditor(QMainWindow):
         self.show()
     
     def datasetMenuContextTree(self, point):
-        '''
-        index = self.ui.datasetTreeWidget.indexAt(point)
-
-        if not index.isValid():
-            return
-
-        item = self.ui.datasetTreeWidget.itemAt(point)
-        '''
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New File...")
@@ -69,8 +62,7 @@ class MyTardisMetadataEditor(QMainWindow):
         # To do: create a dic with info about related exp, project
         exp_data = self.experiment_for_dataset(data)
         pro_data = self.project_for_experiment(exp_data)
-        #print(data, exp_data,pro_data)
-        
+
         self.import_wizard_ui = AddFilesWizardSkipDataset(model,data,exp_data,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
@@ -93,14 +85,14 @@ class MyTardisMetadataEditor(QMainWindow):
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
-        action.triggered.connect(self.openWizardWindowSkip)
+        action.triggered.connect(self.openWizardWindowSkipExperiment)
         action = menu.addAction("Delete this Experiment")
 
         menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
 
-    def openWizardWindowSkip(self):  
+    def openWizardWindowSkipExperiment(self):  
         model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizardSkip(model)
+        self.import_wizard_ui = AddFilesWizardSkipExperiment(model)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -130,22 +122,22 @@ class MyTardisMetadataEditor(QMainWindow):
         # Update property editor with new object
         self.ui.datasetProperties.set_dataset(dataset)
 
-    def onSelectDatafile(self, dataset: Dataset, file_name: str):
+    # update with Datafile
+    def onSelectDatafile(self, dataset: Dataset, file_name: str):  
         # First, look up the dataset value
-        files = self.metadata.get_files_by_dataset(dataset)
+        datafiles = self.metadata.get_files_by_dataset(dataset)
         # Next, look up FileInfo
-        fileinfo_lookup = [
+        datafile_lookup = [
             fileinfo
-            for fileinfo in files
+            for fileinfo in datafiles
             if fileinfo.name == file_name
         ]
-        if (len(fileinfo_lookup) != 1):
+        if (len(datafile_lookup) != 1):
             logging.warning("Datafile name %s could not be found or there are " + 
             "more than one entries.", file_name)
-        fileinfo = fileinfo_lookup[0]
+        fileinfo = datafile_lookup[0]
         # Set controls with value
-        self.ui.datafileProperties.set_fileinfo(fileinfo)
-
+        self.ui.datafileProperties.set_datafile(fileinfo)  
 
     def onClickedDataset(self):
             item: QTreeWidgetItem = self.ui.datasetTreeWidget.currentItem()
@@ -201,13 +193,37 @@ class MyTardisMetadataEditor(QMainWindow):
         raise ValueError()
 
     def dataset_for_datafile(self, datafile: Datafile):
+        """Return the Dataset object that corresponds to the given Datafile.
+        This method searches for the Dataset object in the metadata attribute of the current object (which should be a class that contains metadata about one or more datasets), 
+        by comparing the dataset_id attribute of each Dataset object to the dataset_id attribute of the given Datafile object. If a match is found, the corresponding Dataset object is returned.
+
+        Args:
+            datafile: A Datafile object representing the file that we want to find the corresponding Dataset for.
+        Returns:
+            A Dataset object that corresponds to the given Datafile.
+        Raises:
+            ValueError: If no Dataset object is found that matches the dataset_id of the given Datafile.
+        """
         for dataset in self.metadata.datasets:
             if dataset.dataset_id == datafile.dataset_id:
                 return dataset
         raise ValueError()
-
+    
 
     def find_item_in_tree(self, treeWidget: QTreeWidget, predicate: Callable[[Any],bool]):
+        """
+        Finds and returns the first top-level item in the specified QTreeWidget for which the given predicate function returns True.
+
+        Args:
+            treeWidget (QTreeWidget): The QTreeWidget to search for items in.
+            predicate (Callable[[Any],bool]): A callable that takes an item's data as input and returns a boolean indicating whether the item meets the search criteria.
+
+        Returns:
+            QTreeWidgetItem: The first top-level item in the treeWidget that satisfies the search criteria.
+
+        Raises:
+            Exception: If no items in the treeWidget satisfy the search criteria.
+        """
         count = treeWidget.topLevelItemCount()
         for i in range(0, count):
             item = treeWidget.topLevelItem(i)
@@ -235,15 +251,24 @@ class MyTardisMetadataEditor(QMainWindow):
         ds_item = QTreeWidgetItem([dataset.dataset_name, dataset_size,experiment.experiment_name])
         ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset)
         self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
-
+    
+    ### create new add_datafile_to_tree function
     def add_datafile_to_tree(self, datafile: Datafile):
+        """
+        Adds a new child item to the QTreeWidget for the dataset that contains the specified Datafile.
+
+        Args:
+            datafile (Datafile): The Datafile object to add to the tree.
+
+        Returns:
+            None
+        """
         ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == datafile.dataset_id)
-        for file in datafile.files:
-            file_name = file.name
-            file_size = file_size_to_str(file.size)
-            l1_child = QTreeWidgetItem([file_name,file_size,""])
-            l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
-            ds_item.addChild(l1_child)
+        file_name = datafile.name
+        file_size = file_size_to_str(datafile.size)
+        l1_child = QTreeWidgetItem([file_name,file_size,""])
+        l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
+        ds_item.addChild(l1_child)
 
     def reFresh(self,result: AddFilesWizardResult):
         """
@@ -316,8 +341,10 @@ class MyTardisMetadataEditor(QMainWindow):
             return
         with open(fileName) as f:
             data_load = f.read()
+            #print(data_load)
             try:
                 data_yaml = IngestionMetadata.from_yaml(data_load)
+                #print(data_yaml)
                 self.display_load_data(data_yaml)
             except Exception as e:
                 msg_box = QMessageBox()
@@ -336,14 +363,16 @@ class MyTardisMetadataEditor(QMainWindow):
         # self.metadata.experiments += data_loaded.experiments
         # self.metadata.datasets += data_loaded.datasets
         # self.metadata.datafiles += data_loaded.datafiles
-        for project in data_loaded.projects:
-            self.add_project_to_tree(project)
-        for experiment in data_loaded.experiments:
-            self.add_experiment_to_tree(experiment)
-        for dataset in data_loaded.datasets:
-            self.add_dataset_to_tree(dataset)
-        for datafile in data_loaded.datafiles:
-            self.add_datafile_to_tree(datafile)
+
+        # Add loaded metadata to the tree widgets.
+        for pro in data_loaded.projects:
+            self.add_project_to_tree(pro)
+        for exp in data_loaded.experiments:
+            self.add_experiment_to_tree(exp)
+        for ds in data_loaded.datasets:
+            self.add_dataset_to_tree(ds)
+        for file in data_loaded.datafiles:
+            self.add_datafile_to_tree(file)
 
     # Save to yaml files
     def save_to_yaml(self):

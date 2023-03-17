@@ -12,6 +12,7 @@ models.
 from typing import Any, Callable, Generic, List, TypeVar, Type
 import typing
 from PyQt5.QtCore import (
+    QAbstractListModel,
     QAbstractTableModel,
     QModelIndex,
     QObject,
@@ -28,6 +29,65 @@ from dataclasses import fields
 from PyQt5.QtCore import Qt
 
 T = TypeVar("T")
+
+class PythonListModel(QAbstractListModel):
+    """A basic implementation of a Qt Model that updates a Python list.
+    The built-in QStringListModel creates a separate list object, which
+    means the original Python list doesn't get updated.
+    """
+    list: List[str]
+    def __init__(self, parent = None):
+        super().__init__(parent)
+
+    def setStringList(self, sourceList: List[str]):
+        self.list = sourceList
+
+    def rowCount(self, parent = QModelIndex()) -> int:
+        return len(self.list)
+
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        flags = Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
+        return typing.cast(Qt.ItemFlags, flags)
+
+    def setData(self, index: QModelIndex, value: typing.Any, role: int = ...) -> bool:
+        self.list[index.row()] = value
+        self.dataChanged.emit(index, index)
+        return True
+
+    def data(self, index: QModelIndex, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
+        if role == Qt.ItemDataRole.DisplayRole:
+            return self.list[index.row()]
+
+    def headerData(self, section: int, orientation: Qt.Orientation, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
+        if role == Qt.ItemDataRole.DisplayRole:
+            return "hello"
+
+    def insertRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+        self.beginInsertRows(QModelIndex(), row, row+count-1)
+        for i in range(row, row+count):
+            self.list.insert(i, "")
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+        self.beginRemoveRows(QModelIndex(), row, row+count-1)
+        for i in range(0, count):
+            # Remove rows from largest index first
+            # to avoid being affected by reassigned indices.
+            idx = row+count-1-i
+            self.list.pop(idx)
+        self.endRemoveRows()
+        return True
+
+    def remove_value(self, val: str) -> bool:
+        try:
+            idx = self.list.index(val)
+            self.beginRemoveRows(QModelIndex(), idx, idx)
+            self.list.remove(val)
+            self.endRemoveRows()
+            return True
+        except:
+            return False
 
 class IngestionMetadataModel:
     """
@@ -66,6 +126,19 @@ class IngestionMetadataModel:
         # Since the experiment_id field is a list, we add
         # a filter function to go through the list.
         proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
+        return proxy
+    
+    ### Convenience functions for getting a single instance from the model.
+    def experiment_for_dataset(self, dataset: Dataset):
+        id  = self.experiments.instance(0).experiment_id
+        proxy = self.experiments.proxy()
+        proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
+        return proxy
+    
+    def project_for_experiment(self, experiment: Experiment):
+        id = experiment.project_id
+        proxy = self.projects.proxy()
+        proxy.set_filter_by_instance(lambda proj: proj.project_id == id)
         return proxy
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
@@ -138,7 +211,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         """
         self.instance_list = instance_list
     
-    def add_computed_field(self, field_name: str, compute_fn: Callable[[T,Qt.ItemDataRole],Any]) -> int:
+    def add_extra_field(self, field_name: str) -> int:
         # TODO This will be useful for computed values like project/experiment/dataset size.
         # And perhaps the effective ACL users and groups?
         # compute_fn will be re-evaluated for an instance when any of its fields has changed.
@@ -205,9 +278,6 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             field = getattr(experiment, self.fields[index.column()])
             return field
 
-a = str
-b: List[a] = []
-b
 class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     """
     A class that extends the QSortFilterProxyModel with dataclass-specific and other
