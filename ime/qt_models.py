@@ -67,6 +67,19 @@ class IngestionMetadataModel:
         # a filter function to go through the list.
         proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
         return proxy
+    
+    ### Convenience functions for getting a single instance from the model.
+    def experiment_for_dataset(self, dataset: Dataset):
+        id  = self.experiments.instance(0).experiment_id
+        proxy = self.experiments.proxy()
+        proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
+        return proxy
+    
+    def project_for_experiment(self, experiment: Experiment):
+        id = experiment.project_id
+        proxy = self.projects.proxy()
+        proxy.set_filter_by_instance(lambda proj: proj.project_id == id)
+        return proxy
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
     """

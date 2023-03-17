@@ -3,14 +3,14 @@ add_files_wizard_pages.py - custom logic for add files wizard pages.
 """
 import typing
 from PyQt5.QtWidgets import QWidget, QWizardPage
-from ime.models import Experiment
 
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles
 import ime.widgets.add_files_wizard as afw
 from ime.qt_models import IngestionMetadataModel
+from ime.models import Project, Experiment, Dataset, Datafile
+#from ime.mytardismetadataeditor import MyTardisMetadataEditor
 
 class ProjectPage(QWizardPage):
-
     def selected_existing_project_changed(self,idx):
         # Look up and record the selected existing project.
         wizard = self.wizard()
@@ -109,8 +109,9 @@ class PExperimentPage(QWizardPage):
         return self.field('isExistingProject') is not None and self.field('isExistingExperiment') is not None
 
 class PEDatasetPage(QWizardPage):
-    def selected_existing_ped_changed(self,idx):
+    def selected_existing_ped_changed(self, idx):
         wizard = self.wizard()
+        
         idx_current_pro = wizard.ui.existingProjectList_3.currentIndex()
         project = self.model_pro.instance(idx_current_pro)
         self.model_exp = wizard.metadataModel.experiments_for_project(project)
@@ -127,28 +128,59 @@ class PEDatasetPage(QWizardPage):
         project = self.model_pro.instance(wizard.ui.existingProjectList_3.currentIndex())
         exp = self.model_exp.instance(wizard.ui.existingExperimentList_2.currentIndex())
         ds = self.model_ds.instance(wizard.ui.existingDatasetList_1.currentIndex())
-
+        
         wizard.selected_existing_project = project
         wizard.selected_existing_experiment = exp
         wizard.selected_existing_dataset = ds
+        
 
     def wizard(self):
         return typing.cast(afw.AddFilesWizardSkipDataset, super().wizard())
 
     def initializePage(self) -> None:
+        '''
         wizard = self.wizard()
-
         list_view_ds = wizard.ui.existingDatasetList_1
-        list_view_pro = wizard.ui.existingProjectList_3
         list_view_exp = wizard.ui.existingExperimentList_2
-
+        list_view_pro = wizard.ui.existingProjectList_3
+        
         # Only show datasets under the selected experiment.
         self.model_ds = wizard.metadataModel.datasets.proxy(['dataset_name'])
         self.model_ds.set_read_only(True)
         self.model_ds.set_show_fields(['dataset_name'])
         list_view_ds.setModel(self.model_ds)
 
-        
+        ### update the list of experiments and projects
+        # Display the experiment related to the selected dataset
+        idx_show_existing_ds = list_view_ds.currentIndex()
+        dataset = self.model_ds.instance(idx_show_existing_ds)
+        #print(dataset)
+        self.model_exp = wizard.metadataModel.experiments.proxy(['experiment_name'])
+        #self.model_exp = wizard.metadataModel.experiment_for_dataset(dataset)
+        #print(self.model_exp.instance(0))
+        self.model_exp.set_read_only(True)
+        self.model_exp.set_show_fields(['experiment_name'])
+        list_view_exp.setModel(self.model_exp)
+
+        # Display the project related to the selected experiment
+        idx_show_existing_exp = list_view_exp.currentIndex()
+        experiment = self.model_exp.instance(idx_show_existing_exp)
+        self.model_pro = wizard.metadataModel.projects.proxy(['project_name'])
+        #self.model_pro = wizard.metadataModel.project_for_experiment(experiment)
+        self.model_pro.set_read_only(True)
+        self.model_pro.set_show_fields(['project_name'])
+        list_view_pro.setModel(self.model_pro)
+    
+        ## update the list of datasets
+        #self.selected_existing_ped_changed(list_view_ds.currentIndex())
+        list_view_ds.currentIndexChanged.connect(self.selected_existing_ped_changed)
+
+        '''
+        wizard = self.wizard()
+        list_view_ds = wizard.ui.existingDatasetList_1
+        list_view_exp = wizard.ui.existingExperimentList_2
+        list_view_pro = wizard.ui.existingProjectList_3
+
         self.model_pro = wizard.metadataModel.projects.proxy(['project_name'])
         self.model_pro.set_read_only(True)
         list_view_pro.setModel(self.model_pro)
@@ -161,10 +193,12 @@ class PEDatasetPage(QWizardPage):
         self.model_exp.set_read_only(True)
         self.model_exp.set_show_fields(['experiment_name'])
         list_view_exp.setModel(self.model_exp)
-
-        # Only show datasets from the selected experiment.
-        idx_selected_existing_exp = list_view_exp.currentIndex()
-        experiment = self.model_exp.instance(idx_selected_existing_exp)
+        
+        ## datasets
+        self.model_ds = wizard.metadataModel.datasets.proxy(['dataset_name'])
+        self.model_ds.set_read_only(True)
+        self.model_ds.set_show_fields(['dataset_name'])
+        list_view_ds.setModel(self.model_ds)
 
         #wizard.ui.existingProjectList_2.setModel(self.model)
         self.selected_existing_ped_changed(wizard.ui.existingProjectList_3.currentIndex())

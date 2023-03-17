@@ -9,6 +9,7 @@ from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
 from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardSkip,AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipProject
+from ime.widgets.add_files_wizard_pages_skip import ProjectPage, PExperimentPage, PEDatasetPage
 from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
@@ -218,6 +219,19 @@ class MyTardisMetadataEditor(QMainWindow):
         raise ValueError()
 
     def dataset_for_datafile(self, datafile: Datafile):
+        """Return the Dataset object that corresponds to the given Datafile.
+
+        This method searches for the Dataset object in the metadata attribute of the current object (which should be a class that contains metadata about one or more datasets), by comparing the dataset_id attribute of each Dataset object to the dataset_id attribute of the given Datafile object. If a match is found, the corresponding Dataset object is returned.
+
+        Args:
+            datafile: A Datafile object representing the file that we want to find the corresponding Dataset for.
+
+        Returns:
+            A Dataset object that corresponds to the given Datafile.
+
+        Raises:
+            ValueError: If no Dataset object is found that matches the dataset_id of the given Datafile.
+        """
         for dataset in self.metadata.datasets:
             if dataset.dataset_id == datafile.dataset_id:
                 return dataset

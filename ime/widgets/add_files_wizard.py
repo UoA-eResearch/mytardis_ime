@@ -404,7 +404,7 @@ class AddFilesWizardSkipDataset(QWizard):
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
 
-    def __init__(self, metadataModel: IngestionMetadataModel, ds_data, exp_data, pro_data):
+    def __init__(self, metadataModel: IngestionMetadataModel, ds_data: Datafile, exp_data: Experiment, pro_data: Project):
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles_skip()
         self.metadataModel = metadataModel
@@ -414,11 +414,11 @@ class AddFilesWizardSkipDataset(QWizard):
         pages = self.page_ids
         self.setStartId(pages['pedPage'])
 
-        #print(item_data, item_data.dataset_name, item_data.experiment_id)
         #exp_name = self.experiment_for_dataset(item_data.dataset_name)
         #proj_name = self.project_for_experiment(exp_name)
 
         # customise the pedPage, pePage, and pPage with item_data
+        #print(ds_data, exp_data, pro_data)
         #self.ui.existingDatasetList_1 = ds_data.dataset_name
         #self.ui.existingExperimentList_2 = exp_data.experiment_name
         #self.ui.existingProjectList_3 = pro_data.project_name
