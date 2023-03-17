@@ -8,7 +8,7 @@ from typing import Any, Callable
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
-from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardSkip,AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipProject
+from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipExperiment, AddFilesWizardSkipProject
 from ime.widgets.add_files_wizard_pages_skip import ProjectPage, PExperimentPage, PEDatasetPage
 from ime.qt_models import IngestionMetadataModel
 
@@ -62,8 +62,7 @@ class MyTardisMetadataEditor(QMainWindow):
         # To do: create a dic with info about related exp, project
         exp_data = self.experiment_for_dataset(data)
         pro_data = self.project_for_experiment(exp_data)
-        #print(data, exp_data,pro_data)
-        
+
         self.import_wizard_ui = AddFilesWizardSkipDataset(model,data,exp_data,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
@@ -86,14 +85,14 @@ class MyTardisMetadataEditor(QMainWindow):
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
-        action.triggered.connect(self.openWizardWindowSkip)
+        action.triggered.connect(self.openWizardWindowSkipExperiment)
         action = menu.addAction("Delete this Experiment")
 
         menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
 
-    def openWizardWindowSkip(self):  
+    def openWizardWindowSkipExperiment(self):  
         model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizardSkip(model)
+        self.import_wizard_ui = AddFilesWizardSkipExperiment(model)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -195,15 +194,13 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def dataset_for_datafile(self, datafile: Datafile):
         """Return the Dataset object that corresponds to the given Datafile.
-
-        This method searches for the Dataset object in the metadata attribute of the current object (which should be a class that contains metadata about one or more datasets), by comparing the dataset_id attribute of each Dataset object to the dataset_id attribute of the given Datafile object. If a match is found, the corresponding Dataset object is returned.
+        This method searches for the Dataset object in the metadata attribute of the current object (which should be a class that contains metadata about one or more datasets), 
+        by comparing the dataset_id attribute of each Dataset object to the dataset_id attribute of the given Datafile object. If a match is found, the corresponding Dataset object is returned.
 
         Args:
             datafile: A Datafile object representing the file that we want to find the corresponding Dataset for.
-
         Returns:
             A Dataset object that corresponds to the given Datafile.
-
         Raises:
             ValueError: If no Dataset object is found that matches the dataset_id of the given Datafile.
         """
