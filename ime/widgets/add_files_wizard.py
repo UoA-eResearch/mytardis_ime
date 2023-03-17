@@ -529,7 +529,6 @@ class AddFilesWizardSkipProject(QWizard):
         self.ui.existingProjectList_1.currentIndexChanged.connect(pro_page.completeChanged)
         pro_page.registerField("isExistingProject", self.ui.existingProjectList_1)
 
-
         exp_new_page = self.ui.newExperimentPage
         ds_new_page = self.ui.newDatasetPage
         
