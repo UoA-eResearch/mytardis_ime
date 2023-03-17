@@ -1,118 +1,90 @@
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Optional, TypeVar, Union
 import typing
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QEvent, QObject, QSignalBlocker, QStringListModel
+from PyQt5.QtCore import QEvent, QObject, QSignalBlocker, pyqtSignal
+from ime.qt_models import PythonListModel
 from ime.ui.ui_access_control_list import Ui_AccessControlList
 from PyQt5.QtWidgets import QMessageBox, QWidget, QLineEdit
 
+@dataclass
+class OriginAccessControlData:
+    data: List[str] = field(default_factory=list)
+
+@dataclass
+class DerivedAccessControlData:
+    data: Optional[List[str]] = None
+    inherited_data: List[str] = field(default_factory=list)
+
 class AccessControlList(QWidget):
+    _model: PythonListModel
+    is_overriding_inheritance: bool = False
+    override_inherited_toggled = pyqtSignal(bool, name="overrideInheritedChanged")
 
     def __init__(self, parent = None):
         super().__init__(parent)
         self.ui = Ui_AccessControlList()
         self.ui.setupUi(self)
-        #Libby to add line edit
-        #self.ui.input_box = QLineEdit(self)
-
-        #Libby Initialize the flag to False
-        self.item_added = False
-
+        self._model = PythonListModel(self)
+        self.ui.aclList.setModel(self._model)
         self.ui.btnAdd.clicked.connect(self.handle_insert_new)
         self.ui.btnDelete.clicked.connect(self.handle_remove)
         # To monitor focus out events and deselect
-        # self.ui.aclList.installEventFilter(self)
         self.ui.overrideCheckBox.installEventFilter(self)
-        self.ui.overrideCheckBox.setVisible(False)
-        self.ui.overrideCheckBox.toggled.connect(self.handle_override_changed)
-        self.has_inheritance = False
+        self.ui.overrideCheckBox.toggled.connect(self.handle_override_checkbox_changed)
+        self.data = OriginAccessControlData()
 
-    def set_has_inheritance(self, has_inheritance: bool):
-        self.has_inheritance = has_inheritance
-        self.ui.overrideCheckBox.setVisible(has_inheritance)
-        if not has_inheritance:
-            self.ui.aclList.setEnabled(True)
-        elif getattr(self, 'list_model', None) is None:
-            self.ui.aclList.setDisabled(True)
-            return
-        elif self.list_model.rowCount() > 0:
-            # TODO Need to differentiate no vs empty state
-            self.ui.overrideCheckBox.setChecked(True)
-            self.ui.aclList.setEnabled(True)
-        else:
-            self.ui.aclList.setDisabled(True)
-            self.ui.overrideCheckBox.setChecked(False)
+    @property
+    def data(self):
+        return self._data
 
-    def handle_override_changed(self):
-        checked = self.ui.overrideCheckBox.isChecked()
-        list_count = self.list_model.rowCount()
-        if not checked and list_count > 0:
-            msg = QMessageBox()
-            msg.setWindowTitle("Use inherited value instead?")
-            msg.setText("Are you sure you want to remove all users/groups from this field?")
-            msg.setInformativeText("Inherited values will apply instead.")
-            msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
-            res = msg.exec()
-            if res == QMessageBox.StandardButton.Cancel:
+    @data.setter
+    def data(self, value: Union[OriginAccessControlData, DerivedAccessControlData]):
+        self._data = value
+        if isinstance(value, OriginAccessControlData):
+            # If this is origin access control data (i.e. access control values from a Project)
+            # then hide the override checkbox and show the values.
+            self._model.setStringList(value.data)
+            self.ui.overrideCheckBox.setVisible(False)
+        elif isinstance(value, DerivedAccessControlData):
+            # If this is derived access control data(i.e. access control values from an Experiment,
+            # Dataset or FileInfo), then show override checkbox and display values depending on
+            # whether override values are available.
+            self.ui.overrideCheckBox.setVisible(True)
+            if value.data is None:
+                # Disable editing, display inherited access controls.
+                self._model.setStringList(value.inherited_data)
+                self.ui.aclList.setEnabled(False)
                 with QSignalBlocker(self.ui.overrideCheckBox):
-                    # Undo the check.
-                    self.ui.overrideCheckBox.setChecked(True)
+                    self.ui.overrideCheckBox.setChecked(False)
             else:
-                # Remove all items in list
-                self.list_model.removeRows(0, self.list_model.rowCount())
-        # Finally, set to enable to disable the list
-        self.ui.aclList.setEnabled(self.ui.overrideCheckBox.isChecked())
+                # Enable editing, display own access controls
+                self._model.setStringList(value.data)
+                self.ui.aclList.setEnabled(True)
+                with QSignalBlocker(self.ui.overrideCheckBox):
+                    self.ui.overrideCheckBox.setChecked(True)
 
+    def handle_override_checkbox_changed(self):
+        is_overriding = self.ui.overrideCheckBox.isChecked()
+        # Cancel the checkbox state change as we want to control
+        # the change through the data property setter
+        with QSignalBlocker(self.ui.overrideCheckBox):
+            self.ui.overrideCheckBox.setChecked(not is_overriding)
+        self.override_inherited_toggled.emit(is_overriding)
 
     def handle_insert_new(self):
-        if getattr(self, 'list_model', None) is None:
-            return
-        ### Libby to add text value to the listmodel
-    
-        checked = self.ui.overrideCheckBox.isChecked()
-        if checked and (not self.item_added):
-            row = self.list_model.rowCount() # get the number of rows in model --> int
-            self.list_model.insertRows(row,1) # Enable add one or more row.
-            model_idx = self.list_model.index(row)
-            self.ui.aclList.setCurrentIndex(model_idx)
-            self.ui.aclList.edit(model_idx)
-            # Set the flag to True after an item has been added
-            self.item_added = True
-
-        # If an item has been added, remove any empty or null strings from the model
-        elif checked and (self.item_added):
-            self.remove_empty_strings(self.list_model)
-            row = self.list_model.rowCount() # get the number of rows in model --> int
-            self.list_model.insertRows(row,1) # Enable add one or more row.
-            model_idx = self.list_model.index(row)
-            self.ui.aclList.setCurrentIndex(model_idx)
-            self.ui.aclList.edit(model_idx)
-            self.item_added = True
-
+        idx = self._model.rowCount()
+        self._model.insertRow(idx)
+        model_idx = self._model.index(idx, 0)
+        self.ui.aclList.setCurrentIndex(model_idx)
+        self.ui.aclList.edit(model_idx)
 
     def handle_remove(self):
-        if getattr(self, 'list_model', None) is None:
-            return
         idx_list = self.ui.aclList.selectedIndexes()
         rows_to_remove = [idx.row() for idx in idx_list]
         # Reverse sort the rows to remove, so we're not affected
         # by row index changes.
         rows_to_remove.sort(reverse=True)
         for row in rows_to_remove:
-            self.list_model.removeRow(row)
-
-    def set_list(self, ac_list: List[str]):
-        self.list_model = QStringListModel(self) # create stringlistmodel object
-        self.list_model.setStringList(ac_list)  # assign values to the model
-        self.ui.aclList.setModel(self.list_model) # connect view and model
-        # Reapply in case this list has value
-        self.set_has_inheritance(self.has_inheritance)
-
-    def remove_empty_strings(self,model):
-        # Get the string list from the model
-        string_list = model.stringList()
-
-        # Iterate through the string list and remove any empty or null strings
-        for i in reversed(range(len(string_list))):
-            if string_list[i] == '' or string_list[i] is None:
-                model.removeRows(i, 1)
+            self._model.removeRow(row)

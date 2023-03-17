@@ -506,11 +506,6 @@ class AddFilesWizardSkipDataset(QWizard):
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             result.datafile.name=file_name
             result.datafile.size=size
-
-            #file_info = FileInfo(name = file_name)
-            #file_info.size = size
-            #result.datafile.files.append(df)
-        
         #print(result.dataset)
         self.submitted.emit(result)
         self.close()

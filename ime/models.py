@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Type
+from typing import List, Dict, Any, Literal, Optional, Type, TypeVar
 from dataclasses import dataclass, field
 import yaml
 from yaml.loader import Loader
@@ -24,13 +24,13 @@ class YAMLSerializable(yaml.YAMLObject):
         fields = loader.construct_mapping(node)
         return cls(**fields)
 
-
 @dataclass
-class IAccessControl:
+class IOriginAccessControl:
     """
-    A class representing fields related to ACL controls.
+    A class representing fields related to the origin access
+    control type. (i.e. projects, which must have a value since
+    experiments, datasets and datafiles inherit from it.)
     """
-
     admin_groups: List[str] = field(default_factory=list)
     admin_users: List[str] = field(default_factory=list)
     read_groups: List[str] = field(default_factory=list)
@@ -40,16 +40,37 @@ class IAccessControl:
     sensitive_groups: List[str] = field(default_factory=list)
     sensitive_users: List[str] = field(default_factory=list)
 
+
+@dataclass
+class IDerivedAccessControl:
+    """
+    A class representing fields related to ACL controls.
+    """
+    admin_groups: Optional[List[str]] = field(default=None)
+    admin_users: Optional[List[str]] = field(default=None)
+    read_groups: Optional[List[str]] = field(default=None)
+    read_users: Optional[List[str]] = field(default=None)
+    download_groups: Optional[List[str]] = field(default=None)
+    download_users: Optional[List[str]] = field(default=None)
+    sensitive_groups: Optional[List[str]] = field(default=None)
+    sensitive_users: Optional[List[str]] = field(default=None)
+
+
+"""
+A union type variable for both types of Access Control types.
+"""
+IAccessControl = TypeVar('IAccessControl', IOriginAccessControl, IDerivedAccessControl)    
+
 @dataclass
 class IMetadata:
     """
     A class representing fields related to schema parameters.
     """
-
+    # change to Optional[]
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable, IAccessControl, IMetadata):
+class Project(YAMLSerializable, IOriginAccessControl, IMetadata):
     """
     A class representing MyTardis Project objects.
     """
@@ -57,7 +78,8 @@ class Project(YAMLSerializable, IAccessControl, IMetadata):
     yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
-    project_name: str = "" 
+    project_name: str = ""
+    description: str = ""
     project_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
@@ -68,7 +90,7 @@ class Project(YAMLSerializable, IAccessControl, IMetadata):
 
 
 @dataclass
-class Experiment(YAMLSerializable, IAccessControl, IMetadata):
+class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -86,7 +108,7 @@ class Experiment(YAMLSerializable, IAccessControl, IMetadata):
 
 
 @dataclass
-class Dataset(YAMLSerializable, IAccessControl, IMetadata):
+class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -105,7 +127,7 @@ class Dataset(YAMLSerializable, IAccessControl, IMetadata):
 
 
 @dataclass
-class FileInfo(YAMLSerializable, IAccessControl, IMetadata):
+class FileInfo(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
