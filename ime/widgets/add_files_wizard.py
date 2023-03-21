@@ -299,6 +299,23 @@ class AddFilesWizard(QWizard):
         self.submitted.emit(result)
 
 class AddFilesWizardSkipDataset(QWizard):
+    """A wizard for adding data files to a metadata model.
+
+    Attributes:
+        submitted (QtCore.pyqtSignal): A signal emitted when the wizard is submitted.
+        page_ids (Dict[str, int]): A dictionary of page names and their IDs.
+        selected_existing_project (Project): The currently selected existing project.
+        selected_existing_experiment (Experiment): The currently selected existing experiment.
+        selected_existing_dataset (Dataset): The currently selected existing dataset.
+
+    Methods:
+        _register_fields(): Set up the fields and connect signals for isComplete states.
+        _make_page_ids(): Create a dictionary of page names and their IDs.
+        nextId() -> int: Determine which page the wizard should advance to.
+        __init__(metadataModel: IngestionMetadataModel): Initialize the wizard with the given metadata model.
+        addFiles_handler(): Handle adding files to the table.
+        deleteFiles_handler(): Handle deleting files from the table.
+    """
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
@@ -323,7 +340,10 @@ class AddFilesWizardSkipDataset(QWizard):
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
     def _make_page_ids(self):
-        # Create a dict of page names and their IDs.
+        """
+        Creates a dictionary of page names and their corresponding IDs. The page IDs are obtained by calling the 
+        `pageIds()` method of the QWizard, and the objectName() of each page is used as the key in the dictionary.
+        """
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
 
@@ -507,7 +527,10 @@ class AddFilesWizardSkipExperiment(QWizard):
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
     def _make_page_ids(self):
-        # Create a dict of page names and their IDs.
+        """
+        Creates a dictionary of page names and their corresponding IDs. The page IDs are obtained by calling the 
+        `pageIds()` method of the QWizard, and the objectName() of each page is used as the key in the dictionary.
+        """
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
 
@@ -679,7 +702,19 @@ class AddFilesWizardSkipExperiment(QWizard):
         self.close()
 
 class AddFilesWizardSkipProject(QWizard):
+    """
+    A wizard for adding new files to an existing project, skipping the project selection page.
 
+    Signals:
+    submitted: A PyQt signal emitted when the wizard is submitted.
+
+    Attributes:
+    page_ids (Dict[str, int]): A dictionary containing the object names of each page in the wizard as keys, and their
+                               corresponding IDs as values.
+    selected_existing_project (Project): The currently selected existing project.
+    selected_existing_experiment (Experiment): The currently selected existing experiment.
+    selected_existing_dataset (Dataset): The currently selected existing dataset.
+    """
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
@@ -688,6 +723,14 @@ class AddFilesWizardSkipProject(QWizard):
 
     def _register_fields(self):
         # Set up the fields and connect signals for isComplete states.
+        """
+        Register fields for each page in the wizard.
+
+        This method sets up the fields and connects signals for the isComplete states of each page.
+
+        Returns:
+        None.
+        """
         # Experiment pages
         pro_page = self.ui.pPage
         #ds_new_page = self.ui.newDatasetPage
@@ -708,7 +751,15 @@ class AddFilesWizardSkipProject(QWizard):
         ds_new_page.registerField('isNewDataset',self.ui.datasetNameLabel_2)
 
     def _make_page_ids(self):
-        # Create a dict of page names and their IDs.
+        """
+        Create a dictionary of page names and their corresponding IDs.
+
+        This method creates a dictionary of page names and their corresponding IDs. The page IDs are obtained by calling
+        the `pageIds()` method of the QWizard, and the objectName() of each page is used as the key in the dictionary.
+
+        Returns:
+        None.
+        """
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
     
@@ -717,6 +768,16 @@ class AddFilesWizardSkipProject(QWizard):
         # Custom WizardPages in add_files_wizard_pages have their own nextId()
         # logic and they are used in the else clause, which calls the default
         # nextId function.
+        """
+        Determine which page the wizard should advance to.
+
+        This method determines which page the wizard should advance to based on the current page. Custom WizardPages in
+        add_files_wizard_pages have their own nextId() logic and they are used in the else clause, which calls the
+        default nextId function.
+
+        Returns:
+        The ID of the next page in the wizard.
+        """
         current = self.currentId()
         pages = self.page_ids
 
