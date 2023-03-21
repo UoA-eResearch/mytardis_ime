@@ -78,7 +78,7 @@ class ExperimentPropertyEditor(QWidget):
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]):
         self.exp = experiment
-        self.exp.bind_input("experiment_name", self.ui.experimentNameLineEdit)
+        self.exp.bind_input("title", self.ui.experimentNameLineEdit)
         self.exp.bind_input("experiment_id", self.ui.experimentIDLineEdit)
         self.exp.bind_input("description", self.ui.experimentDescriptionLineEdit)
 
@@ -100,7 +100,7 @@ class ProjectPropertyEditor(QWidget):
 
     def _set_bound_project(self, project: BoundObject[Project]):
         self.project = project
-        self.project.bind_input("project_name", self.ui.projectNameLineEdit)
+        self.project.bind_input("name", self.ui.projectNameLineEdit)
         self.project.bind_input("project_id", self.ui.projectIDLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
         self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)  

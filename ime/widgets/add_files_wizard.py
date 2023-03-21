@@ -644,7 +644,7 @@ class AddFilesWizardSkipProject(QWizard):
 
         ### assume new experiment
         result.experiment = Experiment()
-        result.experiment.experiment_name = self.ui.experimentNameLineEdit.text()
+        result.experiment.title = self.ui.experimentNameLineEdit.text()
         result.experiment.experiment_id = self.ui.experimentIDLineEdit.text()
         result.experiment.project_id = result.project.project_id
         result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()

@@ -26,7 +26,7 @@ class ProjectPage(QWizardPage):
         wizard = self.wizard()
         # Display the list of projects.
         list_view = wizard.ui.existingProjectList_1
-        self.model_pro = wizard.metadataModel.projects.proxy(['project_name'])
+        self.model_pro = wizard.metadataModel.projects.proxy(['name'])
         self.model_pro.set_read_only(True)
         list_view.setModel(self.model_pro)
         
@@ -59,7 +59,7 @@ class PExperimentPage(QWizardPage):
         project = self.model_pro.instance(idx_current_pro)
         self.model_exp = wizard.metadataModel.experiments_for_project(project)
         self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['experiment_name'])
+        self.model_exp.set_show_fields(['title'])
         wizard.ui.existingExperimentList_1.setModel(self.model_exp)
         exp = self.model_exp.instance(wizard.ui.existingExperimentList_1.currentIndex())
 
@@ -71,7 +71,7 @@ class PExperimentPage(QWizardPage):
 
     def wizard(self):
         # Add type cast so type checker isn't annoyed below.
-        return typing.cast(afw.AddFilesWizardSkip, super().wizard())
+        return typing.cast(afw.AddFilesWizardSkipExperiment, super().wizard())
 
     def initializePage(self) -> None:
         wizard = self.wizard()
@@ -80,7 +80,7 @@ class PExperimentPage(QWizardPage):
         list_view_exp = wizard.ui.existingExperimentList_1
         
         # Display the list of projects
-        self.model_pro = wizard.metadataModel.projects.proxy(['project_name'])
+        self.model_pro = wizard.metadataModel.projects.proxy(['name'])
         self.model_pro.set_read_only(True)
         list_view_pro.setModel(self.model_pro)
 
@@ -89,7 +89,7 @@ class PExperimentPage(QWizardPage):
         project = self.model_pro.instance(idx_selected_existing_pro)
         self.model_exp = wizard.metadataModel.experiments_for_project(project)
         self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['experiment_name'])
+        self.model_exp.set_show_fields(['title'])
         list_view_exp.setModel(self.model_exp)
 
         #wizard.ui.existingProjectList_2.setModel(self.model)
@@ -116,7 +116,7 @@ class PEDatasetPage(QWizardPage):
         project = self.model_pro.instance(idx_current_pro)
         self.model_exp = wizard.metadataModel.experiments_for_project(project)
         self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['experiment_name'])
+        self.model_exp.set_show_fields(['title'])
         wizard.ui.existingExperimentList_2.setModel(self.model_exp)
 
         experiment = self.model_exp.instance(wizard.ui.existingExperimentList_2.currentIndex())
@@ -143,7 +143,7 @@ class PEDatasetPage(QWizardPage):
         list_view_exp = wizard.ui.existingExperimentList_2
         list_view_pro = wizard.ui.existingProjectList_3
 
-        self.model_pro = wizard.metadataModel.projects.proxy(['project_name'])
+        self.model_pro = wizard.metadataModel.projects.proxy(['name'])
         self.model_pro.set_read_only(True)
         list_view_pro.setModel(self.model_pro)
 
@@ -153,7 +153,7 @@ class PEDatasetPage(QWizardPage):
         
         self.model_exp = wizard.metadataModel.experiments_for_project(project)
         self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['experiment_name'])
+        self.model_exp.set_show_fields(['title'])
         list_view_exp.setModel(self.model_exp)
         
         ## datasets
