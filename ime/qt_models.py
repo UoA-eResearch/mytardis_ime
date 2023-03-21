@@ -39,13 +39,43 @@ class PythonListModel(QAbstractListModel):
     def __init__(self, parent = None):
         super().__init__(parent)
 
-    def setStringList(self, sourceList: List[str]):
+    def setStringList(self, sourceList: List[str]) -> None:
+        """Sets the source Python string list that will be updated by 
+        this Model.
+
+        Args:
+            sourceList (List[str]): The backing Python string list.
+        """
         self.list = sourceList
+
+    def remove_value(self, val: str) -> bool:
+        """Remove a given value from the list, and send appropriate
+        Qt Model signals to notify any views of the change.
+
+        Args:
+            val (str): The value to be removed.
+
+        Returns:
+            bool: Whether the removal was successful or not.
+        """
+        try:
+            idx = self.list.index(val)
+            self.beginRemoveRows(QModelIndex(), idx, idx)
+            self.list.remove(val)
+            self.endRemoveRows()
+            return True
+        except:
+            return False
+
+    # The following methods implement the QAbstractListModel interface.
+    # Documentation about these methods can be found in:
+    # https://doc.qt.io/qt-6/qabstractlistmodel.html
 
     def rowCount(self, parent = QModelIndex()) -> int:
         return len(self.list)
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        # Make the items show up as editable and selectable in views.
         flags = Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         return typing.cast(Qt.ItemFlags, flags)
 
@@ -57,10 +87,6 @@ class PythonListModel(QAbstractListModel):
     def data(self, index: QModelIndex, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
         if role == Qt.ItemDataRole.DisplayRole:
             return self.list[index.row()]
-
-    def headerData(self, section: int, orientation: Qt.Orientation, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
-        if role == Qt.ItemDataRole.DisplayRole:
-            return "hello"
 
     def insertRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
         self.beginInsertRows(QModelIndex(), row, row+count-1)
@@ -79,15 +105,7 @@ class PythonListModel(QAbstractListModel):
         self.endRemoveRows()
         return True
 
-    def remove_value(self, val: str) -> bool:
-        try:
-            idx = self.list.index(val)
-            self.beginRemoveRows(QModelIndex(), idx, idx)
-            self.list.remove(val)
-            self.endRemoveRows()
-            return True
-        except:
-            return False
+
 
 class IngestionMetadataModel:
     """
