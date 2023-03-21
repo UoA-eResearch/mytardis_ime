@@ -26,7 +26,23 @@ class AddFilesWizardResult:
     datafile: Datafile
 
 class AddFilesWizard(QWizard):
+    """A wizard for adding data files to a metadata model.
 
+    Attributes:
+        submitted (QtCore.pyqtSignal): A signal emitted when the wizard is submitted.
+        page_ids (Dict[str, int]): A dictionary of page names and their IDs.
+        selected_existing_project (Project): The currently selected existing project.
+        selected_existing_experiment (Experiment): The currently selected existing experiment.
+        selected_existing_dataset (Dataset): The currently selected existing dataset.
+
+    Methods:
+        _register_fields(): Set up the fields and connect signals for isComplete states.
+        _make_page_ids(): Create a dictionary of page names and their IDs.
+        nextId() -> int: Determine which page the wizard should advance to.
+        __init__(metadataModel: IngestionMetadataModel): Initialize the wizard with the given metadata model.
+        addFiles_handler(): Handle adding files to the table.
+        deleteFiles_handler(): Handle deleting files from the table.
+    """
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
@@ -34,7 +50,7 @@ class AddFilesWizard(QWizard):
     selected_existing_dataset: Dataset
 
     def _register_fields(self):
-        # Set up the fields and connect signals for isComplete states.
+        """Set up the fields and connect signals for isComplete states."""
         # Project pages
         proj_page = self.ui.projectPage
         proj_new_page = self.ui.newProjectPage
@@ -70,7 +86,10 @@ class AddFilesWizard(QWizard):
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
     def _make_page_ids(self):
-        # Create a dict of page names and their IDs.
+        """
+        Creates a dictionary of page names and their corresponding IDs. The page IDs are obtained by calling the 
+        `pageIds()` method of the QWizard, and the objectName() of each page is used as the key in the dictionary.
+        """
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
 
@@ -79,6 +98,19 @@ class AddFilesWizard(QWizard):
         # Custom WizardPages in add_files_wizard_pages have their own nextId()
         # logic and they are used in the else clause, which calls the default
         # nextId function.
+        """
+        Determines which page the wizard should advance to based on the user's input. The function checks the current 
+        page ID against the page IDs in the `self.page_ids` dictionary, and returns the next page ID based on the 
+        user's input. If a custom WizardPage has its own `nextId()` function, it is called instead of the default 
+        `nextId()` function. The following is the logic for determining the next page ID:
+    
+        - If the current page is the 'introductionPage':
+            - If there are existing projects, go to the 'projectPage', else go to the 'newProjectPage'.
+        - If the current page is the 'newProjectPage', go to the 'newExperimentPage'.
+        - If the current page is the 'newExperimentPage', go to the 'newDatasetPage'.
+        - If the current page is the 'newDatasetPage', go to the 'includedFilesPage'.
+        - Otherwise, call the default `nextId()` function.
+        """
         current = self.currentId()
         pages = self.page_ids
         if current == pages['introductionPage']:
@@ -107,6 +139,12 @@ class AddFilesWizard(QWizard):
             return super().nextId()
 
     def __init__(self, metadataModel: IngestionMetadataModel):
+        """
+        Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
+        class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
+        the `_register_fields()` method. The `datafileAddPushButton` and `datafileDeletePushButton` buttons are 
+        connected to their corresponding handler methods.
+        """
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles()
         self.metadataModel = metadataModel
@@ -119,11 +157,27 @@ class AddFilesWizard(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
 
     def addFiles_handler(self):
+        """Add files to the table.
+
+        Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
+        Passes the table and the list of files to add to the add_file_table_rows() method.
+
+        Returns:
+            None.
+        """
         table = self.ui.datafiletableWidget
         files_to_add = self.open_add_files_dialog()
         self.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
+        """Delete files from the table.
+
+        Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
+        Passes each QModelIndex object to removeRow() method to delete that row from the table.
+
+        Returns:
+            None.
+        """
         index_list = []
         for model_index in self.ui.datafiletableWidget.selectionModel().selectedRows():
             index = QtCore.QPersistentModelIndex(model_index)
@@ -134,6 +188,15 @@ class AddFilesWizard(QWizard):
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
 
     def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
+        """Open a file dialog and get the list of files to add.
+
+        Creates a file dialog, opens it to allow the user to select files to add.
+        Returns the list of QFileInfo objects for the selected files.
+
+        Returns:
+            A list of QFileInfo objects for the selected files.
+        """
+
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
         filename = file_dialog.getOpenFileNames(self, "Open files")  
@@ -150,6 +213,19 @@ class AddFilesWizard(QWizard):
         return new_files
     
     def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
+        """Add rows to the table.
+
+        Gets the table and the list of files to add.
+        Iterates over the list of files to add and creates a row in the table for each file.
+        Sets the filename, size, and file path as items in the row.
+
+        Args:
+            table: A QTableWidget object to add rows to.
+            files_to_add: A list of QFileInfo objects to create rows for.
+
+        Returns:
+            None.
+        """
         # Need to start inserting rows after existing rows.
         initial_row_count = table.rowCount()
         # Grow the table to fit new rows.
@@ -174,7 +250,11 @@ class AddFilesWizard(QWizard):
     
     def on_submit(self):
         """
-        Builds a result class based on user's choices and emits them through the signal.
+        Builds a result class based on the user's choices and emits them through the signal.
+
+        Returns:
+            None
+
         """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
@@ -217,9 +297,8 @@ class AddFilesWizard(QWizard):
             result.datafile.size=size
 
         self.submitted.emit(result)
-        
-class AddFilesWizardSkipDataset(QWizard):
 
+class AddFilesWizardSkipDataset(QWizard):
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
@@ -228,7 +307,6 @@ class AddFilesWizardSkipDataset(QWizard):
 
     def _register_fields(self):
         # Set up the fields and connect signals for isComplete states.
-    
         # dataset pages
         ds_page = self.ui.pedPage
         ds_new_page = self.ui.newDatasetPage
@@ -250,6 +328,12 @@ class AddFilesWizardSkipDataset(QWizard):
             self.page_ids[self.page(id).objectName()] = id
 
     def __init__(self, metadataModel: IngestionMetadataModel, ds_data: Datafile, exp_data: Experiment, pro_data: Project):
+        """
+        Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
+        class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
+        the `_register_fields()` method. The `datafileAddPushButton` and `datafileDeletePushButton` buttons are 
+        connected to their corresponding handler methods.
+        """
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles_skip()
         self.metadataModel = metadataModel
@@ -258,10 +342,8 @@ class AddFilesWizardSkipDataset(QWizard):
         self._register_fields()
         pages = self.page_ids
         self.setStartId(pages['pedPage'])
-
         #exp_name = self.experiment_for_dataset(item_data.dataset_name)
         #proj_name = self.project_for_experiment(exp_name)
-
         # customise the pedPage, pePage, and pPage with item_data
         #print(ds_data, exp_data, pro_data)
         #self.ui.existingDatasetList_1 = ds_data.dataset_name
@@ -274,11 +356,27 @@ class AddFilesWizardSkipDataset(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
 
     def addFiles_handler(self):
+        """Add files to the table.
+
+        Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
+        Passes the table and the list of files to add to the add_file_table_rows() method.
+
+        Returns:
+            None.
+        """
         table = self.ui.datafiletableWidget
         files_to_add = self.open_add_files_dialog()
         self.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
+        """Delete files from the table.
+
+        Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
+        Passes each QModelIndex object to removeRow() method to delete that row from the table.
+
+        Returns:
+            None.
+        """
         index_list = []
         for model_index in self.ui.datafiletableWidget.selectionModel().selectedRows():
             index = QtCore.QPersistentModelIndex(model_index)
@@ -289,6 +387,14 @@ class AddFilesWizardSkipDataset(QWizard):
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
 
     def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
+        """Open a file dialog and get the list of files to add.
+
+        Creates a file dialog, opens it to allow the user to select files to add.
+        Returns the list of QFileInfo objects for the selected files.
+
+        Returns:
+            A list of QFileInfo objects for the selected files.
+        """
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
         filename = file_dialog.getOpenFileNames(self, "Open files")  
@@ -305,6 +411,19 @@ class AddFilesWizardSkipDataset(QWizard):
         return new_files
     
     def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
+        """Add rows to the table.
+
+        Gets the table and the list of files to add.
+        Iterates over the list of files to add and creates a row in the table for each file.
+        Sets the filename, size, and file path as items in the row.
+
+        Args:
+            table: A QTableWidget object to add rows to.
+            files_to_add: A list of QFileInfo objects to create rows for.
+
+        Returns:
+            None.
+        """
         # Need to start inserting rows after existing rows.
         initial_row_count = table.rowCount()
         # Grow the table to fit new rows.
@@ -329,7 +448,11 @@ class AddFilesWizardSkipDataset(QWizard):
     
     def on_submit(self):
         """
-        Builds a result class based on user's choices and emits them through the signal.
+        Builds a result class based on the user's choices and emits them through the signal.
+
+        Returns:
+            None
+
         """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
@@ -356,7 +479,6 @@ class AddFilesWizardSkipDataset(QWizard):
         self.close()
 
 class AddFilesWizardSkipExperiment(QWizard):
-
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
@@ -408,6 +530,12 @@ class AddFilesWizardSkipExperiment(QWizard):
             return super().nextId()
 
     def __init__(self, metadataModel: IngestionMetadataModel):
+        """
+        Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
+        class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
+        the `_register_fields()` method. The `datafileAddPushButton` and `datafileDeletePushButton` buttons are 
+        connected to their corresponding handler methods.
+        """
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles_skip()
         self.metadataModel = metadataModel
@@ -422,11 +550,27 @@ class AddFilesWizardSkipExperiment(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
 
     def addFiles_handler(self):
+        """Add files to the table.
+
+        Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
+        Passes the table and the list of files to add to the add_file_table_rows() method.
+
+        Returns:
+            None.
+        """
         table = self.ui.datafiletableWidget
         files_to_add = self.open_add_files_dialog()
         self.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
+        """Delete files from the table.
+
+        Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
+        Passes each QModelIndex object to removeRow() method to delete that row from the table.
+
+        Returns:
+            None.
+        """
         index_list = []
         for model_index in self.ui.datafiletableWidget.selectionModel().selectedRows():
             index = QtCore.QPersistentModelIndex(model_index)
@@ -436,6 +580,14 @@ class AddFilesWizardSkipExperiment(QWizard):
 
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
     def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
+        """Open a file dialog and get the list of files to add.
+
+        Creates a file dialog, opens it to allow the user to select files to add.
+        Returns the list of QFileInfo objects for the selected files.
+
+        Returns:
+            A list of QFileInfo objects for the selected files.
+        """
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
         filename = file_dialog.getOpenFileNames(self, "Open files")  
@@ -452,6 +604,19 @@ class AddFilesWizardSkipExperiment(QWizard):
         return new_files
     
     def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
+        """Add rows to the table.
+
+        Gets the table and the list of files to add.
+        Iterates over the list of files to add and creates a row in the table for each file.
+        Sets the filename, size, and file path as items in the row.
+
+        Args:
+            table: A QTableWidget object to add rows to.
+            files_to_add: A list of QFileInfo objects to create rows for.
+
+        Returns:
+            None.
+        """
         # Need to start inserting rows after existing rows.
         initial_row_count = table.rowCount()
         # Grow the table to fit new rows.
@@ -476,7 +641,11 @@ class AddFilesWizardSkipExperiment(QWizard):
     
     def on_submit(self):
         """
-        Builds a result class based on user's choices and emits them through the signal.
+        Builds a result class based on the user's choices and emits them through the signal.
+
+        Returns:
+            None
+
         """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
@@ -519,7 +688,6 @@ class AddFilesWizardSkipProject(QWizard):
 
     def _register_fields(self):
         # Set up the fields and connect signals for isComplete states.
-    
         # Experiment pages
         pro_page = self.ui.pPage
         #ds_new_page = self.ui.newDatasetPage
@@ -565,6 +733,12 @@ class AddFilesWizardSkipProject(QWizard):
             return super().nextId()
  
     def __init__(self, metadataModel: IngestionMetadataModel):
+        """
+        Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
+        class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
+        the `_register_fields()` method. The `datafileAddPushButton` and `datafileDeletePushButton` buttons are 
+        connected to their corresponding handler methods.
+        """
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles_skip()
         self.metadataModel = metadataModel
@@ -579,11 +753,27 @@ class AddFilesWizardSkipProject(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
 
     def addFiles_handler(self):
+        """Add files to the table.
+
+        Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
+        Passes the table and the list of files to add to the add_file_table_rows() method.
+
+        Returns:
+            None.
+        """
         table = self.ui.datafiletableWidget
         files_to_add = self.open_add_files_dialog()
         self.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
+        """Delete files from the table.
+
+        Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
+        Passes each QModelIndex object to removeRow() method to delete that row from the table.
+
+        Returns:
+            None.
+        """
         index_list = []
         for model_index in self.ui.datafiletableWidget.selectionModel().selectedRows():
             index = QtCore.QPersistentModelIndex(model_index)
@@ -594,6 +784,14 @@ class AddFilesWizardSkipProject(QWizard):
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
 
     def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
+        """Open a file dialog and get the list of files to add.
+
+        Creates a file dialog, opens it to allow the user to select files to add.
+        Returns the list of QFileInfo objects for the selected files.
+
+        Returns:
+            A list of QFileInfo objects for the selected files.
+        """
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
         filename = file_dialog.getOpenFileNames(self, "Open files")  
@@ -610,6 +808,19 @@ class AddFilesWizardSkipProject(QWizard):
         return new_files
     
     def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
+        """Add rows to the table.
+
+        Gets the table and the list of files to add.
+        Iterates over the list of files to add and creates a row in the table for each file.
+        Sets the filename, size, and file path as items in the row.
+
+        Args:
+            table: A QTableWidget object to add rows to.
+            files_to_add: A list of QFileInfo objects to create rows for.
+
+        Returns:
+            None.
+        """
         # Need to start inserting rows after existing rows.
         initial_row_count = table.rowCount()
         # Grow the table to fit new rows.
@@ -634,7 +845,11 @@ class AddFilesWizardSkipProject(QWizard):
     
     def on_submit(self):
         """
-        Builds a result class based on user's choices and emits them through the signal.
+        Builds a result class based on the user's choices and emits them through the signal.
+
+        Returns:
+            None
+
         """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
