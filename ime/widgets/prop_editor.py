@@ -33,7 +33,7 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset.set_object(dataset)
         self.metadata_tab.update_metadata_object(dataset)
-        self.ui.accessControlTab.data = dataset
+        self.ui.accessControlTab.set_data(dataset)
 
     def _set_bound_dataset(self, dataset: BoundObject[Dataset]):
         """
@@ -91,7 +91,7 @@ class DatafilePropertyEditor(QWidget):
     def set_fileinfo(self, file_info: FileInfo):
         self.file_info.set_object(file_info)
         self.metadata_tab.update_metadata_object(file_info)
-        self.ui.accessControlTab.data = file_info
+        self.ui.accessControlTab.set_data(file_info)
 
     def _set_bound_file(self, file_info: BoundObject[FileInfo]):
         self.file_info = file_info
@@ -122,7 +122,7 @@ class ExperimentPropertyEditor(QWidget):
         """
         self.exp.set_object(experiment)
         self.metadata_tab.update_metadata_object(experiment)
-        self.ui.accessControlTab.data = experiment
+        self.ui.accessControlTab.set_data(experiment)
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]):
         """Set a bound object for the experiment.
@@ -161,7 +161,7 @@ class ProjectPropertyEditor(QWidget):
         """
         self.project.set_object(project)
         self.metadata_tab.update_metadata_object(project)
-        self.ui.accessControlTab.data = project
+        self.ui.accessControlTab.set_data(project)
 
     def _set_bound_project(self, project: BoundObject[Project]):
         """

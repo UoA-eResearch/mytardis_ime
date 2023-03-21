@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Literal, Optional, Type, TypeVar
+from typing import List, Dict, Any, Literal, Optional, Type, TypeAlias, TypeVar, Union
 from dataclasses import dataclass, field
 import yaml
 from yaml.loader import Loader
@@ -25,11 +25,12 @@ class YAMLSerializable(yaml.YAMLObject):
         return cls(**fields)
 
 @dataclass
-class IOriginAccessControl:
+class IProjectAccessControl:
     """
-    A class representing fields related to the origin access
-    control type. (i.e. projects, which must have a value since
-    experiments, datasets and datafiles inherit from it.)
+    A class representing fields related to access
+    control. This class represents fields for Projects,
+    while the IDerviedAccessControl class represents fields
+    for experiments, datasets and datafiles.
     """
     admin_groups: List[str] = field(default_factory=list)
     admin_users: List[str] = field(default_factory=list)
@@ -44,7 +45,12 @@ class IOriginAccessControl:
 @dataclass
 class IDerivedAccessControl:
     """
-    A class representing fields related to ACL controls.
+    A class representing fields related to access
+    control. This class represents fields for Experiments,
+    Datasets and Datafiles,while the IProjectAccessControl
+    class represents fields for Projects.
+    When set to None, the fields represent that they are inheriting
+    access control fields from the containing object.
     """
     admin_groups: Optional[List[str]] = field(default=None)
     admin_users: Optional[List[str]] = field(default=None)
@@ -57,9 +63,9 @@ class IDerivedAccessControl:
 
 
 """
-A union type variable for both types of Access Control types.
+A union type alias for both types of Access Control types.
 """
-IAccessControl = TypeVar('IAccessControl', IOriginAccessControl, IDerivedAccessControl)    
+IAccessControl:TypeAlias = Union[IProjectAccessControl, IDerivedAccessControl]    
 
 @dataclass
 class IMetadata:
@@ -70,7 +76,7 @@ class IMetadata:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable, IOriginAccessControl, IMetadata):
+class Project(YAMLSerializable, IProjectAccessControl, IMetadata):
     """
     A class representing MyTardis Project objects.
     """
