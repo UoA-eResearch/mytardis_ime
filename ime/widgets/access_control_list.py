@@ -10,19 +10,42 @@ from PyQt5.QtWidgets import QMessageBox, QWidget, QLineEdit
 
 @dataclass
 class OriginAccessControlData:
+    """A class to represent origin access control data.
+
+    Attributes:
+        data (List[str]): A list of access control data.
+    """
     data: List[str] = field(default_factory=list)
 
 @dataclass
 class DerivedAccessControlData:
+    """A class to represent derived access control data.
+
+    Attributes:
+        data (Optional[List[str]]): A list of access control data (None if there are no access controls).
+        inherited_data (List[str]): A list of inherited access control data.
+    """
     data: Optional[List[str]] = None
     inherited_data: List[str] = field(default_factory=list)
 
 class AccessControlList(QWidget):
+    """A widget to display and edit access control lists.
+
+    Attributes:
+        _model (PythonListModel): A list model for the access control list.
+        is_overriding_inheritance (bool): A flag to indicate whether the access controls are being overridden.
+        override_inherited_toggled (pyqtSignal): A signal emitted when the override checkbox is toggled.
+    """
     _model: PythonListModel
     is_overriding_inheritance: bool = False
     override_inherited_toggled = pyqtSignal(bool, name="overrideInheritedChanged")
 
     def __init__(self, parent = None):
+        """Constructor for AccessControlList widget.
+
+        Args:
+            parent (QWidget): The parent widget (default is None).
+        """
         super().__init__(parent)
         self.ui = Ui_AccessControlList()
         self.ui.setupUi(self)
@@ -37,10 +60,20 @@ class AccessControlList(QWidget):
 
     @property
     def data(self):
+        """Get the access control data.
+
+        Returns:
+            Union[OriginAccessControlData, DerivedAccessControlData]: The access control data.
+        """
         return self._data
 
     @data.setter
     def data(self, value: Union[OriginAccessControlData, DerivedAccessControlData]):
+        """Set the access control data.
+
+        Args:
+            value (Union[OriginAccessControlData, DerivedAccessControlData]): The access control data.
+        """
         self._data = value
         if isinstance(value, OriginAccessControlData):
             # If this is origin access control data (i.e. access control values from a Project)
@@ -66,6 +99,13 @@ class AccessControlList(QWidget):
                     self.ui.overrideCheckBox.setChecked(True)
 
     def handle_override_checkbox_changed(self):
+        """
+        Handle the state change of the override checkbox.
+
+        Emits the `override_inherited_toggled` signal with the boolean value
+        of `is_overriding`, which is whether or not the checkbox is currently checked.
+        Sets the checkbox state back to its previous value by using a `QSignalBlocker`.
+        """
         is_overriding = self.ui.overrideCheckBox.isChecked()
         # Cancel the checkbox state change as we want to control
         # the change through the data property setter
@@ -74,6 +114,12 @@ class AccessControlList(QWidget):
         self.override_inherited_toggled.emit(is_overriding)
 
     def handle_insert_new(self):
+        """
+        Handle the click of the "Add" button.
+
+        Inserts a new row into the list model and sets the current index to the new row,
+        allowing the user to edit it.
+        """
         idx = self._model.rowCount()
         self._model.insertRow(idx)
         model_idx = self._model.index(idx, 0)
@@ -81,6 +127,12 @@ class AccessControlList(QWidget):
         self.ui.aclList.edit(model_idx)
 
     def handle_remove(self):
+        """
+        Handle the click of the "Remove" button.
+
+        Removes the selected rows from the list model, in reverse order to avoid issues with row
+        indices changing as rows are removed.
+        """
         idx_list = self.ui.aclList.selectedIndexes()
         rows_to_remove = [idx.row() for idx in idx_list]
         # Reverse sort the rows to remove, so we're not affected
