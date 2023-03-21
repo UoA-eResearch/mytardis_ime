@@ -102,7 +102,7 @@ class PExperimentPage(QWizardPage):
         Returns:
             The wizard object with type casting.
         """
-        return typing.cast(afw.AddFilesWizardSkip, super().wizard())
+        return typing.cast(afw.AddFilesWizardSkipExperiment, super().wizard())
 
     def initializePage(self) -> None:
         """

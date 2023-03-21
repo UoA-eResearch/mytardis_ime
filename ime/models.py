@@ -152,7 +152,7 @@ class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
-    name: str = "" 
+    #name: str = "" 
     # Size property is not serialised.
     size: float = ""
     ### fields below were added

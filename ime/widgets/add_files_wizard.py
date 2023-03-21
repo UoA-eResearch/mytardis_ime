@@ -695,7 +695,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         for row in range(table.rowCount()):
             file_name = table.item(row,0).text()
             size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            result.datafile.name=file_name
+            result.datafile.filename=file_name
             result.datafile.size=size
         #print(result.experiment,result.project)
         self.submitted.emit(result)

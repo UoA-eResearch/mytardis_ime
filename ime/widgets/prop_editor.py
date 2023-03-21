@@ -85,7 +85,7 @@ class DatafilePropertyEditor(QWidget):
         datafile: The `BoundObject` to bind to this editor.
         """
         self.df = datafile
-        self.df.bind_input("name", self.ui.fileInfoFilenameLineEdit)
+        self.df.bind_input("filename", self.ui.fileInfoFilenameLineEdit)
     '''
     ### comment out fileinfo
     def set_fileinfo(self, file_info: FileInfo):

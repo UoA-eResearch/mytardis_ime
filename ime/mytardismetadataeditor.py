@@ -198,7 +198,7 @@ class MyTardisMetadataEditor(QMainWindow):
         datafile_lookup = [
             fileinfo
             for fileinfo in datafiles
-            if fileinfo.name == file_name
+            if fileinfo.filename == file_name
         ]
         if (len(datafile_lookup) != 1):
             logging.warning("Datafile name %s could not be found or there are " + 
@@ -403,7 +403,7 @@ class MyTardisMetadataEditor(QMainWindow):
             None
         """
         ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == datafile.dataset_id)
-        file_name = datafile.name
+        file_name = datafile.filename
         file_size = file_size_to_str(datafile.size)
         l1_child = QTreeWidgetItem([file_name,file_size,""])
         l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
