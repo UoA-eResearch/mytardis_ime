@@ -172,7 +172,7 @@ class IngestionMetadata:
         """
         Returns a string of the YAML representation of the metadata.
         """
-        concatenated: List[Any] = self.projects
+        concatenated: List[Any] = self.projects.copy()
         concatenated.extend(self.experiments)
         concatenated.extend(self.datasets)
         concatenated.extend(self.datafiles)
