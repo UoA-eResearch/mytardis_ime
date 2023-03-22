@@ -29,10 +29,13 @@ To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwa
 env /usr/bin/arch -x86_64 /bin/zsh --login
 arch
 ```
-Set up your default Python version to 3.9.X by following https://towardsdatascience.com/how-to-use-manage-multiple-python-versions-on-an-apple-silicon-m1-mac-d69ee6ed0250
+Then you can either: 
+1. Set up your default Python version to 3.10.X by following https://towardsdatascience.com/how-to-use-manage-multiple-python-versions-on-an-apple-silicon-m1-mac-d69ee6ed0250 or 
+2. install Python3.10 locally with homebrew and create a virtual environment for Python3.10
 ```
+source venv3.10/bin/activate ### in order to use module TypeAlias which is only avaiblable after python3.10 in models.py
 poetry install
-source .venv/bin/activate
+
 ```
 
 ## UI files

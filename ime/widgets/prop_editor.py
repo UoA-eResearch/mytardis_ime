@@ -75,7 +75,7 @@ class DatafilePropertyEditor(QWidget):
         """
         self.df.set_object(datafile)
         self.metadata_tab.update_metadata_object(datafile)
-        self.ui.accessControlTab.set_item(datafile)
+        self.ui.accessControlTab.set_data(datafile)
     
     def _set_bound_file(self, datafile: BoundObject[Datafile]):
         """

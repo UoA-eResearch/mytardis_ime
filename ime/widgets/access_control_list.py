@@ -16,13 +16,6 @@ class ProjectAccessControlListData:
     data: List[str] = field(default_factory=list)
 
 @dataclass
-class DerivedAccessControlData:
-    """A class to represent derived access control data.
-
-    Attributes:
-        data (Optional[List[str]]): A list of access control data (None if there are no access controls).
-        inherited_data (List[str]): A list of inherited access control data.
-    """
 class DerivedAccessControlListData:
     """Class for use with AccessControlList.data to represent access control data for MyTardis objects that have
     inherited access control - i.e. Experiments, Datasets and Datafiles. 
@@ -103,7 +96,7 @@ class AccessControlList(QWidget):
                 with QSignalBlocker(self.ui.overrideCheckBox):
                     self.ui.overrideCheckBox.setChecked(True)
 
-    def handle_override_checkbox_changed(self):
+    def _handle_override_checkbox_changed(self):
         """
         Handle the state change of the override checkbox.
 
@@ -118,7 +111,7 @@ class AccessControlList(QWidget):
             self.ui.overrideCheckBox.setChecked(not is_overriding)
         self.override_inherited_toggled.emit(is_overriding)
 
-    def handle_insert_new(self):
+    def _handle_insert_new(self):
         """
         Handle the click of the "Add" button.
 
@@ -131,7 +124,7 @@ class AccessControlList(QWidget):
         self.ui.aclList.setCurrentIndex(model_idx)
         self.ui.aclList.edit(model_idx)
 
-    def handle_remove(self):
+    def _handle_remove(self):
         """
         Handle the click of the "Remove" button.
 
