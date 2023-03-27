@@ -55,6 +55,21 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
         self.show()
     
+    def openWizardWindow(self):  
+        """
+        Displays a wizard window to add new files to an existing experiment. 
+        This method extracts the relevant metadata from the currently selected item in the 
+        experiment tree widget and passes it to the AddFilesWizardSkipExperiment object.
+
+        Args: None
+
+        Returns: None
+        """
+        model = IngestionMetadataModel(self.metadata)
+        self.import_wizard_ui = AddFilesWizard(model)
+        self.import_wizard_ui.submitted.connect(self.reFresh)
+        self.import_wizard_ui.show()
+
     def datasetMenuContextTree(self, point):
         """
         Event handler for the context menu triggered in the datasetTreeWidget.

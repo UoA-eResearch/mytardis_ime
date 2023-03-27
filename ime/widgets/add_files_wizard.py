@@ -2,12 +2,10 @@ from dataclasses import dataclass, field
 from typing import Dict, List
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
-from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
-from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
 from ime.utils import file_size_to_str
-from ime.models import Project, Experiment, Dataset, Datafile, FileInfo
+from ime.models import Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
-#from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
+from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
 #from ime.mytardismetadataeditor import experiment_for_dataset,project_for_experiment
 from ime.utils import file_size_to_str
