@@ -1,8 +1,8 @@
 from pyexpat import model
 import typing
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 from typing import Any, Callable
 
 from ime.ui.ui_main_window import Ui_MainWindow
@@ -22,6 +22,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
     Inherits from QMainWindow.
     """
+
     def __init__(self):
         """
         Constructor for MyTardisMetadataEditor class.
@@ -35,7 +36,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
         # load the ui file
         # uic.loadUi('MainWindow.ui', self)
-        
+
         self.metadata = IngestionMetadata()
 
         # define our widgets
@@ -53,8 +54,9 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
         self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
+
         self.show()
-    
+
     def openWizardWindow(self):  
         """
         Displays a wizard window to add new files to an existing experiment. 
@@ -96,13 +98,13 @@ class MyTardisMetadataEditor(QMainWindow):
         """  
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()
-        data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        ds_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # print(data, data.dataset_name, data.experiment_id)
         # To do: create a dic with info about related exp, project
-        exp_data = self.experiment_for_dataset(data)
+        exp_data = self.experiment_for_dataset(ds_data)
         pro_data = self.project_for_experiment(exp_data)
 
-        self.import_wizard_ui = AddFilesWizardSkipDataset(model,data,exp_data,pro_data)
+        self.import_wizard_ui = AddFilesWizardSkipDataset(model,ds_data,exp_data,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
     
@@ -123,11 +125,6 @@ class MyTardisMetadataEditor(QMainWindow):
         if not index.isValid():
             return
 
-        #item = self.ui.experimentTreeWidget.itemAt(point)
-        item = self.ui.experimentTreeWidget.currentItem()
-        exp_selected = item.data(0, Qt.ItemDataRole.UserRole)
-        print(exp_selected)
-
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
@@ -147,7 +144,12 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """
         model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizardSkipExperiment(model)
+
+        item = self.ui.experimentTreeWidget.currentItem()
+        exp_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        pro_data = self.project_for_experiment(exp_data)
+
+        self.import_wizard_ui = AddFilesWizardSkipExperiment(model,exp_data,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -165,10 +167,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
         if not index.isValid():
             return
-
-        item = self.ui.projectTreeWidget.itemAt(point)
-        name = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
-
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
@@ -187,7 +185,10 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """
         model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizardSkipProject(model)
+        item = self.ui.projectTreeWidget.currentItem()
+        pro_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+
+        self.import_wizard_ui = AddFilesWizardSkipProject(model,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 

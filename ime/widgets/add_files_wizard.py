@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt, pyqtSignal, QObject
 from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
 from ime.utils import file_size_to_str
 from ime.models import Project, Experiment, Dataset, Datafile
@@ -10,6 +11,11 @@ from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataF
 #from ime.mytardismetadataeditor import experiment_for_dataset,project_for_experiment
 from ime.utils import file_size_to_str
 
+class SelectedDataEmitter(QObject):
+    selected_data_signal = pyqtSignal(object,object,object)
+
+    def __init__(self):
+        super().__init__()
 
 class AddFilesWizardResult:
     """
@@ -345,7 +351,7 @@ class AddFilesWizardSkipDataset(QWizard):
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
 
-    def __init__(self, metadataModel: IngestionMetadataModel, ds_data: Datafile, exp_data: Experiment, pro_data: Project):
+    def __init__(self, metadataModel: IngestionMetadataModel, ds_data: Dataset, exp_data: Experiment, pro_data: Project):
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -360,6 +366,13 @@ class AddFilesWizardSkipDataset(QWizard):
         self._register_fields()
         pages = self.page_ids
         self.setStartId(pages['pedPage'])
+
+        self.ds_passed = ds_data
+        self.exp_passed = exp_data
+        self.pro_passed = pro_data
+
+        #self.selected_data_emitter = SelectedDataEmitter()
+        #self.selected_data_emitter.selected_data_signal.emit(ds_data,exp_data,pro_data)
         #exp_name = self.experiment_for_dataset(item_data.dataset_name)
         #proj_name = self.project_for_experiment(exp_name)
         # customise the pedPage, pePage, and pPage with item_data
@@ -550,7 +563,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         else:
             return super().nextId()
 
-    def __init__(self, metadataModel: IngestionMetadataModel):
+    def __init__(self, metadataModel: IngestionMetadataModel, exp_data: Experiment, pro_data: Project):
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -565,6 +578,9 @@ class AddFilesWizardSkipExperiment(QWizard):
         self._register_fields()
         pages = self.page_ids
         self.setStartId(pages['pePage'])
+
+        self.exp_passed = exp_data
+        self.pro_passed = pro_data
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
@@ -760,7 +776,7 @@ class AddFilesWizardSkipProject(QWizard):
         """
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
-    
+    '''
     def nextId(self) -> int:
         # Function for determining which page the wizard should advance to.
         # Custom WizardPages in add_files_wizard_pages have their own nextId()
@@ -790,8 +806,9 @@ class AddFilesWizardSkipProject(QWizard):
             return pages['includedFilesPage']
         else:
             return super().nextId()
+        '''
  
-    def __init__(self, metadataModel: IngestionMetadataModel):
+    def __init__(self, metadataModel: IngestionMetadataModel, pro_data: Project):
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -806,6 +823,8 @@ class AddFilesWizardSkipProject(QWizard):
         self._register_fields()
         pages = self.page_ids 
         self.setStartId(pages['pPage'])
+
+        self.pro_passed = pro_data
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)

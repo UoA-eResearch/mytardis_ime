@@ -2,13 +2,14 @@
 add_files_wizard_pages.py - custom logic for add files wizard pages.
 """
 import typing
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QWizardPage
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QAbstractItemModel, QModelIndex, QSortFilterProxyModel
 
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles
 import ime.widgets.add_files_wizard as afw
 from ime.qt_models import IngestionMetadataModel
 from ime.models import Project, Experiment, Dataset, Datafile
-#from ime.mytardismetadataeditor import MyTardisMetadataEditor
 
 class ProjectPage(QWizardPage):
     """ A wizard page for selecting an existing project or creating a new one.
@@ -16,18 +17,6 @@ class ProjectPage(QWizardPage):
     Args:
         QWizardPage (_type_):  The type of the parent class.
     """
-    def selected_existing_project_changed(self,idx):
-        # Look up and record the selected existing project.
-        """Record the selected existing project.
-
-        Args:
-            idx (_type_): _description_
-        """
-        wizard = self.wizard()
-        project = self.model_pro.instance(wizard.ui.existingProjectList_1.currentIndex())
-        #project = self.model.instance(idx)
-        wizard.selected_existing_project = project
-
     def wizard(self):
         # Add type cast so type checker isn't annoyed below.
         """Return the wizard object with type cast.
@@ -41,13 +30,11 @@ class ProjectPage(QWizardPage):
         """Display the list of projects and initialize the selected project."""
         wizard = self.wizard()
         # Display the list of projects.
-        list_view = wizard.ui.existingProjectList_1
-        self.model_pro = wizard.metadataModel.projects.proxy(['name'])
-        self.model_pro.set_read_only(True)
-        list_view.setModel(self.model_pro)
-        
-        self.selected_existing_project_changed(wizard.ui.existingProjectList_1.currentIndex())
-        list_view.currentIndexChanged.connect(self.selected_existing_project_changed)
+        pro = wizard.pro_passed
+
+        wizard.ui.existingProjectList_1.addItem(pro.name)
+
+        wizard.selected_existing_project = pro
 
     def cleanupPage(self) -> None:
         """Disconnect the currentIndexChanged signal."""
@@ -72,28 +59,7 @@ class ProjectPage(QWizardPage):
 
 class PExperimentPage(QWizardPage):
     """A wizard page for selecting an existing project and experiment or creating a new one."""
-    def selected_existing_pe_changed(self,idx):
-        """
-        Update the list of experiments when the selected project is changed.
-
-        Args:
-            idx: The index of the selected project in the project list.
-        """
-        # Look up and record the selected existing project and experiment.
-        wizard = self.wizard()
-        idx_current_pro = wizard.ui.existingProjectList_2.currentIndex()
-        project = self.model_pro.instance(idx_current_pro)
-        self.model_exp = wizard.metadataModel.experiments_for_project(project)
-        self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['title'])
-        wizard.ui.existingExperimentList_1.setModel(self.model_exp)
-        exp = self.model_exp.instance(wizard.ui.existingExperimentList_1.currentIndex())
-
-        project = self.model_pro.instance(wizard.ui.existingProjectList_2.currentIndex())
-        exp = self.model_exp.instance(wizard.ui.existingExperimentList_1.currentIndex())
-        wizard.selected_existing_project = project
-        wizard.selected_existing_experiment = exp
-
+    
     def wizard(self):
         # Add type cast so type checker isn't annoyed below.
         """
@@ -110,26 +76,14 @@ class PExperimentPage(QWizardPage):
         """
         wizard = self.wizard()
 
-        list_view_pro = wizard.ui.existingProjectList_2
-        list_view_exp = wizard.ui.existingExperimentList_1
-        
-        # Display the list of projects
-        self.model_pro = wizard.metadataModel.projects.proxy(['name'])
-        self.model_pro.set_read_only(True)
-        list_view_pro.setModel(self.model_pro)
+        exp = wizard.exp_passed
+        pro = wizard.pro_passed
 
-        # Only show experiments from the selected project.
-        idx_selected_existing_pro = list_view_pro.currentIndex()
-        project = self.model_pro.instance(idx_selected_existing_pro)
-        self.model_exp = wizard.metadataModel.experiments_for_project(project)
-        self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['title'])
-        list_view_exp.setModel(self.model_exp)
+        wizard.ui.existingExperimentList_1.addItem(exp.title)
+        wizard.ui.existingProjectList_2.addItem(pro.name)
 
-        #wizard.ui.existingProjectList_2.setModel(self.model)
-        self.selected_existing_pe_changed(wizard.ui.existingExperimentList_1.currentIndex())
-        list_view_pro.currentIndexChanged.connect(self.selected_existing_pe_changed)
-        list_view_exp.currentIndexChanged.connect(self.selected_existing_pe_changed)
+        wizard.selected_existing_project = pro
+        wizard.selected_existing_experiment = exp
 
     def nextId(self) -> int:
         """
@@ -163,36 +117,6 @@ class PEDatasetPage(QWizardPage):
     Args:
         QWizardPage (_type_): The type of the parent class.
     """
-    def selected_existing_ped_changed(self, idx):
-        """Updates the UI elements with the selected existing project, experiment, and dataset.
-
-        Args:
-            idx (int): The index of the current selection.
-        """
-        wizard = self.wizard()
-        
-        idx_current_pro = wizard.ui.existingProjectList_3.currentIndex()
-        project = self.model_pro.instance(idx_current_pro)
-        self.model_exp = wizard.metadataModel.experiments_for_project(project)
-        self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['title'])
-        wizard.ui.existingExperimentList_2.setModel(self.model_exp)
-
-        experiment = self.model_exp.instance(wizard.ui.existingExperimentList_2.currentIndex())
-        self.model_ds = wizard.metadataModel.datasets_for_experiment(experiment)
-        self.model_ds.set_read_only(True)
-        self.model_ds.set_show_fields(['dataset_name'])
-        #wizard.ui.existingDatasetList_1.setModel(self.model_ds)
-
-        project = self.model_pro.instance(wizard.ui.existingProjectList_3.currentIndex())
-        exp = self.model_exp.instance(wizard.ui.existingExperimentList_2.currentIndex())
-        ds = self.model_ds.instance(wizard.ui.existingDatasetList_1.currentIndex())
-        
-        wizard.selected_existing_project = project
-        wizard.selected_existing_experiment = exp
-        wizard.selected_existing_dataset = ds
-        
-
     def wizard(self):
         """Returns the wizard object.
 
@@ -203,34 +127,19 @@ class PEDatasetPage(QWizardPage):
 
     def initializePage(self) -> None:
         """Initializes the wizard page."""
+
         wizard = self.wizard()
-        list_view_ds = wizard.ui.existingDatasetList_1
-        list_view_exp = wizard.ui.existingExperimentList_2
-        list_view_pro = wizard.ui.existingProjectList_3
+        ds = wizard.ds_passed
+        exp = wizard.exp_passed
+        pro = wizard.pro_passed
 
-        self.model_pro = wizard.metadataModel.projects.proxy(['name'])
-        self.model_pro.set_read_only(True)
-        list_view_pro.setModel(self.model_pro)
+        wizard.ui.existingDatasetList_1.addItem(ds.dataset_name)
+        wizard.ui.existingExperimentList_2.addItem(exp.title)
+        wizard.ui.existingProjectList_3.addItem(pro.name)
 
-        # Only show experiments from the selected project.
-        idx_selected_existing_pro = list_view_pro.currentIndex()
-        project = self.model_pro.instance(idx_selected_existing_pro)
-        
-        self.model_exp = wizard.metadataModel.experiments_for_project(project)
-        self.model_exp.set_read_only(True)
-        self.model_exp.set_show_fields(['title'])
-        list_view_exp.setModel(self.model_exp)
-        
-        ## datasets
-        self.model_ds = wizard.metadataModel.datasets.proxy(['dataset_name'])
-        self.model_ds.set_read_only(True)
-        self.model_ds.set_show_fields(['dataset_name'])
-        list_view_ds.setModel(self.model_ds)
-
-        #wizard.ui.existingProjectList_2.setModel(self.model)
-        self.selected_existing_ped_changed(wizard.ui.existingProjectList_3.currentIndex())
-        list_view_pro.currentIndexChanged.connect(self.selected_existing_ped_changed)
-
+        wizard.selected_existing_project = pro
+        wizard.selected_existing_experiment = exp
+        wizard.selected_existing_dataset = ds
 
     def cleanupPage(self) -> None:
         """Cleans up the wizard page."""
