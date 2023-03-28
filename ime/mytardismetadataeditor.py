@@ -9,7 +9,6 @@ from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
 from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipExperiment, AddFilesWizardSkipProject
-from ime.widgets.add_files_wizard_pages_skip import ProjectPage, PExperimentPage, PEDatasetPage
 from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
@@ -437,7 +436,8 @@ class MyTardisMetadataEditor(QMainWindow):
             self.metadata.projects.append(result.project)
         if result.is_new_experiment:
             self.metadata.experiments.append(result.experiment)
-        self.metadata.datafiles.append(result.datafile)
+        for new_file in result.file_list:
+            self.metadata.datafiles.append(new_file)
         # Create tree widget item for the dataset
         ds_item = None
         if result.is_new_dataset:
@@ -451,7 +451,9 @@ class MyTardisMetadataEditor(QMainWindow):
             ))
             ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
         # Add datafile under dataset
-        self.add_datafile_to_tree(result.datafile)
+        for new_file in result.file_list:
+            print(new_file)
+            self.add_datafile_to_tree(new_file)
         # Create or tree widget item for the experiment, or find existing and update size.
         if result.is_new_experiment:
             self.add_experiment_to_tree(result.experiment)

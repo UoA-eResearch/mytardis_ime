@@ -5,11 +5,7 @@ import typing
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QWizardPage
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QAbstractItemModel, QModelIndex, QSortFilterProxyModel
-
-from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles
 import ime.widgets.add_files_wizard as afw
-from ime.qt_models import IngestionMetadataModel
-from ime.models import Project, Experiment, Dataset, Datafile
 
 class ProjectPage(QWizardPage):
     """ A wizard page for selecting an existing project or creating a new one.
@@ -39,15 +35,6 @@ class ProjectPage(QWizardPage):
     def cleanupPage(self) -> None:
         """Disconnect the currentIndexChanged signal."""
         self.wizard().ui.existingProjectList_1.currentIndexChanged.disconnect()
-
-    def nextId(self) -> int:
-        """Return the id of the next page.
-
-        Returns:
-            int: the id of the next page.
-        """
-        wizard = typing.cast(afw.AddFilesWizard, self.wizard())
-        return wizard.page_ids['newExperimentPage']
     
     def isComplete(self) -> bool:
         """Return True if the required fields are filled.
@@ -84,16 +71,6 @@ class PExperimentPage(QWizardPage):
 
         wizard.selected_existing_project = pro
         wizard.selected_existing_experiment = exp
-
-    def nextId(self) -> int:
-        """
-        Return the ID of the next wizard page.
-
-        Returns:
-            The ID of the next wizard page.
-        """
-        wizard = typing.cast(afw.AddFilesWizardSkip, self.wizard())
-        return wizard.page_ids['newDatasetPage']
 
     def cleanupPage(self) -> None:
         """
@@ -146,15 +123,6 @@ class PEDatasetPage(QWizardPage):
         self.wizard().ui.existingDatasetList_1.currentIndexChanged.disconnect()
         self.wizard().ui.existingExperimentList_2.currentIndexChanged.disconnect()
         self.wizard().ui.existingProjectList_3.currentIndexChanged.disconnect()
-
-    def nextId(self) -> int:
-        """Returns the ID of the next wizard page.
-
-        Returns:
-            int: The ID of the next wizard page.
-        """
-        wizard = typing.cast(afw.AddFilesWizardSkipDataset, self.wizard())
-        return wizard.page_ids['includedFilesPage']
 
     def isComplete(self) -> bool:
         """Checks whether the selection of existing project, experiment, and dataset is complete.

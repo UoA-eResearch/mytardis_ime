@@ -4,18 +4,11 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt, pyqtSignal, QObject
 from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
 from ime.utils import file_size_to_str
-from ime.models import Project, Experiment, Dataset, Datafile
+from ime.models import IngestionMetadata,Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
 #from ime.mytardismetadataeditor import experiment_for_dataset,project_for_experiment
-from ime.utils import file_size_to_str
-
-class SelectedDataEmitter(QObject):
-    selected_data_signal = pyqtSignal(object,object,object)
-
-    def __init__(self):
-        super().__init__()
 
 class AddFilesWizardResult:
     """
@@ -27,7 +20,8 @@ class AddFilesWizardResult:
     is_new_experiment: bool
     dataset: Dataset
     is_new_dataset: bool
-    datafile: Datafile
+    #datafile: Datafile 
+    file_list: List[Datafile]
 
 class AddFilesWizard(QWizard):
     """A wizard for adding data files to a metadata model.
@@ -215,6 +209,7 @@ class AddFilesWizard(QWizard):
                 continue
             new_files.append(info)
         return new_files
+        
     
     def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
         """Add rows to the table.
@@ -351,6 +346,15 @@ class AddFilesWizardSkipDataset(QWizard):
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
 
+    def nextId(self) -> int:
+        current = self.currentId()
+        pages = self.page_ids
+
+        if current == pages['pedPage']:
+            return pages['includedFilesPage']
+        else:
+            return super().nextId()
+
     def __init__(self, metadataModel: IngestionMetadataModel, ds_data: Dataset, exp_data: Experiment, pro_data: Project):
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
@@ -371,17 +375,6 @@ class AddFilesWizardSkipDataset(QWizard):
         self.exp_passed = exp_data
         self.pro_passed = pro_data
 
-        #self.selected_data_emitter = SelectedDataEmitter()
-        #self.selected_data_emitter.selected_data_signal.emit(ds_data,exp_data,pro_data)
-        #exp_name = self.experiment_for_dataset(item_data.dataset_name)
-        #proj_name = self.project_for_experiment(exp_name)
-        # customise the pedPage, pePage, and pPage with item_data
-        #print(ds_data, exp_data, pro_data)
-        #self.ui.existingDatasetList_1 = ds_data.dataset_name
-        #self.ui.existingExperimentList_2 = exp_data.experiment_name
-        #self.ui.existingProjectList_3 = pro_data.project_name
-
-        # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
@@ -483,7 +476,6 @@ class AddFilesWizardSkipDataset(QWizard):
 
         Returns:
             None
-
         """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
@@ -493,21 +485,21 @@ class AddFilesWizardSkipDataset(QWizard):
         result.project = self.selected_existing_project
         result.experiment = self.selected_existing_experiment
         result.dataset = self.selected_existing_dataset
-
-        result.datafile = Datafile()
-        result.datafile.dataset_id = result.dataset.dataset_id
+        
+        result.file_list = []
 
         ### Create new Datafile object and append to result.datafile.files
-        
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
+            datafile = Datafile()
+            datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
-            size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            result.datafile.filename=file_name
-            result.datafile.size=size
-        #print(result.dataset)
+            file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            datafile.filename = file_name
+            datafile.size = file_size
+            result.file_list.append(datafile)
+        #print(result.file_list)
         self.submitted.emit(result)
-        self.close()
 
 class AddFilesWizardSkipExperiment(QWizard):
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
@@ -544,7 +536,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         """
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
-
+    
     def nextId(self) -> int:
         # Function for determining which page the wizard should advance to.
         # Custom WizardPages in add_files_wizard_pages have their own nextId()
@@ -562,7 +554,7 @@ class AddFilesWizardSkipExperiment(QWizard):
             return pages['includedFilesPage']
         else:
             return super().nextId()
-
+        
     def __init__(self, metadataModel: IngestionMetadataModel, exp_data: Experiment, pro_data: Project):
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
@@ -701,19 +693,19 @@ class AddFilesWizardSkipExperiment(QWizard):
         # we are creating a list around the experiment we captured.
         result.dataset.experiment_id = [result.experiment.experiment_id]
 
-        result.datafile = Datafile()
-        result.datafile.dataset_id = result.dataset.dataset_id
-        #print(result.dataset,result.datafile)
-
+        result.file_list = []
+        ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
+            datafile = Datafile()
+            datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
-            size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            result.datafile.filename=file_name
-            result.datafile.size=size
-        #print(result.experiment,result.project)
+            file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            datafile.filename = file_name
+            datafile.size = file_size
+            result.file_list.append(datafile)
+        #print(result.file_list)
         self.submitted.emit(result)
-        self.close()
 
 class AddFilesWizardSkipProject(QWizard):
     """
@@ -747,7 +739,6 @@ class AddFilesWizardSkipProject(QWizard):
         """
         # Experiment pages
         pro_page = self.ui.pPage
-        #ds_new_page = self.ui.newDatasetPage
 
         self.ui.existingProjectList_1.currentIndexChanged.connect(pro_page.completeChanged)
         pro_page.registerField("isExistingProject", self.ui.existingProjectList_1)
@@ -776,7 +767,7 @@ class AddFilesWizardSkipProject(QWizard):
         """
         for id in self.pageIds():
             self.page_ids[self.page(id).objectName()] = id
-    '''
+
     def nextId(self) -> int:
         # Function for determining which page the wizard should advance to.
         # Custom WizardPages in add_files_wizard_pages have their own nextId()
@@ -806,8 +797,7 @@ class AddFilesWizardSkipProject(QWizard):
             return pages['includedFilesPage']
         else:
             return super().nextId()
-        '''
- 
+
     def __init__(self, metadataModel: IngestionMetadataModel, pro_data: Project):
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
@@ -949,15 +939,16 @@ class AddFilesWizardSkipProject(QWizard):
         # we are creating a list around the experiment we captured.
         result.dataset.experiment_id = [result.experiment.experiment_id]
 
-        result.datafile = Datafile()
-        result.datafile.dataset_id = result.dataset.dataset_id
-
+        result.file_list = []
+        ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
+            datafile = Datafile()
+            datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
-            size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            result.datafile.filename=file_name
-            result.datafile.size=size
-        #print(result.dataset,result.experiment,result.project)
+            file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            datafile.filename = file_name
+            datafile.size = file_size
+            result.file_list.append(datafile)
+        #print(result.file_list)
         self.submitted.emit(result)
-        self.close()
