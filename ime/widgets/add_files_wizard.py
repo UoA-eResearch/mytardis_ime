@@ -487,7 +487,6 @@ class AddFilesWizardSkipDataset(QWizard):
         result.dataset = self.selected_existing_dataset
         
         result.file_list = []
-
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):

@@ -452,7 +452,6 @@ class MyTardisMetadataEditor(QMainWindow):
             ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
         # Add datafile under dataset
         for new_file in result.file_list:
-            print(new_file)
             self.add_datafile_to_tree(new_file)
         # Create or tree widget item for the experiment, or find existing and update size.
         if result.is_new_experiment:
