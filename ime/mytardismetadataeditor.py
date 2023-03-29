@@ -84,7 +84,6 @@ class MyTardisMetadataEditor(QMainWindow):
         action = menu.addAction("Add New File...")
         action.triggered.connect(self.openWizardWindowSkipDataset)
         #action = menu.addAction("Delete this Dataset")
-
         menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
     
     def openWizardWindowSkipDataset (self):
@@ -119,16 +118,11 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns: None
         """
-        index = self.ui.experimentTreeWidget.indexAt(point)
-        if not index.isValid():
-            return
-
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
         action.triggered.connect(self.openWizardWindowSkipExperiment)
         #action = menu.addAction("Delete this Experiment")
-
         menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
 
     def openWizardWindowSkipExperiment(self):  
@@ -142,7 +136,6 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """
         model = IngestionMetadataModel(self.metadata)
-
         item = self.ui.experimentTreeWidget.currentItem()
         exp_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         pro_data = self.project_for_experiment(exp_data)
@@ -161,10 +154,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns: None
         """    
-        index = self.ui.projectTreeWidget.indexAt(point)
-
-        if not index.isValid():
-            return
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")

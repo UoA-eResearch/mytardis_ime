@@ -220,16 +220,18 @@ class AddFilesWizard(QWizard):
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
             result.dataset.experiment_id = [result.experiment.experiment_id]
-        result.datafile = Datafile()
-        result.datafile.dataset_id = result.dataset.dataset_id
-
+        result.file_list = []
+        ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
+            datafile = Datafile()
+            datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
-            size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            result.datafile.filename=file_name
-            result.datafile.size=size
-
+            file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            datafile.filename = file_name
+            datafile.size = file_size
+            result.file_list.append(datafile)
+        #print(result.file_list)
         self.submitted.emit(result)
 
 class AddFilesWizardSkipDataset(QWizard):
@@ -378,7 +380,7 @@ class AddFilesWizardSkipExperiment(QWizard):
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
     selected_existing_experiment: Experiment
-    selected_existing_dataset: Dataset
+    #selected_existing_dataset: Dataset
 
     def _register_fields(self):
         # Experiment pages
@@ -536,8 +538,8 @@ class AddFilesWizardSkipProject(QWizard):
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
-    selected_existing_experiment: Experiment
-    selected_existing_dataset: Dataset
+    #selected_existing_experiment: Experiment
+    #selected_existing_dataset: Dataset
 
     def _register_fields(self):
         # Set up the fields and connect signals for isComplete states.
@@ -666,12 +668,12 @@ class AddFilesWizardSkipProject(QWizard):
 
         Returns:
             None
-
         """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
         result.is_new_experiment = self.field('isNewExperiment')
         result.is_new_dataset = self.field('isNewDataset')
+        ### assume new project
         result.project = self.selected_existing_project
 
         ### assume new experiment
