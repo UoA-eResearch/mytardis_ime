@@ -472,15 +472,6 @@ class MyTardisMetadataEditor(QMainWindow):
             ))
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
 
-    def openWizardWindow(self): 
-        """
-        Opens the 'AddFilesWizard' dialog box and connects the 'submitted' signal to the 'reFresh' method.
-        """ 
-        model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizard(model)
-        self.import_wizard_ui.submitted.connect(self.reFresh)
-        self.import_wizard_ui.show()
-
     def loadYaml(self):
         """
         Loads metadata from a YAML file. If there are unsaved changes in the current metadata, it prompts the user to
