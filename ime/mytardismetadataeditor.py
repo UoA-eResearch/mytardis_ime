@@ -47,11 +47,11 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
 
-        self.ui.datasetTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.datasetTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.datasetMenuContextTree)
-        self.ui.experimentTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.experimentTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
-        self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.projectTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
 
         self.show()
@@ -87,13 +87,12 @@ class MyTardisMetadataEditor(QMainWindow):
 
         menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
     
-    def openWizardWindowSkipDataset(self):
+    def openWizardWindowSkipDataset (self):
         """
         Event handler for the "Add New File..." action triggered in the context menu of the datasetTreeWidget.
 
         Initializes the AddFilesWizardSkipDataset UI and shows it to the user. Connects the submitted event of the UI
         to the reFresh event handler.
-
         """  
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()

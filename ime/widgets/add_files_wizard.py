@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import Qt, pyqtSignal, QObject
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
 from ime.utils import file_size_to_str
 from ime.models import IngestionMetadata,Project, Experiment, Dataset, Datafile
@@ -164,8 +164,8 @@ class AddFilesWizard(QWizard):
             None.
         """
         table = self.ui.datafiletableWidget
-        files_to_add = self.open_add_files_dialog()
-        self.add_file_table_rows(table,files_to_add)
+        files_to_add = DialogUtils.open_add_files_dialog()
+        DialogUtils.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
         """Delete files from the table.
@@ -182,70 +182,6 @@ class AddFilesWizard(QWizard):
             index_list.append(index)
         for index in index_list:
             self.ui.datafiletableWidget.removeRow(index.row())
-
-    # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
-
-    def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
-        """Open a file dialog and get the list of files to add.
-
-        Creates a file dialog, opens it to allow the user to select files to add.
-        Returns the list of QFileInfo objects for the selected files.
-
-        Returns:
-            A list of QFileInfo objects for the selected files.
-        """
-
-        file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        filename = file_dialog.getOpenFileNames(self, "Open files")  
-        fpath = filename[0]
-
-        new_files = []
-        for f in fpath:
-            if f == "":
-                continue
-            info = QtCore.QFileInfo(f)
-            if info in new_files:
-                continue
-            new_files.append(info)
-        return new_files
-        
-    
-    def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
-        """Add rows to the table.
-
-        Gets the table and the list of files to add.
-        Iterates over the list of files to add and creates a row in the table for each file.
-        Sets the filename, size, and file path as items in the row.
-
-        Args:
-            table: A QTableWidget object to add rows to.
-            files_to_add: A list of QFileInfo objects to create rows for.
-
-        Returns:
-            None.
-        """
-        # Need to start inserting rows after existing rows.
-        initial_row_count = table.rowCount()
-        # Grow the table to fit new rows.
-        table.setRowCount(initial_row_count + len(files_to_add))
-        new_row_index = 0
-        for file in files_to_add:
-            # Create corresponding cells for file and insert them into table.
-            name_cell = QTableWidgetItem(file.fileName())
-            size = file.size()
-            size_str = file_size_to_str(size)
-            size_cell = QTableWidgetItem(size_str)
-            # Store actual size value in cell. 
-            size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
-            fpath_cell = QTableWidgetItem(file.filePath())
-            # Insert cells into the table.
-            row_index = initial_row_count + new_row_index
-            table.setItem(row_index, 0, name_cell)
-            table.setItem(row_index, 1, size_cell)
-            table.setItem(row_index, 2, fpath_cell)
-            # Increment for the next row
-            new_row_index += 1
     
     def on_submit(self):
         """
@@ -253,7 +189,6 @@ class AddFilesWizard(QWizard):
 
         Returns:
             None
-
         """
         result = AddFilesWizardResult()
         result.is_new_project = self.field('isNewProject')
@@ -389,8 +324,8 @@ class AddFilesWizardSkipDataset(QWizard):
             None.
         """
         table = self.ui.datafiletableWidget
-        files_to_add = self.open_add_files_dialog()
-        self.add_file_table_rows(table,files_to_add)
+        files_to_add = DialogUtils.open_add_files_dialog()
+        DialogUtils.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
         """Delete files from the table.
@@ -407,68 +342,6 @@ class AddFilesWizardSkipDataset(QWizard):
             index_list.append(index)
         for index in index_list:
             self.ui.datafiletableWidget.removeRow(index.row())
-
-    # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
-
-    def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
-        """Open a file dialog and get the list of files to add.
-
-        Creates a file dialog, opens it to allow the user to select files to add.
-        Returns the list of QFileInfo objects for the selected files.
-
-        Returns:
-            A list of QFileInfo objects for the selected files.
-        """
-        file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        filename = file_dialog.getOpenFileNames(self, "Open files")  
-        fpath = filename[0]
-
-        new_files = []
-        for f in fpath:
-            if f == "":
-                continue
-            info = QtCore.QFileInfo(f)
-            if info in new_files:
-                continue
-            new_files.append(info)
-        return new_files
-    
-    def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
-        """Add rows to the table.
-
-        Gets the table and the list of files to add.
-        Iterates over the list of files to add and creates a row in the table for each file.
-        Sets the filename, size, and file path as items in the row.
-
-        Args:
-            table: A QTableWidget object to add rows to.
-            files_to_add: A list of QFileInfo objects to create rows for.
-
-        Returns:
-            None.
-        """
-        # Need to start inserting rows after existing rows.
-        initial_row_count = table.rowCount()
-        # Grow the table to fit new rows.
-        table.setRowCount(initial_row_count + len(files_to_add))
-        new_row_index = 0
-        for file in files_to_add:
-            # Create corresponding cells for file and insert them into table.
-            name_cell = QTableWidgetItem(file.fileName())
-            size = file.size()
-            size_str = file_size_to_str(size)
-            size_cell = QTableWidgetItem(size_str)
-            # Store actual size value in cell. 
-            size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
-            fpath_cell = QTableWidgetItem(file.filePath())
-            # Insert cells into the table.
-            row_index = initial_row_count + new_row_index
-            table.setItem(row_index, 0, name_cell)
-            table.setItem(row_index, 1, size_cell)
-            table.setItem(row_index, 2, fpath_cell)
-            # Increment for the next row
-            new_row_index += 1
     
     def on_submit(self):
         """
@@ -587,8 +460,8 @@ class AddFilesWizardSkipExperiment(QWizard):
             None.
         """
         table = self.ui.datafiletableWidget
-        files_to_add = self.open_add_files_dialog()
-        self.add_file_table_rows(table,files_to_add)
+        files_to_add = DialogUtils.open_add_files_dialog()
+        DialogUtils.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
         """Delete files from the table.
@@ -606,66 +479,6 @@ class AddFilesWizardSkipExperiment(QWizard):
         for index in index_list:
             self.ui.datafiletableWidget.removeRow(index.row())
 
-    # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
-    def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
-        """Open a file dialog and get the list of files to add.
-
-        Creates a file dialog, opens it to allow the user to select files to add.
-        Returns the list of QFileInfo objects for the selected files.
-
-        Returns:
-            A list of QFileInfo objects for the selected files.
-        """
-        file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        filename = file_dialog.getOpenFileNames(self, "Open files")  
-        fpath = filename[0]
-
-        new_files = []
-        for f in fpath:
-            if f == "":
-                continue
-            info = QtCore.QFileInfo(f)
-            if info in new_files:
-                continue
-            new_files.append(info)
-        return new_files
-    
-    def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
-        """Add rows to the table.
-
-        Gets the table and the list of files to add.
-        Iterates over the list of files to add and creates a row in the table for each file.
-        Sets the filename, size, and file path as items in the row.
-
-        Args:
-            table: A QTableWidget object to add rows to.
-            files_to_add: A list of QFileInfo objects to create rows for.
-
-        Returns:
-            None.
-        """
-        # Need to start inserting rows after existing rows.
-        initial_row_count = table.rowCount()
-        # Grow the table to fit new rows.
-        table.setRowCount(initial_row_count + len(files_to_add))
-        new_row_index = 0
-        for file in files_to_add:
-            # Create corresponding cells for file and insert them into table.
-            name_cell = QTableWidgetItem(file.fileName())
-            size = file.size()
-            size_str = file_size_to_str(size)
-            size_cell = QTableWidgetItem(size_str)
-            # Store actual size value in cell. 
-            size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
-            fpath_cell = QTableWidgetItem(file.filePath())
-            # Insert cells into the table.
-            row_index = initial_row_count + new_row_index
-            table.setItem(row_index, 0, name_cell)
-            table.setItem(row_index, 1, size_cell)
-            table.setItem(row_index, 2, fpath_cell)
-            # Increment for the next row
-            new_row_index += 1
     
     def on_submit(self):
         """
@@ -812,13 +625,12 @@ class AddFilesWizardSkipProject(QWizard):
         self._register_fields()
         pages = self.page_ids 
         self.setStartId(pages['pPage'])
-
         self.pro_passed = pro_data
-        # define out widgets
+
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
-
+    
     def addFiles_handler(self):
         """Add files to the table.
 
@@ -829,8 +641,8 @@ class AddFilesWizardSkipProject(QWizard):
             None.
         """
         table = self.ui.datafiletableWidget
-        files_to_add = self.open_add_files_dialog()
-        self.add_file_table_rows(table,files_to_add)
+        files_to_add = DialogUtils.open_add_files_dialog()
+        DialogUtils.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
         """Delete files from the table.
@@ -848,68 +660,6 @@ class AddFilesWizardSkipProject(QWizard):
         for index in index_list:
             self.ui.datafiletableWidget.removeRow(index.row())
 
-    # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
-
-    def open_add_files_dialog(self) -> List[QtCore.QFileInfo]:
-        """Open a file dialog and get the list of files to add.
-
-        Creates a file dialog, opens it to allow the user to select files to add.
-        Returns the list of QFileInfo objects for the selected files.
-
-        Returns:
-            A list of QFileInfo objects for the selected files.
-        """
-        file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        filename = file_dialog.getOpenFileNames(self, "Open files")  
-        fpath = filename[0]
-
-        new_files = []
-        for f in fpath:
-            if f == "":
-                continue
-            info = QtCore.QFileInfo(f)
-            if info in new_files:
-                continue
-            new_files.append(info)
-        return new_files
-    
-    def add_file_table_rows(self,table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
-        """Add rows to the table.
-
-        Gets the table and the list of files to add.
-        Iterates over the list of files to add and creates a row in the table for each file.
-        Sets the filename, size, and file path as items in the row.
-
-        Args:
-            table: A QTableWidget object to add rows to.
-            files_to_add: A list of QFileInfo objects to create rows for.
-
-        Returns:
-            None.
-        """
-        # Need to start inserting rows after existing rows.
-        initial_row_count = table.rowCount()
-        # Grow the table to fit new rows.
-        table.setRowCount(initial_row_count + len(files_to_add))
-        new_row_index = 0
-        for file in files_to_add:
-            # Create corresponding cells for file and insert them into table.
-            name_cell = QTableWidgetItem(file.fileName())
-            size = file.size()
-            size_str = file_size_to_str(size)
-            size_cell = QTableWidgetItem(size_str)
-            # Store actual size value in cell. 
-            size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
-            fpath_cell = QTableWidgetItem(file.filePath())
-            # Insert cells into the table.
-            row_index = initial_row_count + new_row_index
-            table.setItem(row_index, 0, name_cell)
-            table.setItem(row_index, 1, size_cell)
-            table.setItem(row_index, 2, fpath_cell)
-            # Increment for the next row
-            new_row_index += 1
-    
     def on_submit(self):
         """
         Builds a result class based on the user's choices and emits them through the signal.
@@ -951,3 +701,71 @@ class AddFilesWizardSkipProject(QWizard):
             result.file_list.append(datafile)
         #print(result.file_list)
         self.submitted.emit(result)
+
+
+class DialogUtils:
+    @staticmethod
+    def __init__(self):
+        pass
+
+    # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
+    def open_add_files_dialog() -> List[QtCore.QFileInfo]:
+        """Open a file dialog and get the list of files to add.
+
+        Creates a file dialog, opens it to allow the user to select files to add.
+        Returns the list of QFileInfo objects for the selected files.
+
+        Returns:
+            A list of QFileInfo objects for the selected files.
+        """
+        file_dialog = QFileDialog()
+        file_dialog.setFileMode(QFileDialog.ExistingFiles)
+        filename = file_dialog.getOpenFileNames()  
+        fpath = filename[0]
+
+        new_files = []
+        for f in fpath:
+            if f == "":
+                continue
+            info = QtCore.QFileInfo(f)
+            if info in new_files:
+                continue
+            new_files.append(info)
+        return new_files
+    
+    def add_file_table_rows(table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
+        """Add rows to the table.
+
+        Gets the table and the list of files to add.
+        Iterates over the list of files to add and creates a row in the table for each file.
+        Sets the filename, size, and file path as items in the row.
+
+        Args:
+            table: A QTableWidget object to add rows to.
+            files_to_add: A list of QFileInfo objects to create rows for.
+
+        Returns:
+            None.
+        """
+        # Need to start inserting rows after existing rows.
+        initial_row_count = table.rowCount()
+        # Grow the table to fit new rows.
+        table.setRowCount(initial_row_count + len(files_to_add))
+        new_row_index = 0
+        for file in files_to_add:
+            # Create corresponding cells for file and insert them into table.
+            name_cell = QTableWidgetItem(file.fileName())
+            size = file.size()
+            size_str = file_size_to_str(size)
+            size_cell = QTableWidgetItem(size_str)
+            # Store actual size value in cell. 
+            size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
+            fpath_cell = QTableWidgetItem(file.filePath())
+            # Insert cells into the table.
+            row_index = initial_row_count + new_row_index
+            table.setItem(row_index, 0, name_cell)
+            table.setItem(row_index, 1, size_cell)
+            table.setItem(row_index, 2, fpath_cell)
+            # Increment for the next row
+            new_row_index += 1
+    
