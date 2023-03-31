@@ -1,15 +1,14 @@
 from pyexpat import model
 import typing
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 from typing import Any, Callable
 
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 import logging
 from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipExperiment, AddFilesWizardSkipProject
-from ime.widgets.add_files_wizard_pages_skip import ProjectPage, PExperimentPage, PEDatasetPage
 from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
@@ -22,6 +21,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
     Inherits from QMainWindow.
     """
+
     def __init__(self):
         """
         Constructor for MyTardisMetadataEditor class.
@@ -35,7 +35,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
         # load the ui file
         # uic.loadUi('MainWindow.ui', self)
-        
+
         self.metadata = IngestionMetadata()
 
         # define our widgets
@@ -47,14 +47,30 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
 
-        self.ui.datasetTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.datasetTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.datasetMenuContextTree)
-        self.ui.experimentTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.experimentTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
-        self.ui.projectTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.projectTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
+
         self.show()
-    
+
+    def openWizardWindow(self):  
+        """
+        Displays a wizard window to add new files to an existing experiment. 
+        This method extracts the relevant metadata from the currently selected item in the 
+        experiment tree widget and passes it to the AddFilesWizardSkipExperiment object.
+
+        Args: None
+
+        Returns: None
+        """
+        model = IngestionMetadataModel(self.metadata)
+        self.import_wizard_ui = AddFilesWizard(model)
+        self.import_wizard_ui.submitted.connect(self.reFresh)
+        self.import_wizard_ui.show()
+
     def datasetMenuContextTree(self, point):
         """
         Event handler for the context menu triggered in the datasetTreeWidget.
@@ -68,26 +84,24 @@ class MyTardisMetadataEditor(QMainWindow):
         action = menu.addAction("Add New File...")
         action.triggered.connect(self.openWizardWindowSkipDataset)
         #action = menu.addAction("Delete this Dataset")
-
         menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
     
-    def openWizardWindowSkipDataset(self):
+    def openWizardWindowSkipDataset (self):
         """
         Event handler for the "Add New File..." action triggered in the context menu of the datasetTreeWidget.
 
         Initializes the AddFilesWizardSkipDataset UI and shows it to the user. Connects the submitted event of the UI
         to the reFresh event handler.
-
         """  
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()
-        data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        ds_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # print(data, data.dataset_name, data.experiment_id)
         # To do: create a dic with info about related exp, project
-        exp_data = self.experiment_for_dataset(data)
+        exp_data = self.experiment_for_dataset(ds_data)
         pro_data = self.project_for_experiment(exp_data)
 
-        self.import_wizard_ui = AddFilesWizardSkipDataset(model,data,exp_data,pro_data)
+        self.import_wizard_ui = AddFilesWizardSkipDataset(model,ds_data,exp_data,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
     
@@ -104,21 +118,11 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns: None
         """
-        index = self.ui.experimentTreeWidget.indexAt(point)
-        if not index.isValid():
-            return
-
-        #item = self.ui.experimentTreeWidget.itemAt(point)
-        item = self.ui.experimentTreeWidget.currentItem()
-        exp_selected = item.data(0, Qt.ItemDataRole.UserRole)
-        print(exp_selected)
-
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
         action.triggered.connect(self.openWizardWindowSkipExperiment)
         #action = menu.addAction("Delete this Experiment")
-
         menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
 
     def openWizardWindowSkipExperiment(self):  
@@ -132,7 +136,11 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """
         model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizardSkipExperiment(model)
+        item = self.ui.experimentTreeWidget.currentItem()
+        exp_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        pro_data = self.project_for_experiment(exp_data)
+
+        self.import_wizard_ui = AddFilesWizardSkipExperiment(model,exp_data,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -146,14 +154,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns: None
         """    
-        index = self.ui.projectTreeWidget.indexAt(point)
-
-        if not index.isValid():
-            return
-
-        item = self.ui.projectTreeWidget.itemAt(point)
-        name = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
-
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
@@ -172,7 +172,10 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """
         model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizardSkipProject(model)
+        item = self.ui.projectTreeWidget.currentItem()
+        pro_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+
+        self.import_wizard_ui = AddFilesWizardSkipProject(model,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -198,7 +201,7 @@ class MyTardisMetadataEditor(QMainWindow):
         datafile_lookup = [
             fileinfo
             for fileinfo in datafiles
-            if fileinfo.name == file_name
+            if fileinfo.filename == file_name
         ]
         if (len(datafile_lookup) != 1):
             logging.warning("Datafile name %s could not be found or there are " + 
@@ -366,7 +369,7 @@ class MyTardisMetadataEditor(QMainWindow):
         :param project: The project object to be added to the tree.
         """
         proj_size = file_size_to_str(self.project_size(project))
-        l3 = QTreeWidgetItem([project.project_name,proj_size])
+        l3 = QTreeWidgetItem([project.name,proj_size])
         l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, project)
         self.ui.projectTreeWidget.addTopLevelItem(l3)
 
@@ -377,7 +380,7 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         exp_size = file_size_to_str(self.experiment_size(experiment))
         project = self.project_for_experiment(experiment)
-        l2 = QTreeWidgetItem([experiment.experiment_name,exp_size,project.project_name])
+        l2 = QTreeWidgetItem([experiment.title,exp_size,project.name])
         l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, experiment)
         self.ui.experimentTreeWidget.addTopLevelItem(l2)
 
@@ -388,7 +391,7 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         dataset_size = file_size_to_str(self.dataset_size(dataset))
         experiment = self.experiment_for_dataset(dataset)
-        ds_item = QTreeWidgetItem([dataset.dataset_name, dataset_size,experiment.experiment_name])
+        ds_item = QTreeWidgetItem([dataset.dataset_name, dataset_size,experiment.title])
         ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset)
         self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
     
@@ -403,7 +406,7 @@ class MyTardisMetadataEditor(QMainWindow):
             None
         """
         ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == datafile.dataset_id)
-        file_name = datafile.name
+        file_name = datafile.filename
         file_size = file_size_to_str(datafile.size)
         l1_child = QTreeWidgetItem([file_name,file_size,""])
         l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
@@ -421,7 +424,8 @@ class MyTardisMetadataEditor(QMainWindow):
             self.metadata.projects.append(result.project)
         if result.is_new_experiment:
             self.metadata.experiments.append(result.experiment)
-        self.metadata.datafiles.append(result.datafile)
+        for new_file in result.file_list:
+            self.metadata.datafiles.append(new_file)
         # Create tree widget item for the dataset
         ds_item = None
         if result.is_new_dataset:
@@ -435,7 +439,8 @@ class MyTardisMetadataEditor(QMainWindow):
             ))
             ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
         # Add datafile under dataset
-        self.add_datafile_to_tree(result.datafile)
+        for new_file in result.file_list:
+            self.add_datafile_to_tree(new_file)
         # Create or tree widget item for the experiment, or find existing and update size.
         if result.is_new_experiment:
             self.add_experiment_to_tree(result.experiment)
@@ -454,15 +459,6 @@ class MyTardisMetadataEditor(QMainWindow):
                 data.project_id == result.project.project_id
             ))
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
-
-    def openWizardWindow(self): 
-        """
-        Opens the 'AddFilesWizard' dialog box and connects the 'submitted' signal to the 'reFresh' method.
-        """ 
-        model = IngestionMetadataModel(self.metadata)
-        self.import_wizard_ui = AddFilesWizard(model)
-        self.import_wizard_ui.submitted.connect(self.reFresh)
-        self.import_wizard_ui.show()
 
     def loadYaml(self):
         """

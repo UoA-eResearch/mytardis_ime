@@ -33,7 +33,7 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset.set_object(dataset)
         self.metadata_tab.update_metadata_object(dataset)
-        self.ui.accessControlTab.data = dataset
+        self.ui.accessControlTab.set_data(dataset)
 
     def _set_bound_dataset(self, dataset: BoundObject[Dataset]):
         """
@@ -75,7 +75,7 @@ class DatafilePropertyEditor(QWidget):
         """
         self.df.set_object(datafile)
         self.metadata_tab.update_metadata_object(datafile)
-        self.ui.accessControlTab.set_item(datafile)
+        self.ui.accessControlTab.set_data(datafile)
     
     def _set_bound_file(self, datafile: BoundObject[Datafile]):
         """
@@ -85,13 +85,13 @@ class DatafilePropertyEditor(QWidget):
         datafile: The `BoundObject` to bind to this editor.
         """
         self.df = datafile
-        self.df.bind_input("name", self.ui.fileInfoFilenameLineEdit)
+        self.df.bind_input("filename", self.ui.fileInfoFilenameLineEdit)
     '''
     ### comment out fileinfo
     def set_fileinfo(self, file_info: FileInfo):
         self.file_info.set_object(file_info)
         self.metadata_tab.update_metadata_object(file_info)
-        self.ui.accessControlTab.data = file_info
+        self.ui.accessControlTab.set_data(file_info)
 
     def _set_bound_file(self, file_info: BoundObject[FileInfo]):
         self.file_info = file_info
@@ -122,7 +122,7 @@ class ExperimentPropertyEditor(QWidget):
         """
         self.exp.set_object(experiment)
         self.metadata_tab.update_metadata_object(experiment)
-        self.ui.accessControlTab.data = experiment
+        self.ui.accessControlTab.set_data(experiment)
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]):
         """Set a bound object for the experiment.
@@ -131,7 +131,7 @@ class ExperimentPropertyEditor(QWidget):
             experiment: The experiment object to be bound.
         """
         self.exp = experiment
-        self.exp.bind_input("experiment_name", self.ui.experimentNameLineEdit)
+        self.exp.bind_input("title", self.ui.experimentNameLineEdit)
         self.exp.bind_input("experiment_id", self.ui.experimentIDLineEdit)
         self.exp.bind_input("description", self.ui.experimentDescriptionLineEdit)
 
@@ -161,7 +161,7 @@ class ProjectPropertyEditor(QWidget):
         """
         self.project.set_object(project)
         self.metadata_tab.update_metadata_object(project)
-        self.ui.accessControlTab.data = project
+        self.ui.accessControlTab.set_data(project)
 
     def _set_bound_project(self, project: BoundObject[Project]):
         """
@@ -171,7 +171,7 @@ class ProjectPropertyEditor(QWidget):
             project (BoundObject[Project]): The `Project` object to bind.
         """
         self.project = project
-        self.project.bind_input("project_name", self.ui.projectNameLineEdit)
+        self.project.bind_input("name", self.ui.projectNameLineEdit)
         self.project.bind_input("project_id", self.ui.projectIDLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
         self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)  
