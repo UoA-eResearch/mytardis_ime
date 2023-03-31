@@ -1,6 +1,7 @@
 .venv
 .vscode
 .venv_3.9
+venv3.10/
 .gitignore
 .DS_Store
 **/__pycache__/
