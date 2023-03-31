@@ -1,3 +1,42 @@
+!Project
+# Project template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
+#
+# Necessary info
+project_name: A test project
+project_id: test
+alternate_ids:
+  - a
+description: Test project
+lead_researcher: Test User
+# schema: <value> - un-comment if multiple schema have been defined and set the appropriate type of schema
+#
+# Access control. Please remove or comment out un-necessary types of group/users
+# Groups are preferred over individual users for the purposes of admin
+#
+admin_groups:
+  - test_admin
+admin_users:
+  - abcd121
+read_groups:
+  - bcnd120
+read_users:
+  - nvmo111
+download_groups:
+  - nvmo111
+download_users:
+  - nvmo111
+sensitive_groups:
+  - nvmo111
+sensitive_users:
+  - nvmo111
+#
+# General metadata
+#
+metadata:
+  startdate: 2022-08-01
+  owner: Jacqui Ross
+  enddate: 2023-04-01 
+
 ---
     !Experiment
     experiment_name: Calibration 10 X

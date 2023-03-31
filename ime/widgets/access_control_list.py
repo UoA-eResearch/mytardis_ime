@@ -1,118 +1,140 @@
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Optional, TypeAlias, TypeVar, Union
 import typing
 
-from PyQt5 import QtGui
-from PyQt5.QtCore import QEvent, QObject, QSignalBlocker, QStringListModel
+from PyQt5.QtCore import QSignalBlocker, pyqtSignal
+from ime.qt_models import PythonListModel
 from ime.ui.ui_access_control_list import Ui_AccessControlList
 from PyQt5.QtWidgets import QMessageBox, QWidget, QLineEdit
 
+@dataclass
+class ProjectAccessControlListData:
+    """Class for use with AccessControlList.data to represent access control data for MyTardis
+    Project objects.
+    To use, create a ProjectAccessControlData, passing in the Project instance
+    """
+    data: List[str] = field(default_factory=list)
+
+@dataclass
+class DerivedAccessControlListData:
+    """Class for use with AccessControlList.data to represent access control data for MyTardis objects that have
+    inherited access control - i.e. Experiments, Datasets and Datafiles. 
+    """
+    data: Optional[List[str]] = None
+    inherited_data: List[str] = field(default_factory=list)
+
+AccessControlListData:TypeAlias = Union[ProjectAccessControlListData, DerivedAccessControlListData]
+
 class AccessControlList(QWidget):
+    """A widget to display and edit access control lists.
+
+    Attributes:
+        _model (PythonListModel): A list model for the access control list.
+        is_overriding_inheritance (bool): A flag to indicate whether the access controls are being overridden.
+        override_inherited_toggled (pyqtSignal): A signal emitted when the override checkbox is toggled.
+    """
+    _model: PythonListModel
+    is_overriding_inheritance: bool = False
+    override_inherited_toggled = pyqtSignal(bool, name="overrideInheritedChanged")
 
     def __init__(self, parent = None):
+        """Constructor for AccessControlList widget.
+
+        Args:
+            parent (QWidget): The parent widget (default is None).
+        """
         super().__init__(parent)
         self.ui = Ui_AccessControlList()
         self.ui.setupUi(self)
-        #Libby to add line edit
-        #self.ui.input_box = QLineEdit(self)
-
-        #Libby Initialize the flag to False
-        self.item_added = False
-
-        self.ui.btnAdd.clicked.connect(self.handle_insert_new)
-        self.ui.btnDelete.clicked.connect(self.handle_remove)
+        self._model = PythonListModel(self)
+        self.ui.aclList.setModel(self._model)
+        self.ui.btnAdd.clicked.connect(self._handle_insert_new)
+        self.ui.btnDelete.clicked.connect(self._handle_remove)
         # To monitor focus out events and deselect
-        # self.ui.aclList.installEventFilter(self)
         self.ui.overrideCheckBox.installEventFilter(self)
-        self.ui.overrideCheckBox.setVisible(False)
-        self.ui.overrideCheckBox.toggled.connect(self.handle_override_changed)
-        self.has_inheritance = False
+        self.ui.overrideCheckBox.toggled.connect(self._handle_override_checkbox_changed)
+        self.set_data(ProjectAccessControlListData())
 
-    def set_has_inheritance(self, has_inheritance: bool):
-        self.has_inheritance = has_inheritance
-        self.ui.overrideCheckBox.setVisible(has_inheritance)
-        if not has_inheritance:
-            self.ui.aclList.setEnabled(True)
-        elif getattr(self, 'list_model', None) is None:
-            self.ui.aclList.setDisabled(True)
-            return
-        elif self.list_model.rowCount() > 0:
-            # TODO Need to differentiate no vs empty state
-            self.ui.overrideCheckBox.setChecked(True)
-            self.ui.aclList.setEnabled(True)
-        else:
-            self.ui.aclList.setDisabled(True)
-            self.ui.overrideCheckBox.setChecked(False)
+    def data(self) -> AccessControlListData:
+        """Returns the currently displayed access control data.
 
-    def handle_override_changed(self):
-        checked = self.ui.overrideCheckBox.isChecked()
-        list_count = self.list_model.rowCount()
-        if not checked and list_count > 0:
-            msg = QMessageBox()
-            msg.setWindowTitle("Use inherited value instead?")
-            msg.setText("Are you sure you want to remove all users/groups from this field?")
-            msg.setInformativeText("Inherited values will apply instead.")
-            msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
-            res = msg.exec()
-            if res == QMessageBox.StandardButton.Cancel:
+        Returns:
+            Union[OriginAccessControlData, DerivedAccessControlData]: The access control data
+            being displayed.
+        """
+        return self._data
+
+    def set_data(self, value: AccessControlListData):
+        """
+        Sets the access control data that will be displayed by the widget, and resets the widget interface
+        using this data.
+        
+        Args:
+            value (Union[OriginAccessControlData, DerivedAccessControlData]): _description_
+        """
+        self._data = value
+        if isinstance(value, ProjectAccessControlListData):
+            # If this is origin access control data (i.e. access control values from a Project)
+            # then hide the override checkbox and show the values.
+            self._model.setStringList(value.data)
+            self.ui.overrideCheckBox.setVisible(False)
+        elif isinstance(value, DerivedAccessControlListData):
+            # If this is derived access control data(i.e. access control values from an Experiment,
+            # Dataset or FileInfo), then show override checkbox and display values depending on
+            # whether override values are available.
+            self.ui.overrideCheckBox.setVisible(True)
+            if value.data is None:
+                # Disable editing, display inherited access controls.
+                self._model.setStringList(value.inherited_data)
+                self.ui.aclList.setEnabled(False)
                 with QSignalBlocker(self.ui.overrideCheckBox):
-                    # Undo the check.
-                    self.ui.overrideCheckBox.setChecked(True)
+                    self.ui.overrideCheckBox.setChecked(False)
             else:
-                # Remove all items in list
-                self.list_model.removeRows(0, self.list_model.rowCount())
-        # Finally, set to enable to disable the list
-        self.ui.aclList.setEnabled(self.ui.overrideCheckBox.isChecked())
+                # Enable editing, display own access controls
+                self._model.setStringList(value.data)
+                self.ui.aclList.setEnabled(True)
+                with QSignalBlocker(self.ui.overrideCheckBox):
+                    self.ui.overrideCheckBox.setChecked(True)
 
+    def _handle_override_checkbox_changed(self):
+        """
+        Handle the state change of the override checkbox.
 
-    def handle_insert_new(self):
-        if getattr(self, 'list_model', None) is None:
-            return
-        ### Libby to add text value to the listmodel
-    
-        checked = self.ui.overrideCheckBox.isChecked()
-        if checked and (not self.item_added):
-            row = self.list_model.rowCount() # get the number of rows in model --> int
-            self.list_model.insertRows(row,1) # Enable add one or more row.
-            model_idx = self.list_model.index(row)
-            self.ui.aclList.setCurrentIndex(model_idx)
-            self.ui.aclList.edit(model_idx)
-            # Set the flag to True after an item has been added
-            self.item_added = True
+        Emits the `override_inherited_toggled` signal with the boolean value
+        of `is_overriding`, which is whether or not the checkbox is currently checked.
+        Sets the checkbox state back to its previous value by using a `QSignalBlocker`.
+        """
+        is_overriding = self.ui.overrideCheckBox.isChecked()
+        # Cancel the checkbox state change as we want to control
+        # the change through the data property setter
+        with QSignalBlocker(self.ui.overrideCheckBox):
+            self.ui.overrideCheckBox.setChecked(not is_overriding)
+        self.override_inherited_toggled.emit(is_overriding)
 
-        # If an item has been added, remove any empty or null strings from the model
-        elif checked and (self.item_added):
-            self.remove_empty_strings(self.list_model)
-            row = self.list_model.rowCount() # get the number of rows in model --> int
-            self.list_model.insertRows(row,1) # Enable add one or more row.
-            model_idx = self.list_model.index(row)
-            self.ui.aclList.setCurrentIndex(model_idx)
-            self.ui.aclList.edit(model_idx)
-            self.item_added = True
+    def _handle_insert_new(self):
+        """
+        Handle the click of the "Add" button.
 
+        Inserts a new row into the list model and sets the current index to the new row,
+        allowing the user to edit it.
+        """
+        idx = self._model.rowCount()
+        self._model.insertRow(idx)
+        model_idx = self._model.index(idx, 0)
+        self.ui.aclList.setCurrentIndex(model_idx)
+        self.ui.aclList.edit(model_idx)
 
-    def handle_remove(self):
-        if getattr(self, 'list_model', None) is None:
-            return
+    def _handle_remove(self):
+        """
+        Handle the click of the "Remove" button.
+
+        Removes the selected rows from the list model, in reverse order to avoid issues with row
+        indices changing as rows are removed.
+        """
         idx_list = self.ui.aclList.selectedIndexes()
         rows_to_remove = [idx.row() for idx in idx_list]
         # Reverse sort the rows to remove, so we're not affected
         # by row index changes.
         rows_to_remove.sort(reverse=True)
         for row in rows_to_remove:
-            self.list_model.removeRow(row)
-
-    def set_list(self, ac_list: List[str]):
-        self.list_model = QStringListModel(self) # create stringlistmodel object
-        self.list_model.setStringList(ac_list)  # assign values to the model
-        self.ui.aclList.setModel(self.list_model) # connect view and model
-        # Reapply in case this list has value
-        self.set_has_inheritance(self.has_inheritance)
-
-    def remove_empty_strings(self,model):
-        # Get the string list from the model
-        string_list = model.stringList()
-
-        # Iterate through the string list and remove any empty or null strings
-        for i in reversed(range(len(string_list))):
-            if string_list[i] == '' or string_list[i] is None:
-                model.removeRows(i, 1)
+            self._model.removeRow(row)
