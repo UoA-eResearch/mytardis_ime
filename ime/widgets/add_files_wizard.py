@@ -376,6 +376,19 @@ class AddFilesWizardSkipDataset(QWizard):
         self.submitted.emit(result)
 
 class AddFilesWizardSkipExperiment(QWizard):
+    """
+    A class that defines a wizard for adding files, that skips the experiment part.
+
+    Attributes:
+    submitted (QtCore.pyqtSignal): A signal to submit the result of the wizard.
+    page_ids (Dict[str, int]): A dictionary that maps a page name to its corresponding ID.
+    selected_existing_project (Project): The selected existing project.
+    selected_existing_experiment (Experiment): The selected existing experiment.
+    #selected_existing_dataset: Dataset
+
+    Methods:
+    _register_fields(): Registers the fields of the pages of the wizard.
+    """
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
     selected_existing_project: Project
@@ -383,7 +396,9 @@ class AddFilesWizardSkipExperiment(QWizard):
     #selected_existing_dataset: Dataset
 
     def _register_fields(self):
-        # Experiment pages
+        """
+        A method that registers the fields of the pages of the wizard.
+        """
         exp_page = self.ui.pePage
         exp_new_page = self.ui.newExperimentPage
 
@@ -709,7 +724,6 @@ class DialogUtils:
     @staticmethod
     def __init__(self):
         pass
-
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
     def open_add_files_dialog() -> List[QtCore.QFileInfo]:
         """Open a file dialog and get the list of files to add.
