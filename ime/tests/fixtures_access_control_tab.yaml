@@ -2,7 +2,7 @@
 # Project template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
 #
 # Necessary info
-project_name: A test project
+name: A test project
 project_id: test
 alternate_ids:
   - a
@@ -39,7 +39,7 @@ metadata:
 
 ---
     !Experiment
-    experiment_name: Calibration 10 X
+    title: Calibration 10 X
     project_id: test # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
     experiment_id: 2022-08-01-calibration-10-x
     alternate_ids:
