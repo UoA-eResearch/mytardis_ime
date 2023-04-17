@@ -158,18 +158,6 @@ class IngestionMetadataModel:
         proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
         return proxy
     
-    ### Convenience functions for getting a single instance from the model.
-    def experiment_for_dataset(self, dataset: Dataset):
-        """
-        Returns a DataclassTableProxy of experiments that have a given dataset as input.
-        :param dataset: A Dataset object.
-        :return: A DataclassTableProxy of experiments.
-        """
-        id  = self.experiments.instance(0).experiment_id
-        proxy = self.experiments.proxy()
-        proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
-        return proxy
-    
     def project_for_experiment(self, experiment: Experiment):
         """
         Returns a DataclassTableProxy of projects that have a given experiment as a part.
@@ -335,7 +323,6 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             | Qt.ItemFlag.ItemIsSelectable
         )
         return flags
-        # return typing.cast(Qt.ItemFlags, flags)
 
     def headerData(
         self,

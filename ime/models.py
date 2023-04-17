@@ -83,14 +83,11 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata):
 
     yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
-    # yaml_dumper = yaml.SafeDumper
-    #project_name: str = ""
     description: str = ""
     project_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     lead_researcher: str = ""
-    ## fields below were added
     name: str = ""
     principal_investigator: str = "abcd123"
 
@@ -103,13 +100,10 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata):
 
     yaml_tag = "!Experiment"
     yaml_loader = yaml.SafeLoader
-    # yaml_dumper = yaml.SafeDumper
-    # experiment_name: str = ""
     project_id: str = ""
     experiment_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
-    ### fields below were added
     title: str = ""
 
 
@@ -121,12 +115,10 @@ class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata):
 
     yaml_tag = "!Dataset"
     yaml_loader = yaml.SafeLoader
-    # yaml_dumper = yaml.SafeDumper
     dataset_name: str = ""
     experiment_id: List[str] = field(default_factory=list)
     dataset_id: str = ""
     instrument_id: str = ""
-    ## fields below were added
     description: str = "" ## description field was added
     instrument: str = "" ## instrument field was added
     experiments: List[str] = field(default_factory=list) ## experiments field was added
@@ -142,7 +134,6 @@ class FileInfo(YAMLSerializable, IDerivedAccessControl, IMetadata):
     name: str = "" 
     # Size property is not serialised.
     size: int = field(repr=False, default=0)
-    ### fields below were added
     filename: str = ""
     directory: str = ""
     md5sum: str = ""
@@ -157,38 +148,13 @@ class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
     """
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
-    # yaml_dumper = yaml.SafeDumper
-    #name: str = "" 
-    # Size property is not serialised.
     size: float = ""
-    ### fields below were added
     filename: str = ""
     directory: str = ""
     md5sum: str = ""
     mimetype: str = ""
     dataset: str = ""
     dataset_id: str = ""
-'''
-@dataclass
-class Datafile(YAMLSerializable):
-    """
-    A class representing a set of MyTardis datafile objects.
-    """
-
-    yaml_tag = "!Datafile"
-    yaml_loader = yaml.SafeLoader
-    # yaml_dumper = yaml.SafeDumper
-    dataset_id: str = ""
-    files: List[FileInfo] = field(default_factory=list) 
-    ## fields below were added
-    filename: str = ""
-    directory: str = ""
-    md5sum: str = ""
-    mimetype: str = ""
-    dataset: str = ""
-    size: int = field(repr=False, default=0)
-'''
-
 
 @dataclass
 class IngestionMetadata:
@@ -227,9 +193,7 @@ class IngestionMetadata:
         Returns datafiles that belong to a dataset.
         """
         id = dataset.dataset_id
-        #update with Datafile
         all_files: List[Datafile] = []
-        # all_files: List[FileInfo] = []
         for file in self.datafiles:
             if not file.dataset_id == id:
                 continue
