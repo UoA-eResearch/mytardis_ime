@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1689</width>
+    <height>955</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MyTardis Ingestion Editor</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QTabWidget" name="editorTabs">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="dataset_tab">
+       <attribute name="title">
+        <string>Datasets</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QStackedWidget" name="datasetTabProps">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="DatasetPropertyEditor" name="datasetProperties">
+           <layout class="QGridLayout" name="gridLayout_6"/>
+          </widget>
+          <widget class="DatafilePropertyEditor" name="datafileProperties">
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="QTreeWidget" name="datasetTreeWidget">
+              <column>
+               <property name="text">
+                <string>Name</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Size</string>
+               </property>
+              </column>
+              <item>
+               <property name="text">
+                <string>p1</string>
+               </property>
+               <property name="text">
+                <string>12KB</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>e1</string>
+                </property>
+                <property name="text">
+                 <string>2KB</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>ds1</string>
+                 </property>
+                 <property name="text">
+                  <string>2KB</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>test.yaml</string>
+                  </property>
+                  <property name="text">
+                   <string>2KB</string>
+                  </property>
+                 </item>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>e2</string>
+                </property>
+                <property name="text">
+                 <string>10KB</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>ds11</string>
+                 </property>
+                 <property name="text">
+                  <string>10KB</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>default_rc.py</string>
+                  </property>
+                  <property name="text">
+                   <string>10KB</string>
+                  </property>
+                 </item>
+                </item>
+               </item>
+              </item>
+              <item>
+               <property name="text">
+                <string>p2</string>
+               </property>
+               <property name="text">
+                <string>3KB</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>e2</string>
+                </property>
+                <property name="text">
+                 <string>3KB</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>ds2</string>
+                 </property>
+                 <property name="text">
+                  <string>3KB</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>yes.yaml</string>
+                  </property>
+                  <property name="text">
+                   <string>3KB</string>
+                  </property>
+                 </item>
+                </item>
+               </item>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="noDatasetSelectedProps">
+           <layout class="QGridLayout" name="gridLayout_8">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="label_43">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>200</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../default.qrc">:/resources/noun-empty-2900960.svg</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_44">
+                <property name="font">
+                 <font>
+                  <family>Noto Sans Display</family>
+                  <pointsize>17</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>No dataset or file selected.</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_45">
+                <property name="font">
+                 <font>
+                  <family>Noto Sans</family>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Select a dataset or file to edit metadata and access controls.</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNewFile"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionImport_data_files"/>
+  </widget>
+  <action name="actionNewFile">
+   <property name="text">
+    <string>New...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new metadata file</string>
+   </property>
+  </action>
+  <action name="actionFrom_a_template">
+   <property name="text">
+    <string>From a template...</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSave_as_template">
+   <property name="text">
+    <string>Save as template</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionImport_data_files">
+   <property name="icon">
+    <iconset resource="../../default.qrc">
+     <normaloff>:/resources/noun-file-add-4877075.svg</normaloff>:/resources/noun-file-add-4877075.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Import data files</string>
+   </property>
+   <property name="toolTip">
+    <string>Launch guide to import new data files</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+I</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DatasetPropertyEditor</class>
+   <extends>QWidget</extends>
+   <header>ime.widgets.prop_editor</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DatafilePropertyEditor</class>
+   <extends>QWidget</extends>
+   <header location="global">ime.widgets.prop_editor</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../default.qrc"/>
+  <include location="../../default.qrc"/>
+  <include location="../../default.qrc"/>
+  <include location="../../default.qrc"/>
+ </resources>
+ <connections/>
+</ui>
