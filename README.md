@@ -22,7 +22,7 @@ poetry shell # This activates the virtual envrionment
 python -m app
 ``` 
 Note:
-If you are using an M1 Macbook, you need to install PyQt5 by creating a virtual environment and install PyQt5 using Rosetta Terminal.
+If you are using an M1 Macbook, you need to install PyQt5 by using Rosetta Terminal.
 To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwaj.medium.com/m1-mac-switching-terminal-between-x86-64-and-arm64-e45f324184d9
 
 ```
@@ -30,13 +30,12 @@ env /usr/bin/arch -x86_64 /bin/zsh --login
 arch
 ```
 Then you can either: 
-1. Set up your default Python version to 3.10.X by following https://towardsdatascience.com/how-to-use-manage-multiple-python-versions-on-an-apple-silicon-m1-mac-d69ee6ed0250 or 
-2. install Python3.10 locally with homebrew and create a virtual environment for Python3.10
+Set up Poetry, and run:
 ```
-source venv3.10/bin/activate ### in order to use module TypeAlias which is only avaiblable after python3.10 in models.py
 poetry install
-
-```
+poetry shell # This activates the virtual envrionment
+python -m app
+``` 
 
 ## UI files
 You can automate the generation of PyQt Python files from `.ui` files by running:
