@@ -616,7 +616,6 @@ class AddFilesWizardSkipProject(QWizard):
         pages = self.page_ids
 
         if current == pages['pPage']:
-            self.setField('isNewProject', False)
             self.setField('isNewExperiment', True)
             self.setField('isNewDataset', True)
             return pages['newExperimentPage']
@@ -642,6 +641,7 @@ class AddFilesWizardSkipProject(QWizard):
         self._register_fields()
         pages = self.page_ids 
         self.setStartId(pages['pPage'])
+        
         self.pro_passed = pro_data
 
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
@@ -685,7 +685,7 @@ class AddFilesWizardSkipProject(QWizard):
             None
         """
         result = AddFilesWizardResult()
-        result.is_new_project = self.field('isNewProject')
+        result.is_new_project = False
         result.is_new_experiment = self.field('isNewExperiment')
         result.is_new_dataset = self.field('isNewDataset')
         ### assume new project

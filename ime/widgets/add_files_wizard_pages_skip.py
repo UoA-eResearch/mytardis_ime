@@ -4,7 +4,6 @@ add_files_wizard_pages.py - custom logic for add files wizard pages.
 import typing
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QWizardPage
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QAbstractItemModel, QModelIndex, QSortFilterProxyModel
 import ime.widgets.add_files_wizard as afw
 
 class ProjectPage(QWizardPage):

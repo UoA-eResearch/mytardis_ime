@@ -80,6 +80,10 @@ class MyTardisMetadataEditor(QMainWindow):
 
         :param point: QPoint representing the position where the context menu was triggered.
         """
+        index = self.ui.datasetTreeWidget.indexAt(point)
+        if not index.isValid() or index.parent().isValid():
+            return
+        
         menu = QMenu()
         action = menu.addAction("Add New File...")
         action.triggered.connect(self.openWizardWindowSkipDataset)
