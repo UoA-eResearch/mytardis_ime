@@ -5,3 +5,4 @@
 **/__pycache__/
 dist
 .qt_for_python/
+docs/_build
