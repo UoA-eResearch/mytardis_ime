@@ -5,7 +5,7 @@ description = "An ingestion metadata editor for MyTardis"
 authors = ["Noel <noel.zeng@auckland.ac.nz>", "Libby Li <libby.li@auckland.ac.nz>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.12"
 PyQt5 = ">=5.15.2"
 PyYAML = "^6.0"
 pydantic = "^1.10.7"
@@ -18,7 +18,7 @@ wheel = "^0.40.0"
 pandas = "^2.0.2"
 jsonschema = "^4.17.3"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pylint = "^2.13.9"
 rope = "^1.1.1"
 black = "^22.3.0"
@@ -26,6 +26,8 @@ pytest = "^7.1.2"
 pytest-qt = "^4.1.0"
 pyinstaller = "^5.3"
 watchdog = "^2.1.9"
+sphinx = "^6.2.1"
+sphinx-rtd-theme = "^1.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
