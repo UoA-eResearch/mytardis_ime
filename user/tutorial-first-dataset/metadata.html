@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annotate your data with metadata &mdash; Instrument Data Wizard  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Restrict access to your data" href="access-control.html" />
+    <link rel="prev" title="Import your data into the Instrument Data Wizard" href="import-data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Instrument Data Wizard
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorial: Annotating your first dataset</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="decide-structure.html">Decide how to describe and structure your data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="import-data.html">Import your data into the Instrument Data Wizard</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Annotate your data with metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-metadata-fields">Basic metadata fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-metadata-with-schemas">Additional metadata with <cite>Schemas</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recording-sarah-s-metadata">Recording Sarah’s metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#adding-the-instrument-id">Adding the instrument ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-the-sequence-depth">Adding the sequence depth</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-adding-more-metadata">Exercise: Adding more metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="access-control.html">Restrict access to your data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="export.html">Export your metadata</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference for Users</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../what-is-wizard.html">What is Instrument Data Service and Instrument Data Wizard?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../adding-to-existing-structure.html">Adding data to existing Projects, Experiments or Datasets in the data repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-dictionary.html">Creating a data dictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finding-instrument-id.html">Finding my instrument’s persistent identifier (PID)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Instrument Data Wizard</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorial: Annotating your first dataset</a></li>
+      <li class="breadcrumb-item active">Annotate your data with metadata</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/user/tutorial-first-dataset/metadata.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="annotate-your-data-with-metadata">
+<h1>Annotate your data with metadata<a class="headerlink" href="#annotate-your-data-with-metadata" title="Permalink to this heading"></a></h1>
+<p>Now that your files are imported and organised, you can start annotating them.</p>
+<section id="basic-metadata-fields">
+<h2>Basic metadata fields<a class="headerlink" href="#basic-metadata-fields" title="Permalink to this heading"></a></h2>
+<p>In Instrument Data Service, there is a basic set of metadata fields applicable for any <cite>Projects</cite>, <cite>Experiments</cite>, <cite>Datasets</cite> or <cite>Datafiles</cite>. They are fields like name, ID, author and institution.</p>
+</section>
+<section id="additional-metadata-with-schemas">
+<h2>Additional metadata with <cite>Schemas</cite><a class="headerlink" href="#additional-metadata-with-schemas" title="Permalink to this heading"></a></h2>
+<p>In addition, you can attach more metadata to a <cite>Project</cite>, <cite>Experiment</cite>, <cite>Dataset</cite> or <cite>Datafile</cite> through <cite>Schemas</cite>. They are made up of custom metadata fields called <cite>Parameters</cite>. You can specify the <cite>Parameter</cite> name and the value data type (for example, you can restrict the value to be a number, a string of characters, or a date.)</p>
+<p><cite>Schemas</cite> need to be defined in Instrument Data Service before you can use them in Instrument Data Wizard.</p>
+<p>A <cite>Project</cite>, <cite>Experiment</cite>, <cite>Dataset</cite> or <cite>Datafile</cite> can have multiple <cite>Schemas</cite> associated with them.</p>
+<div class="admonition-what-can-i-store-in-schemas admonition">
+<p class="admonition-title">What can I store in <cite>Schemas</cite>?</p>
+<p>You can associate domain- or instrument- specific metadata with a <cite>Project</cite>, <cite>Experiment</cite>, <cite>Dataset</cite> or <cite>Datafile</cite> using <cite>Schemas</cite>. One way to use <cite>Schema</cite> could be to describe the study or treatment you have applied to the sample. Alternatively, you may wish to note down the instrument configuration used for acquiring data. For example, data from a sequencer may benefit from a <cite>Schema</cite> with depth of sequencing and sequencing method as <cite>Parameters</cite>.</p>
+<p>It’s best to create a data dictionary document with your collaborators to specify what metadata should be stored. See <a class="reference internal" href="../data-dictionary.html#data-dictionary"><span class="std std-ref">Creating a data dictionary</span></a>.</p>
+<p>As part of onboarding, Instrument Data Service can support you in creating a data dictionary, and create any <cite>Schemas</cite> for your research group.</p>
+</div>
+<p>In the Instrument Data Wizard, first select the <cite>Project</cite>, <cite>Experiment</cite>, <cite>Dataset</cite> or <cite>Datafile</cite> you wish to edit, then you can change metadata on the right-hand pane.</p>
+<img alt="../../_images/metadata-2.png" src="../../_images/metadata-2.png" />
+<p>The <cite>Description</cite> tab contains the basic metadata fields, while the <cite>Metadata</cite> tab contains the <cite>Schema</cite> metadata fields.</p>
+<p>At the moment, the Instrument Data Wizard accepts free-text <cite>Parameter</cite> names and values.</p>
+</section>
+<section id="recording-sarah-s-metadata">
+<h2>Recording Sarah’s metadata<a class="headerlink" href="#recording-sarah-s-metadata" title="Permalink to this heading"></a></h2>
+<p>As Sarah, you have two things you need to include in the metadata. You need to note down the instrument the sequencing was done on, and the sequence depth used. In genetics, sequence depth measures the <a class="reference external" href="https://en.wikipedia.org/wiki/Coverage_(genetics)">completeness of the sequencing process</a>.</p>
+<section id="adding-the-instrument-id">
+<h3>Adding the instrument ID<a class="headerlink" href="#adding-the-instrument-id" title="Permalink to this heading"></a></h3>
+<p>To record the instrument, you first need to find the instrument’s <a class="reference external" href="https://datascience.codata.org/articles/10.5334/dsj-2020-018">persistent identifier (PID)</a>. For Sarah, the sequencing company has given her the ID “<a class="reference external" href="http://hdl.handle.net/21.T11998/0000-001A-3904-0">http://hdl.handle.net/21.T11998/0000-001A-3904-0</a>”.</p>
+<div class="admonition-where-can-i-find-my-instrument-s-persistent-identifier admonition">
+<p class="admonition-title">Where can I find my instrument’s persistent identifier?</p>
+<p>You can log in to the Instrument Data Service web portal to find the ID. See <a class="reference internal" href="../finding-instrument-id.html#finding-instrument-id"><span class="std std-ref">Finding my instrument’s persistent identifier (PID)</span></a>.</p>
+</div>
+<p>Instrument is a basic metadata field, so you can find it in the <cite>Description</cite> tab, as the <cite>Instrument ID</cite> field.</p>
+<p>After filling out the field, the editor should look like this.</p>
+<img alt="../../_images/metadata-3.png" src="../../_images/metadata-3.png" />
+</section>
+<section id="adding-the-sequence-depth">
+<h3>Adding the sequence depth<a class="headerlink" href="#adding-the-sequence-depth" title="Permalink to this heading"></a></h3>
+<p>You have decided with your team that sequence depth should be recorded as a <cite>Schema Parameter</cite> on each <cite>Experiment</cite>, with the name <cite>Depth of sequencing</cite>, and value as an integer.</p>
+<p>Try adding 100 as the sequence depth for the Herceptin <cite>Experiment</cite>. Once finished, your editor should look like this.</p>
+<img alt="../../_images/metadata-1.png" src="../../_images/metadata-1.png" />
+<p>If you need to delete a <cite>Parameter</cite> row, select that row, then click the <cite>Remove</cite> button.</p>
+<div class="admonition-keep-your-schema-names-and-values-consistent admonition">
+<p class="admonition-title">Keep your <cite>Schema</cite> names and values consistent</p>
+<p>Record <cite>Parameter</cite> names and values consistently, using the same letter casing and units. This will help with finding your data in the future. For example, if you have a <cite>Parameter</cite> representing a length, decide on the name (e.g. “distance”, no uppercase) and the value unit (e.g. millimetre), and use them consistently.</p>
+</div>
+</section>
+</section>
+<section id="exercise-adding-more-metadata">
+<h2>Exercise: Adding more metadata<a class="headerlink" href="#exercise-adding-more-metadata" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><cite>Lead Researcher</cite> is another basic metadata field on <cite>Projects</cite>. Try adding yourself as the lead researcher in the <cite>Project</cite>, using Sarah’s University username <code class="code docutils literal notranslate"><span class="pre">skau921</span></code>.</p></li>
+</ol>
+<p>Your editor should look like this:</p>
+<img alt="../../_images/metadata-4.png" src="../../_images/metadata-4.png" />
+<ol class="arabic simple" start="2">
+<li><p>For the Herceptin experiment, there was an error in the sequencing process. You would like to mark it as inaccurate. Decide on how you would represent this, then annotate the experiment.</p></li>
+</ol>
+<p>This is one way you may like to add this:</p>
+<img alt="../../_images/metadata-5.png" src="../../_images/metadata-5.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="import-data.html" class="btn btn-neutral float-left" title="Import your data into the Instrument Data Wizard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="access-control.html" class="btn btn-neutral float-right" title="Restrict access to your data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Centre for eResearch, The University of Auckland.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
