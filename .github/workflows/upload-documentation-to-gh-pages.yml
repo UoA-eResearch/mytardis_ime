@@ -1,0 +1,35 @@
+name: Build documentation and upload it to GitHub Pages
+on:
+  push:
+    branches: 
+      - IDS-23_user-documentation
+permissions:
+  contents: write
+jobs:
+  ci:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
+        poetry-version: ["1.0", "1.1.15"]
+        os: [ubuntu-18.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install poetry
+        run: poetry install --only=dev
+      - name: Build documentation
+        run:
+          shell: poetry run make html
+          working-directory: docs
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/_build/html

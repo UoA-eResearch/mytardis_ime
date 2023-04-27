@@ -20,6 +20,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 rst_epilog = """
 .. |service_name| replace:: Instrument Data Service
+.. |institution_name| replace:: Waipapa Taumata Rau The University of Auckland
 """
 
 # -- Options for HTML output -------------------------------------------------

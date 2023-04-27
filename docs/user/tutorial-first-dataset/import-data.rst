@@ -33,6 +33,8 @@ What if you have files you need to organise separately from the initial import? 
 
 You can click the `Import data files` button again, and the step-by-step wizard will prompt you to add files and ask how you would like to organise them.
 
+You can also right-click on the `Project`, `Experiment` or `Dataset` you would like to add more data to, and select the `Add Experiment`, `Add Dataset` or `Add files` options.
+
 As Sarah, you also have some raw data in the Herceptin trial you would like to import. 
 
 After clicking the `Import data files` button and going through the initial explanation screen, you will now be presented with a choice to add files to an existing `Project`, or create a new `Project`. 
@@ -41,12 +43,11 @@ After clicking the `Import data files` button and going through the initial expl
 
 Since this is data for the same project, choose the "Breast Cancer Drug Treatment Genomics" `Project`.
 
-
 Then proceed through the rest of the wizard using this setup.
 
 * Create a new Experiment with name "Herceptin", and ID "Herceptin".
 * Create a new Dataset with the name "Raw", and ID "Herceptin-Raw".
-*  Data files: Add the .fastq files in the tutorial data folder, under `tutorial/herceptin/`.
+*  Data files: Add the :code:`.fastq` files in the tutorial data folder, under `tutorial/herceptin/`.
 
 Once finished, your editor should look like this.
 
@@ -60,7 +61,12 @@ Click the `Save` button, and save under the tutorial data folder. Name it "metad
     
     Remember to save your changes as you work! As the Instrument Data Wizard is still being developed, bugs and crashes may happen at inopportune moments. After a crash, you can reopen the file using the `Open` button.
 
-.. admonition:: Exercise
+Exercise: Add even more data
+----------------------------
 
-    Try to re-create the hierarchy as described in the :ref:`example data structure plan <sample-data-structure-plan>`.
+Try to re-create the hierarchy in the Instrument Data Wizard as described in the :ref:`example data structure plan <sample-data-structure-plan>`.
+
+Once finished, your editor should look like this.
+
+.. image:: import-exercise.png
 
