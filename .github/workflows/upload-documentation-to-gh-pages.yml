@@ -26,9 +26,8 @@ jobs:
       - name: Install poetry
         run: poetry install --only=dev
       - name: Build documentation
-        run:
-          shell: poetry run make html
-          working-directory: docs
+        run: poetry run make html
+        working-directory: docs
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
