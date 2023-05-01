@@ -198,7 +198,7 @@ class AddFilesWizard(QWizard):
             result.project = self.selected_existing_project
         else:
             result.project = Project()
-            result.project.project_name = self.ui.projectNameLineEdit.text()
+            result.project.name = self.ui.projectNameLineEdit.text()
             result.project.project_id = self.ui.projectIDLineEdit.text()
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
             
@@ -206,7 +206,7 @@ class AddFilesWizard(QWizard):
             result.experiment = self.selected_existing_experiment
         else:
             result.experiment = Experiment()
-            result.experiment.experiment_name = self.ui.experimentNameLineEdit.text()
+            result.experiment.title = self.ui.experimentNameLineEdit.text()
             result.experiment.experiment_id = self.ui.experimentIDLineEdit.text()
             result.experiment.project_id = result.project.project_id
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
@@ -614,7 +614,6 @@ class AddFilesWizardSkipProject(QWizard):
         """
         current = self.currentId()
         pages = self.page_ids
-
         if current == pages['pPage']:
             self.setField('isNewExperiment', True)
             self.setField('isNewDataset', True)

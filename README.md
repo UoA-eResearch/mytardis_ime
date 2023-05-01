@@ -29,7 +29,7 @@ To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwa
 env /usr/bin/arch -x86_64 /bin/zsh --login
 arch
 ```
-Then you can either: 
+Then you can: 
 Set up Poetry, and run:
 ```
 poetry install

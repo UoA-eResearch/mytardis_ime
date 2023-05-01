@@ -506,7 +506,7 @@
   <include location="../../default.qrc"/>
   <include location="../../default.qrc"/>
   <include location="../../default.qrc"/>
-  <include location="../../../../../default.qrc"/>
+  <include location="../../default.qrc"/>
  </resources>
  <connections/>
 </ui>
