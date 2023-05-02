@@ -1,5 +1,6 @@
 from typing import List, Dict, Any, Literal, Optional, Type, TypeAlias, TypeVar, Union
 from dataclasses import dataclass, field
+from enum import Enum
 import yaml
 from yaml.loader import Loader
 from yaml.nodes import Node
@@ -49,7 +50,8 @@ class IDerivedAccessControl:
     Datasets and Datafiles,while the IProjectAccessControl
     class represents fields for Projects.
     When set to None, the fields represent that they are inheriting
-    access control fields from the containing object.
+    access control fields from the Project, Experiment or Dataset higher up
+    in the hierarchy.
     """
     admin_groups: Optional[List[str]] = field(default=None)
     admin_users: Optional[List[str]] = field(default=None)
@@ -60,11 +62,28 @@ class IDerivedAccessControl:
     sensitive_groups: Optional[List[str]] = field(default=None)
     sensitive_users: Optional[List[str]] = field(default=None)
 
-
 """
 A union type alias for both types of Access Control types.
 """
 IAccessControl:TypeAlias = Union[IProjectAccessControl, IDerivedAccessControl]    
+
+class DataClassification(Enum):
+    """An enumerator for data classification.
+    Gaps have been left deliberately in the enumeration to allow for intermediate
+    classifications of data that may arise. The larger the integer that the classification
+    resolves to, the less sensitive the data is.
+    """
+    RESTRICTED = 1
+    SENSITIVE = 25
+    INTERNAL = 100
+    PUBLIC = 100
+
+@dataclass
+class IDataClassification:
+    """
+    Common interface for MyTardis models under Project with data classification labels.
+    """
+    data_classification: Optional[DataClassification] = None
 
 @dataclass
 class IMetadata:
@@ -75,7 +94,7 @@ class IMetadata:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable, IProjectAccessControl, IMetadata):
+class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
     """
@@ -92,7 +111,7 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata):
 
 
 @dataclass
-class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata):
+class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -108,7 +127,7 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata):
 
 
 @dataclass
-class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata):
+class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Dataset objects.
     """
