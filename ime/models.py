@@ -81,9 +81,16 @@ class DataClassification(Enum):
 @dataclass
 class IDataClassification:
     """
-    Common interface for MyTardis models under Project with data classification labels.
+    Common interface for MyTardis models with data classification labels.
     """
     data_classification: Optional[DataClassification] = None
+
+@dataclass
+class IIdentifiers:
+    """
+    Common interface for MyTardis models with identifiers.
+    """
+    identifiers: list[str] = field(default_factory=list)
 
 @dataclass
 class IMetadata:
@@ -94,7 +101,7 @@ class IMetadata:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
+class Project(YAMLSerializable,IIdentifiers, IProjectAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
     """
@@ -104,14 +111,12 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassific
     # yaml_dumper = yaml.SafeDumper
     project_name: str = ""
     description: str = ""
-    project_id: str = ""
-    alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     lead_researcher: str = ""
 
 
 @dataclass
-class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
+class Experiment(YAMLSerializable, IIdentifiers, IDerivedAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -121,13 +126,11 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassi
     # yaml_dumper = yaml.SafeDumper
     experiment_name: str = ""
     project_id: str = ""
-    experiment_id: str = ""
-    alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
 
 
 @dataclass
-class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
+class Dataset(YAMLSerializable, IIdentifiers, IDerivedAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -137,7 +140,6 @@ class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassific
     # yaml_dumper = yaml.SafeDumper
     dataset_name: str = ""
     experiment_id: List[str] = field(default_factory=list)
-    dataset_id: str = ""
     instrument_id: str = ""
 
 
@@ -202,10 +204,10 @@ class IngestionMetadata:
         """
         Returns datafiles that belong to a dataset.
         """
-        id = dataset.dataset_id
+        ids = dataset.identifiers
         all_files: List[FileInfo] = []
         for file in self.datafiles:
-            if not file.dataset_id == id:
+            if not file.dataset_id in ids:
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
@@ -216,10 +218,13 @@ class IngestionMetadata:
         """
         Returns datasets that belong to a experiment.
         """
-        id = exp.experiment_id
+        ids = set(exp.identifiers)
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
-            if id not in dataset.experiment_id:
+            # Create sets out of the IDs, then find intersection between them to
+            # get common IDs. 
+            intersects = len(ids & set(dataset.experiment_id)) > 0
+            if not intersects:
                 continue
             all_datasets.append(dataset)
         return all_datasets
@@ -228,10 +233,10 @@ class IngestionMetadata:
         """
         Returns experiments that belong to a project.
         """
-        id = proj.project_id
+        ids = proj.identifiers
         all_exps: List[Experiment] = []
         for exp in self.experiments:
-            if not exp.project_id == id:
+            if not exp.project_id in ids:
                 continue
             all_exps.append(exp)
         return all_exps
