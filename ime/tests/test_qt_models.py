@@ -26,7 +26,6 @@ def test_show_experiment_table(qtbot: QtBot, experiments: DataclassTableModel[Ex
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
-    qtbot.stop()
     # Assert that the proxy model shows the correct data in the first row, second column.
     assert model.rowCount() == 2
     assert model.data(model.index(0,1), Qt.ItemDataRole.DisplayRole) == "Calibration 10 X"
