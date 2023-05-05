@@ -21,20 +21,24 @@
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>You will add New Experiment into the follow Project:</string>
+       <string>You will be adding a new Experiment into the following Project:</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QWidget" name="existingProjectForm" native="true">
-      <layout class="QGridLayout" name="gridLayout_9">
-       <item row="0" column="1">
-        <widget class="QComboBox" name="existingProjectList_1"/>
-       </item>
-       <item row="0" column="0">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0" rowspan="2" colspan="2">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Project</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="existingProjectName">
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
@@ -133,7 +137,7 @@
     <item>
      <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>You will add New Dataset into the follow Project, and Experiment:</string>
+       <string>You will be adding a new Dataset into the following Project, and Experiment:</string>
       </property>
      </widget>
     </item>
@@ -141,10 +145,18 @@
      <widget class="QWidget" name="existingProjectForm_2" native="true">
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="1">
-        <widget class="QComboBox" name="existingProjectList_2"/>
+        <widget class="QComboBox" name="existingProjectList_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="existingExperimentList_1"/>
+        <widget class="QComboBox" name="existingExperimentList_1">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_18">
@@ -255,7 +267,7 @@
     <item>
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>You will add New Data files into the follow Project, Experiment, and Dataset:</string>
+       <string>You will be adding new data files into the following Project, Experiment, and Dataset:</string>
       </property>
      </widget>
     </item>
@@ -277,7 +289,11 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="existingProjectList_3"/>
+        <widget class="QComboBox" name="existingProjectList_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_14">
@@ -287,10 +303,18 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="existingExperimentList_2"/>
+        <widget class="QComboBox" name="existingExperimentList_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QComboBox" name="existingDatasetList_1"/>
+        <widget class="QComboBox" name="existingDatasetList_1">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

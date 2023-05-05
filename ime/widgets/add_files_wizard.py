@@ -353,9 +353,9 @@ class AddFilesWizardSkipDataset(QWizard):
             None
         """
         result = AddFilesWizardResult()
-        result.is_new_project = self.field('isNewProject')
-        result.is_new_experiment = self.field('isNewExperiment')
-        result.is_new_dataset = self.field('isNewDataset')
+        result.is_new_project = False
+        result.is_new_experiment = False
+        result.is_new_dataset = False
 
         result.project = self.selected_existing_project
         result.experiment = self.selected_existing_experiment
@@ -435,9 +435,6 @@ class AddFilesWizardSkipExperiment(QWizard):
         pages = self.page_ids
 
         if current == pages['pePage']:
-            self.setField('isNewProject', False)
-            self.setField('isNewExperiment', False)
-            self.setField('isNewDataset', True)
             return pages['newDatasetPage']
         elif current == pages['newDatasetPage']:
             return pages['includedFilesPage']
@@ -506,9 +503,9 @@ class AddFilesWizardSkipExperiment(QWizard):
 
         """
         result = AddFilesWizardResult()
-        result.is_new_project = self.field('isNewProject')
-        result.is_new_experiment = self.field('isNewExperiment')
-        result.is_new_dataset = self.field('isNewDataset')
+        result.is_new_project = False
+        result.is_new_experiment = False
+        result.is_new_dataset = True
 
         result.project = self.selected_existing_project
         result.experiment = self.selected_existing_experiment
@@ -569,15 +566,9 @@ class AddFilesWizardSkipProject(QWizard):
         # Experiment pages
         pro_page = self.ui.pPage
 
-        self.ui.existingProjectList_1.currentIndexChanged.connect(pro_page.completeChanged)
-        pro_page.registerField("isExistingProject", self.ui.existingProjectList_1)
-
         exp_new_page = self.ui.newExperimentPage
         ds_new_page = self.ui.newDatasetPage
-        
-        pro_page.registerField("isNewExperiment", self.ui.existingProjectList_1)
-        
-        #exp_new_page.registerField(isNew)
+
         exp_new_page.registerField('experimentNameLineEdit*',self.ui.experimentNameLineEdit)
         exp_new_page.registerField('experimentIDLineEdit*',self.ui.experimentIDLineEdit)
         ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
@@ -615,8 +606,6 @@ class AddFilesWizardSkipProject(QWizard):
         current = self.currentId()
         pages = self.page_ids
         if current == pages['pPage']:
-            self.setField('isNewExperiment', True)
-            self.setField('isNewDataset', True)
             return pages['newExperimentPage']
         elif current == pages['newExperimentPage']:
             return pages['newDatasetPage']
@@ -685,8 +674,8 @@ class AddFilesWizardSkipProject(QWizard):
         """
         result = AddFilesWizardResult()
         result.is_new_project = False
-        result.is_new_experiment = self.field('isNewExperiment')
-        result.is_new_dataset = self.field('isNewDataset')
+        result.is_new_experiment = True
+        result.is_new_dataset = True
         ### assume new project
         result.project = self.selected_existing_project
 
@@ -715,7 +704,6 @@ class AddFilesWizardSkipProject(QWizard):
             datafile.filename = file_name
             datafile.size = file_size
             result.file_list.append(datafile)
-        #print(result.file_list)
         self.submitted.emit(result)
 
 

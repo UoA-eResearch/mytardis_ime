@@ -27,21 +27,9 @@ class ProjectPage(QWizardPage):
         # Display the list of projects.
         pro = wizard.pro_passed
 
-        wizard.ui.existingProjectList_1.addItem(pro.name)
+        wizard.ui.existingProjectName.setText(pro.name)
 
         wizard.selected_existing_project = pro
-
-    def cleanupPage(self) -> None:
-        """Disconnect the currentIndexChanged signal."""
-        self.wizard().ui.existingProjectList_1.currentIndexChanged.disconnect()
-    
-    def isComplete(self) -> bool:
-        """Return True if the required fields are filled.
-
-        Returns:
-            bool: True if the required fields are filled.
-        """
-        return self.field('isExistingProject') is not None
 
 class PExperimentPage(QWizardPage):
     """A wizard page for selecting an existing project and experiment or creating a new one."""
