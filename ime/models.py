@@ -104,6 +104,7 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassific
     # yaml_dumper = yaml.SafeDumper
     project_name: str = ""
     project_id: str = ""
+    alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     description: str = ""
     lead_researcher: str = ""
@@ -120,6 +121,7 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassi
     # yaml_dumper = yaml.SafeDumper
     experiment_name: str = ""
     experiment_id: str = ""
+    alternate_ids: List[str] = field(default_factory=list)
     project_id: str = ""
     description: str = ""
 
