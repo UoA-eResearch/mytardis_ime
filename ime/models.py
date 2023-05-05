@@ -205,7 +205,7 @@ class IngestionMetadata:
         id = dataset.dataset_id
         all_files: List[FileInfo] = []
         for file in self.datafiles:
-            if not file.dataset_id in id:
+            if not file.dataset_id == id:
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
@@ -220,7 +220,7 @@ class IngestionMetadata:
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
             if id not in dataset.experiment_id:
-                    continue
+                continue
             all_datasets.append(dataset)
         return all_datasets
     
