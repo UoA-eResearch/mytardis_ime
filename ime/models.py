@@ -86,13 +86,6 @@ class IDataClassification:
     data_classification: Optional[DataClassification] = None
 
 @dataclass
-class IIdentifiers:
-    """
-    Common interface for MyTardis models with identifiers.
-    """
-    identifiers: list[str] = field(default_factory=list)
-
-@dataclass
 class IMetadata:
     """
     A class representing fields related to schema parameters.
@@ -101,7 +94,7 @@ class IMetadata:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable,IIdentifiers, IProjectAccessControl, IMetadata, IDataClassification):
+class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
     """
@@ -110,13 +103,14 @@ class Project(YAMLSerializable,IIdentifiers, IProjectAccessControl, IMetadata, I
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     project_name: str = ""
+    project_id: str = ""
     description: str = ""
     description: str = ""
     lead_researcher: str = ""
 
 
 @dataclass
-class Experiment(YAMLSerializable, IIdentifiers, IDerivedAccessControl, IMetadata, IDataClassification):
+class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -125,12 +119,13 @@ class Experiment(YAMLSerializable, IIdentifiers, IDerivedAccessControl, IMetadat
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     experiment_name: str = ""
+    experiment_id: str = ""
     project_id: str = ""
     description: str = ""
 
 
 @dataclass
-class Dataset(YAMLSerializable, IIdentifiers, IDerivedAccessControl, IMetadata, IDataClassification):
+class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -139,6 +134,7 @@ class Dataset(YAMLSerializable, IIdentifiers, IDerivedAccessControl, IMetadata, 
     yaml_loader = yaml.SafeLoader
     # yaml_dumper = yaml.SafeDumper
     dataset_name: str = ""
+    dataset_id: str = ""
     experiment_id: List[str] = field(default_factory=list)
     instrument_id: str = ""
 
@@ -204,10 +200,10 @@ class IngestionMetadata:
         """
         Returns datafiles that belong to a dataset.
         """
-        ids = dataset.identifiers
+        id = dataset.dataset_id
         all_files: List[FileInfo] = []
         for file in self.datafiles:
-            if not file.dataset_id in ids:
+            if not file.dataset_id in id:
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
@@ -218,14 +214,11 @@ class IngestionMetadata:
         """
         Returns datasets that belong to a experiment.
         """
-        ids = set(exp.identifiers)
+        id = exp.experiment_id
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
-            # Create sets out of the IDs, then find intersection between them to
-            # get common IDs. 
-            intersects = len(ids & set(dataset.experiment_id)) > 0
-            if not intersects:
-                continue
+            if id not in dataset.experiment_id:
+                    continue
             all_datasets.append(dataset)
         return all_datasets
     
@@ -233,10 +226,10 @@ class IngestionMetadata:
         """
         Returns experiments that belong to a project.
         """
-        ids = proj.identifiers
+        id = proj.project_id
         all_exps: List[Experiment] = []
         for exp in self.experiments:
-            if not exp.project_id in ids:
+            if not exp.project_id == id:
                 continue
             all_exps.append(exp)
         return all_exps
