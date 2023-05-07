@@ -106,7 +106,6 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassific
     project_id: str = ""
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
-    description: str = ""
     lead_researcher: str = ""
 
 
