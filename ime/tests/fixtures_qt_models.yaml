@@ -3,7 +3,7 @@
 # Experiment/Sample template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
 #
 # Necessary info
-experiment_name: Calibration 10 X
+title: Calibration 10 X
 project_id: test # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
 experiment_id: 2022-08-01-calibration-10-x
 alternate_ids:
@@ -54,7 +54,7 @@ metadata:
 # Experiment/Sample template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
 #
 # Necessary info
-experiment_name: Calibration 20 X
+title: Calibration 20 X
 project_id: # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
 experiment_id: 2022-08-01-calibration-10-x
 alternate_ids:

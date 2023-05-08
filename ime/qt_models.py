@@ -46,6 +46,8 @@ class PythonListModel(QAbstractListModel):
         Args:
             sourceList (List[str]): The backing Python string list.
         """
+    def setStringList(self, sourceList: List[str]):
+        """Sets the source list to the provided list."""
         self.list = sourceList
 
     def remove_value(self, val: str) -> bool:
@@ -72,23 +74,27 @@ class PythonListModel(QAbstractListModel):
     # https://doc.qt.io/qt-6/qabstractlistmodel.html
 
     def rowCount(self, parent = QModelIndex()) -> int:
+        """Returns the number of rows in the model."""
         return len(self.list)
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
-        # Make the items show up as editable and selectable in views.
+        """Returns the flags associated with the given index."""
         flags = Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         return typing.cast(Qt.ItemFlags, flags)
 
     def setData(self, index: QModelIndex, value: typing.Any, role: int = ...) -> bool:
+        """Sets the data at the given index to the given value."""
         self.list[index.row()] = value
         self.dataChanged.emit(index, index)
         return True
 
     def data(self, index: QModelIndex, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
+        """Returns the data stored under the given role for the item referred to by the index."""
         if role == Qt.ItemDataRole.DisplayRole:
             return self.list[index.row()]
 
     def insertRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+        """Inserts rows into the model."""
         self.beginInsertRows(QModelIndex(), row, row+count-1)
         for i in range(row, row+count):
             self.list.insert(i, "")
@@ -96,6 +102,7 @@ class PythonListModel(QAbstractListModel):
         return True
 
     def removeRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+        """Removes rows from the model."""
         self.beginRemoveRows(QModelIndex(), row, row+count-1)
         for i in range(0, count):
             # Remove rows from largest index first
@@ -116,6 +123,11 @@ class IngestionMetadataModel:
     DataclassTableProxy - see below.
     """
     def __init__(self, metadata = IngestionMetadata()):
+        """
+        Initializes an instance of the IngestionMetadataModel class.
+        Args:
+            metadata: An instance of the IngestionMetadata class from models.py. Defaults to an empty instance.
+        """
         self.metadata = metadata
         self.projects = DataclassTableModel(Project)
         self.projects.set_instance_list(metadata.projects)
@@ -144,6 +156,17 @@ class IngestionMetadataModel:
         # Since the experiment_id field is a list, we add
         # a filter function to go through the list.
         proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
+        return proxy
+    
+    def project_for_experiment(self, experiment: Experiment):
+        """
+        Returns a DataclassTableProxy of projects that have a given experiment as a part.
+        :param experiment: An Experiment object.
+        :return: A DataclassTableProxy of projects.
+        """
+        id = experiment.project_id
+        proxy = self.projects.proxy()
+        proxy.set_filter_by_instance(lambda proj: proj.project_id == id)
         return proxy
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
@@ -233,12 +256,30 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
     # Implementations and overrides of QAbstractTableModel methods follow.
     # These methods are mainly for use by native Qt Views.
     def rowCount(self, parent=QModelIndex()) -> int:
+        """
+        Returns the number of rows in the model.
+
+        Args:
+            parent (QtCore.QModelIndex): The parent model index.
+
+        Returns:
+            int: The number of rows in the model.
+        """
         if not parent.isValid():
             return len(self.instance_list)
         else:
             return 0  # TODO Implement retrieving nested data
 
     def columnCount(self, parent=QModelIndex()) -> int:
+        """
+        Returns the number of columns in the model.
+
+        Args:
+            parent (QtCore.QModelIndex): The parent model index.
+
+        Returns:
+            int: The number of columns in the model.
+        """
         if not parent.isValid():
             return len(self.fields)
         return 0  # TODO Implement retrieving nested data
@@ -249,19 +290,39 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         value: typing.Any,
         role: int = Qt.ItemDataRole.DisplayRole,
     ) -> bool:
+        """
+        Sets the data for the given model index and role.
+
+        Args:
+            index (QtCore.QModelIndex): The model index.
+            value (typing.Any): The new value to set.
+            role (QtCore.Qt.ItemDataRole): The data role.
+
+        Returns:
+            bool: True if the data was set successfully; otherwise, False.
+        """
         experiment = self.instance_list[index.row()]
         field_name = self.fields[index.column()]
         setattr(experiment, field_name, value)
         self.dataChanged.emit(index, index)
         return True
 
-    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+    def flags(self, index: QModelIndex) -> Qt.ItemFlag:
+        """
+        Returns the flags for the given model index.
+
+        Args:
+            index (QtCore.QModelIndex): The model index.
+
+        Returns:
+            QtCore.Qt.ItemFlag: The flags for the given model index.
+        """
         flags = (
             Qt.ItemFlag.ItemIsEditable
             | Qt.ItemFlag.ItemIsEnabled
             | Qt.ItemFlag.ItemIsSelectable
         )
-        return typing.cast(Qt.ItemFlags, flags)
+        return flags
 
     def headerData(
         self,
@@ -269,15 +330,35 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         orientation: Qt.Orientation,
         role: int = Qt.ItemDataRole.DisplayRole,
     ) -> typing.Any:
+        """
+        Returns the header data for the given section, orientation, and role.
+
+        Args:
+            section (int): The section index.
+            orientation (QtCore.Qt.Orientation): The header orientation.
+            role (QtCore.Qt.ItemDataRole): The data role.
+
+        Returns:
+            typing.Any: The header data for the given section, orientation, and role.
+        """
         if (
             orientation == Qt.Orientation.Horizontal
             and role == Qt.ItemDataRole.DisplayRole
         ):
             return self.fields[section]
-
     def data(
         self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
     ) -> typing.Any:
+        """
+        Returns the data for the given model index and role.
+
+        Args:
+            index (QtCore.QModelIndex): The model index.
+            role (QtCore.Qt.ItemDataRole): The data role.
+
+        Returns:
+            typing.Any: The data for the given model index and role.
+        """
         if role == Qt.ItemDataRole.DisplayRole:
             experiment = self.instance_list[index.row()]
             field = getattr(experiment, self.fields[index.column()])
@@ -349,6 +430,13 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     # These methods are mainly for use by native Qt Views.
     def setSourceModel(self, sourceModel: DataclassTableModel[T]) -> None:
         # Ensure only DataclassTableModel is used as source models.
+        """
+        Overrides the `setSourceModel()` method of QSortFilterProxyModel to ensure
+        that only DataclassTableModel instances are used as source models.
+
+        Args:
+            sourceModel (DataclassTableModel): The source model to be set.
+        """
         if not isinstance(sourceModel, DataclassTableModel):
             raise ValueError("You must use MyTaridsObjectModel as source model.")
         return super().setSourceModel(sourceModel)
@@ -356,29 +444,74 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     def sourceModel(self) -> DataclassTableModel[T]:
         # Change the sourceModel function so that it gives richer type completion
         # in type checkers.
+        """
+        Overrides the `sourceModel()` method of QSortFilterProxyModel to give richer
+        type completion in type checkers.
+        """
         return typing.cast(DataclassTableModel, super().sourceModel())
 
     def filterAcceptsColumn(
         self, source_column: int, source_parent: QModelIndex
     ) -> bool:
+        """
+        Overrides the `filterAcceptsColumn()` method of QSortFilterProxyModel to filter
+        columns of the source model.
+
+        Args:
+            source_column (int): The index of the source column to be filtered.
+            source_parent (QModelIndex): The index of the source parent.
+
+        Returns:
+            bool: True if the column passes the filter; False otherwise.
+        """
         if len(self.show_fields) == 0:
             # If no restrictions on what fields to show, return true for all columns.
             return True
         return self.sourceModel().field_for_column(source_column) in self.show_fields
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
+        """
+        Overrides the `filterAcceptsRow()` method of QSortFilterProxyModel to filter
+        rows of the source model.
+
+        Args:
+            source_row (int): The index of the source row to be filtered.
+            source_parent (QModelIndex): The index of the source parent.
+
+        Returns:
+            bool: True if the row passes the filter; False otherwise.
+        """
         if not hasattr(self, "filter_by_instance"):
             return super().filterAcceptsRow(source_row, source_parent)
         instance = self.sourceModel().instance(source_row)
         return self.filter_by_instance(instance)
 
-    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+    def flags(self, index: QModelIndex) -> Qt.ItemFlag:
+        """
+        Overrides the `flags()` method of QSortFilterProxyModel to set the flags for the
+        model items.
+
+        Args:
+            index (QModelIndex): The index of the item.
+
+        Returns:
+            Qt.ItemFlag: The flags for the item.
+        """
         flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         if not self.read_only:
             flags |= Qt.ItemFlag.ItemIsEditable
-        return typing.cast(Qt.ItemFlags, flags)
+        return flags
 
     def columnCount(self, parent = QModelIndex()) -> int:
+        """
+        Return the number of columns in the model.
+
+        Args:
+            parent (QModelIndex, optional): Parent index. Defaults to QModelIndex().
+
+        Returns:
+            int: Number of columns in the model.
+        """
         if len(self.show_fields) > 0:
             return len(self.show_fields)
         return super().rowCount(parent)
@@ -389,6 +522,17 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         orientation: Qt.Orientation,
         role: int = Qt.ItemDataRole.DisplayRole,
     ) -> typing.Any:
+        """
+        Return the data for the header specified by section, orientation and role.
+
+        Args:
+            section (int): Section number.
+            orientation (Qt.Orientation): Header orientation.
+            role (int, optional): Data role. Defaults to Qt.ItemDataRole.DisplayRole.
+
+        Returns:
+            typing.Any: The header data.
+        """
         if (
             len(self.show_fields) > 0 and
             orientation == Qt.Orientation.Horizontal
@@ -400,6 +544,16 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     def data(
         self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
     ) -> typing.Any:
+        """
+        Return the data stored under the given role for the item referred to by the index.
+
+        Args:
+            index (QModelIndex): Index of the item.
+            role (int, optional): Data role. Defaults to Qt.ItemDataRole.DisplayRole.
+
+        Returns:
+            typing.Any: The data stored under the given role for the item referred to by the index.
+        """
         if (
             len(self.show_fields) > 0 and
             role == Qt.ItemDataRole.DisplayRole
