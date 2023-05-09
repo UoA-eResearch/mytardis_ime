@@ -23,6 +23,23 @@ class YAMLSerializable(yaml.YAMLObject):
         fields = loader.construct_mapping(node)
         return cls(**fields)
 
+class UserACL:
+    """Model to define user access control. This differs from the group
+    access control in that it validates the username against a known regex.
+    """
+    user: str
+    is_owner: bool = False
+    can_download: bool = False
+    see_sensitive: bool = False
+
+
+class GroupACL:
+    """Model to define group access control."""
+    group: str
+    is_owner: bool = False
+    can_download: bool = False
+    see_sensitive: bool = False
+
 @dataclass
 class IProjectAccessControl:
     """
@@ -31,15 +48,8 @@ class IProjectAccessControl:
     while the IDerviedAccessControl class represents fields
     for experiments, datasets and datafiles.
     """
-    admin_groups: List[str] = field(default_factory=list)
-    admin_users: List[str] = field(default_factory=list)
-    read_groups: List[str] = field(default_factory=list)
-    read_users: List[str] = field(default_factory=list)
-    download_groups: List[str] = field(default_factory=list)
-    download_users: List[str] = field(default_factory=list)
-    sensitive_groups: List[str] = field(default_factory=list)
-    sensitive_users: List[str] = field(default_factory=list)
-
+    users: List[UserACL] = field(default_factory=list)
+    groups: List[GroupACL] = field(default_factory=list)
 
 @dataclass
 class IDerivedAccessControl:
@@ -51,14 +61,8 @@ class IDerivedAccessControl:
     When set to None, the fields represent that they are inheriting
     access control fields from the containing object.
     """
-    admin_groups: Optional[List[str]] = field(default=None)
-    admin_users: Optional[List[str]] = field(default=None)
-    read_groups: Optional[List[str]] = field(default=None)
-    read_users: Optional[List[str]] = field(default=None)
-    download_groups: Optional[List[str]] = field(default=None)
-    download_users: Optional[List[str]] = field(default=None)
-    sensitive_groups: Optional[List[str]] = field(default=None)
-    sensitive_users: Optional[List[str]] = field(default=None)
+    users: Optional[List[UserACL]] = None
+    groups: Optional[List[GroupACL]] = None
 
 
 """

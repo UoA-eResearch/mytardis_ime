@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>150</height>
+    <width>555</width>
+    <height>290</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,14 +41,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QListView" name="aclList">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
+      <widget class="QTableView" name="aclTable"/>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0">

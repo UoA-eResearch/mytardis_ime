@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLi
 from pytestqt.qtbot import QtBot
 import pytest
 from ime.models import Experiment, IngestionMetadata, Project
+from ime.widgets.access_control_list import AccessControlList
 from ime.widgets.access_control_tab import AccessControlTab
 from PyQt5.QtQuick import QQuickView
 
@@ -79,6 +80,13 @@ def test_tab_no_inheritance(qtbot: QtBot, projects: List[Project]):
         assert not list_view.ui.overrideCheckBox.isVisible()
         assert list_view.ui.aclList.isEnabled()
 
+def test_display_access_control_list(qtbot: QtBot, projects: List[Project]):
+    view = QDialog()
+    project = projects[0]
+    aclist = AccessControlList(view)
+    view.show()
+    qtbot.wait_exposed(view)
+    qtbot.stop()
 
 # def disabled_test_qml_embed(qtbot: QtBot, experiments: List[Experiment]):
 #     list_model = ListModel(experiments[0].admin_groups)

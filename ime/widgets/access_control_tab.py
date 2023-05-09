@@ -17,14 +17,8 @@ class AccessControlTab(QWidget):
         # Maps field names to Qt widgets so we can display
         # the correct fields.
         self.views_by_field = {
-            'admin_groups': self.ui.adminGroupsList,
-            'admin_users': self.ui.adminUsersList,
-            'read_groups': self.ui.readGroupsList,
-            'read_users': self.ui.readUsersList,
-            'download_groups': self.ui.downloadGroupsList,
-            'download_users': self.ui.downloadUsersList,
-            'sensitive_groups': self.ui.sensitiveGroupsList,
-            'sensitive_users': self.ui.sensitiveUsersList
+            'users': self.ui.usersList,
+            'groups': self.ui.groupsList
         }
         # Connect our handler to the override inherited signal (i.e. user
         # clicking the checkbox), using partial to include the field name.
