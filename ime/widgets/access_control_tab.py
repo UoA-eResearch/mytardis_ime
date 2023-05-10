@@ -8,9 +8,22 @@ from ime.widgets.access_control_list import AccessControlList, DerivedAccessCont
 from functools import partial
 
 class AccessControlTab(QWidget):
-    _data: IAccessControl
-
+    """A custom QWidget for displaying and managing access control settings.
+    
+    Attributes:
+    - ui (Ui_AccessControlTab): The user interface object.
+    - views_by_field (dict): A dictionary mapping field names to the corresponding list views.
+    
+    Properties:
+    - data: A property that returns the current access control data.
+    
+    Methods:
+    - __init__(self, parent = None): Initializes the widget with the given parent and sets up the user interface.
+    - display_confirm_reset_override_dialog(self) -> bool: Displays a message box asking the user to confirm resetting the override, and returns True if the user clicks "Ok".
+    - handle_override_toggled(self, field: str, enabled: bool): Handles the "override_inherited_toggled" signal from the list views, and updates the corresponding access control field accordingly.
+    """
     def __init__(self, parent = None):
+        """Initializes the widget with the given parent and sets up the user interface."""
         super().__init__(parent)
         self.ui = Ui_AccessControlTab()
         self.ui.setupUi(self)
