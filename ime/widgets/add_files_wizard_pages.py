@@ -23,7 +23,7 @@ class ProjectPage(QWizardPage):
         wizard = self.wizard()
         # Display the list of projects.
         list_view = wizard.ui.existingProjectList
-        self.model = wizard.metadataModel.projects.proxy(['project_name'])
+        self.model = wizard.metadataModel.projects.proxy(['name'])
         self.model.set_read_only(True)
         list_view.setModel(self.model)
         self.selected_existing_project_changed(wizard.ui.existingProjectList.currentIndex())
@@ -62,7 +62,7 @@ class ExperimentPage(QWizardPage):
         project = wizard.selected_existing_project
         self.model = wizard.metadataModel.experiments_for_project(project)
         self.model.set_read_only(True)
-        self.model.set_show_fields(['experiment_name'])
+        self.model.set_show_fields(['title'])
         wizard.ui.existingExperimentList.setModel(self.model)
         self.selected_existing_exp_changed(wizard.ui.existingExperimentList.currentIndex())
         wizard.ui.existingExperimentList.currentIndexChanged.connect(self.selected_existing_exp_changed)

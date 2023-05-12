@@ -5,7 +5,7 @@ import typing
 from PyQt5.QtCore import QSignalBlocker, pyqtSignal
 from ime.qt_models import PythonListModel
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from PyQt5.QtWidgets import QMessageBox, QWidget
+from PyQt5.QtWidgets import QMessageBox, QWidget, QLineEdit
 
 @dataclass
 class ProjectAccessControlListData:
@@ -26,14 +26,23 @@ class DerivedAccessControlListData:
 AccessControlListData:TypeAlias = Union[ProjectAccessControlListData, DerivedAccessControlListData]
 
 class AccessControlList(QWidget):
-    """
-    Qt widget for the access control list widget. 
+    """A widget to display and edit access control lists.
+
+    Attributes:
+        _model (PythonListModel): A list model for the access control list.
+        is_overriding_inheritance (bool): A flag to indicate whether the access controls are being overridden.
+        override_inherited_toggled (pyqtSignal): A signal emitted when the override checkbox is toggled.
     """
     _model: PythonListModel
     is_overriding_inheritance: bool = False
     override_inherited_toggled = pyqtSignal(bool, name="overrideInheritedChanged")
 
     def __init__(self, parent = None):
+        """Constructor for AccessControlList widget.
+
+        Args:
+            parent (QWidget): The parent widget (default is None).
+        """
         super().__init__(parent)
         self.ui = Ui_AccessControlList()
         self.ui.setupUi(self)
@@ -88,7 +97,12 @@ class AccessControlList(QWidget):
                     self.ui.overrideCheckBox.setChecked(True)
 
     def _handle_override_checkbox_changed(self):
-        """Private method for handling when "override" checkbox state is changed
+        """
+        Handle the state change of the override checkbox.
+
+        Emits the `override_inherited_toggled` signal with the boolean value
+        of `is_overriding`, which is whether or not the checkbox is currently checked.
+        Sets the checkbox state back to its previous value by using a `QSignalBlocker`.
         """
         is_overriding = self.ui.overrideCheckBox.isChecked()
         # Cancel the checkbox state change as we want to control
@@ -98,7 +112,11 @@ class AccessControlList(QWidget):
         self.override_inherited_toggled.emit(is_overriding)
 
     def _handle_insert_new(self):
-        """Private method for handling new user/group button clicked.
+        """
+        Handle the click of the "Add" button.
+
+        Inserts a new row into the list model and sets the current index to the new row,
+        allowing the user to edit it.
         """
         idx = self._model.rowCount()
         self._model.insertRow(idx)
@@ -107,7 +125,11 @@ class AccessControlList(QWidget):
         self.ui.aclList.edit(model_idx)
 
     def _handle_remove(self):
-        """Private method for handling remove user/group button clicked.
+        """
+        Handle the click of the "Remove" button.
+
+        Removes the selected rows from the list model, in reverse order to avoid issues with row
+        indices changing as rows are removed.
         """
         idx_list = self.ui.aclList.selectedIndexes()
         rows_to_remove = [idx.row() for idx in idx_list]
