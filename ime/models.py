@@ -5,7 +5,9 @@ import yaml
 from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
-from pathlib import Path ### added
+from pathlib import Path
+
+from ime.blueprints.custom_data_types import Username
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
@@ -24,41 +26,38 @@ class YAMLSerializable(yaml.YAMLObject):
         """
         fields = loader.construct_mapping(node)
         return cls(**fields)
-
-class UserACL:
+@dataclass
+class UserACL(YAMLSerializable):
     """Model to define user access control. This differs from the group
     access control in that it validates the username against a known regex.
     """
-    user: str
-    is_owner: bool = False
-    can_download: bool = False
-    see_sensitive: bool = False
+    yaml_tag = "!UserACL"
+    yaml_loader = yaml.SafeLoader
+    user: Username = field(metadata={"label": "Username"})
+    is_owner: bool = field(default=False, metadata={"label": "Is owner?"})
+    can_download: bool = field(default=False, metadata={"label": "Can download?"})
+    see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
 
-
-class GroupACL:
+@dataclass
+class GroupACL(YAMLSerializable):
     """Model to define group access control."""
-    group: str
-    is_owner: bool = False
-    can_download: bool = False
-    see_sensitive: bool = False
+    yaml_tag = "!GroupACL"
+    yaml_loader = yaml.SafeLoader
+    group: str = field(metadata={"label": "Group ID"})
+    is_owner: bool = field(default=False, metadata={"label": "Is owner?"})
+    can_download: bool = field(default=False, metadata={"label": "Can download?"})
+    see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
+
+"""Union type for ACL data structures. Used in AccessControlList.
+"""
+ACL: TypeAlias = Union[UserACL, GroupACL]
 
 @dataclass
-class IProjectAccessControl:
-    """
-    A class representing fields related to access
-    control. This class represents fields for Projects,
-    while the IDerviedAccessControl class represents fields
-    for experiments, datasets and datafiles.
-    """
-    users: List[UserACL] = field(default_factory=list)
-    groups: List[GroupACL] = field(default_factory=list)
-
-@dataclass
-class IDerivedAccessControl:
+class IAccessControl:
     """
     A class representing fields related to access
     control. This class represents fields for Experiments,
-    Datasets and Datafiles,while the IProjectAccessControl
+    Datasets and Datafiles, while the IProjectAccessControl
     class represents fields for Projects.
     When set to None, the fields represent that they are inheriting
     access control fields from the Project, Experiment or Dataset higher up
@@ -66,12 +65,6 @@ class IDerivedAccessControl:
     """
     users: Optional[List[UserACL]] = None
     groups: Optional[List[GroupACL]] = None
-
-
-"""
-A union type alias for both types of Access Control types.
-"""
-IAccessControl:TypeAlias = Union[IProjectAccessControl, IDerivedAccessControl]    
 
 class DataClassification(Enum):
     """An enumerator for data classification.
@@ -100,7 +93,7 @@ class IMetadata:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
+class Project(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
     """
@@ -112,11 +105,11 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassific
     alternate_ids: List[str] = field(default_factory=list)
     lead_researcher: str = ""
     name: str = ""
-    principal_investigator: str = "abcd123"
+    principal_investigator: str = ""
 
 
 @dataclass
-class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
+class Experiment(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -131,7 +124,7 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassi
 
 
 @dataclass
-class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
+class Dataset(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -148,30 +141,13 @@ class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassific
 
 
 @dataclass
-class FileInfo(YAMLSerializable, IDerivedAccessControl, IMetadata):
-    """
-    A class representing MyTardis Datafile objects.
-    """
-    yaml_tag = "!FileInfo"
-    yaml_loader = yaml.SafeLoader
-    name: str = ""
-    # Size property is not serialised.
-    size: int = field(repr=False, default=0)
-    filename: str = ""
-    directory: str = ""
-    md5sum: str = ""
-    mimetype: str = ""
-    dataset: str = ""
-
-### create new Datafile class to match fields in ingestion script
-@dataclass
-class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
+class Datafile(YAMLSerializable, IAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
-    size: float = ""
+    size: float = field(repr=False, default=0)
     filename: str = ""
     directory: str = ""
     md5sum: str = ""

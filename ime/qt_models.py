@@ -9,7 +9,7 @@ which implement/extend Qt model and proxy interfaces; and an IngestionMetadataMo
 model which adapts IngestionMetadata from models.py for Qt, using the two other
 models.
 """
-from typing import Any, Callable, Generic, List, TypeVar, Type
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Type
 import typing
 from PyQt5.QtCore import (
     QAbstractListModel,
@@ -223,6 +223,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         inspected for its dataclass fields.
         """
         self.type = type
+        self.instance_list = []
         self.fields = [field.name for field in fields(type)]
         super().__init__(parent)
 
@@ -237,7 +238,9 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         """
         Set the backing dataclass list this model will represent. 
         """
+        self.beginResetModel()
         self.instance_list = instance_list
+        self.endResetModel()
     
     def add_extra_field(self, field_name: str) -> int:
         # TODO This will be useful for computed values like project/experiment/dataset size.
@@ -265,10 +268,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         Returns:
             int: The number of rows in the model.
         """
-        if not parent.isValid():
-            return len(self.instance_list)
-        else:
-            return 0  # TODO Implement retrieving nested data
+        return len(self.instance_list)
 
     def columnCount(self, parent=QModelIndex()) -> int:
         """
@@ -321,6 +321,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             Qt.ItemFlag.ItemIsEditable
             | Qt.ItemFlag.ItemIsEnabled
             | Qt.ItemFlag.ItemIsSelectable
+            | Qt.ItemFlag.ItemIsUserCheckable
         )
         return flags
 
@@ -359,9 +360,10 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         Returns:
             typing.Any: The data for the given model index and role.
         """
-        if role == Qt.ItemDataRole.DisplayRole:
-            experiment = self.instance_list[index.row()]
-            field = getattr(experiment, self.fields[index.column()])
+        if (role == Qt.ItemDataRole.DisplayRole or
+            role == Qt.ItemDataRole.EditRole):
+            instance = self.instance_list[index.row()]
+            field = getattr(instance, self.fields[index.column()])
             return field
 
 class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
@@ -437,8 +439,6 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         Args:
             sourceModel (DataclassTableModel): The source model to be set.
         """
-        if not isinstance(sourceModel, DataclassTableModel):
-            raise ValueError("You must use MyTaridsObjectModel as source model.")
         return super().setSourceModel(sourceModel)
 
     def sourceModel(self) -> DataclassTableModel[T]:

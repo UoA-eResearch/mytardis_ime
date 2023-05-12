@@ -14,17 +14,21 @@ lead_researcher: Test User
 # Groups are preferred over individual users for the purposes of admin
 #
 groups:
-  - group: test_admin
+  - !GroupACL 
+    group: test_admin
     is_owner: true
     can_download: true
     see_sensitive: true
-  - group: bcnd120
+  - !GroupACL
+    group: bcnd120
 users:
-  - user: abcd121
+  - !UserACL
+    user: abcd121
     is_owner: true
     can_download: true
     see_sensitive: true
-  - user: nvmo111
+  - !UserACL
+    user: nvmo111
     is_owner: false
     can_download: true
     see_sensitive: true
@@ -38,24 +42,28 @@ metadata:
 
 ---
 !Experiment
-experiment_name: Calibration 10 X
+title: Calibration 10 X
 project_id: test # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
 experiment_id: 2022-08-01-calibration-10-x
 alternate_ids:
 - <a list of alternative identifiers that are used for this object>
 description: Calibration run of the Zeiss LSM 800 Airyscan
 groups:
-  - group: test_admin
+  - !GroupACL
+    group: test_admin
     is_owner: true
     can_download: true
     see_sensitive: true
-  - group: bcnd120
+  - !GroupACL
+    group: bcnd120
 users:
-  - user: szen012
+  - !UserACL
+    user: szen012
     is_owner: true
     can_download: true
     see_sensitive: true
-  - user: cris291
+  - !UserACL
+    user: cris291
     is_owner: false
     can_download: true
     see_sensitive: true

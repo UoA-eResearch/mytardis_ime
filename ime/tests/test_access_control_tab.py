@@ -3,10 +3,12 @@ from PyQt5.QtCore import QModelIndex, QUrl, Qt
 from PyQt5.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
 from pytestqt.qtbot import QtBot
 import pytest
-from ime.models import Experiment, IngestionMetadata, Project
+from ime.models import Experiment, IAccessControl, IngestionMetadata, Project
 from ime.widgets.access_control_list import AccessControlList
-from ime.widgets.access_control_tab import AccessControlTab
+from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
 from PyQt5.QtQuick import QQuickView
+
+from ime.widgets.project_access_control_tab import ProjectAccessControlTab
 
 @pytest.fixture
 def metadata():
@@ -30,63 +32,94 @@ def test_show_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     """Tests access control tab can be created."""
     view = QDialog()
     experiment = experiments[0]
-    tab = AccessControlTab(view)
-    tab.set_data(experiment)
+    tab = DerivedAccessControlTab(view)
+    tab.set_data(experiment, IAccessControl())
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
+    qtbot.stop()
 
-def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
-    """Test for editing an access control field results in changes in underlying model."""
-    view = QDialog()
-    experiment = experiments[0]
-    tab = AccessControlTab(view)
-    tab.set_data(experiment)
-    qtbot.add_widget(view)
-    view.show()
-    qtbot.wait_exposed(view)
-    model = tab.ui.readGroupsList._model
-    edit_location = model.index(0,0)
-    assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "ghil983"
-    edit_location = model.index(0,0)
-    model.setData(edit_location,"Testing editing")
-    assert experiment.read_groups is not None
-    assert experiment.read_groups[0] == "Testing editing"
-
-def test_tab_with_inheritance(qtbot: QtBot, experiments: List[Experiment]):
-    """Test for displaying a experiment's access control properly."""
-    view = QDialog()
-    experiment = experiments[0]
-    tab = AccessControlTab(view)
-    tab.set_data(experiment)
-    qtbot.add_widget(view)
-    view.show()
-    qtbot.wait_exposed(view)
-    assert tab.ui.adminGroupsList.ui.aclList.isEnabled()
-
-def test_tab_no_inheritance(qtbot: QtBot, projects: List[Project]):
-    """Test for displaying a project's access control properly."""
+def test_show_project_access_control(qtbot: QtBot, projects: List[Project]):
     view = QDialog()
     project = projects[0]
-    tab = AccessControlTab(view)
+    tab = ProjectAccessControlTab(view)
     tab.set_data(project)
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
-    for key in tab.views_by_field:
-        # Go through each view, and check the override inherited checkbox isn't there,
-        # and aclList can be edited/selected
-        list_view = tab.views_by_field[key]
-        assert not list_view.ui.overrideCheckBox.isVisible()
-        assert list_view.ui.aclList.isEnabled()
+    user_model = tab.ui.users._model
+    group_model = tab.ui.groups._model
+    assert user_model.rowCount() == 2
+    assert user_model.data(user_model.index(0,0)) == "abcd121"
+    assert group_model.rowCount() == 2
+    assert group_model.data(group_model.index(0,0)) == "test_admin"    
+    qtbot.stop()
 
-def test_display_access_control_list(qtbot: QtBot, projects: List[Project]):
+def test_project_ac_creates_new_list_if_none(qtbot: QtBot,):
     view = QDialog()
-    project = projects[0]
-    aclist = AccessControlList(view)
+    # Create a blank project, 
+    # then check that a new list is created.
+    project = Project()
+    tab = ProjectAccessControlTab(view)
+    tab.set_data(project)
+    qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
+    assert project.users is not None
+    assert project.groups is not None
     qtbot.stop()
+    
+# def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
+#     """Test for editing an access control field results in changes in underlying model."""
+#     view = QDialog()
+#     experiment = experiments[0]
+#     tab = AccessControlTab(view)
+#     tab.set_data(experiment)
+#     qtbot.add_widget(view)
+#     view.show()
+#     qtbot.wait_exposed(view)
+#     model = tab.ui.readGroupsList._model
+#     edit_location = model.index(0,0)
+#     assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "ghil983"
+#     edit_location = model.index(0,0)
+#     model.setData(edit_location,"Testing editing")
+#     assert experiment.read_groups is not None
+#     assert experiment.read_groups[0] == "Testing editing"
+
+# def test_tab_with_inheritance(qtbot: QtBot, experiments: List[Experiment]):
+#     """Test for displaying a experiment's access control properly."""
+#     view = QDialog()
+#     experiment = experiments[0]
+#     tab = AccessControlTab(view)
+#     tab.set_data(experiment)
+#     qtbot.add_widget(view)
+#     view.show()
+#     qtbot.wait_exposed(view)
+#     assert tab.ui.adminGroupsList.ui.aclList.isEnabled()
+
+# def test_tab_no_inheritance(qtbot: QtBot, projects: List[Project]):
+#     """Test for displaying a project's access control properly."""
+#     view = QDialog()
+#     project = projects[0]
+#     tab = AccessControlTab(view)
+#     tab.set_data(project)
+#     qtbot.add_widget(view)
+#     view.show()
+#     qtbot.wait_exposed(view)
+#     for key in tab.views_by_field:
+#         # Go through each view, and check the override inherited checkbox isn't there,
+#         # and aclList can be edited/selected
+#         list_view = tab.views_by_field[key]
+#         assert not list_view.ui.overrideCheckBox.isVisible()
+#         assert list_view.ui.aclList.isEnabled()
+
+# def test_display_access_control_list(qtbot: QtBot, projects: List[Project]):
+#     view = QDialog()
+#     project = projects[0]
+#     aclist = AccessControlList(view)
+#     view.show()
+#     qtbot.wait_exposed(view)
+#     qtbot.stop()
 
 # def disabled_test_qml_embed(qtbot: QtBot, experiments: List[Experiment]):
 #     list_model = ListModel(experiments[0].admin_groups)
