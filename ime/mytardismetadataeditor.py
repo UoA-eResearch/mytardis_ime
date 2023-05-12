@@ -491,7 +491,6 @@ class MyTardisMetadataEditor(QMainWindow):
             #print(data_load)
             try:
                 data_yaml = IngestionMetadata.from_yaml(data_load)
-                #print(data_yaml)
                 self.display_load_data(data_yaml)
             except Exception as e:
                 msg_box = QMessageBox()
@@ -529,6 +528,7 @@ class MyTardisMetadataEditor(QMainWindow):
         Saves the metadata to a YAML file. It prompts the user to select a file name and location, then writes the metadata
         to the selected file.
         """
+
         filename = QFileDialog.getSaveFileName(self,"Save File",directory = "test.yaml", initialFilter='Yaml File(*.yaml)')[0]
         if filename:
             with open(filename, 'w') as file:

@@ -5,7 +5,8 @@ import yaml
 from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
-from pathlib import Path ### added
+from pathlib import Path
+from pydantic import AnyUrl, BaseModel, Field
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
@@ -41,7 +42,6 @@ class IProjectAccessControl:
     download_users: List[str] = field(default_factory=list)
     sensitive_groups: List[str] = field(default_factory=list)
     sensitive_users: List[str] = field(default_factory=list)
-
 
 @dataclass
 class IDerivedAccessControl:
@@ -94,6 +94,9 @@ class IMetadata:
     """
     # change to Optional[]
     metadata: Dict[str, Any] = field(default_factory=dict)
+    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
+    #object_schema: str = "https://130.216.218.45/ProjectSchema-BIRU"
+    object_schema: str = ""
 
 @dataclass
 class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
@@ -109,6 +112,7 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassific
     lead_researcher: str = ""
     name: str = ""
     principal_investigator: str = "abcd123"
+    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 
 @dataclass
@@ -124,6 +128,7 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassi
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     title: str = ""
+    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 
 @dataclass
@@ -140,7 +145,8 @@ class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassific
     instrument_id: str = ""
     description: str = "" ## description field was added
     instrument: str = "" ## instrument field was added
-    experiments: List[str] = field(default_factory=list) ## experiments field was added
+    experiments: List[str] = field(default_factory=list)
+    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 
 @dataclass
@@ -174,6 +180,7 @@ class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
     mimetype: str = ""
     dataset: str = ""
     dataset_id: str = ""
+    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 @dataclass
 class IngestionMetadata:
