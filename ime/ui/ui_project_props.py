@@ -68,12 +68,12 @@ class Ui_ProjectPropertyEditor(object):
         self.page_8.setObjectName("page_8")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.page_8)
         self.gridLayout_4.setObjectName("gridLayout_4")
-        self.accessControlTab = DerivedAccessControlTab(self.page_8)
+        self.accessControlTab = ProjectAccessControlTab(self.page_8)
         self.accessControlTab.setObjectName("accessControlTab")
         self.gridLayout_4.addWidget(self.accessControlTab, 0, 0, 1, 1)
         self.toolBox_3.addItem(self.page_8, "")
         self.metadata_tab = MetadataTab()
-        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 96, 26))
+        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 506, 433))
         self.metadata_tab.setObjectName("metadata_tab")
         self.gridLayout_5 = QtWidgets.QGridLayout(self.metadata_tab)
         self.gridLayout_5.setObjectName("gridLayout_5")
@@ -95,5 +95,5 @@ class Ui_ProjectPropertyEditor(object):
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_7), _translate("ProjectPropertyEditor", "Description"))
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_8), _translate("ProjectPropertyEditor", "Users and groups"))
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.metadata_tab), _translate("ProjectPropertyEditor", "Metadata"))
-from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab
+from ime.widgets.project_access_control_tab import ProjectAccessControlTab

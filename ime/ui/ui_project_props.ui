@@ -116,7 +116,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
-        <widget class="DerivedAccessControlTab" name="accessControlTab" native="true"/>
+        <widget class="ProjectAccessControlTab" name="accessControlTab" native="true"/>
        </item>
       </layout>
      </widget>
@@ -125,8 +125,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>96</width>
-        <height>26</height>
+        <width>506</width>
+        <height>433</height>
        </rect>
       </property>
       <attribute name="label">
@@ -146,9 +146,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>DerivedAccessControlTab</class>
+   <class>ProjectAccessControlTab</class>
    <extends>QWidget</extends>
-   <header>ime.widgets.derived_access_control_tab</header>
+   <header>ime.widgets.project_access_control_tab</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

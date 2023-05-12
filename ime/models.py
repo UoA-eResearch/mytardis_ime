@@ -33,7 +33,7 @@ class UserACL(YAMLSerializable):
     """
     yaml_tag = "!UserACL"
     yaml_loader = yaml.SafeLoader
-    user: Username = field(metadata={"label": "Username"})
+    user: Username = field(default=Username(), metadata={"label": "Username"})
     is_owner: bool = field(default=False, metadata={"label": "Is owner?"})
     can_download: bool = field(default=False, metadata={"label": "Can download?"})
     see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
@@ -43,14 +43,10 @@ class GroupACL(YAMLSerializable):
     """Model to define group access control."""
     yaml_tag = "!GroupACL"
     yaml_loader = yaml.SafeLoader
-    group: str = field(metadata={"label": "Group ID"})
+    group: str = field(default="", metadata={"label": "Group ID"})
     is_owner: bool = field(default=False, metadata={"label": "Is owner?"})
     can_download: bool = field(default=False, metadata={"label": "Can download?"})
     see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
-
-"""Union type for ACL data structures. Used in AccessControlList.
-"""
-ACL: TypeAlias = Union[UserACL, GroupACL]
 
 @dataclass
 class IAccessControl:
