@@ -80,7 +80,7 @@ class AccessControlListTableProxy(DataclassTableProxy[ACL_T], Generic[ACL_T]):
         Returns:
             Qt.ItemFlag: Appropriate item flags.
         """
-        field = self.sourceModel.field_for_column(index.column())
+        field = self.sourceModel().field_for_column(index.column())
         # Check if this is a boolean field.
         if field in self.boolean_fields:
             flags =  cast(Qt.ItemFlag, (
