@@ -61,7 +61,7 @@ class Ui_DatasetProps(object):
         self.verticalLayout.addWidget(self.accessControlTab)
         self.toolBox.addItem(self.page_2, "")
         self.page_3 = MetadataTab()
-        self.page_3.setGeometry(QtCore.QRect(0, 0, 96, 26))
+        self.page_3.setGeometry(QtCore.QRect(0, 0, 536, 516))
         self.page_3.setObjectName("page_3")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.page_3)
         self.gridLayout_4.setObjectName("gridLayout_4")
@@ -227,7 +227,7 @@ class Ui_DatasetProps(object):
 
         self.retranslateUi(DatasetProps)
         self.datasetTabProps.setCurrentIndex(0)
-        self.toolBox.setCurrentIndex(1)
+        self.toolBox.setCurrentIndex(0)
         self.toolBox_4.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(DatasetProps)
 
@@ -240,8 +240,8 @@ class Ui_DatasetProps(object):
         self.datasetIDLineEdit.setPlaceholderText(_translate("DatasetProps", "A unique dataset identifier, RAiD for UoA datasets, could also be Dataset DOIs"))
         self.label_24.setText(_translate("DatasetProps", "Instrument ID"))
         self.instrumentIDLineEdit.setPlaceholderText(_translate("DatasetProps", "A unique identifier to the instrument that the data was generated on. Currently there is no standard persistent identifier that has widespread community adoption (DOIs are the most likely candidate)."))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.page), _translate("DatasetProps", "Description"))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), _translate("DatasetProps", "Users and groups"))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.page), _translate("DatasetProps", "General"))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), _translate("DatasetProps", "User and group access"))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_3), _translate("DatasetProps", "Metadata"))
         self.fileInfoFilenameLabel.setText(_translate("DatasetProps", "Filename"))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.fileinfoDescription), _translate("DatasetProps", "Description"))

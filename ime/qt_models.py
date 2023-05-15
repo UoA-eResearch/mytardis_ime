@@ -46,8 +46,6 @@ class PythonListModel(QAbstractListModel):
         Args:
             sourceList (List[str]): The backing Python string list.
         """
-    def setStringList(self, sourceList: List[str]):
-        """Sets the source list to the provided list."""
         self.list = sourceList
 
     def remove_value(self, val: str) -> bool:
@@ -323,7 +321,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             | Qt.ItemFlag.ItemIsSelectable
             | Qt.ItemFlag.ItemIsUserCheckable
         )
-        return flags
+        return typing.cast(Qt.ItemFlag, flags)
 
     def headerData(
         self,
@@ -500,7 +498,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         if not self.read_only:
             flags |= Qt.ItemFlag.ItemIsEditable
-        return flags
+        return typing.cast(Qt.ItemFlag, flags)
 
     def columnCount(self, parent = QModelIndex()) -> int:
         """
@@ -514,7 +512,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         if len(self.show_fields) > 0:
             return len(self.show_fields)
-        return super().rowCount(parent)
+        return super().columnCount(parent)
 
     def headerData(
         self,

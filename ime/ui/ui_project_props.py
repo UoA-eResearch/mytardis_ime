@@ -81,7 +81,7 @@ class Ui_ProjectPropertyEditor(object):
         self.gridLayout.addWidget(self.toolBox_3, 0, 0, 1, 1)
 
         self.retranslateUi(ProjectPropertyEditor)
-        self.toolBox_3.setCurrentIndex(1)
+        self.toolBox_3.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(ProjectPropertyEditor)
 
     def retranslateUi(self, ProjectPropertyEditor):
@@ -92,8 +92,8 @@ class Ui_ProjectPropertyEditor(object):
         self.label_5.setText(_translate("ProjectPropertyEditor", "Alternate IDs"))
         self.label_27.setText(_translate("ProjectPropertyEditor", "Description"))
         self.leadResearcherLabel.setText(_translate("ProjectPropertyEditor", "Lead researcher"))
-        self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_7), _translate("ProjectPropertyEditor", "Description"))
-        self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_8), _translate("ProjectPropertyEditor", "Users and groups"))
+        self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_7), _translate("ProjectPropertyEditor", "General"))
+        self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_8), _translate("ProjectPropertyEditor", "User and group access"))
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.metadata_tab), _translate("ProjectPropertyEditor", "Metadata"))
 from ime.widgets.metadata_tab import MetadataTab
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab

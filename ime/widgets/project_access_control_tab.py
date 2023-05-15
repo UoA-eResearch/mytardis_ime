@@ -4,7 +4,9 @@ from ime.ui.ui_project_access_control_tab import Ui_ProjectAccessControlTab
 from ime.widgets.access_control_list import AccessControlList
 
 class ProjectAccessControlTab(QWidget):
-
+    """
+    Project-specific widget for access control tab.
+    """
     _user_list: AccessControlList[UserACL]
     _group_list: AccessControlList[GroupACL]
 
@@ -13,6 +15,7 @@ class ProjectAccessControlTab(QWidget):
         ui = Ui_ProjectAccessControlTab()
         ui.setupUi(self)
         self.ui = ui
+        # Set up the AccessControlLists.
         ui.users.initialise_fields(UserACL)
         ui.groups.initialise_fields(GroupACL)
         self._user_list = ui.users

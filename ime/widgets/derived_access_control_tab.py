@@ -8,8 +8,9 @@ from ime.models import GroupACL, IAccessControl, UserACL
 from ime.widgets.access_control_list import AccessControlList
 
 class DerivedAccessControlTab(QWidget):
-    """A custom QWidget for displaying and managing access control settings.
-        
+    """
+    Widget for access control tab for Experiment, Dataset and Datafile.
+    Includes a checkbox to override inherited properties.
     Methods:
     - __init__(self, parent = None): Initializes the widget with the given parent and sets up the user interface.
     - display_confirm_reset_override_dialog(self) -> bool: Displays a message box asking the user to confirm resetting the override, and returns True if the user clicks "Ok".
@@ -26,12 +27,14 @@ class DerivedAccessControlTab(QWidget):
         ui = Ui_DerivedAccessControlTab()
         ui.setupUi(self)
         self.ui = ui
+        # Set up handling overrides.
         ui.usersOverride.toggled.connect(
             self._handle_users_override_toggled
         )
         ui.groupsOverride.toggled.connect(
             self._handle_groups_override_toggled
         )
+        # Set up the AccessControlLists.
         ui.users.initialise_fields(UserACL)
         ui.groups.initialise_fields(GroupACL)
         self._user_list = ui.users
@@ -67,6 +70,8 @@ class DerivedAccessControlTab(QWidget):
         # Reset whether the access control lists can be changed.
         ui.users.set_disabled(not has_users_override)
         ui.groups.set_disabled(not has_groups_override)
+        # Show override user/group access control if it exists,
+        # otherwise show inherited access control.
         if data.users is not None:
             user_ac = data.users
         else:
@@ -75,6 +80,7 @@ class DerivedAccessControlTab(QWidget):
             group_ac = data.groups
         else:
             group_ac = inherited_data.groups or []
+        # Set data for the AccessControlList widgets.
         self._user_list.set_data(user_ac)
         self._group_list.set_data(group_ac)
 
@@ -94,6 +100,12 @@ class DerivedAccessControlTab(QWidget):
         return res == QMessageBox.StandardButton.Ok
     
     def _handle_users_override_toggled(self, enabled: bool):
+        """Private method for handling when the override checkbox
+        is checked.
+
+        Args:
+            enabled (bool): Whether the override checkbox is checked.
+        """
         if enabled:
             # Add an empty array in the field, which represents overriding the
             # inherited field.

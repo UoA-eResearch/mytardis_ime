@@ -23,7 +23,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_7">
       <property name="geometry">
@@ -35,7 +35,7 @@
        </rect>
       </property>
       <attribute name="label">
-       <string>Description</string>
+       <string>General</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
@@ -112,7 +112,7 @@
        </rect>
       </property>
       <attribute name="label">
-       <string>Users and groups</string>
+       <string>User and group access</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">

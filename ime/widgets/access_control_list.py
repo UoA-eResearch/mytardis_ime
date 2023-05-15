@@ -1,40 +1,37 @@
-from dataclasses import dataclass, field, fields
-from typing import Generic, List, Optional, Type, TypeAlias, TypeVar, Union, cast
+from dataclasses import fields
+from typing import Generic, List, Optional, Type, TypeVar, Union, cast
 import typing
 
-from PyQt5.QtCore import QModelIndex, QSignalBlocker, Qt, pyqtSignal
+from PyQt5.QtCore import QModelIndex, QVariant, Qt
 from ime.bindable import QObject
-from ime.delegate import QVariant, TestEditorFactory
 from ime.models import GroupACL, UserACL
-from ime.qt_models import DataclassTableModel, PythonListModel
+from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QMessageBox, QStyledItemDelegate, QWidget, QLineEdit, QItemEditorFactory
+from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 ACL_T = TypeVar('ACL_T', bound=Union[GroupACL, UserACL])
 
-class AccessControlListTableModel(DataclassTableModel[ACL_T], Generic[ACL_T]):
+class AccessControlListTableProxy(DataclassTableProxy[ACL_T], Generic[ACL_T]):
     """
-    A Qt Model specifically for AccessControlList.
-    This class extends `DataclassTableModel`_ to render
+    A Qt Proxy Model specifically for AccessControlList.
+    This class extends `DataclassTableProxy`_ to render
     boolean fields as checkboxes, adds row inserting and
     deleting.
     """
     boolean_fields: list[str] = []
 
-    def __init__(self, type: Type[ACL_T], parent:Optional[QObject]=None):
-        super().__init__(type, parent)
-        for field in fields(type):
-            # Record the types.
+    def __init__(self, parent:Optional[QObject]=None):
+        super().__init__(parent)
+
+    # Overrides for Qt Model methods follow.
+
+    def setSourceModel(self, sourceModel: DataclassTableModel[ACL_T]) -> None:
+        super().setSourceModel(sourceModel)
+        # Keep track of boolean fields.
+        # This will be used to render them as checkboxes.
+        for field in fields(sourceModel.type):
             if field.type is bool:
                 self.boolean_fields.append(field.name)
-
-    # def _real_col_index(self, column: int) -> int:
-    #     if column > 1:
-    #         return column + 1
-    #     elif column == 1:
-    #         return -1
-    #     else:
-    #         return 0
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.ItemDataRole.DisplayRole) -> typing.Any:
         """Override for QAbstractTableModel method.
@@ -53,9 +50,10 @@ class AccessControlListTableModel(DataclassTableModel[ACL_T], Generic[ACL_T]):
         """
         if (orientation == Qt.Orientation.Horizontal and
             role == Qt.ItemDataRole.DisplayRole):
-            field_name = self.field_for_column(section)
+            sourceModel = self.sourceModel()
+            field_name = sourceModel.field_for_column(section)
             # Go through the type's fields to look for the section in question.
-            for field in fields(self.type):
+            for field in fields(sourceModel.type):
                 if field.name == field_name:
                     # Look for a label property in the field's metadata.
                     # If it exists, return it as the section title.
@@ -72,9 +70,9 @@ class AccessControlListTableModel(DataclassTableModel[ACL_T], Generic[ACL_T]):
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlag:
         """Override method for QAbstractTableModel. Check
-        if this is a boolean field. If so return a flag that uses
-        checkboxes instead. Otherwise fall back to 
-        DataclassTableModel implementation.
+        if this is a boolean field. If so return the ItemFlag.ItemIsUserCheckable flag 
+        which Qt Views will render as checkboxes instead. Otherwise fall back to 
+        DataclassTableProxy implementation.
 
         Args:
             index (QModelIndex): The index of the cell in question.
@@ -82,7 +80,7 @@ class AccessControlListTableModel(DataclassTableModel[ACL_T], Generic[ACL_T]):
         Returns:
             Qt.ItemFlag: Appropriate item flags.
         """
-        field = self.field_for_column(index.column())
+        field = self.sourceModel.field_for_column(index.column())
         # Check if this is a boolean field.
         if field in self.boolean_fields:
             flags =  cast(Qt.ItemFlag, (
@@ -93,18 +91,42 @@ class AccessControlListTableModel(DataclassTableModel[ACL_T], Generic[ACL_T]):
         else:
             return super().flags(index)
 
-    def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
+    def data(self, index: QModelIndex, role: Qt.ItemDataRole = Qt.ItemDataRole.DisplayRole
     ) -> typing.Any:
-        field = self.field_for_column(index.column())
+        """Return data for cell at `index`_. Override from the DataclassTableProxy
+        function to render checkboxes for boolean fields.
+
+        Args:
+            index (QModelIndex): The index for the cell.
+            role (Qt.ItemDataRole, optional): The Qt data role. Defaults to Qt.ItemDataRole.DisplayRole.
+
+        Returns:
+            typing.Any: The data for the cell.
+        """
+        field = self.sourceModel().field_for_column(index.column())
         if field in self.boolean_fields:
+            # If the field is a boolean field, return a CheckState value instead
+            # of boolean.
             if (role == Qt.ItemDataRole.CheckStateRole):
                 d:bool = super().data(index)
                 return Qt.CheckState.Checked if d else Qt.CheckState.Unchecked
         else:
+            # Otherwise, return data as normal.
             return super().data(index, role)
 
     def setData(self, index: QModelIndex, value: QVariant, role: int = Qt.ItemDataRole.DisplayRole) -> bool:
-        field = self.field_for_column(index.column())
+        """Sets the data for cell at `index`_. Override to set boolean values
+        based on check mark state.
+
+        Args:
+            index (QModelIndex): The index for the cell.
+            value (QVariant): The new value.
+            role (Qt.ItemDataRole, optional): The Qt data role. Defaults to Qt.ItemDataRole.DisplayRole.
+
+        Returns:
+            bool: Whether updating data was successful.
+        """
+        field = self.sourceModel().field_for_column(index.column())
         if field in self.boolean_fields:
             if role == Qt.ItemDataRole.CheckStateRole:
                 # Convert value to boolean
@@ -112,28 +134,59 @@ class AccessControlListTableModel(DataclassTableModel[ACL_T], Generic[ACL_T]):
                 return super().setData(index, val)
         return super().setData(index, value, role)
 
-    def insertRows(self, row: int, count: int, parent: QModelIndex = ...) -> bool:
+    def insertRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+        """Inserts row at an index. Creates a UserACL or GroupACL in the backing
+        data model.
+
+        Args:
+            row (int): Row index.
+            count (int): How many rows to create
+            parent (QModelIndex, optional): The parent index, if this is a nested data model.
+                Defaults to invalid QModelIndex.
+
+        Returns:
+            bool: Whether it was successful.
+        """
+        sourceModel = self.sourceModel()
         self.beginInsertRows(QModelIndex(), row, row+count-1)
         for i in range(row, row+count):
             # Create empty instances.
-            self.instance_list.insert(i, self.type())
+            sourceModel.instance_list.insert(i, sourceModel.type())
         self.endInsertRows()
         return True
 
-    def removeRows(self, row: int, count: int, parent: QModelIndex = ...) -> bool:
+    def removeRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+        """Removes `count`_ instances starting at `row`_.
+
+        Args:
+            row (int): The index of the row
+            count (int): Number of rows.
+            parent (QModelIndex, optional): The parent index, 
+                if this is a nested data model.
+                Defaults to invalid QModelIndex.
+        Returns:
+            bool: True if successful, False if failed.
+        """
         self.beginRemoveRows(QModelIndex(), row, row+count-1)
         for i in range(0, count):
             # Remove rows from largest index first
             # to avoid being affected by reassigned indices.
             idx = row+count-1-i
-            self.instance_list.pop(idx)
+            self.sourceModel().instance_list.pop(idx)
         self.endRemoveRows()
         return True
 
 
+    # def _real_col_index(self, column: int) -> int:
+    #     if column > 1:
+    #         return column + 1
+    #     elif column == 1:
+    #         return -1
+    #     else:
+    #         return 0
+
     # def rowCount(self, parent=QModelIndex()) -> int:
     #     return super().rowCount() + 1
-
 
 class AccessControlList(QWidget, Generic[ACL_T]):
     """A widget to display and edit access control lists.
@@ -143,7 +196,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         is_overriding_inheritance (bool): A flag to indicate whether the access controls are being overridden.
         override_inherited_toggled (pyqtSignal): A signal emitted when the override checkbox is toggled.
     """
-    _model: AccessControlListTableModel[ACL_T]
+    data_model: DataclassTableModel[ACL_T]
 
     def __init__(self, parent = None):
         """Constructor for AccessControlList widget.
@@ -174,8 +227,12 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         Args:
             type (Type[ACL_T]): _description_
         """
-        self._model = AccessControlListTableModel(type)
-        self.ui.aclTable.setModel(self._model)
+        # Initialise the dataclass model for the list.
+        self.data_model = DataclassTableModel(type)
+        # Then create the view-specific table model.
+        table_model = AccessControlListTableProxy()
+        table_model.setSourceModel(self.data_model)
+        self.ui.aclTable.setModel(table_model)
         self.ui.aclTable.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.ui.aclTable.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
 
@@ -188,8 +245,8 @@ class AccessControlList(QWidget, Generic[ACL_T]):
             value (Union[OriginAccessControlData, DerivedAccessControlData]): _description_
         """
         self._data = value
-        assert hasattr(self, '_model')
-        self._model.set_instance_list(value)
+        assert hasattr(self, 'data_model')
+        self.data_model.set_instance_list(value)
 
     def set_disabled(self, disabled: bool) -> None:
         """Sets whether this access control list is disabled, and resets view to reflect. If enabled,

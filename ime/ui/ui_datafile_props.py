@@ -45,21 +45,21 @@ class Ui_DatafilePropertyEditor(object):
         self.gridLayout_2.addWidget(self.accessControlTab, 0, 0, 1, 1)
         self.toolBox_4.addItem(self.page_10, "")
         self.metadata_tab = MetadataTab()
-        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 96, 26))
+        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 506, 180))
         self.metadata_tab.setObjectName("metadata_tab")
         self.toolBox_4.addItem(self.metadata_tab, "")
         self.gridLayout.addWidget(self.toolBox_4, 0, 0, 1, 1)
 
         self.retranslateUi(DatafilePropertyEditor)
-        self.toolBox_4.setCurrentIndex(1)
+        self.toolBox_4.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(DatafilePropertyEditor)
 
     def retranslateUi(self, DatafilePropertyEditor):
         _translate = QtCore.QCoreApplication.translate
         DatafilePropertyEditor.setWindowTitle(_translate("DatafilePropertyEditor", "Form"))
         self.fileInfoFilenameLabel.setText(_translate("DatafilePropertyEditor", "Filename"))
-        self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.fileinfoDescription), _translate("DatafilePropertyEditor", "Description"))
-        self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_10), _translate("DatafilePropertyEditor", "Users and groups"))
+        self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.fileinfoDescription), _translate("DatafilePropertyEditor", "General"))
+        self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_10), _translate("DatafilePropertyEditor", "User and group access"))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.metadata_tab), _translate("DatafilePropertyEditor", "Metadata"))
 from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab
