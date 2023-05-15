@@ -92,16 +92,20 @@ class IMetadata:
     """
     A class representing fields related to schema parameters.
     """
-    # change to Optional[]
     metadata: Dict[str, Any] = field(default_factory=dict)
-    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
-    #object_schema: str = "https://130.216.218.45/ProjectSchema-BIRU"
     object_schema: str = ""
 
 @dataclass
 class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
+
+    Attributes:
+        name (str): The name of the project.
+        description (str): A brief description of the project.
+        identifiers (List[str]): A list of identifiers for the project.
+        data_classification (DataClassification): The data classification of the project.
+        principal_investigator (str): The name of the principal investigator for the project.
     """
 
     yaml_tag = "!Project"
@@ -112,7 +116,6 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassific
     lead_researcher: str = ""
     name: str = ""
     principal_investigator: str = "abcd123"
-    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 
 @dataclass
@@ -128,7 +131,6 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassi
     alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     title: str = ""
-    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 
 @dataclass
@@ -146,7 +148,6 @@ class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassific
     description: str = "" ## description field was added
     instrument: str = "" ## instrument field was added
     experiments: List[str] = field(default_factory=list)
-    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 
 @dataclass
@@ -180,7 +181,6 @@ class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
     mimetype: str = ""
     dataset: str = ""
     dataset_id: str = ""
-    #object_schema: Optional[AnyUrl] = Field(default=None, alias="schema")
 
 @dataclass
 class IngestionMetadata:

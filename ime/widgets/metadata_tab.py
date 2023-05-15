@@ -133,4 +133,5 @@ class MetadataTab(QWidget, IBindableInput):
             self.add_insert_metadata_row()
             self.metadata_object = metadata_obj
         # Update schema
-        self.ui.schemaLineEdit.setText(metadata_obj.object_schema)
+        object_schema_value = metadata_obj.object_schema
+        self.ui.schemaLineEdit.setText(str(object_schema_value))
