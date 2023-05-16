@@ -1,3 +1,4 @@
+from pathlib import Path
 from pyexpat import model
 import typing
 from PyQt5 import QtCore
@@ -486,17 +487,14 @@ class MyTardisMetadataEditor(QMainWindow):
         if fileName == '':
             # If user dismissed the Open File dialog, then exit.
             return
-        with open(fileName) as f:
-            data_load = f.read()
-            #print(data_load)
-            try:
-                data_yaml = IngestionMetadata.from_yaml(data_load)
-                self.display_load_data(data_yaml)
-            except Exception as e:
-                msg_box = QMessageBox()
-                msg_box.setWindowTitle("Error loading file")
-                msg_box.setText("There was an error loading the metadata file. Please check to ensure it's valid.")
-                msg_box.exec()
+        try:
+            data_yaml = IngestionMetadata.from_file(fileName)
+            self.display_load_data(data_yaml)
+        except Exception as e:
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle("Error loading file")
+            msg_box.setText("There was an error loading the metadata file. Please check to ensure it's valid.")
+            msg_box.exec()
 
     def display_load_data(self,data_loaded: IngestionMetadata):
         """
@@ -528,8 +526,6 @@ class MyTardisMetadataEditor(QMainWindow):
         Saves the metadata to a YAML file. It prompts the user to select a file name and location, then writes the metadata
         to the selected file.
         """
-
-        filename = QFileDialog.getSaveFileName(self,"Save File",directory = "test.yaml", initialFilter='Yaml File(*.yaml)')[0]
+        filename = QFileDialog.getSaveFileName(self,"Save File",directory = "metadata.yaml", initialFilter='Yaml File(*.yaml)')[0]
         if filename:
-            with open(filename, 'w') as file:
-                file.write(self.metadata.to_yaml())
+            self.metadata.to_file(filename)

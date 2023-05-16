@@ -8,7 +8,7 @@ from ime.models import IngestionMetadata,Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
-#from ime.mytardismetadataeditor import experiment_for_dataset,project_for_experiment
+from pathlib import Path
 
 class AddFilesWizardResult:
     """
@@ -228,8 +228,10 @@ class AddFilesWizard(QWizard):
             datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            path = Path(table.item(row, 2).text())
             datafile.filename = file_name
             datafile.size = file_size
+            datafile.path_abs = path
             result.file_list.append(datafile)
         #print(result.file_list)
         self.submitted.emit(result)
@@ -369,8 +371,10 @@ class AddFilesWizardSkipDataset(QWizard):
             datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            dir_path = Path(table.item(row, 2).text())
             datafile.filename = file_name
             datafile.size = file_size
+            datafile.path_abs = dir_path
             result.file_list.append(datafile)
         #print(result.file_list)
         self.submitted.emit(result)
@@ -527,8 +531,10 @@ class AddFilesWizardSkipExperiment(QWizard):
             datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            dir_path = Path(table.item(row, 2).text())
             datafile.filename = file_name
             datafile.size = file_size
+            datafile.path_abs = dir_path
             result.file_list.append(datafile)
         #print(result.file_list)
         self.submitted.emit(result)
@@ -701,8 +707,10 @@ class AddFilesWizardSkipProject(QWizard):
             datafile.dataset_id = result.dataset.dataset_id
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
+            dir_path = Path(table.item(row, 2).text())
             datafile.filename = file_name
             datafile.size = file_size
+            datafile.path_abs = dir_path
             result.file_list.append(datafile)
         self.submitted.emit(result)
 
