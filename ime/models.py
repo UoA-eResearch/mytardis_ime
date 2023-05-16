@@ -6,9 +6,9 @@ from yaml.loader import Loader
 from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 import logging
 import os.path
+from pathlib import Path
 from ime.yaml_helpers import initialise_yaml_helpers
 
-from pydantic import AnyUrl, BaseModel, Field
 from ime.blueprints.custom_data_types import Username
 
 class YAMLDataclass(yaml.YAMLObject):
