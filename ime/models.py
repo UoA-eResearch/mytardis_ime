@@ -12,6 +12,8 @@ from ime.yaml_helpers import initialise_yaml_helpers
 from ime.blueprints.custom_data_types import Username
 
 class YAMLDataclass(yaml.YAMLObject):
+    """A metaclass for dataclass objects to be serialised and deserialised by pyyaml.
+    """
     @classmethod
     def from_yaml(cls: Type, loader: Loader, node: MappingNode) -> Any:
         """
