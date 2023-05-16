@@ -6,7 +6,6 @@ from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
 from pathlib import Path
-from pydantic import AnyUrl, BaseModel, Field
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
