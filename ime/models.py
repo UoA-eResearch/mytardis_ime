@@ -25,6 +25,8 @@ class YAMLSerializable(yaml.YAMLObject):
         """
         fields = loader.construct_mapping(node)
         return cls(**fields)
+
+
 @dataclass
 class UserACL(YAMLSerializable):
     """Model to define user access control. This differs from the group
@@ -58,6 +60,11 @@ class IAccessControl:
     """
     users: Optional[List[UserACL]] = None
     groups: Optional[List[GroupACL]] = None
+
+class IIdentifiers:
+    """An interface for MyTardis objects with identifiers.
+    """
+    pass
 
 class DataClassification(Enum):
     """An enumerator for data classification.
