@@ -10,7 +10,4 @@ import pytest
 def metadata(request):
     # This path is relative to where pytest is run.
     # So run pytest at the root directory.
-    with open('ime/tests/fixtures.yaml') as f:
-        content = f.read()
-        fixtures = IngestionMetadata.from_yaml(content)
-        return fixtures
+    return IngestionMetadata.from_file('ime/tests/fixtures.yaml')
