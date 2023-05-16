@@ -106,7 +106,7 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="DerivedAccessControlTab" name="accessControlTab" native="true"/>
+            <widget class="OverridableAccessControlTab" name="accessControlTab" native="true"/>
            </item>
           </layout>
          </widget>
@@ -441,9 +441,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>DerivedAccessControlTab</class>
+   <class>OverridableAccessControlTab</class>
    <extends>QWidget</extends>
-   <header>ime.widgets.derived_access_control_tab</header>
+   <header>ime.widgets.overridable_access_control_tab</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

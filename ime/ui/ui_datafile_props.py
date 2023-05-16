@@ -40,7 +40,7 @@ class Ui_DatafilePropertyEditor(object):
         self.page_10.setObjectName("page_10")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.page_10)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.accessControlTab = DerivedAccessControlTab(self.page_10)
+        self.accessControlTab = OverridableAccessControlTab(self.page_10)
         self.accessControlTab.setObjectName("accessControlTab")
         self.gridLayout_2.addWidget(self.accessControlTab, 0, 0, 1, 1)
         self.toolBox_4.addItem(self.page_10, "")
@@ -61,5 +61,5 @@ class Ui_DatafilePropertyEditor(object):
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.fileinfoDescription), _translate("DatafilePropertyEditor", "General"))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_10), _translate("DatafilePropertyEditor", "User and group access"))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.metadata_tab), _translate("DatafilePropertyEditor", "Metadata"))
-from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
+from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab

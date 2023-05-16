@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ProjectAccessControlTab</class>
- <widget class="QWidget" name="ProjectAccessControlTab">
+ <class>OverridableAccessControlTab</class>
+ <widget class="QWidget" name="OverridableAccessControlTab">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -28,14 +28,8 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="label_3">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="text">
-      <string>You can control the users and groups who can access this project. These settings apply to all data in the Project, unless overridden.</string>
+      <string>You can control the users and groups who can access this object. These settings apply to all data in this object, unless overridden.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -45,7 +39,7 @@
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Groups and users added here will have access to data in this Project. You can grant additional rights like ownership, ability to download data, and see sensitive metadata.</string>
+      <string>Groups and users added here will have access to data in this object. You can grant additional rights like ownership, download and see sensitive metadata.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -54,15 +48,25 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
-      <widget class="AccessControlList" name="groups" native="true"/>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="usersOverride">
        <property name="text">
-        <string>Groups</string>
+        <string>Override</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="groupsOverride">
+       <property name="text">
+        <string>Override</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="AccessControlList" name="users" native="true"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="AccessControlList" name="groups" native="true"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
@@ -71,8 +75,12 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="AccessControlList" name="users" native="true"/>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Groups</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

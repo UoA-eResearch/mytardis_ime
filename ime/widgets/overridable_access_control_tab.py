@@ -2,13 +2,13 @@ from typing import cast
 from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QCheckBox, QMessageBox, QWidget
 from ime.qt_models import DataclassTableModel
-from ime.ui.ui_derived_access_control_tab import Ui_DerivedAccessControlTab
+from ime.ui.ui_overridable_access_control_tab import Ui_OverridableAccessControlTab
 from ime.models import GroupACL, IAccessControl, UserACL
 
 
 from ime.widgets.access_control_list import AccessControlList
 
-class DerivedAccessControlTab(QWidget):
+class OverridableAccessControlTab(QWidget):
     """
     Widget for access control tab for Experiment, Dataset and Datafile.
     Includes a checkbox to override inherited properties.
@@ -25,7 +25,7 @@ class DerivedAccessControlTab(QWidget):
     def __init__(self, parent = None):
         """Initializes the widget with the given parent and sets up the user interface."""
         super().__init__(parent)
-        ui = Ui_DerivedAccessControlTab()
+        ui = Ui_OverridableAccessControlTab()
         ui.setupUi(self)
         self.ui = ui
         # Set up handling overrides.

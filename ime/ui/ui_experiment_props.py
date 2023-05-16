@@ -57,7 +57,7 @@ class Ui_ExperimentPropertyEditor(object):
         self.page_5.setObjectName("page_5")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.page_5)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.accessControlTab = DerivedAccessControlTab(self.page_5)
+        self.accessControlTab = OverridableAccessControlTab(self.page_5)
         self.accessControlTab.setObjectName("accessControlTab")
         self.verticalLayout_4.addWidget(self.accessControlTab)
         self.toolBox_2.addItem(self.page_5, "")
@@ -83,5 +83,5 @@ class Ui_ExperimentPropertyEditor(object):
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_4), _translate("ExperimentPropertyEditor", "General"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("ExperimentPropertyEditor", "User and group access"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.metadata_tab), _translate("ExperimentPropertyEditor", "Metadata"))
-from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
+from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab

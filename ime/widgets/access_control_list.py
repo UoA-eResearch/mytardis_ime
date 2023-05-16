@@ -215,7 +215,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         """Returns the currently displayed access control data.
 
         Returns:
-            Union[OriginAccessControlData, DerivedAccessControlData]: The access control data
+            Union[OriginAccessControlData, OverridableAccessControlData]: The access control data
             being displayed.
         """
         return self._data

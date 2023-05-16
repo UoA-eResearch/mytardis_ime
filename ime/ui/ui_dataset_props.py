@@ -56,7 +56,7 @@ class Ui_DatasetProps(object):
         self.page_2.setObjectName("page_2")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.page_2)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.accessControlTab = DerivedAccessControlTab(self.page_2)
+        self.accessControlTab = OverridableAccessControlTab(self.page_2)
         self.accessControlTab.setObjectName("accessControlTab")
         self.verticalLayout.addWidget(self.accessControlTab)
         self.toolBox.addItem(self.page_2, "")
@@ -257,6 +257,6 @@ class Ui_DatasetProps(object):
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_11), _translate("DatasetProps", "Metadata"))
         self.label_44.setText(_translate("DatasetProps", "No dataset or file selected."))
         self.label_45.setText(_translate("DatasetProps", "Select a dataset or file to edit metadata and access controls."))
-from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
+from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab
 import default_rc

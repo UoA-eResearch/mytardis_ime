@@ -29,7 +29,7 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>You can control the users and groups who can access this object. These settings apply to all data in this object, unless overridden.</string>
+      <string>Groups and users added here will have access to data in this object. You can grant additional rights like ownership, ability to download data, and see sensitive metadata.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -39,7 +39,7 @@
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Groups and users added here will have access to data in this object. You can grant additional rights like ownership, download and see sensitive metadata.</string>
+      <string>Groups and users added here will have access to data in this object. You can grant additional rights like ownership, ability to download data, and see sensitive metadata.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -78,7 +78,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Groups</string>
+        <string>Groups and users added here will have access to data in this object. You can grant additional rights like ownership, ability to download data, and see sensitive metadata.</string>
        </property>
       </widget>
      </item>

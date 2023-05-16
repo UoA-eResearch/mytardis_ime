@@ -6,7 +6,7 @@ import pytest
 from ime.blueprints.custom_data_types import Username
 from ime.models import Experiment, IAccessControl, IngestionMetadata, Project, UserACL
 from ime.widgets.access_control_list import AccessControlList
-from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
+from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 from PyQt5.QtQuick import QQuickView
 
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab
@@ -32,11 +32,11 @@ def test_show_project_access_control(qtbot: QtBot, projects: List[Project]):
     assert group_model.rowCount() == 2
     assert group_model.data(group_model.index(0,0)) == "test_admin"    
 
-def test_show_derived_access_control(qtbot: QtBot, experiments: List[Experiment]):
+def test_show_overridable_access_control(qtbot: QtBot, experiments: List[Experiment]):
     """Tests access control tab can be created."""
     view = QDialog()
     experiment = experiments[0]
-    tab = DerivedAccessControlTab(view)
+    tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     user_model = tab.ui.users.ui.aclTable.model()
     group_model = tab.ui.groups.ui.aclTable.model()
@@ -62,7 +62,7 @@ def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     """Test for editing an access control field results in changes in underlying model."""
     view = QDialog()
     experiment = experiments[0]
-    tab = DerivedAccessControlTab(view)
+    tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     model = tab.ui.users.ui.aclTable.model()
     edit_location = model.index(0,0)
@@ -75,7 +75,7 @@ def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
 def test_add_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     view = QDialog()
     experiment = experiments[0]
-    tab = DerivedAccessControlTab(view)
+    tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     model = tab.ui.users.ui.aclTable.model()
     assert model.rowCount() == 2
@@ -94,7 +94,7 @@ def test_add_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
 def test_delete_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     view = QDialog()
     experiment = experiments[0]
-    tab = DerivedAccessControlTab(view)
+    tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     assert experiment.users is not None
     old_length = len(experiment.users)
@@ -116,7 +116,7 @@ def test_overridable_list_show_inherited_data_if_data_is_none(qtbot: QtBot):
     inherited = IAccessControl(
         [UserACL(Username("inherited"), True, False, False)]
     )
-    tab = DerivedAccessControlTab(view)
+    tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, inherited)
     model = tab.ui.users._model 
     assert model.rowCount() == 1
@@ -130,7 +130,7 @@ def test_overridable_list_show_data_if_data_is_empty_list(qtbot: QtBot):
     inherited = IAccessControl(
         [UserACL(Username("inherited"), True, False, False)]
     )
-    tab = DerivedAccessControlTab(view)
+    tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, inherited)
     model = tab.ui.users._model 
     assert model.rowCount() == 0
