@@ -25,7 +25,7 @@ from .models import (
     IngestionMetadata,
     Project,
 )
-from dataclasses import fields
+from dataclasses import Field, fields
 from PyQt5.QtCore import Qt
 
 T = TypeVar("T")
@@ -196,11 +196,11 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
                 return i
         return -1
 
-    def field_for_column(self, column: int) -> str:
+    def field_for_column(self, column: int) -> Field:
         """
         Given a column index, return the corresponding field name.
         """
-        return self.fields[column]
+        return fields(self.type)[column]
 
     def proxy(self, fields: List[str] = []):
         """
@@ -465,7 +465,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         if len(self.show_fields) == 0:
             # If no restrictions on what fields to show, return true for all columns.
             return True
-        return self.sourceModel().field_for_column(source_column) in self.show_fields
+        return self.sourceModel().field_for_column(source_column).name in self.show_fields
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
         """

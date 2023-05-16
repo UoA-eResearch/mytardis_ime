@@ -1,17 +1,16 @@
-from typing import List, Dict, Any, Literal, Optional, Type, TypeAlias, TypeVar, Union
+from typing import List, Dict, Any, Optional, Type
 from dataclasses import dataclass, field
 from enum import Enum
 import yaml
 from yaml.loader import Loader
-from yaml.nodes import Node
+from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 import logging
-from pathlib import Path
 
 from ime.blueprints.custom_data_types import Username
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
-    def from_yaml(cls: Type, loader: Loader, node: Node) -> Any:
+    def from_yaml(cls: Type, loader: Loader, node: MappingNode) -> Any:
         """
         Convert a representation node to a Python object,
         calling __init__ to create a new object.
@@ -103,7 +102,6 @@ class Project(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     name: str = ""
     principal_investigator: str = ""
 
-
 @dataclass
 class Experiment(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     """
@@ -131,9 +129,9 @@ class Dataset(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     experiment_id: List[str] = field(default_factory=list)
     dataset_id: str = ""
     instrument_id: str = ""
-    description: str = "" ## description field was added
-    instrument: str = "" ## instrument field was added
-    experiments: List[str] = field(default_factory=list) ## experiments field was added
+    description: str = ""
+    instrument: str = ""
+    experiments: List[str] = field(default_factory=list)
 
 
 @dataclass
@@ -151,6 +149,41 @@ class Datafile(YAMLSerializable, IAccessControl, IMetadata):
     dataset: str = ""
     dataset_id: str = ""
 
+
+def Username_yaml_representer(dumper: Dumper, data: 'Username') -> ScalarNode:
+    """Function for representing this Username in YAML.
+    When serialising to YAML that contains Username instances, you'll
+    need to add this function as a representer.
+
+    `yaml.add_representer(Username, Username.yaml_representer)`_
+    
+    Args:
+        dumper (Dumper): The pyyaml dumper.
+        data (Username): The Username to dump.
+
+    Returns:
+        ScalarNode: A serialised yaml Node.
+    """
+    return dumper.represent_scalar(u"!Username", str(data))
+
+def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: Node) -> 'Username':
+    """Function for deserialising a node from YAML.
+    When parsing YAML that contains Username instances, you'll
+    need to add this function as a constructor.
+    
+    `yaml.add_constructor('!Username', Username.yaml_constructor)`_
+
+    Args:
+        loader (Loader): The pyyaml loader.
+        node (ScalarNode): The node representing a Username.
+
+    Returns:
+        Username: A constructed username.
+    """
+    assert type(node) == ScalarNode
+    value = loader.construct_scalar(node)
+    return Username(value)
+
 @dataclass
 class IngestionMetadata:
     """
@@ -164,6 +197,17 @@ class IngestionMetadata:
     experiments: List[Experiment] = field(default_factory=list)
     datasets: List[Dataset] = field(default_factory=list)
     datafiles: List[Datafile] = field(default_factory=list)        
+
+    _has_initialised: bool = False
+
+    def __post_init__(self):
+        """Initialises YAML constructor and representer required to parse
+        and serialise model data.
+        """
+        if not self._has_initialised:
+            yaml.add_constructor('!Username', Username_yaml_constructor)
+            yaml.add_representer(Username, Username_yaml_representer)
+            self._has_initialised = True
 
     def is_empty(self) -> bool:
         return (len(self.projects) == 0 and

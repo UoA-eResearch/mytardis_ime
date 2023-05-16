@@ -1,130 +1,196 @@
----
-!Experiment
-# Experiment/Sample template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
-#
-# Necessary info
-title: Calibration 10 X
-project_id: # Multiple projects can be associated with a sample. If this is the case, then the identifier NEEDS to be unique in all projects
-  - # If a rigorous directory structure is used then this can be inferred from the directory and only needs explicit definition if multiple projects are used for the sample
-  - <one of the identifiers associated with the project that this experiment/sample is part of>
-  - <one of the identifiers associated with the project that this experiment/sample is part of>
-experiment_id: 2022-08-01-calibration-10-x
-alternate_ids:
-  - <a list of alternative identifiers that are used for this object>
-description: Calibration run of the Zeiss LSM 800 Airyscan
-# schema: <value> - un-comment if multiple schema have been defined and set the appropriate type of schema
-#
-# Access control. Access, unless specified otherwise, cascades from the projects associated with the experiment.
-# If different access controls are needed, they need to be explicitly defined.
-# To do so, uncomment the relevant section and fill it out.
-# Groups are preferred over individual users for the purposes of admin
-#
-#admin_groups:
-#  - <value>
-#  - <value> # Add new rows prepended with - as needed, or remove as needed
-#admin_users:
-#  - <value>
-#  - <value>
-#read_groups:
-#  - <value>
-#  - <value>
-#read_users:
-#  - <value>
-#  - <value>
-#download_groups:
-#  - <value>
-#  - <value>
-#download_users:
-#  - <value>
-#  - <value>
-#sensitive_groups:
-#  - <value>
-#  - <value>
-#sensitive_users:
-#  - <value>
-#  - <value>
-#
-# General metadata
-#
-metadata:
-  lens: 4
-  excitation: 488
-  resolution: 1.4
-  technician: Jacqui Ross
----
 !Project
-# Project template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
-#
-# Necessary info
-name: <value>
-project_id: <the identifier you wish to associate with the project - prepend with PGG- >
-alternate_ids:
-  - <a list of alternative identifiers that are used for this object>
-description: <value>
-lead_researcher: <value>
-# schema: <value> - un-comment if multiple schema have been defined and set the appropriate type of schema
-#
-# Access control. Please remove or comment out un-necessary types of group/users
-# Groups are preferred over individual users for the purposes of admin
-#
-admin_groups:
-  - <value>
-  - <value> # Add new rows prepended with - as needed, or remove as needed
-admin_users:
-  - <value>
-  - <value>
-read_groups:
-  - <value>
-  - <value>
-read_users:
-  - <value>
-  - <value>
-download_groups:
-  - <value>
-  - <value>
-download_users:
-  - <value>
-  - <value>
-sensitive_groups:
-  - <value>
-  - <value>
-sensitive_users:
-  - <value>
-  - <value>
-#
-# General metadata
-#
+alternate_ids: []
+description: ''
+lead_researcher: ''
+name: BIRU_MultipleLungCancer
+principal_investigator: csea004
+project_id: biru-multipleLungcancer
 metadata:
   startdate: 2022-08-01
   owner: Jacqui Ross
   enddate: 2023-04-01 
----
-# Datafile template. Please replace <key> with the metadata keys defined in the schema and <value> with its value
-#
-# Datafiles are a little different as they tend to be defined in blocks of files that are all associated with the same dataset
-# If no dataset_id is needed as there is a well defined directory structure, and there is no file specific metadata, then this
-# file can be left blank.
-#
-#
-# Necessary info
+groups:
+  - !GroupACL 
+    group: test_admin
+    is_owner: true
+    can_download: true
+    see_sensitive: true
+  - !GroupACL
+    group: bcnd120
+users:
+  - !UserACL
+    user: abcd121
+    is_owner: true
+    can_download: true
+    see_sensitive: true
+  - !UserACL
+    user: nvmo111
+    is_owner: false
+    can_download: true
+    see_sensitive: true
+--- !Project
+alternate_ids: []
+description: ''
+lead_researcher: ''
+metadata: {}
+name: BIRU_GastricCancer
+principal_investigator: csea004
+project_id: biru-gastriccancer
+groups:
+  - !GroupACL 
+    group: test_admin
+    is_owner: true
+    can_download: true
+    see_sensitive: true
+  - !GroupACL
+    group: bcnd120
+users:
+  - !UserACL
+    user: abcd121
+    is_owner: true
+    can_download: true
+    see_sensitive: true
+  - !UserACL
+    user: nvmo111
+    is_owner: false
+    can_download: true
+    see_sensitive: true
+--- !Experiment
+alternate_ids: []
+description: ''
+experiment_id: biru-lungcancer1
+metadata: 
+  lens: 4
+  excitation: 488
+  resolution: 1.4
+  technician: Jacqui Ross
+project_id: biru-multipleLungcancer
+title: BIRU lungcancer1_NoTreatment
+groups:
+  - !GroupACL 
+    group: test_admin
+    is_owner: true
+    can_download: true
+    see_sensitive: true
+  - !GroupACL
+    group: bcnd120
+users:
+  - !UserACL
+    user: abcd121
+    is_owner: true
+    can_download: true
+    see_sensitive: true
+  - !UserACL
+    user: nvmo111
+    is_owner: false
+    can_download: true
+    see_sensitive: true
+--- !Experiment
+alternate_ids: []
+description: ''
+experiment_id: biru-lungcancer2
+metadata: {}
+project_id: biru-multipleLungcancer
+title: BIRU lungcancer2_DrugA
+--- !Experiment
+alternate_ids: []
+description: ''
+experiment_id: biru-gastriccancer
+metadata: {}
+project_id: biru-gastriccancer
+title: BIRU gastriccancer
 
---- 
-!Datafile
-  # If a rigorous directory structure is used then this can be inferred from the directory and only needs explicit definition if multiple samples are associated with the dataset
-dataset_id: '2022-06-11-Datafiles'
-  # schema: <value> - un-comment if multiple schema have been defined and set the appropriate type of schema
-filename: 201104.TIFF
-metadata:
-  ABC: 441
---- 
-!Datafile
-filename: 202211.TIFF
-dataset_id: '2022-06-11-Datafiles'
-metadata:
-  ABC: 411
-
----
-!Dataset
-  experiment_id: 5
-  metadata:
-    abc: 123
+--- !Dataset
+dataset_id: BIRU-DataSet1
+dataset_name: BIRU-DataSet1
+description: ''
+experiment_id:
+- biru-lungcancer1
+experiments: []
+instrument: ''
+instrument_id: ''
+metadata: {}
+--- !Dataset
+dataset_id: BIRU-DataSet2
+dataset_name: BIRU-DataSet2
+description: ''
+experiment_id:
+- biru-lungcancer1
+experiments: []
+instrument: ''
+instrument_id: ''
+metadata: {}
+--- !Dataset
+dataset_id: BIRU-DataSet3
+dataset_name: BIRU-DataSet33
+description: ''
+experiment_id:
+- biru-lungcancer2
+experiments: []
+instrument: ''
+instrument_id: 'Olympus FV1000 live cell imaging confocal microscope'
+metadata: {}
+--- !Dataset
+dataset_id: BIRU-DataSet4
+dataset_name: BIRU-DataSet4
+description: ''
+experiment_id:
+- biru-gastriccancer
+experiments: []
+instrument: ''
+instrument_id: 'Olympus FV1000 live cell imaging confocal microscope'
+metadata: {}
+--- !Datafile
+dataset: ''
+dataset_id: BIRU-DataSet4
+directory: ''
+filename: 20190812 NT 100x 01 slice.oib
+md5sum: ''
+metadata: {}
+mimetype: ''
+size: 10911744.0
+--- !Datafile
+dataset: ''
+dataset_id: BIRU-DataSet4
+directory: ''
+filename: 20190812 HF 01 stack.oib
+md5sum: ''
+metadata: {}
+mimetype: ''
+size: 43941888.0
+--- !Datafile
+dataset: ''
+dataset_id: BIRU-DataSet3
+directory: ''
+filename: beads 20190925.oib
+md5sum: ''
+metadata: {}
+mimetype: ''
+size: 26977064.0
+--- !Datafile
+dataset: ''
+dataset_id: BIRU-DataSet2
+directory: ''
+filename: sequt_488_594_stk.oib
+md5sum: ''
+metadata: {}
+mimetype: ''
+size: 4964352.0
+--- !Datafile
+dataset: ''
+dataset_id: BIRU-DataSet2
+directory: ''
+filename: sequt_405_488_594_stk.oib
+md5sum: ''
+metadata: {}
+mimetype: ''
+size: 7389184.0
+--- !Datafile
+dataset: ''
+dataset_id: BIRU-DataSet1
+directory: ''
+filename: good image 02.oib
+md5sum: ''
+metadata: {}
+mimetype: ''
+size: 4861952.0

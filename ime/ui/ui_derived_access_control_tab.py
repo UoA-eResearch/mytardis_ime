@@ -27,6 +27,10 @@ class Ui_DerivedAccessControlTab(object):
         self.label_3.setWordWrap(True)
         self.label_3.setObjectName("label_3")
         self.verticalLayout.addWidget(self.label_3)
+        self.label_4 = QtWidgets.QLabel(DerivedAccessControlTab)
+        self.label_4.setWordWrap(True)
+        self.label_4.setObjectName("label_4")
+        self.verticalLayout.addWidget(self.label_4)
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
         self.usersOverride = QtWidgets.QCheckBox(DerivedAccessControlTab)
@@ -57,7 +61,8 @@ class Ui_DerivedAccessControlTab(object):
     def retranslateUi(self, DerivedAccessControlTab):
         _translate = QtCore.QCoreApplication.translate
         DerivedAccessControlTab.setWindowTitle(_translate("DerivedAccessControlTab", "Form"))
-        self.label_3.setText(_translate("DerivedAccessControlTab", "You can control the users and groups who can access this project. These settings apply to all data in the Project, unless overridden."))
+        self.label_3.setText(_translate("DerivedAccessControlTab", "You can control the users and groups who can access this object. These settings apply to all data in this object, unless overridden."))
+        self.label_4.setText(_translate("DerivedAccessControlTab", "Groups and users added here will have access to data in this object. You can grant additional rights like ownership, download and see sensitive metadata."))
         self.usersOverride.setText(_translate("DerivedAccessControlTab", "Override"))
         self.groupsOverride.setText(_translate("DerivedAccessControlTab", "Override"))
         self.label_2.setText(_translate("DerivedAccessControlTab", "Users"))

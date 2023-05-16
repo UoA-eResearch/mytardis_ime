@@ -29,7 +29,17 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>You can control the users and groups who can access this project. These settings apply to all data in the Project, unless overridden.</string>
+      <string>You can control the users and groups who can access this object. These settings apply to all data in this object, unless overridden.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Groups and users added here will have access to data in this object. You can grant additional rights like ownership, download and see sensitive metadata.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

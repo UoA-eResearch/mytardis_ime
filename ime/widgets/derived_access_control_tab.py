@@ -1,6 +1,7 @@
 from typing import cast
 from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QCheckBox, QMessageBox, QWidget
+from ime.qt_models import DataclassTableModel
 from ime.ui.ui_derived_access_control_tab import Ui_DerivedAccessControlTab
 from ime.models import GroupACL, IAccessControl, UserACL
 
@@ -18,8 +19,8 @@ class DerivedAccessControlTab(QWidget):
     """
     _data: IAccessControl
     _inherited_data: IAccessControl
-    _user_list: AccessControlList[UserACL]
-    _group_list: AccessControlList[GroupACL]
+    _user_model: DataclassTableModel[UserACL]
+    _group_model: DataclassTableModel[GroupACL]
 
     def __init__(self, parent = None):
         """Initializes the widget with the given parent and sets up the user interface."""
@@ -35,10 +36,10 @@ class DerivedAccessControlTab(QWidget):
             self._handle_groups_override_toggled
         )
         # Set up the AccessControlLists.
-        ui.users.initialise_fields(UserACL)
-        ui.groups.initialise_fields(GroupACL)
-        self._user_list = ui.users
-        self._group_list = ui.groups
+        self._user_model = DataclassTableModel(UserACL)
+        self._group_model = DataclassTableModel(GroupACL)
+        ui.users.set_model(self._user_model)
+        ui.groups.set_model(self._group_model)
         
     def _reset_checkbox(self, check_box: QCheckBox, value: bool) -> None:
         """A private method for resetting checkbox state without triggering any signals
@@ -51,8 +52,8 @@ class DerivedAccessControlTab(QWidget):
             check_box.setChecked(value)
     
     def set_data(self, data: IAccessControl, inherited_data: IAccessControl):
-        """Sets the MyTardis object `val` that this access control tab should display information for.
-        Resets widgets to display information in `val`.
+        """Sets the MyTardis object which has access control fields `data`_ to display,
+        and resets the AccessControlTab to display it.
 
         Args:
             data (IAccessControl): Access control properties to display in this access control tab.
@@ -81,8 +82,8 @@ class DerivedAccessControlTab(QWidget):
         else:
             group_ac = inherited_data.groups or []
         # Set data for the AccessControlList widgets.
-        self._user_list.set_data(user_ac)
-        self._group_list.set_data(group_ac)
+        self._user_model.set_instance_list(user_ac)
+        self._group_model.set_instance_list(group_ac)
 
     def _display_confirm_reset_override_dialog(self) -> bool:
         """Private method for showing a dialogue confirming the user wishes to reset
@@ -111,8 +112,8 @@ class DerivedAccessControlTab(QWidget):
             # inherited field.
             ac_list = []
             setattr(self._data, "users", ac_list)
-            self._user_list.set_data(ac_list)
-            self._user_list.set_disabled(False)
+            self._user_model.set_instance_list(ac_list)
+            self.ui.users.set_disabled(False)
         else:
             # Only confirm unchecking this checkbox if user confirms.
             is_confirmed = self._display_confirm_reset_override_dialog()
@@ -121,8 +122,8 @@ class DerivedAccessControlTab(QWidget):
                 self._reset_checkbox(self.ui.usersOverride, True)
             else:
                 setattr(self._data, "users", None)
-                self._user_list.set_data(self._inherited_data.users or [])
-                self._user_list.set_disabled(True)
+                self._user_model.set_instance_list(self._inherited_data.users or [])
+                self.ui.users.set_disabled(True)
 
     def _handle_groups_override_toggled(self, enabled: bool):
         if enabled:
@@ -130,8 +131,8 @@ class DerivedAccessControlTab(QWidget):
             # inherited field.
             ac_list = []
             setattr(self._data, "groups", ac_list)
-            self._group_list.set_data(ac_list)
-            self._group_list.set_disabled(False)
+            self._group_model.set_instance_list(ac_list)
+            self.ui.groups.set_disabled(False)
         else:
             # Only confirm unchecking this checkbox if user confirms.
             is_confirmed = self._display_confirm_reset_override_dialog()
@@ -140,5 +141,5 @@ class DerivedAccessControlTab(QWidget):
                 self._reset_checkbox(self.ui.groupsOverride, True)
             else:
                 setattr(self._data, "groups", None)
-                self._group_list.set_data(self._inherited_data.groups or [])
-                self._group_list.set_disabled(True)
+                self._group_model.set_instance_list(self._inherited_data.groups or [])
+                self.ui.groups.set_disabled(True)

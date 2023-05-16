@@ -3,136 +3,135 @@ from PyQt5.QtCore import QModelIndex, QUrl, Qt
 from PyQt5.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
 from pytestqt.qtbot import QtBot
 import pytest
-from ime.models import Experiment, IAccessControl, IngestionMetadata, Project
+from ime.blueprints.custom_data_types import Username
+from ime.models import Experiment, IAccessControl, IngestionMetadata, Project, UserACL
 from ime.widgets.access_control_list import AccessControlList
 from ime.widgets.derived_access_control_tab import DerivedAccessControlTab
 from PyQt5.QtQuick import QQuickView
 
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab
 
-@pytest.fixture
-def metadata():
-    # This path is relative to where pytest is run.
-    # So run pytest at the root directory.
-    with open('ime/tests/fixtures_access_control_tab.yaml') as f:
-        content = f.read()
-        return IngestionMetadata.from_yaml(content)
-
 
 @pytest.fixture
-def experiments(metadata: IngestionMetadata):
+def experiments(metadata: IngestionMetadata) -> List[Experiment]:
     return metadata.experiments
 
 @pytest.fixture
 def projects(metadata: IngestionMetadata):
     return metadata.projects
 
-
-def test_show_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
-    """Tests access control tab can be created."""
-    view = QDialog()
-    experiment = experiments[0]
-    tab = DerivedAccessControlTab(view)
-    tab.set_data(experiment, IAccessControl())
-    qtbot.add_widget(view)
-    view.show()
-    qtbot.wait_exposed(view)
-    qtbot.stop()
-
 def test_show_project_access_control(qtbot: QtBot, projects: List[Project]):
     view = QDialog()
     project = projects[0]
     tab = ProjectAccessControlTab(view)
     tab.set_data(project)
-    qtbot.add_widget(view)
-    view.show()
-    qtbot.wait_exposed(view)
-    user_model = tab.ui.users._model
-    group_model = tab.ui.groups._model
+    user_model = tab.ui.users.ui.aclTable.model()
+    group_model = tab.ui.groups.ui.aclTable.model()
     assert user_model.rowCount() == 2
     assert user_model.data(user_model.index(0,0)) == "abcd121"
     assert group_model.rowCount() == 2
     assert group_model.data(group_model.index(0,0)) == "test_admin"    
-    qtbot.stop()
+
+def test_show_derived_access_control(qtbot: QtBot, experiments: List[Experiment]):
+    """Tests access control tab can be created."""
+    view = QDialog()
+    experiment = experiments[0]
+    tab = DerivedAccessControlTab(view)
+    tab.set_data(experiment, IAccessControl())
+    user_model = tab.ui.users.ui.aclTable.model()
+    group_model = tab.ui.groups.ui.aclTable.model()
+    assert user_model.rowCount() == 2
+    assert group_model.rowCount() == 2
+    test_admin_is_owner = user_model.data(user_model.index(0,1),Qt.ItemDataRole.CheckStateRole)
+    assert test_admin_is_owner == Qt.CheckState.Checked
+
 
 def test_project_ac_creates_new_list_if_none(qtbot: QtBot,):
     view = QDialog()
     # Create a blank project, 
     # then check that a new list is created.
     project = Project()
+    assert project.users is None
+    assert project.groups is None
     tab = ProjectAccessControlTab(view)
     tab.set_data(project)
-    qtbot.add_widget(view)
-    view.show()
-    qtbot.wait_exposed(view)
     assert project.users is not None
     assert project.groups is not None
-    qtbot.stop()
     
-# def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
-#     """Test for editing an access control field results in changes in underlying model."""
-#     view = QDialog()
-#     experiment = experiments[0]
-#     tab = AccessControlTab(view)
-#     tab.set_data(experiment)
-#     qtbot.add_widget(view)
-#     view.show()
-#     qtbot.wait_exposed(view)
-#     model = tab.ui.readGroupsList._model
-#     edit_location = model.index(0,0)
-#     assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "ghil983"
-#     edit_location = model.index(0,0)
-#     model.setData(edit_location,"Testing editing")
-#     assert experiment.read_groups is not None
-#     assert experiment.read_groups[0] == "Testing editing"
+def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
+    """Test for editing an access control field results in changes in underlying model."""
+    view = QDialog()
+    experiment = experiments[0]
+    tab = DerivedAccessControlTab(view)
+    tab.set_data(experiment, IAccessControl())
+    model = tab.ui.users.ui.aclTable.model()
+    edit_location = model.index(0,0)
+    assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "abcd121"
+    edit_location = model.index(0,0)
+    model.setData(edit_location,"Testing editing")
+    assert experiment.users is not None
+    assert experiment.users[0].user == "Testing editing"
 
-# def test_tab_with_inheritance(qtbot: QtBot, experiments: List[Experiment]):
-#     """Test for displaying a experiment's access control properly."""
-#     view = QDialog()
-#     experiment = experiments[0]
-#     tab = AccessControlTab(view)
-#     tab.set_data(experiment)
-#     qtbot.add_widget(view)
-#     view.show()
-#     qtbot.wait_exposed(view)
-#     assert tab.ui.adminGroupsList.ui.aclList.isEnabled()
+def test_add_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
+    view = QDialog()
+    experiment = experiments[0]
+    tab = DerivedAccessControlTab(view)
+    tab.set_data(experiment, IAccessControl())
+    model = tab.ui.users.ui.aclTable.model()
+    assert model.rowCount() == 2
+    tab.ui.users.ui.btnAdd.click()
+    qtbot.wait(100)
+    # Check there's increased number of rows.
+    assert model.rowCount() == 3
+    edit_location = model.index(2,0)
+    model.setData(edit_location,"New user")
+    qtbot.wait(100)
+    # Check that UI changes are reflected in model
+    assert experiment.users is not None
+    assert len(experiment.users) == 3
+    assert experiment.users[2].user == "New user"
 
-# def test_tab_no_inheritance(qtbot: QtBot, projects: List[Project]):
-#     """Test for displaying a project's access control properly."""
-#     view = QDialog()
-#     project = projects[0]
-#     tab = AccessControlTab(view)
-#     tab.set_data(project)
-#     qtbot.add_widget(view)
-#     view.show()
-#     qtbot.wait_exposed(view)
-#     for key in tab.views_by_field:
-#         # Go through each view, and check the override inherited checkbox isn't there,
-#         # and aclList can be edited/selected
-#         list_view = tab.views_by_field[key]
-#         assert not list_view.ui.overrideCheckBox.isVisible()
-#         assert list_view.ui.aclList.isEnabled()
+def test_delete_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
+    view = QDialog()
+    experiment = experiments[0]
+    tab = DerivedAccessControlTab(view)
+    tab.set_data(experiment, IAccessControl())
+    assert experiment.users is not None
+    old_length = len(experiment.users)
+    name_to_delete = experiment.users[0].user
+    index_to_delete = tab.ui.users._model.index(0,0)
+    tab.ui.users.ui.aclTable.setCurrentIndex(index_to_delete)
+    tab.ui.users.ui.btnDelete.click()
+    qtbot.wait(100)
+    # Check there's one less user
+    assert len(experiment.users) == old_length - 1
+    # Check the deleted name is no longer in list.
+    assert name_to_delete not in [acl.user for acl in experiment.users]
+    assert tab.ui.users._model.rowCount() == old_length - 1
 
-# def test_display_access_control_list(qtbot: QtBot, projects: List[Project]):
-#     view = QDialog()
-#     project = projects[0]
-#     aclist = AccessControlList(view)
-#     view.show()
-#     qtbot.wait_exposed(view)
-#     qtbot.stop()
+def test_overridable_list_show_inherited_data_if_data_is_none(qtbot: QtBot):
+    view = QDialog()
+    # Empty experiment which won't have any user access control.
+    experiment = Experiment()
+    inherited = IAccessControl(
+        [UserACL(Username("inherited"), True, False, False)]
+    )
+    tab = DerivedAccessControlTab(view)
+    tab.set_data(experiment, inherited)
+    model = tab.ui.users._model 
+    assert model.rowCount() == 1
+    name_location = model.index(0,0)
+    assert model.data(name_location) == "inherited"
 
-# def disabled_test_qml_embed(qtbot: QtBot, experiments: List[Experiment]):
-#     list_model = ListModel(experiments[0].admin_groups)
-#     view = QQuickView()
-#     context = view.rootContext()
-#     context.setContextProperty("listModel", list_model)
-#     widget = QWidget()
-#     layout = QVBoxLayout(widget)
-#     container = QWidget.createWindowContainer(view)
-#     container.setFocusPolicy(Qt.FocusPolicy.TabFocus)
-#     view.setSource(QUrl("ime/widgets/ui_access_control_list.qml"))
-#     layout.addWidget(container)
-#     qtbot.add_widget(widget)
-#     container.setMinimumSize(200,200)
-#     widget.show()
-#     qtbot.wait_exposed(widget)
+def test_overridable_list_show_data_if_data_is_empty_list(qtbot: QtBot):
+    view = QDialog()
+    # An empty list is an override. Distinct from
+    experiment = Experiment(users=[])
+    inherited = IAccessControl(
+        [UserACL(Username("inherited"), True, False, False)]
+    )
+    tab = DerivedAccessControlTab(view)
+    tab.set_data(experiment, inherited)
+    model = tab.ui.users._model 
+    assert model.rowCount() == 0
+    assert tab.ui.usersOverride.isChecked()

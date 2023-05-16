@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget
 from ime.models import GroupACL, IAccessControl, UserACL
+from ime.qt_models import DataclassTableModel
 from ime.ui.ui_project_access_control_tab import Ui_ProjectAccessControlTab
 from ime.widgets.access_control_list import AccessControlList
 
@@ -7,8 +8,8 @@ class ProjectAccessControlTab(QWidget):
     """
     Project-specific widget for access control tab.
     """
-    _user_list: AccessControlList[UserACL]
-    _group_list: AccessControlList[GroupACL]
+    _user_model: DataclassTableModel[UserACL]
+    _group_model: DataclassTableModel[GroupACL]
 
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -16,10 +17,10 @@ class ProjectAccessControlTab(QWidget):
         ui.setupUi(self)
         self.ui = ui
         # Set up the AccessControlLists.
-        ui.users.initialise_fields(UserACL)
-        ui.groups.initialise_fields(GroupACL)
-        self._user_list = ui.users
-        self._group_list = ui.groups
+        self._user_model = DataclassTableModel(UserACL)
+        self._group_model = DataclassTableModel(GroupACL)
+        ui.users.set_model(self._user_model)
+        ui.groups.set_model(self._group_model)
 
     def set_data(self, data: IAccessControl):
         """Sets the MyTardis object `val` that this access control tab should display information for.
@@ -32,5 +33,5 @@ class ProjectAccessControlTab(QWidget):
             data.users = []
         if data.groups == None:
             data.groups = []
-        self._user_list.set_data(data.users)
-        self._group_list.set_data(data.groups)
+        self._user_model.set_instance_list(data.users)
+        self._group_model.set_instance_list(data.groups)
