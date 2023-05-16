@@ -2,7 +2,7 @@ from dataclasses import fields
 from typing import Generic, List, Optional, Type, TypeVar, Union, cast
 import typing
 
-from PyQt5.QtCore import QModelIndex, QObject, QVariant, Qt
+from PyQt5.QtCore import QItemSelection, QModelIndex, QObject, QVariant, Qt
 from ime.models import GroupACL, UserACL
 from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.ui.ui_access_control_list import Ui_AccessControlList
@@ -210,19 +210,14 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         self.ui.setupUi(self)
         self.ui.btnAdd.clicked.connect(self._handle_insert_new)
         self.ui.btnDelete.clicked.connect(self._handle_remove)
-
-    def data(self) -> List[ACL_T]:
-        """Returns the currently displayed access control data.
-
-        Returns:
-            Union[OriginAccessControlData, OverridableAccessControlData]: The access control data
-            being displayed.
-        """
-        return self._data
+        # Disable delete button by default.
+        self.ui.btnDelete.setDisabled(True)
 
     def set_model(self, model: DataclassTableModel[ACL_T]):
-        """Initialises the AccessControlList with the type
-        of data this list will display.
+        """Sets the DataclassTableModel this list will display,
+        resets the interface with data. Any changes to the UserACL
+        or GroupACL to display will come through the Model's
+        signals.
 
         Args:
             type (Type[ACL_T]): _description_
@@ -230,6 +225,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         self._model = AccessControlListTableProxy()
         self._model.setSourceModel(model)
         self.ui.aclTable.setModel(self._model)
+        self.ui.aclTable.selectionModel().selectionChanged.connect(self._handle_select_change)
         # For name column, stretch.
         self.ui.aclTable.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         for i in range(1,model.columnCount()):
@@ -279,3 +275,12 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         rows_to_remove.sort(reverse=True)
         for row in rows_to_remove:
             self._model.removeRow(row)
+
+    def _handle_select_change(self, selected: QItemSelection, deselected: QItemSelection):
+        """Handler method for changes to which access control items are selected.
+
+        Args:
+            selected (QItemSelection): Selected items
+            deselected (QItemSelection): Deselected items
+        """
+        self.ui.btnDelete.setEnabled(len(selected) > 0) 

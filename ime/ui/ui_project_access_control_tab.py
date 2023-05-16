@@ -57,7 +57,7 @@ class Ui_ProjectAccessControlTab(object):
         _translate = QtCore.QCoreApplication.translate
         ProjectAccessControlTab.setWindowTitle(_translate("ProjectAccessControlTab", "Form"))
         self.label_3.setText(_translate("ProjectAccessControlTab", "You can control the users and groups who can access this project. These settings apply to all data in the Project, unless overridden."))
-        self.label_4.setText(_translate("ProjectAccessControlTab", "Groups and users added here will have access to data in this Project. You can grant additional rights like ownership, download and see sensitive metadata."))
+        self.label_4.setText(_translate("ProjectAccessControlTab", "Groups and users added here will have access to data in this Project. You can grant additional rights like ownership, ability to download data, and see sensitive metadata."))
         self.label.setText(_translate("ProjectAccessControlTab", "Groups"))
         self.label_2.setText(_translate("ProjectAccessControlTab", "Users"))
 from ime.widgets.access_control_list import AccessControlList

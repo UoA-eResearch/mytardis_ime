@@ -61,5 +61,5 @@ class Ui_DatafilePropertyEditor(object):
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.fileinfoDescription), _translate("DatafilePropertyEditor", "General"))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_10), _translate("DatafilePropertyEditor", "User and group access"))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.metadata_tab), _translate("DatafilePropertyEditor", "Metadata"))
-from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab
+from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab

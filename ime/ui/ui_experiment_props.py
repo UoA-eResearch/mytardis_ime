@@ -83,5 +83,5 @@ class Ui_ExperimentPropertyEditor(object):
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_4), _translate("ExperimentPropertyEditor", "General"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("ExperimentPropertyEditor", "User and group access"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.metadata_tab), _translate("ExperimentPropertyEditor", "Metadata"))
-from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab
+from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab

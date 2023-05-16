@@ -54,4 +54,4 @@ class Ui_AccessControlList(object):
         _translate = QtCore.QCoreApplication.translate
         AccessControlList.setWindowTitle(_translate("AccessControlList", "Form"))
         self.btnAdd.setText(_translate("AccessControlList", "Add"))
-        self.btnDelete.setText(_translate("AccessControlList", "Delete"))
+        self.btnDelete.setText(_translate("AccessControlList", "Remove"))

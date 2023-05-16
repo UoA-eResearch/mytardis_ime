@@ -257,6 +257,6 @@ class Ui_DatasetProps(object):
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_11), _translate("DatasetProps", "Metadata"))
         self.label_44.setText(_translate("DatasetProps", "No dataset or file selected."))
         self.label_45.setText(_translate("DatasetProps", "Select a dataset or file to edit metadata and access controls."))
-from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 from ime.widgets.metadata_tab import MetadataTab
+from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 import default_rc
