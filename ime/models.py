@@ -51,9 +51,7 @@ class GroupACL(YAMLSerializable):
 class IAccessControl:
     """
     A class representing fields related to access
-    control. This class represents fields for Experiments,
-    Datasets and Datafiles, while the IProjectAccessControl
-    class represents fields for Projects.
+    control.
     When set to None, the fields represent that they are inheriting
     access control fields from the Project, Experiment or Dataset higher up
     in the hierarchy.
