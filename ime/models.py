@@ -203,7 +203,7 @@ class IngestionMetadata:
         and serialise model data.
         """
         if not self._has_initialised:
-            yaml.add_constructor('!Username', Username_yaml_constructor)
+            yaml.SafeLoader.add_constructor('!Username', Username_yaml_constructor)
             yaml.add_representer(Username, Username_yaml_representer)
             self._has_initialised = True
 

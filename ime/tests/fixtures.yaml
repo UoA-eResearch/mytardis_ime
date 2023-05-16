@@ -19,12 +19,12 @@ groups:
     group: bcnd120
 users:
   - !UserACL
-    user: abcd121
+    user: !Username abcd121
     is_owner: true
     can_download: true
     see_sensitive: true
   - !UserACL
-    user: nvmo111
+    user: !Username nvmo111
     is_owner: false
     can_download: true
     see_sensitive: true
@@ -46,12 +46,12 @@ groups:
     group: bcnd120
 users:
   - !UserACL
-    user: abcd121
+    user: !Username abcd121
     is_owner: true
     can_download: true
     see_sensitive: true
   - !UserACL
-    user: nvmo111
+    user: !Username nvmo111
     is_owner: false
     can_download: true
     see_sensitive: true
@@ -76,12 +76,12 @@ groups:
     group: bcnd120
 users:
   - !UserACL
-    user: abcd121
+    user: !Username abcd121
     is_owner: true
     can_download: true
     see_sensitive: true
   - !UserACL
-    user: nvmo111
+    user: !Username nvmo111
     is_owner: false
     can_download: true
     see_sensitive: true
