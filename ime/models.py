@@ -5,7 +5,8 @@ import yaml
 from yaml.loader import Loader
 from yaml.nodes import Node
 import logging
-from pathlib import Path ### added
+from pathlib import Path
+from pydantic import AnyUrl, BaseModel, Field
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
@@ -41,7 +42,6 @@ class IProjectAccessControl:
     download_users: List[str] = field(default_factory=list)
     sensitive_groups: List[str] = field(default_factory=list)
     sensitive_users: List[str] = field(default_factory=list)
-
 
 @dataclass
 class IDerivedAccessControl:
@@ -92,13 +92,20 @@ class IMetadata:
     """
     A class representing fields related to schema parameters.
     """
-    # change to Optional[]
     metadata: Dict[str, Any] = field(default_factory=dict)
+    object_schema: str = ""
 
 @dataclass
 class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
+
+    Attributes:
+        name (str): The name of the project.
+        description (str): A brief description of the project.
+        identifiers (List[str]): A list of identifiers for the project.
+        data_classification (DataClassification): The data classification of the project.
+        principal_investigator (str): The name of the principal investigator for the project.
     """
 
     yaml_tag = "!Project"
@@ -140,7 +147,7 @@ class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassific
     instrument_id: str = ""
     description: str = "" ## description field was added
     instrument: str = "" ## instrument field was added
-    experiments: List[str] = field(default_factory=list) ## experiments field was added
+    experiments: List[str] = field(default_factory=list)
 
 
 @dataclass

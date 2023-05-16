@@ -1,10 +1,12 @@
 from PyQt5.QtWidgets import QWidget
+from PyQt5.uic import loadUi
 from ime.bindable import BoundObject
 from ime.models import Dataset, Experiment, Datafile, FileInfo, Project
 from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
 from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
 from ime.ui.ui_project_props import Ui_ProjectPropertyEditor
+from ime.ui.ui_metadata_tab import Ui_MetadataTab
 from ime.widgets.metadata_tab import MetadataTab
 
 class DatasetPropertyEditor(QWidget):
@@ -174,4 +176,4 @@ class ProjectPropertyEditor(QWidget):
         self.project.bind_input("name", self.ui.projectNameLineEdit)
         self.project.bind_input("project_id", self.ui.projectIDLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
-        self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)  
+        self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)

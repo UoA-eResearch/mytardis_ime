@@ -19,8 +19,13 @@ class MetadataTab(QWidget, IBindableInput):
         self.ui = Ui_MetadataTab()
         self.ui.setupUi(self)
         self.ui.metadata_table.cellChanged.connect(self.handle_cell_changed)
+        self.ui.schemaLineEdit.textChanged.connect(self.handle_schema_changed)
         self.ui.metadata_table.selectionModel().selectionChanged.connect(self.handle_selection_changed)
         self.ui.remove_rows_btn.clicked.connect(self.handle_remove_rows_click)
+
+    def handle_schema_changed(self, schema: str):
+        """Handles the schema text box changing."""
+        self.metadata_object.object_schema = self.ui.schemaLineEdit.text()
 
     def add_insert_metadata_row(self):
         """Adds an empty row to the metadata table."""
@@ -127,4 +132,6 @@ class MetadataTab(QWidget, IBindableInput):
                 row_idx += 1
             self.add_insert_metadata_row()
             self.metadata_object = metadata_obj
-
+        # Update schema
+        object_schema_value = metadata_obj.object_schema
+        self.ui.schemaLineEdit.setText(str(object_schema_value))
