@@ -66,7 +66,13 @@ class MetadataTab(QWidget, IBindableInput):
             selected (QItemSelection): The selected item(s).
             deselected (QItemSelection): The deselected item(s).
         """
-        selected_rows = self.ui.metadata_table.selectionModel().selectedRows()
+        table = self.ui.metadata_table
+        selected_rows = table.selectionModel().selectedRows()
+        if (len(selected_rows) == 1 and 
+            selected_rows[0].row() == table.rowCount() - 1):
+            # If only the empty row is selected, do not enable.
+            self.ui.remove_rows_btn.setEnabled(False)
+            return
         self.ui.remove_rows_btn.setEnabled(len(selected_rows) > 0)
 
     def handle_cell_changed(self, row: int, col: int):
@@ -103,6 +109,9 @@ class MetadataTab(QWidget, IBindableInput):
         items = table.selectedItems()
         for item in items:
             row = item.row()
+            if row == table.rowCount() - 1:
+                # Skip deleting the empty row.
+                continue
             key = table.item(row, 0).text()
             self.metadata_object.metadata.pop(key)
             table.removeRow(row)

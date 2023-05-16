@@ -4,5 +4,8 @@ venv3.10/
 lib/
 .DS_Store
 **/__pycache__/
-dist
 .qt_for_python/
+# PyInstaller clutter.
+dist
+build
+app.spec

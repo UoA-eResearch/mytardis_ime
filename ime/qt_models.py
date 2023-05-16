@@ -9,7 +9,7 @@ which implement/extend Qt model and proxy interfaces; and an IngestionMetadataMo
 model which adapts IngestionMetadata from models.py for Qt, using the two other
 models.
 """
-from typing import Any, Callable, Generic, List, TypeVar, Type
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Type
 import typing
 from PyQt5.QtCore import (
     QAbstractListModel,
@@ -25,7 +25,7 @@ from .models import (
     IngestionMetadata,
     Project,
 )
-from dataclasses import fields
+from dataclasses import Field, fields
 from PyQt5.QtCore import Qt
 
 T = TypeVar("T")
@@ -46,8 +46,6 @@ class PythonListModel(QAbstractListModel):
         Args:
             sourceList (List[str]): The backing Python string list.
         """
-    def setStringList(self, sourceList: List[str]):
-        """Sets the source list to the provided list."""
         self.list = sourceList
 
     def remove_value(self, val: str) -> bool:
@@ -198,11 +196,11 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
                 return i
         return -1
 
-    def field_for_column(self, column: int) -> str:
+    def field_for_column(self, column: int) -> Field:
         """
         Given a column index, return the corresponding field name.
         """
-        return self.fields[column]
+        return fields(self.type)[column]
 
     def proxy(self, fields: List[str] = []):
         """
@@ -223,6 +221,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         inspected for its dataclass fields.
         """
         self.type = type
+        self.instance_list = []
         self.fields = [field.name for field in fields(type)]
         super().__init__(parent)
 
@@ -237,7 +236,9 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         """
         Set the backing dataclass list this model will represent. 
         """
+        self.beginResetModel()
         self.instance_list = instance_list
+        self.endResetModel()
     
     def add_extra_field(self, field_name: str) -> int:
         # TODO This will be useful for computed values like project/experiment/dataset size.
@@ -265,10 +266,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         Returns:
             int: The number of rows in the model.
         """
-        if not parent.isValid():
-            return len(self.instance_list)
-        else:
-            return 0  # TODO Implement retrieving nested data
+        return len(self.instance_list)
 
     def columnCount(self, parent=QModelIndex()) -> int:
         """
@@ -321,8 +319,9 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             Qt.ItemFlag.ItemIsEditable
             | Qt.ItemFlag.ItemIsEnabled
             | Qt.ItemFlag.ItemIsSelectable
+            | Qt.ItemFlag.ItemIsUserCheckable
         )
-        return flags
+        return typing.cast(Qt.ItemFlag, flags)
 
     def headerData(
         self,
@@ -359,9 +358,10 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         Returns:
             typing.Any: The data for the given model index and role.
         """
-        if role == Qt.ItemDataRole.DisplayRole:
-            experiment = self.instance_list[index.row()]
-            field = getattr(experiment, self.fields[index.column()])
+        if (role == Qt.ItemDataRole.DisplayRole or
+            role == Qt.ItemDataRole.EditRole):
+            instance = self.instance_list[index.row()]
+            field = getattr(instance, self.fields[index.column()])
             return field
 
 class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
@@ -437,8 +437,6 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         Args:
             sourceModel (DataclassTableModel): The source model to be set.
         """
-        if not isinstance(sourceModel, DataclassTableModel):
-            raise ValueError("You must use MyTaridsObjectModel as source model.")
         return super().setSourceModel(sourceModel)
 
     def sourceModel(self) -> DataclassTableModel[T]:
@@ -467,7 +465,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         if len(self.show_fields) == 0:
             # If no restrictions on what fields to show, return true for all columns.
             return True
-        return self.sourceModel().field_for_column(source_column) in self.show_fields
+        return self.sourceModel().field_for_column(source_column).name in self.show_fields
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
         """
@@ -500,7 +498,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         if not self.read_only:
             flags |= Qt.ItemFlag.ItemIsEditable
-        return flags
+        return typing.cast(Qt.ItemFlag, flags)
 
     def columnCount(self, parent = QModelIndex()) -> int:
         """
@@ -514,7 +512,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         if len(self.show_fields) > 0:
             return len(self.show_fields)
-        return super().rowCount(parent)
+        return super().columnCount(parent)
 
     def headerData(
         self,
