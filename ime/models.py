@@ -1,14 +1,20 @@
 from typing import List, Dict, Any, Optional, Type
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields, is_dataclass
 from enum import Enum
 import yaml
 from yaml.loader import Loader
 from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 import logging
+import os.path
+from ime.yaml_helpers import initialise_yaml_helpers
 
+from pathlib import Path
+from pydantic import AnyUrl, BaseModel, Field
 from ime.blueprints.custom_data_types import Username
 
-class YAMLSerializable(yaml.YAMLObject):
+class YAMLDataclass(yaml.YAMLObject):
+    """A metaclass for dataclass objects to be serialised and deserialised by pyyaml.
+    """
     @classmethod
     def from_yaml(cls: Type, loader: Loader, node: MappingNode) -> Any:
         """
@@ -26,9 +32,24 @@ class YAMLSerializable(yaml.YAMLObject):
         fields = loader.construct_mapping(node)
         return cls(**fields)
 
+    def __getstate__(self) -> dict[str, Any]:
+        """Override method for pyyaml. Returns a dictionary of key and value
+        that should be serialised by yaml. Fields which have repr=False will not
+        be included.
+        See https://github.com/yaml/pyyaml/issues/612 for explanation on __getstate__.
+
+        Returns:
+            dict[str, Any]: A dictionary of key and values to be serialised in this class.
+        """
+        assert is_dataclass(self)
+        return {
+            field.name: getattr(self, field.name) 
+            for field in fields(self) 
+            if field.repr is True # Only include repr=True fields
+        }
 
 @dataclass
-class UserACL(YAMLSerializable):
+class UserACL(YAMLDataclass):
     """Model to define user access control. This differs from the group
     access control in that it validates the username against a known regex.
     """
@@ -40,7 +61,7 @@ class UserACL(YAMLSerializable):
     see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
 
 @dataclass
-class GroupACL(YAMLSerializable):
+class GroupACL(YAMLDataclass):
     """Model to define group access control."""
     yaml_tag = "!GroupACL"
     yaml_loader = yaml.SafeLoader
@@ -91,11 +112,19 @@ class IMetadata:
     """
     # change to Optional[]
     metadata: Dict[str, Any] = field(default_factory=dict)
+    object_schema: str = ""
 
 @dataclass
-class Project(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
+class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
+
+    Attributes:
+        name (str): The name of the project.
+        description (str): A brief description of the project.
+        identifiers (List[str]): A list of identifiers for the project.
+        data_classification (DataClassification): The data classification of the project.
+        principal_investigator (str): The name of the principal investigator for the project.
     """
 
     yaml_tag = "!Project"
@@ -108,7 +137,7 @@ class Project(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     principal_investigator: str = ""
 
 @dataclass
-class Experiment(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
+class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -123,7 +152,7 @@ class Experiment(YAMLSerializable, IAccessControl, IMetadata, IDataClassificatio
 
 
 @dataclass
-class Dataset(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
+class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -140,15 +169,18 @@ class Dataset(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
 
 
 @dataclass
-class Datafile(YAMLSerializable, IAccessControl, IMetadata):
+class Datafile(YAMLDataclass, IAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
-    size: float = field(repr=False, default=0)
+    size: float = 0
     filename: str = ""
-    directory: str = ""
+    directory: Path = field(default_factory=Path)
+    # This is for temporarily storing the absolute path,
+    # required for generating relative path when saving.
+    path_abs: Path = field(repr=False, default_factory=Path)
     md5sum: str = ""
     mimetype: str = ""
     dataset: str = ""
@@ -201,18 +233,9 @@ class IngestionMetadata:
     projects: List[Project] = field(default_factory=list)
     experiments: List[Experiment] = field(default_factory=list)
     datasets: List[Dataset] = field(default_factory=list)
-    datafiles: List[Datafile] = field(default_factory=list)        
-
-    _has_initialised: bool = False
-
-    def __post_init__(self):
-        """Initialises YAML constructor and representer required to parse
-        and serialise model data.
-        """
-        if not self._has_initialised:
-            yaml.add_constructor('!Username', Username_yaml_constructor)
-            yaml.add_representer(Username, Username_yaml_representer)
-            self._has_initialised = True
+    datafiles: List[Datafile] = field(default_factory=list)
+    # Ingestion metadata file location
+    file_path: Optional[Path] = None       
 
     def is_empty(self) -> bool:
         return (len(self.projects) == 0 and
@@ -221,7 +244,43 @@ class IngestionMetadata:
             len(self.datafiles) == 0
         )
 
-    def to_yaml(self):
+    def to_file(self, file_path: str):
+        """Saves metadata to `file_path`_. Datafiles will be
+        relative to the directory.
+
+        Args:
+            file_path (str): The file path to save the metadata file in.
+        """
+        path = Path(file_path)
+        with open(path, 'w') as file:
+            self._relativise_file_paths(path.parent)
+            file.write(self._to_yaml())
+        self.file_path = path
+
+    def _relativise_file_paths(self, relative_to_dir: Path) -> None:
+        """Private method for changing the Datafile paths to be relative
+        to `relative_to_dir`_ . This is necessary before saving. 
+
+        Args:
+            relative_to_dir (Path): The directory that it would be relative to.
+        """
+        assert relative_to_dir.is_absolute
+        if self.file_path is not None:
+            # If this was deserialised from a previously saved metadata file,
+            # then join the previous metadata file path with the relative path
+            # in file.directory, then relativise to the new path.
+            for file in self.datafiles:
+                curr_path = self.file_path.parent.joinpath(file.directory)
+                new_path = Path(os.path.relpath(curr_path, relative_to_dir))
+                file.directory = new_path
+        else:
+            # If this file is not previously saved, then use the absolute path for this
+            # file.
+            for file in self.datafiles:
+                curr_path = file.path_abs.parent
+                file.directory = Path(os.path.relpath(curr_path, relative_to_dir))
+
+    def _to_yaml(self):
         """
         Returns a string of the YAML representation of the metadata.
         """
@@ -271,7 +330,23 @@ class IngestionMetadata:
         return all_exps
 
     @staticmethod
-    def from_yaml(yaml_rep: str):
+    def from_file(loc: str) -> 'IngestionMetadata':
+        """Factory method for importing a metadata file from path.
+
+        Args:
+            loc (Path): The location of the metadata file.
+
+        Returns:
+            IngestionMetadata: The imported metadata.
+        """
+        metadata = IngestionMetadata()
+        metadata.file_path = Path(loc)
+        with open(loc) as f:
+            data_load = f.read()
+        return IngestionMetadata._from_yaml(data_load, metadata)
+
+    @staticmethod
+    def _from_yaml(yaml_rep: str, metadata: Optional['IngestionMetadata']):
         """Returns a IngestionMetadata object by loading metadata from content of a YAML file.
 
         Parameters
@@ -280,7 +355,8 @@ class IngestionMetadata:
             The content of a YAML file. Note that this is the content, not the path of the file.
             The function does not read from a file for you, you have to pass in the file's content.
         """
-        metadata = IngestionMetadata()
+        if metadata is None:
+            metadata = IngestionMetadata()
         objects = yaml.safe_load_all(yaml_rep)
         # Iterate through all the objects,
         # sorting them into the right list
@@ -302,38 +378,6 @@ class IngestionMetadata:
                 )
         return metadata
 
-
-
-
-# # To use:
-# dataset = Dataset()
-# dataset.dataset_name = "Calibration 10 X"
-# dataset.dataset_id = "2022-06-calibration-10-x"
-
-# # To dump into YAML
-# yaml.dump(dataset)
-
-# # To dump multiple objects
-# datafile = Datafile()
-# datafile.dataset_id = "2022-06-calibration-10-x"
-# output = [dataset, datafile]
-# yaml.dump_all(output)
-
-# # If not working with tags, strip them out and process as normal.
-# import yaml
-# from yaml.nodes import MappingNode, ScalarNode, SequenceNode
-# def strip_unknown_tag_and_construct(loader, node):
-#     node.tag = ""
-#     # print(node)
-#     if isinstance(node, ScalarNode):
-#         return loader.construct_scalar(node)
-#     if isinstance(node, SequenceNode):
-#         return loader.construct_sequence(node)
-#     if isinstance(node, MappingNode):
-#         return loader.construct_mapping(node)
-#     else:
-#         return None
-
-# yaml.SafeLoader.add_constructor(None, strip_unknown_tag_and_construct)
-# with open('test/test.yaml') as f:
-#     a = list(yaml.safe_load_all(f))
+# Initialise the representers and constructors required for
+# loading YAML elements.
+initialise_yaml_helpers()
