@@ -4,7 +4,7 @@ import typing
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
@@ -306,7 +306,7 @@ class MyTardisMetadataEditor(QMainWindow):
         - ValueError: If the experiment does not belong to any project.
         """
         for project in self.metadata.projects:
-            if project.id == experiment.project_id:
+            if project.has_identifier(experiment.project_id):
                 return project
         raise ValueError()
 
@@ -324,7 +324,7 @@ class MyTardisMetadataEditor(QMainWindow):
         - ValueError: If the dataset does not belong to any experiment.
         """
         for experiment in self.metadata.experiments:
-            if experiment.id in dataset.experiment_id:
+            if experiment.has_identifier(dataset.experiment_id):
                 return experiment
         raise ValueError()
 
@@ -341,7 +341,7 @@ class MyTardisMetadataEditor(QMainWindow):
             ValueError: If no Dataset object is found that matches the dataset_id of the given Datafile.
         """
         for dataset in self.metadata.datasets:
-            if dataset.id == datafile.dataset_id:
+            if dataset.has_identifier(datafile.dataset_id):
                 return dataset
         raise ValueError()
     
@@ -410,7 +410,7 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns:
             None
         """
-        ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.dataset_id == datafile.dataset_id)
+        ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.id == datafile.dataset_id)
         file_name = datafile.filename
         file_size = file_size_to_str(datafile.size)
         l1_child = QTreeWidgetItem([file_name,file_size,""])
@@ -440,7 +440,7 @@ class MyTardisMetadataEditor(QMainWindow):
             # Update dataset size.
             dataset_size = file_size_to_str(self.dataset_size(result.dataset))
             ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda data: (
-                data.dataset_id == result.dataset.id
+                result.dataset.has_identifier(cast(Dataset, data).)# data.identifiers)
             ))
             ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
         # Add datafile under dataset
@@ -452,7 +452,7 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             exp_size = file_size_to_str(self.experiment_size(result.experiment))
             exp_item = self.find_item_in_tree(self.ui.experimentTreeWidget, lambda data:(
-                data.experiment_id == result.experiment.id
+                result.experiment.has_identifier(data.experiment_id)
             ))
             exp_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, exp_size)
         # Create tree widget item for the project, or find existing and update size.

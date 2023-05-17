@@ -87,6 +87,65 @@ class IIdentifiers:
     """An interface for MyTardis objects with identifiers.
     """
     identifiers: Optional[List[str]] = field(default_factory=list)
+    
+    def first_identifier(self) -> str:
+        """Returns the first identifier in the list, if any. 
+        Otherwise return an empty string.
+
+        Returns:
+            str: The value of the ID.
+        """
+        if (self.identifiers is not None and 
+            len(self.identifiers) > 0):
+            return self.identifiers[0]
+        else:
+            return ""
+
+    def has_identifier(self, ids: str|List[str]) -> bool:
+        """Returns whether this object has identifier `ids`_ .
+        If `ids`_ is a list, then returns whether this object has any
+        identifier matching any in `ids`_
+
+        Args:
+            ids (str | List[str]): The id or list of ids to match
+
+        Returns:
+            bool: Whether any identifiers match.
+        """
+        if self.identifiers is None:
+            return False
+        elif type(ids) is str:
+            return ids in self.identifiers
+        else:
+            # If we are comparing with a list of ids,
+            # create sets with each list then get the
+            # intersection of the sets. If there are none,
+            # then we don't have any of the identifiers.
+            id_set = set(self.identifiers or [])
+            compare_set = set(ids)
+            intersection = id_set & compare_set
+            return len(intersection) > 0
+    
+    def add_identifier(self, value: str):
+        """Adds an identifier to the list.
+
+        Args:
+            value (str): The new ID to add.
+        """
+        if self.identifiers is None:
+            # Create the identifiers list with the new value.
+            self.identifiers = [value]
+            return
+        elif value not in self.identifiers:
+            # If the value is not in the identifiers list,
+            # then add to list.
+            self.identifiers.append(value)
+        else:
+            # If the id is already in the list, 
+            # then don't do anything.
+            return
+
+
     @property
     def id(self) -> str:
         """ID of this MyTardis object. This returns the first
@@ -103,12 +162,12 @@ class IIdentifiers:
             return ""
     
     @id.setter
-    def id(self, value):
+    def id(self, value:str):
         """Method for setting the value of id. This sets the first
         item in the identifiers field to be an id.
 
         Args:
-            value (_type_): _description_
+            value (str): The new value for ID.
         """
         if self.identifiers is None:
             # Create the identifiers list with the new value.
@@ -327,10 +386,9 @@ class IngestionMetadata:
         """
         Returns datafiles that belong to a dataset.
         """
-        id = dataset.id
         all_files: List[Datafile] = []
         for file in self.datafiles:
-            if not file.dataset_id == id:
+            if not dataset.has_identifier(file.dataset_id):
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
@@ -341,10 +399,10 @@ class IngestionMetadata:
         """
         Returns datasets that belong to a experiment.
         """
-        id = exp.id
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
-            if id not in dataset.experiment_id:
+            # Check if any dataset experiment ids match experiment identifiers
+            if not exp.has_identifier(dataset.experiment_id):
                 continue
             all_datasets.append(dataset)
         return all_datasets
@@ -353,10 +411,9 @@ class IngestionMetadata:
         """
         Returns experiments that belong to a project.
         """
-        id = proj.id
         all_exps: List[Experiment] = []
         for exp in self.experiments:
-            if not exp.project_id == id:
+            if not proj.has_identifier(exp.project_id):
                 continue
             all_exps.append(exp)
         return all_exps
