@@ -82,10 +82,47 @@ class IAccessControl:
     users: Optional[List[UserACL]] = None
     groups: Optional[List[GroupACL]] = None
 
+@dataclass
 class IIdentifiers:
     """An interface for MyTardis objects with identifiers.
     """
-    pass
+    identifiers: Optional[List[str]] = field(default_factory=list)
+    @property
+    def id(self) -> str:
+        """ID of this MyTardis object. This returns the first
+        value of the identifiers list if available. Otherwise return an empty
+        string.
+
+        Returns:
+            str: The value of the ID.
+        """
+        if (self.identifiers is not None and 
+            len(self.identifiers) > 0):
+            return self.identifiers[0]
+        else:
+            return ""
+    
+    @id.setter
+    def id(self, value):
+        """Method for setting the value of id. This sets the first
+        item in the identifiers field to be an id.
+
+        Args:
+            value (_type_): _description_
+        """
+        if self.identifiers is None:
+            # Create the identifiers list with the new value.
+            self.identifiers = [value]
+            return
+        elif len(self.identifiers) == 0 or self.identifiers[0] != value:
+            if value in self.identifiers:
+                # If the value is in the identifiers list, but not
+                # the first item, reorder so it's picked up as the id.
+                self.identifiers.remove(value)
+            self.identifiers.insert(0,value)
+        else:
+            # If the id is already the value, then don't do anything.
+            return
 
 class DataClassification(Enum):
     """An enumerator for data classification.
@@ -115,7 +152,7 @@ class IMetadata:
     object_schema: str = ""
 
 @dataclass
-class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
+class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IIdentifiers):
     """
     A class representing MyTardis Project objects.
 
@@ -130,14 +167,12 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
     yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
     description: str = ""
-    project_id: str = ""
-    alternate_ids: List[str] = field(default_factory=list)
     lead_researcher: str = ""
     name: str = ""
     principal_investigator: str = ""
 
 @dataclass
-class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
+class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IIdentifiers):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -145,14 +180,12 @@ class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
     yaml_tag = "!Experiment"
     yaml_loader = yaml.SafeLoader
     project_id: str = ""
-    experiment_id: str = ""
-    alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
     title: str = ""
 
 
 @dataclass
-class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
+class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IIdentifiers):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -161,7 +194,6 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
     yaml_loader = yaml.SafeLoader
     dataset_name: str = ""
     experiment_id: List[str] = field(default_factory=list)
-    dataset_id: str = ""
     instrument_id: str = ""
     description: str = ""
     instrument: str = ""
@@ -295,7 +327,7 @@ class IngestionMetadata:
         """
         Returns datafiles that belong to a dataset.
         """
-        id = dataset.dataset_id
+        id = dataset.id
         all_files: List[Datafile] = []
         for file in self.datafiles:
             if not file.dataset_id == id:
@@ -309,7 +341,7 @@ class IngestionMetadata:
         """
         Returns datasets that belong to a experiment.
         """
-        id = exp.experiment_id
+        id = exp.id
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
             if id not in dataset.experiment_id:
@@ -321,7 +353,7 @@ class IngestionMetadata:
         """
         Returns experiments that belong to a project.
         """
-        id = proj.project_id
+        id = proj.id
         all_exps: List[Experiment] = []
         for exp in self.experiments:
             if not exp.project_id == id:

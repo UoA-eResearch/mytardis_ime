@@ -139,7 +139,7 @@ class IngestionMetadataModel:
         Returns a filtered data model of all Experiments that belong 
         to a Project in this model. 
         """
-        id = project.project_id
+        id = project.id
         proxy = self.experiments.proxy()
         proxy.set_filter_by_instance(lambda exp: exp.project_id == id)
         return proxy
@@ -149,7 +149,7 @@ class IngestionMetadataModel:
         Returns a filtered data model of all Datasets that belong to an
         Experiment in this model.
         """
-        id = experiment.experiment_id
+        id = experiment.id
         proxy = self.datasets.proxy()
         # Since the experiment_id field is a list, we add
         # a filter function to go through the list.
@@ -164,7 +164,7 @@ class IngestionMetadataModel:
         """
         id = experiment.project_id
         proxy = self.projects.proxy()
-        proxy.set_filter_by_instance(lambda proj: proj.project_id == id)
+        proxy.set_filter_by_instance(lambda proj: proj.id == id)
         return proxy
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):

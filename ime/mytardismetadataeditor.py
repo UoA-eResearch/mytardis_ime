@@ -306,7 +306,7 @@ class MyTardisMetadataEditor(QMainWindow):
         - ValueError: If the experiment does not belong to any project.
         """
         for project in self.metadata.projects:
-            if project.project_id == experiment.project_id:
+            if project.id == experiment.project_id:
                 return project
         raise ValueError()
 
@@ -324,7 +324,7 @@ class MyTardisMetadataEditor(QMainWindow):
         - ValueError: If the dataset does not belong to any experiment.
         """
         for experiment in self.metadata.experiments:
-            if experiment.experiment_id in dataset.experiment_id:
+            if experiment.id in dataset.experiment_id:
                 return experiment
         raise ValueError()
 
@@ -341,7 +341,7 @@ class MyTardisMetadataEditor(QMainWindow):
             ValueError: If no Dataset object is found that matches the dataset_id of the given Datafile.
         """
         for dataset in self.metadata.datasets:
-            if dataset.dataset_id == datafile.dataset_id:
+            if dataset.id == datafile.dataset_id:
                 return dataset
         raise ValueError()
     
@@ -440,7 +440,7 @@ class MyTardisMetadataEditor(QMainWindow):
             # Update dataset size.
             dataset_size = file_size_to_str(self.dataset_size(result.dataset))
             ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda data: (
-                data.dataset_id == result.dataset.dataset_id
+                data.dataset_id == result.dataset.id
             ))
             ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
         # Add datafile under dataset
@@ -452,7 +452,7 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             exp_size = file_size_to_str(self.experiment_size(result.experiment))
             exp_item = self.find_item_in_tree(self.ui.experimentTreeWidget, lambda data:(
-                data.experiment_id == result.experiment.experiment_id
+                data.experiment_id == result.experiment.id
             ))
             exp_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, exp_size)
         # Create tree widget item for the project, or find existing and update size.
@@ -461,7 +461,7 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             proj_size = file_size_to_str(self.project_size(result.project))
             proj_item = self.find_item_in_tree(self.ui.projectTreeWidget, lambda data:(
-                data.project_id == result.project.project_id
+                data.id == result.project.id
             ))
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
 
