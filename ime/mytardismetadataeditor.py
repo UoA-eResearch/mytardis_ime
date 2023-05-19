@@ -83,13 +83,18 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         index = self.ui.datasetTreeWidget.indexAt(point)
         if not index.isValid() or index.parent().isValid():
-            return
+            menu = QMenu()
+            delete_action = menu.addAction("Delete this File")
+            delete_action.triggered.connect(self.delete_items_datafile)
+            menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
         
-        menu = QMenu()
-        action = menu.addAction("Add New File...")
-        action.triggered.connect(self.openWizardWindowSkipDataset)
-        #action = menu.addAction("Delete this Dataset")
-        menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
+        else:
+            menu = QMenu()
+            action = menu.addAction("Add New File...")
+            action.triggered.connect(self.openWizardWindowSkipDataset)
+            delete_action = menu.addAction("Delete this Dataset")
+            delete_action.triggered.connect(self.delete_items_dataset)
+            menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
     
     def openWizardWindowSkipDataset (self):
         """
@@ -110,8 +115,43 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
     
-    def deleteItems(self):
-        self.ui.datasetTreeWidget.takeTopLevelItem(self.datasetTreeWidget.indexFromItem(self.datasetTreeWidget.currentItem(), 0).row())
+    def delete_items_dataset(self):
+        selected_item = self.ui.datasetTreeWidget.currentItem() ## it's the Dataset
+        if selected_item:
+            confirm_msg = QMessageBox()
+            confirm_msg.setWindowTitle("Open another file?")
+            confirm_msg.setText('Confirm to remove the dataset?')
+            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+            res = confirm_msg.exec()
+            if res == QMessageBox.StandardButton.Cancel:
+                # If user did not want to proceed, then exit.
+                return
+            self.ui.datasetTreeWidget.takeTopLevelItem(self.ui.datasetTreeWidget.indexOfTopLevelItem(selected_item))
+            datafiles_impacted = self.metadata.get_files_by_dataset(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
+        self.metadata.datasets.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
+        for file in datafiles_impacted:
+            self.metadata.datafiles.remove(file)
+
+    def delete_items_datafile(self):
+        selected_item = self.ui.datasetTreeWidget.currentItem() ### it's the file name
+        if selected_item:
+            confirm_msg = QMessageBox()
+            confirm_msg.setWindowTitle("Open another file?")
+            confirm_msg.setText('Confirm to remove the dataset?')
+            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+            res = confirm_msg.exec()
+            if res == QMessageBox.StandardButton.Cancel:
+                # If user did not want to proceed, then exit.
+                return
+            file_name = selected_item.text(0)
+            for datafile in self.metadata.datafiles:
+                if datafile.filename == file_name:
+                    self.metadata.datafiles.remove(datafile)
+                    break
+                else:
+                    pass
 
     def experimentMenuTreeWidget(self, point):
         """
@@ -127,9 +167,51 @@ class MyTardisMetadataEditor(QMainWindow):
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
         action.triggered.connect(self.openWizardWindowSkipExperiment)
-        #action = menu.addAction("Delete this Experiment")
+        #action = menu.addAction("Delete this ")
+        delete_action = menu.addAction("Delete this Experiment")
+        delete_action.triggered.connect(self.delete_items_experiment)
         menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
 
+    def delete_items_experiment(self):
+        selected_item = self.ui.experimentTreeWidget.currentItem() ## it's the Experiment
+        if selected_item:
+            confirm_msg = QMessageBox()
+            confirm_msg.setWindowTitle("Open another file?")
+            confirm_msg.setText('Confirm to remove the experiment?')
+            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+            res = confirm_msg.exec()
+            if res == QMessageBox.StandardButton.Cancel:
+                # If user did not want to proceed, then exit.
+                return
+            self.ui.experimentTreeWidget.takeTopLevelItem(self.ui.experimentTreeWidget.indexOfTopLevelItem(selected_item))
+            experiment = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+            datasets_impacted = self.metadata.get_datasets_by_experiment(experiment)
+
+            datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
+            for dataset in datasets_impacted:
+                datafiles_related = self.metadata.get_files_by_dataset(dataset)
+                datafiles_impacted.extend(datafiles_related)
+                self.metadata.datasets.remove(dataset)
+
+        self.metadata.experiments.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
+        
+        for file in datafiles_impacted:
+            self.metadata.datafiles.remove(file)
+        
+        # clear the dataset tree widget and repopulate it with the remaining datasets/datafiles
+        self.ui.datasetTreeWidget.clear()
+        for ds in self.metadata.datasets:    
+            self.add_dataset_to_tree(ds)
+        ds_id = [ds.dataset_id for ds in self.metadata.datasets]
+
+        for file in self.metadata.datafiles:
+            if file.dataset_id in ds_id: 
+                #print(file)
+                self.add_datafile_to_tree(file)
+            else:
+                pass
+        
     def openWizardWindowSkipExperiment(self):  
         """
         Displays a wizard window to add new files to an existing experiment. 
@@ -163,9 +245,63 @@ class MyTardisMetadataEditor(QMainWindow):
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
         action.triggered.connect(self.openWizardWindowSkipProject)
-        #action = menu.addAction("Delete this Project")
+        delete_action = menu.addAction("Delete this Project")
+        delete_action.triggered.connect(self.delete_items_project)
         menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
 
+    def delete_items_project(self):
+        selected_item = self.ui.projectTreeWidget.currentItem()
+        if selected_item:
+            confirm_msg = QMessageBox()
+            confirm_msg.setWindowTitle("Open another file?")
+            confirm_msg.setText('Confirm to remove the project?')
+            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+            res = confirm_msg.exec()
+            if res == QMessageBox.StandardButton.Cancel:
+                # If user did not want to proceed, then exit.
+                return
+            self.ui.projectTreeWidget.takeTopLevelItem(self.ui.projectTreeWidget.indexOfTopLevelItem(selected_item)) # remove the project from the project tree widget
+            # get the experiments and datasets impacted by the deletion of the project
+            project = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+            experiments_impacted = self.metadata.get_experiments_by_project(project)
+            datasets_impacted = [] # the full list of datasets impacted by the deletion of the experiments
+            for experiment in experiments_impacted:
+                dataset_related = self.metadata.get_datasets_by_experiment(experiment)
+                datasets_impacted.extend(dataset_related)
+                self.metadata.experiments.remove(experiment)
+
+            datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
+            for dataset in datasets_impacted:
+                datafiles_related = self.metadata.get_files_by_dataset(dataset)
+                datafiles_impacted.extend(datafiles_related)
+                self.metadata.datasets.remove(dataset)
+
+        # remove the experiment from the metadata
+        self.metadata.projects.remove(project)
+
+        # remove the datafiles impacted by the deletion of the project from the metadata
+        for file in datafiles_impacted:
+            self.metadata.datafiles.remove(file)
+
+        # repopulate the experiment tree widget with the remaining experiments after metadata is ready
+        self.ui.experimentTreeWidget.clear()
+        for exp in self.metadata.experiments:
+            self.add_experiment_to_tree(exp)
+
+        self.ui.datasetTreeWidget.clear()
+        for ds in self.metadata.datasets:
+            self.add_dataset_to_tree(ds)
+        
+        # clear the datafile tree widget and repopulate it with the remaining datafiles
+        ds_id = [ds.dataset_id for ds in self.metadata.datasets]
+        for file in self.metadata.datafiles:
+            if file.dataset_id in ds_id: 
+                #print(file)
+                self.add_datafile_to_tree(file)
+            else:
+                pass
+        
     def openWizardWindowSkipProject(self):  
         """
         Displays a wizard window to add new files to a new experiment in an existing project.
@@ -183,6 +319,18 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui = AddFilesWizardSkipProject(model,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
+    
+    def clear(self, tree_widget: QTreeWidget):
+        """
+        Clears the tree widgets.
+
+        Args: None
+
+        Returns: None
+        """
+        self._itemDict = {}
+        self._firstItem = None
+        tree_widget.clear(self)
 
     def onSelectDataset(self, dataset: Dataset):
         """
@@ -214,7 +362,7 @@ class MyTardisMetadataEditor(QMainWindow):
         fileinfo = datafile_lookup[0]
         # Set controls with value
         self.ui.datafileProperties.set_datafile(fileinfo)  
-
+    
     def onClickedDataset(self):
         """
         Handles the click event on the dataset tree widget, updates the property editor accordingly.
@@ -228,6 +376,7 @@ class MyTardisMetadataEditor(QMainWindow):
             props_widget.setCurrentIndex(0)
             self.onSelectDataset(item_data)
         else:
+            ### this indicates we are looking at a datafile
             parent = item.parent()
             dataset = parent.data(0, Qt.ItemDataRole.UserRole)
             props_widget.setCurrentIndex(1)
