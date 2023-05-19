@@ -82,19 +82,29 @@ class MyTardisMetadataEditor(QMainWindow):
         :param point: QPoint representing the position where the context menu was triggered.
         """
         index = self.ui.datasetTreeWidget.indexAt(point)
-        if not index.isValid() or index.parent().isValid():
-            menu = QMenu()
+        item = self.ui.datasetTreeWidget.itemAt(point)
+        item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        menu = QMenu()
+        if not index.isValid() or index.parent().isValid(): # if the item is not a dataset
             delete_action = menu.addAction("Delete this File")
-            delete_action.triggered.connect(self.delete_items_datafile)
-            menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
+            for datafile in self.metadata.datafiles:
+                if datafile.filename == item_data:
+                    file = datafile
+            if file.data_status == 'INGESTED':
+                delete_action.setEnabled(False)
+            else:
+                delete_action.triggered.connect(self.delete_items_datafile)
         
         else:
-            menu = QMenu()
             action = menu.addAction("Add New File...")
             action.triggered.connect(self.openWizardWindowSkipDataset)
             delete_action = menu.addAction("Delete this Dataset")
-            delete_action.triggered.connect(self.delete_items_dataset)
-            menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))
+            # disable delete action if dataset has been ingested in MyTardis
+            if item_data.data_status == 'INGESTED':
+                delete_action.setEnabled(False)  
+            else:
+                delete_action.triggered.connect(self.delete_items_dataset)
+        menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))     
     
     def openWizardWindowSkipDataset (self):
         """
@@ -163,13 +173,18 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns: None
         """
+        index = self.ui.experimentTreeWidget.indexAt(point)
+        item = self.ui.experimentTreeWidget.itemAt(point)
+        item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
         action.triggered.connect(self.openWizardWindowSkipExperiment)
-        #action = menu.addAction("Delete this ")
         delete_action = menu.addAction("Delete this Experiment")
-        delete_action.triggered.connect(self.delete_items_experiment)
+        if item_data.data_status == 'INGESTED':
+            delete_action.setEnabled(False)
+        else:
+            delete_action.triggered.connect(self.delete_items_experiment)
         menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
 
     def delete_items_experiment(self):
@@ -195,7 +210,7 @@ class MyTardisMetadataEditor(QMainWindow):
                 self.metadata.datasets.remove(dataset)
 
         self.metadata.experiments.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
-        
+
         for file in datafiles_impacted:
             self.metadata.datafiles.remove(file)
         
@@ -242,11 +257,18 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """    
         # We build the menu.
+        index = self.ui.projectTreeWidget.indexAt(point)
+        item = self.ui.projectTreeWidget.itemAt(point)
+        item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
         action.triggered.connect(self.openWizardWindowSkipProject)
         delete_action = menu.addAction("Delete this Project")
-        delete_action.triggered.connect(self.delete_items_project)
+        if item_data.data_status == 'INGESTED':
+            delete_action.setEnabled(False)
+        else:
+            delete_action.triggered.connect(self.delete_items_project)
         menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
 
     def delete_items_project(self):
