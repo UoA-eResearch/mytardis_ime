@@ -410,7 +410,9 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns:
             None
         """
-        ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: ds.id == datafile.dataset_id)
+        ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: 
+            cast(Dataset, ds).has_identifier(datafile.dataset_id)
+        )
         file_name = datafile.filename
         file_size = file_size_to_str(datafile.size)
         l1_child = QTreeWidgetItem([file_name,file_size,""])
@@ -440,7 +442,7 @@ class MyTardisMetadataEditor(QMainWindow):
             # Update dataset size.
             dataset_size = file_size_to_str(self.dataset_size(result.dataset))
             ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda data: (
-                result.dataset.has_identifier(cast(Dataset, data).)# data.identifiers)
+                result.dataset.has_identifier(cast(Dataset, data).identifiers or [])
             ))
             ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
         # Add datafile under dataset
@@ -461,7 +463,7 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             proj_size = file_size_to_str(self.project_size(result.project))
             proj_item = self.find_item_in_tree(self.ui.projectTreeWidget, lambda data:(
-                data.id == result.project.id
+                cast(Project, data).has_identifier(result.project.identifiers or [])
             ))
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
 

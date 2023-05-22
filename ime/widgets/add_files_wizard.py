@@ -199,7 +199,7 @@ class AddFilesWizard(QWizard):
         else:
             result.project = Project()
             result.project.name = self.ui.projectNameLineEdit.text()
-            result.project.id = self.ui.projectIDLineEdit.text()
+            result.project.add_identifier(self.ui.projectIDLineEdit.text())
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
             
         if self.field('isExistingExperiment'):
@@ -207,8 +207,8 @@ class AddFilesWizard(QWizard):
         else:
             result.experiment = Experiment()
             result.experiment.title = self.ui.experimentNameLineEdit.text()
-            result.experiment.id = self.ui.experimentIDLineEdit.text()
-            result.experiment.project_id = result.project.id
+            result.experiment.add_identifier(self.ui.experimentIDLineEdit.text())
+            result.experiment.project_id = result.project.first_identifier()
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
         if self.field('isExistingDataset'):
@@ -216,16 +216,16 @@ class AddFilesWizard(QWizard):
         else:
             result.dataset = Dataset()
             result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-            result.dataset.id = self.ui.datasetIDLineEdit.text()
+            result.dataset.add_identifier(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
-            result.dataset.experiment_id = [result.experiment.id]
+            result.dataset.experiment_id = [result.experiment.first_identifier()]
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.id
+            datafile.dataset_id = result.dataset.first_identifier()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             path = Path(table.item(row, 2).text())
@@ -368,7 +368,7 @@ class AddFilesWizardSkipDataset(QWizard):
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.id
+            datafile.dataset_id = result.dataset.first_identifier()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -518,17 +518,17 @@ class AddFilesWizardSkipExperiment(QWizard):
         ### assume new dataset
         result.dataset = Dataset()
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.id = self.ui.datasetIDLineEdit.text()
+        result.dataset.add_identifier(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.id]
+        result.dataset.experiment_id = [result.experiment.first_identifier()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.id
+            datafile.dataset_id = result.dataset.first_identifier()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -688,23 +688,23 @@ class AddFilesWizardSkipProject(QWizard):
         ### assume new experiment
         result.experiment = Experiment()
         result.experiment.title = self.ui.experimentNameLineEdit.text()
-        result.experiment.id = self.ui.experimentIDLineEdit.text()
-        result.experiment.project_id = result.project.id
+        result.experiment.add_identifier(self.ui.experimentIDLineEdit.text())
+        result.experiment.project_id = result.project.first_identifier()
         result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
         ### assume new dataset
         result.dataset = Dataset()
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.id = self.ui.datasetIDLineEdit.text()
+        result.dataset.add_identifier(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.id]
+        result.dataset.experiment_id = [result.experiment.first_identifier()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.id
+            datafile.dataset_id = result.dataset.first_identifier()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())

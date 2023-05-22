@@ -9,7 +9,7 @@ which implement/extend Qt model and proxy interfaces; and an IngestionMetadataMo
 model which adapts IngestionMetadata from models.py for Qt, using the two other
 models.
 """
-from typing import Any, Callable, Generic, List, Optional, TypeVar, Type
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Type, cast
 import typing
 from PyQt5.QtCore import (
     QAbstractListModel,
@@ -139,9 +139,10 @@ class IngestionMetadataModel:
         Returns a filtered data model of all Experiments that belong 
         to a Project in this model. 
         """
-        id = project.id
         proxy = self.experiments.proxy()
-        proxy.set_filter_by_instance(lambda exp: exp.project_id == id)
+        proxy.set_filter_by_instance(lambda exp: 
+            project.has_identifier(cast(Experiment, exp).project_id)
+        )
         return proxy
 
     def datasets_for_experiment(self, experiment: Experiment):
@@ -149,11 +150,12 @@ class IngestionMetadataModel:
         Returns a filtered data model of all Datasets that belong to an
         Experiment in this model.
         """
-        id = experiment.id
         proxy = self.datasets.proxy()
         # Since the experiment_id field is a list, we add
         # a filter function to go through the list.
-        proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
+        proxy.set_filter_by_instance(lambda dataset:
+            experiment.has_identifier(cast(Dataset, dataset).experiment_id)
+        )
         return proxy
     
     def project_for_experiment(self, experiment: Experiment):
@@ -162,9 +164,10 @@ class IngestionMetadataModel:
         :param experiment: An Experiment object.
         :return: A DataclassTableProxy of projects.
         """
-        id = experiment.project_id
         proxy = self.projects.proxy()
-        proxy.set_filter_by_instance(lambda proj: proj.id == id)
+        proxy.set_filter_by_instance(lambda proj: 
+            cast(Project, proj).has_identifier(experiment.project_id)
+        )
         return proxy
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
