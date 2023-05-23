@@ -47,7 +47,6 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset = dataset
         self.dataset.bind_input("dataset_name", self.ui.datasetNameLineEdit)
-        self.dataset.bind_input("id", self.ui.datasetIDLineEdit)
         self.dataset.bind_input("instrument_id", self.ui.instrumentIDLineEdit)
 
 class DatafilePropertyEditor(QWidget):
@@ -125,7 +124,6 @@ class ExperimentPropertyEditor(QWidget):
         """
         self.exp = experiment
         self.exp.bind_input("title", self.ui.experimentNameLineEdit)
-        self.exp.bind_input("id", self.ui.experimentIDLineEdit)
         self.exp.bind_input("description", self.ui.experimentDescriptionLineEdit)
 
 class ProjectPropertyEditor(QWidget):
@@ -165,6 +163,5 @@ class ProjectPropertyEditor(QWidget):
         """
         self.project = project
         self.project.bind_input("name", self.ui.projectNameLineEdit)
-        self.project.bind_input("id", self.ui.projectIDLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
         self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)

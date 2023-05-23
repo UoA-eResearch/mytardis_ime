@@ -62,20 +62,6 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Dataset ID</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="datasetIDLineEdit">
-             <property name="placeholderText">
-              <string>A unique dataset identifier, RAiD for UoA datasets, could also be Dataset DOIs</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_24">
              <property name="text">
@@ -89,6 +75,16 @@
               <string>A unique identifier to the instrument that the data was generated on. Currently there is no standard persistent identifier that has widespread community adoption (DOIs are the most likely candidate).</string>
              </property>
             </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Identifiers</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QListView" name="identifiersList"/>
            </item>
           </layout>
          </widget>
@@ -146,7 +142,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>165</width>
+            <width>486</width>
             <height>50</height>
            </rect>
           </property>
@@ -307,8 +303,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>96</width>
-            <height>26</height>
+            <width>100</width>
+            <height>30</height>
            </rect>
           </property>
           <attribute name="label">
