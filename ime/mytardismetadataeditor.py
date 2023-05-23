@@ -112,6 +112,10 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Initializes the AddFilesWizardSkipDataset UI and shows it to the user. Connects the submitted event of the UI
         to the reFresh event handler.
+
+        Args: None
+
+        Returns: None
         """  
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()
@@ -126,6 +130,17 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui.show()
     
     def delete_items_dataset(self):
+        """
+        Deletes the selected dataset and its associated files from the dataset tree.
+
+        This function prompts the user for confirmation before deleting the dataset.
+        If the user confirms, the dataset and its associated files are removed from the dataset tree.
+
+        Note: The dataset and its associated files are also removed from the metadata.
+
+        Returns:
+            None
+        """
         selected_item = self.ui.datasetTreeWidget.currentItem() ## it's the Dataset
         if selected_item:
             confirm_msg = QMessageBox()
@@ -144,6 +159,16 @@ class MyTardisMetadataEditor(QMainWindow):
             self.metadata.datafiles.remove(file)
 
     def delete_items_datafile(self):
+        """
+        Deletes the selected data file from the dataset tree.
+
+        This function prompts the user for confirmation before deleting the data file.
+        If the user confirms, the data file is removed from the dataset tree and metadata.
+
+        Args: None
+
+        Returns: None
+        """
         selected_item = self.ui.datasetTreeWidget.currentItem() ### it's the file name
         if selected_item:
             confirm_msg = QMessageBox()
@@ -188,6 +213,14 @@ class MyTardisMetadataEditor(QMainWindow):
         menu.exec_(self.ui.experimentTreeWidget.mapToGlobal(point))
 
     def delete_items_experiment(self):
+        """
+        Event handler for the "Delete this Experiment" action triggered in the context menu of the experimentTreeWidget.
+        Deletes the selected experiment and its associated datasets and data files from the experimentTreeWidget and metadata.
+
+        Args: None
+
+        Returns: None
+        """
         selected_item = self.ui.experimentTreeWidget.currentItem() ## it's the Experiment
         if selected_item:
             confirm_msg = QMessageBox()
@@ -272,6 +305,14 @@ class MyTardisMetadataEditor(QMainWindow):
         menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
 
     def delete_items_project(self):
+        """
+        Event handler for the "Delete this Project" action triggered in the context menu of the projectTreeWidget.
+        Deletes the selected project and its associated experiments, datasets, and data files from the projectTreeWidget and metadata.
+
+        Args: None
+
+        Returns: None
+        """
         selected_item = self.ui.projectTreeWidget.currentItem()
         if selected_item:
             confirm_msg = QMessageBox()
