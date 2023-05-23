@@ -24,7 +24,6 @@ class DatasetPropertyEditor(QWidget):
         self.ui = Ui_DatasetProps()
         self.ui.setupUi(self)
         self.metadata_tab = self.ui.page_3
-    
         self._set_bound_dataset(BoundObject())
     
     def set_read_only(widget: QWidget, read_only: bool = True):

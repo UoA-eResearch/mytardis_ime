@@ -198,7 +198,6 @@ class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
     dataset: str = ""
     dataset_id: str = ""
 
-
 def Username_yaml_representer(dumper: Dumper, data: 'Username') -> ScalarNode:
     """Function for representing this Username in YAML.
     When serialising to YAML that contains Username instances, you'll
