@@ -52,9 +52,9 @@ class Ui_ProjectPropertyEditor(object):
         self.leadResearcherLineEdit = QtWidgets.QLineEdit(self.frame_3)
         self.leadResearcherLineEdit.setObjectName("leadResearcherLineEdit")
         self.formLayout_4.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.leadResearcherLineEdit)
-        self.identifiersList = QtWidgets.QListView(self.frame_3)
-        self.identifiersList.setObjectName("identifiersList")
-        self.formLayout_4.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.identifiersList)
+        self.identifierList = IdentifierList(self.frame_3)
+        self.identifierList.setObjectName("identifierList")
+        self.formLayout_4.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.identifierList)
         self.gridLayout_2.addWidget(self.frame_3, 0, 0, 1, 1)
         self.toolBox_3.addItem(self.page_7, "")
         self.page_8 = QtWidgets.QWidget()
@@ -88,5 +88,6 @@ class Ui_ProjectPropertyEditor(object):
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_7), _translate("ProjectPropertyEditor", "General"))
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_8), _translate("ProjectPropertyEditor", "User and group access"))
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.metadata_tab), _translate("ProjectPropertyEditor", "Metadata"))
+from ime.widgets.identifier_list import IdentifierList
 from ime.widgets.metadata_tab import MetadataTab
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab

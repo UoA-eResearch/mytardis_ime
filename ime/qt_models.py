@@ -46,7 +46,9 @@ class PythonListModel(QAbstractListModel):
         Args:
             sourceList (List[str]): The backing Python string list.
         """
+        self.beginResetModel()
         self.list = sourceList
+        self.endResetModel()
 
     def remove_value(self, val: str) -> bool:
         """Remove a given value from the list, and send appropriate
@@ -73,6 +75,8 @@ class PythonListModel(QAbstractListModel):
 
     def rowCount(self, parent = QModelIndex()) -> int:
         """Returns the number of rows in the model."""
+        if not hasattr(self, 'list'):
+            return 0
         return len(self.list)
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
@@ -88,7 +92,7 @@ class PythonListModel(QAbstractListModel):
 
     def data(self, index: QModelIndex, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
         """Returns the data stored under the given role for the item referred to by the index."""
-        if role == Qt.ItemDataRole.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
             return self.list[index.row()]
 
     def insertRows(self, row: int, count: int, parent = QModelIndex()) -> bool:

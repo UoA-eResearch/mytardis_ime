@@ -66,7 +66,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QListView" name="identifiersList"/>
+        <widget class="IdentifierList" name="identifierList" native="true"/>
        </item>
       </layout>
      </widget>
@@ -75,8 +75,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>96</width>
-        <height>26</height>
+        <width>506</width>
+        <height>367</height>
        </rect>
       </property>
       <attribute name="label">
@@ -93,8 +93,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>96</width>
-        <height>26</height>
+        <width>506</width>
+        <height>367</height>
        </rect>
       </property>
       <attribute name="label">
@@ -117,6 +117,12 @@
    <class>OverridableAccessControlTab</class>
    <extends>QWidget</extends>
    <header>ime.widgets.overridable_access_control_tab</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IdentifierList</class>
+   <extends>QWidget</extends>
+   <header>ime.widgets.identifier_list</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

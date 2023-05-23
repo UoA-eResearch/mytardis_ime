@@ -85,7 +85,7 @@
            <widget class="QLineEdit" name="leadResearcherLineEdit"/>
           </item>
           <item row="1" column="1">
-           <widget class="QListView" name="identifiersList"/>
+           <widget class="IdentifierList" name="identifierList" native="true"/>
           </item>
          </layout>
         </widget>
@@ -139,6 +139,12 @@
    <class>ProjectAccessControlTab</class>
    <extends>QWidget</extends>
    <header>ime.widgets.project_access_control_tab</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IdentifierList</class>
+   <extends>QWidget</extends>
+   <header>ime.widgets.identifier_list</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

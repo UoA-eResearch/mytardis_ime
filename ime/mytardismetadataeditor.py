@@ -426,12 +426,16 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         # Modify IngestionMetadata to insert or modify models
         if result.is_new_dataset:
+            result.dataset._store = self.metadata
             self.metadata.datasets.append(result.dataset)
         if result.is_new_project:
+            result.project._store = self.metadata
             self.metadata.projects.append(result.project)
         if result.is_new_experiment:
+            result.experiment._store = self.metadata
             self.metadata.experiments.append(result.experiment)
         for new_file in result.file_list:
+            new_file._store = self.metadata
             self.metadata.datafiles.append(new_file)
         # Create tree widget item for the dataset
         ds_item = None
@@ -454,7 +458,7 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             exp_size = file_size_to_str(self.experiment_size(result.experiment))
             exp_item = self.find_item_in_tree(self.ui.experimentTreeWidget, lambda data:(
-                result.experiment.has_identifier(data.experiment_id)
+                result.experiment.has_identifier(cast(Experiment, data).identifiers or [])
             ))
             exp_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, exp_size)
         # Create tree widget item for the project, or find existing and update size.

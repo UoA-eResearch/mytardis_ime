@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
 from ime.bindable import BoundObject
 from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project
-from ime.ui.ui_dataset_props import Ui_DatasetProps
+from ime.qt_models import PythonListModel
+from ime.ui.ui_dataset_props import IdentifierList, Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
 from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
 from ime.ui.ui_project_props import Ui_ProjectPropertyEditor
@@ -12,6 +13,7 @@ from ime.widgets.metadata_tab import MetadataTab
 class DatasetPropertyEditor(QWidget):
     dataset: BoundObject[Dataset]
     metadata_tab: MetadataTab
+    identifiers_model: PythonListModel
 
     def __init__(self, parent=None):
         """
@@ -35,6 +37,7 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset.set_object(dataset)
         self.metadata_tab.update_metadata_object(dataset)
+        self.ui.identifierList.set_data(dataset)
         inherited_acl = IAccessControl() # Stub - empty list.
         self.ui.accessControlTab.set_data(dataset, inherited_acl)
 
@@ -115,6 +118,7 @@ class ExperimentPropertyEditor(QWidget):
         self.metadata_tab.update_metadata_object(experiment)
         inherited_acl = IAccessControl() # Stub - empty list.
         self.ui.accessControlTab.set_data(experiment, inherited_acl)
+        self.ui.identifierList.set_data(experiment)
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]):
         """Set a bound object for the experiment.
@@ -153,6 +157,7 @@ class ProjectPropertyEditor(QWidget):
         self.project.set_object(project)
         self.metadata_tab.update_metadata_object(project)
         self.ui.accessControlTab.set_data(project)
+        self.ui.identifierList.set_data(project)
 
     def _set_bound_project(self, project: BoundObject[Project]):
         """

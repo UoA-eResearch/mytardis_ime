@@ -40,12 +40,12 @@ class Ui_ExperimentPropertyEditor(object):
         self.label_15 = QtWidgets.QLabel(self.page_4)
         self.label_15.setObjectName("label_15")
         self.gridLayout_3.addWidget(self.label_15, 0, 0, 1, 1)
-        self.identifiersList = QtWidgets.QListView(self.page_4)
-        self.identifiersList.setObjectName("identifiersList")
-        self.gridLayout_3.addWidget(self.identifiersList, 1, 1, 1, 1)
+        self.identifierList = IdentifierList(self.page_4)
+        self.identifierList.setObjectName("identifierList")
+        self.gridLayout_3.addWidget(self.identifierList, 1, 1, 1, 1)
         self.toolBox_2.addItem(self.page_4, "")
         self.page_5 = QtWidgets.QWidget()
-        self.page_5.setGeometry(QtCore.QRect(0, 0, 96, 26))
+        self.page_5.setGeometry(QtCore.QRect(0, 0, 506, 367))
         self.page_5.setObjectName("page_5")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.page_5)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -54,7 +54,7 @@ class Ui_ExperimentPropertyEditor(object):
         self.verticalLayout_4.addWidget(self.accessControlTab)
         self.toolBox_2.addItem(self.page_5, "")
         self.metadata_tab = MetadataTab()
-        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 96, 26))
+        self.metadata_tab.setGeometry(QtCore.QRect(0, 0, 506, 367))
         self.metadata_tab.setObjectName("metadata_tab")
         self.gridLayout_13 = QtWidgets.QGridLayout(self.metadata_tab)
         self.gridLayout_13.setObjectName("gridLayout_13")
@@ -74,5 +74,6 @@ class Ui_ExperimentPropertyEditor(object):
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_4), _translate("ExperimentPropertyEditor", "General"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("ExperimentPropertyEditor", "User and group access"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.metadata_tab), _translate("ExperimentPropertyEditor", "Metadata"))
+from ime.widgets.identifier_list import IdentifierList
 from ime.widgets.metadata_tab import MetadataTab
 from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab

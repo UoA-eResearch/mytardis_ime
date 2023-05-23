@@ -145,43 +145,30 @@ class IIdentifiers:
             # then don't do anything.
             return
 
-
-    @property
-    def id(self) -> str:
-        """ID of this MyTardis object. This returns the first
-        value of the identifiers list if available. Otherwise return an empty
-        string.
-
-        Returns:
-            str: The value of the ID.
-        """
-        if (self.identifiers is not None and 
-            len(self.identifiers) > 0):
-            return self.identifiers[0]
-        else:
-            return ""
-    
-    @id.setter
-    def id(self, value:str):
-        """Method for setting the value of id. This sets the first
-        item in the identifiers field to be an id.
+    def update_identifier(self, old_id: str, id: str) -> bool:
+        """Method for updating an identifier. Classes
+        inheriting may override with custom behaviour.
 
         Args:
-            value (str): The new value for ID.
+            id (str): The new ID.
+            old_id (str): The old ID to be replaced.
         """
-        if self.identifiers is None:
-            # Create the identifiers list with the new value.
-            self.identifiers = [value]
-            return
-        elif len(self.identifiers) == 0 or self.identifiers[0] != value:
-            if value in self.identifiers:
-                # If the value is in the identifiers list, but not
-                # the first item, reorder so it's picked up as the id.
-                self.identifiers.remove(value)
-            self.identifiers.insert(0,value)
-        else:
-            # If the id is already the value, then don't do anything.
-            return
+        assert self.identifiers is not None
+        idx = self.identifiers.index(old_id)
+        self.identifiers[idx] = id
+        return True
+
+
+    def delete_identifier(self, id_to_delete: str) -> bool:
+        """Method for deleting an identifier. Classes
+        inheriting may override with custom behaviour.
+
+        Args:
+            id_to_delete (str): The ID to delete.
+        """
+        assert self.identifiers is not None
+        self.identifiers.remove(id_to_delete)
+        return True
 
 class DataClassification(Enum):
     """An enumerator for data classification.
@@ -229,6 +216,28 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IId
     lead_researcher: str = ""
     name: str = ""
     principal_investigator: str = ""
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
+
+    def update_identifier(self, old_id: str, id: str):
+        assert self._store is not None
+        # Find all experiments and update their IDs.
+        for experiment in self._store.experiments:
+            if experiment.project_id == old_id:
+                experiment.project_id = id
+        return super().update_identifier(old_id, id)
+
+    def delete_identifier(self, id_to_delete: str):
+        if self.identifiers is None:
+            return False
+        if len(self.identifiers) <= 1:
+            return False
+        super().delete_identifier(id_to_delete)
+        new_id = self.first_identifier()
+        assert self._store is not None
+        for experiment in self._store.experiments:
+            if experiment.project_id == id_to_delete:
+                experiment.project_id = new_id
+        return True
 
 @dataclass
 class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IIdentifiers):
@@ -241,7 +250,29 @@ class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, 
     project_id: str = ""
     description: str = ""
     title: str = ""
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
+    def update_identifier(self, old_id: str, id: str):
+        assert self._store is not None
+        # Find all datasets and update their IDs.
+        for dataset in self._store.datasets:
+            if old_id in dataset.experiment_id:
+                dataset.experiment_id.remove(old_id)
+                dataset.experiment_id.append(id)
+        return super().update_identifier(old_id, id)
+
+    def delete_identifier(self, id_to_delete: str):
+        if self.identifiers is None:
+            return False
+        if len(self.identifiers) <= 1:
+            return False
+        super().delete_identifier(id_to_delete)
+        new_id = self.first_identifier()
+        assert self._store is not None
+        for dataset in self._store.datasets:
+            if id_to_delete in dataset.experiment_id:
+                dataset.experiment_id.remove(id_to_delete)
+        return True
 
 @dataclass
 class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IIdentifiers):
@@ -257,7 +288,28 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IId
     description: str = ""
     instrument: str = ""
     experiments: List[str] = field(default_factory=list)
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
+    def update_identifier(self, old_id: str, id: str):
+        assert self._store is not None
+        # Find all experiments and update their IDs.
+        for datafile in self._store.datafiles:
+            if datafile.dataset_id == old_id:
+                datafile.dataset_id = id
+        return super().update_identifier(old_id, id)
+
+    def delete_identifier(self, id_to_delete: str):
+        if self.identifiers is None:
+            return False
+        if len(self.identifiers) <= 1:
+            return False
+        super().delete_identifier(id_to_delete)
+        new_id = self.first_identifier()
+        assert self._store is not None
+        for datafile in self._store.datafiles:
+            if datafile.dataset_id == id_to_delete:
+                datafile.dataset_id = new_id
+        return True
 
 @dataclass
 class Datafile(YAMLDataclass, IAccessControl, IMetadata):
@@ -276,7 +328,7 @@ class Datafile(YAMLDataclass, IAccessControl, IMetadata):
     mimetype: str = ""
     dataset: str = ""
     dataset_id: str = ""
-
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
 def Username_yaml_representer(dumper: Dumper, data: 'Username') -> ScalarNode:
     """Function for representing this Username in YAML.
@@ -326,7 +378,7 @@ class IngestionMetadata:
     datasets: List[Dataset] = field(default_factory=list)
     datafiles: List[Datafile] = field(default_factory=list)
     # Ingestion metadata file location
-    file_path: Optional[Path] = None       
+    file_path: Optional[Path] = None      
 
     def is_empty(self) -> bool:
         return (len(self.projects) == 0 and
@@ -452,12 +504,16 @@ class IngestionMetadata:
         # based on type.
         for obj in objects:
             if isinstance(obj, Project):
+                obj._store = metadata
                 metadata.projects.append(obj)
             elif isinstance(obj, Experiment):
+                obj._store = metadata
                 metadata.experiments.append(obj)
             elif isinstance(obj, Dataset):
+                obj._store = metadata
                 metadata.datasets.append(obj)
             elif isinstance(obj, Datafile):
+                obj._store = metadata
                 metadata.datafiles.append(obj)
             else:
                 logging.warning(

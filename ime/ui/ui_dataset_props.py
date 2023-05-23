@@ -47,9 +47,9 @@ class Ui_DatasetProps(object):
         self.label = QtWidgets.QLabel(self.page)
         self.label.setObjectName("label")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label)
-        self.identifiersList = QtWidgets.QListView(self.page)
-        self.identifiersList.setObjectName("identifiersList")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.identifiersList)
+        self.identifierList = IdentifierList(self.page)
+        self.identifierList.setObjectName("identifierList")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.identifierList)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtWidgets.QWidget()
         self.page_2.setGeometry(QtCore.QRect(0, 0, 536, 516))
@@ -256,6 +256,7 @@ class Ui_DatasetProps(object):
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_11), _translate("DatasetProps", "Metadata"))
         self.label_44.setText(_translate("DatasetProps", "No dataset or file selected."))
         self.label_45.setText(_translate("DatasetProps", "Select a dataset or file to edit metadata and access controls."))
+from ime.widgets.identifier_list import IdentifierList
 from ime.widgets.metadata_tab import MetadataTab
 from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 import default_rc
