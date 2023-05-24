@@ -145,7 +145,7 @@ class IngestionMetadataModel:
         """
         proxy = self.experiments.proxy()
         proxy.set_filter_by_instance(lambda exp: 
-            project.has_identifier(cast(Experiment, exp).project_id)
+            project.identifiers_delegate.has(cast(Experiment, exp).project_id)
         )
         return proxy
 
@@ -158,7 +158,7 @@ class IngestionMetadataModel:
         # Since the experiment_id field is a list, we add
         # a filter function to go through the list.
         proxy.set_filter_by_instance(lambda dataset:
-            experiment.has_identifier(cast(Dataset, dataset).experiment_id)
+            experiment.identifiers_delegate.has(cast(Dataset, dataset).experiment_id)
         )
         return proxy
     
@@ -170,7 +170,7 @@ class IngestionMetadataModel:
         """
         proxy = self.projects.proxy()
         proxy.set_filter_by_instance(lambda proj: 
-            cast(Project, proj).has_identifier(experiment.project_id)
+            cast(Project, proj).identifiers_delegate.has(experiment.project_id)
         )
         return proxy
 
