@@ -81,12 +81,6 @@ class IAccessControl:
     users: Optional[List[UserACL]] = None
     groups: Optional[List[GroupACL]] = None
 
-    def get_inherited_users(self) -> UserACL:
-        return UserACL()
-
-    def get_inherited_groups(self) -> GroupACL:
-        return GroupACL()
-
 @dataclass
 class IIdentifiers:
     """An interface for MyTardis objects with identifiers.
