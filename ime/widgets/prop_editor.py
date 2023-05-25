@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QLineEdit
+from PyQt5.uic import loadUi
 from ime.bindable import BoundObject
 from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project
 from ime.qt_models import PythonListModel
@@ -6,6 +7,7 @@ from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
 from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
 from ime.ui.ui_project_props import Ui_ProjectPropertyEditor
+from ime.ui.ui_metadata_tab import Ui_MetadataTab
 from ime.widgets.metadata_tab import MetadataTab
 
 class DatasetPropertyEditor(QWidget):
@@ -25,6 +27,13 @@ class DatasetPropertyEditor(QWidget):
         self.ui.setupUi(self)
         self.metadata_tab = self.ui.page_3
         self._set_bound_dataset(BoundObject())
+    
+    def set_read_only(widget: QWidget, read_only: bool = True):
+        for child in widget.findChildren(QLineEdit):
+            if read_only:
+                child.setReadOnly(True)
+            else:
+                child.setEnabled(False)
 
     def set_dataset(self, dataset: Dataset):
         """
@@ -34,11 +43,19 @@ class DatasetPropertyEditor(QWidget):
         dataset: The `Dataset` to edit.
         """
         self.dataset.set_object(dataset)
-        self.metadata_tab.update_metadata_object(dataset)
         self.ui.identifierList.set_data(dataset.identifiers_delegate)
-        inherited_acl = IAccessControl() # Stub - empty list.
-        self.ui.accessControlTab.set_data(dataset, inherited_acl)
-
+        if dataset.data_status == "INGESTED":
+            self.ui.page.setEnabled(False)
+            self.ui.page_2.setEnabled(False)
+            self.ui.page_3.setEnabled(False)
+        else:
+            self.ui.page.setEnabled(True)
+            self.ui.page_2.setEnabled(True)
+            self.ui.page_3.setEnabled(True)
+            self.metadata_tab.update_metadata_object(dataset)
+            inherited_acl = IAccessControl() # Stub - empty list.
+            self.ui.accessControlTab.set_data(dataset, inherited_acl)
+        
     def _set_bound_dataset(self, dataset: BoundObject[Dataset]):
         """
         Binds a `BoundObject` to this editor to keep its properties synchronized with the UI.
@@ -75,9 +92,17 @@ class DatafilePropertyEditor(QWidget):
         datafile: The `Datafile` to edit.
         """
         self.df.set_object(datafile)
-        self.metadata_tab.update_metadata_object(datafile)
-        inherited_acl = IAccessControl() # Stub - empty list.
-        self.ui.accessControlTab.set_data(datafile, inherited_acl)
+        if datafile.data_status == "INGESTED":
+            self.ui.fileinfoDescription.setEnabled(False)
+            self.ui.page_10.setEnabled(False)
+            self.ui.metadata_tab.setEnabled(False)
+        else:
+            self.ui.fileinfoDescription.setEnabled(True)
+            self.ui.page_10.setEnabled(True)
+            self.ui.metadata_tab.setEnabled(True)
+            self.metadata_tab.update_metadata_object(datafile)
+            inherited_acl = IAccessControl() # Stub - empty list.
+            self.ui.accessControlTab.set_data(datafile, inherited_acl)
     
     def _set_bound_file(self, datafile: BoundObject[Datafile]):
         """
@@ -113,10 +138,18 @@ class ExperimentPropertyEditor(QWidget):
             experiment: The experiment to be set.
         """
         self.exp.set_object(experiment)
-        self.metadata_tab.update_metadata_object(experiment)
-        inherited_acl = IAccessControl() # Stub - empty list.
-        self.ui.accessControlTab.set_data(experiment, inherited_acl)
         self.ui.identifierList.set_data(experiment.identifiers_delegate)
+        if experiment.data_status == "INGESTED":
+            self.ui.page_4.setEnabled(False)
+            self.ui.page_5.setEnabled(False)
+            self.ui.metadata_tab.setEnabled(False)
+        else:
+            self.ui.page_4.setEnabled(True)
+            self.ui.page_5.setEnabled(True)
+            self.ui.metadata_tab.setEnabled(True)
+            self.metadata_tab.update_metadata_object(experiment)
+            inherited_acl = IAccessControl() # Stub - empty list.
+            self.ui.accessControlTab.set_data(experiment, inherited_acl)
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]):
         """Set a bound object for the experiment.
@@ -153,9 +186,17 @@ class ProjectPropertyEditor(QWidget):
             project (Project): The `Project` object to set.
         """
         self.project.set_object(project)
-        self.metadata_tab.update_metadata_object(project)
-        self.ui.accessControlTab.set_data(project)
         self.ui.identifierList.set_data(project.identifiers_delegate)
+        if project.data_status == "INGESTED":
+            self.ui.page_7.setEnabled(False)
+            self.ui.page_8.setEnabled(False)
+            self.ui.metadata_tab.setEnabled(False)
+        else:
+            self.ui.page_7.setEnabled(True)
+            self.ui.page_8.setEnabled(True)
+            self.ui.metadata_tab.setEnabled(True)
+            self.metadata_tab.update_metadata_object(project)
+            self.ui.accessControlTab.set_data(project)
 
     def _set_bound_project(self, project: BoundObject[Project]):
         """

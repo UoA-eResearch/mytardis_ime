@@ -9,6 +9,8 @@ import os.path
 from ime.yaml_helpers import initialise_yaml_helpers
 
 from pathlib import Path
+from ime.yaml_helpers import initialise_yaml_helpers
+
 from ime.blueprints.custom_data_types import Username
 
 class YAMLDataclass(yaml.YAMLObject):
@@ -189,6 +191,21 @@ class IDataClassification:
     """
     data_classification: Optional[DataClassification] = None
 
+class DataStatus(Enum):
+    """An enumerator for data status.
+    Gaps have been left deliberately in the enumeration to allow for intermediate
+    status of data that may arise.
+    """
+    NOT_INGESTED = 1
+    INGESTED = 5
+
+@dataclass
+class IDataStatus:
+    """
+    Common interface for MyTardis models with data statud labels.
+    """
+    data_status: Optional[DataStatus] = None
+
 @dataclass
 class IMetadata:
     """
@@ -199,7 +216,7 @@ class IMetadata:
     object_schema: str = ""
 
 @dataclass
-class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
+class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus):
     """
     A class representing MyTardis Project objects.
 
@@ -274,13 +291,15 @@ class ProjectIdentifiers(IIdentifiers):
         return True
 
 @dataclass
-class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
+class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus):
     """
     A class representing MyTardis Experiment objects.
     """
 
     yaml_tag = "!Experiment"
     yaml_loader = yaml.SafeLoader
+    title: str = ""
+    experiment_id: str = ""
     project_id: str = ""
     description: str = ""
     title: str = ""
@@ -341,7 +360,7 @@ class ExperimentIdentifiers(IIdentifiers):
         return True
 
 @dataclass
-class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
+class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -349,6 +368,7 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification):
     yaml_tag = "!Dataset"
     yaml_loader = yaml.SafeLoader
     dataset_name: str = ""
+    description: str = ""
     experiment_id: List[str] = field(default_factory=list)
     instrument_id: str = ""
     description: str = ""
@@ -408,18 +428,18 @@ class DatasetIdentifiers(IIdentifiers):
         return True
 
 @dataclass
-class Datafile(YAMLDataclass, IAccessControl, IMetadata):
+class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
     """
     A class representing MyTardis Datafile objects.
     """
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
-    size: float = 0
     filename: str = ""
     directory: Path = field(default_factory=Path)
     # This is for temporarily storing the absolute path,
     # required for generating relative path when saving.
     path_abs: Path = field(repr=False, default_factory=Path)
+    size: float = 0
     md5sum: str = ""
     mimetype: str = ""
     dataset: str = ""
@@ -600,16 +620,12 @@ class IngestionMetadata:
         # based on type.
         for obj in objects:
             if isinstance(obj, Project):
-                obj._store = metadata
                 metadata.projects.append(obj)
             elif isinstance(obj, Experiment):
-                obj._store = metadata
                 metadata.experiments.append(obj)
             elif isinstance(obj, Dataset):
-                obj._store = metadata
                 metadata.datasets.append(obj)
             elif isinstance(obj, Datafile):
-                obj._store = metadata
                 metadata.datafiles.append(obj)
             else:
                 logging.warning(
