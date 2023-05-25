@@ -13,6 +13,11 @@ class IdentifierListModel(PythonListModel):
         super().__init__(parent)
         
     def set_object_with_ids(self, obj: IIdentifiers):
+        """Set the backing model this list is used for.
+
+        Args:
+            obj (IIdentifiers): The Identifiers list object to use.
+        """
         self.beginResetModel()
         self.object_with_ids = obj
         if obj.identifiers is None:
@@ -21,6 +26,17 @@ class IdentifierListModel(PythonListModel):
         self.endResetModel()
 
     def setData(self, index: QModelIndex, value: str, role = Qt.ItemDataRole.DisplayRole) -> bool:
+        """Override method for setData in the Qt Model. This is the function
+        for updating an identifier.
+
+        Args:
+            index (QModelIndex): The index for the cell currently being edited.
+            value (str): The new identifier value.
+            role (ItemDataRole, optional): The Qt item data role for the data being edited. Defaults to Qt.ItemDataRole.DisplayRole.
+
+        Returns:
+            bool: Whether it was successful.
+        """
         if self.object_with_ids.identifiers is None:
             self.object_with_ids.identifiers = []
         old_id = self.object_with_ids.identifiers[index.row()]
@@ -52,12 +68,19 @@ class IdentifierList(QWidget):
         self.ui.identifierList.selectionModel().selectionChanged.connect(self._handle_select_change)
 
     def set_data(self, data: IIdentifiers):
+        """Sets the identifiers to display by the widget.
+
+        Args:
+            data (IIdentifiers): The identifiers to display.
+        """
         self.data = data
         if data.identifiers is None:
             data.identifiers = []
         self._model.set_object_with_ids(data)
 
     def _handle_insert_new(self):
+        """Private method for handling Add button clicked.
+        """
         idx = self._model.rowCount()
         self._model.insertRow(idx)
         model_idx = self._model.index(idx, 0)
@@ -65,6 +88,8 @@ class IdentifierList(QWidget):
         self.ui.identifierList.edit(model_idx)
 
     def _handle_remove_from_list(self):
+        """Private method for handling remove button clicked.
+        """
         idx_list = self.ui.identifierList.selectedIndexes()
         rows_to_remove = [idx.row() for idx in idx_list]
         # Reverse sort the rows to remove, so we're not affected
@@ -75,6 +100,12 @@ class IdentifierList(QWidget):
             self._model.removeRow(row)
 
     def _handle_select_change(self, selected: QItemSelection, deselected: QItemSelection):
+        """Private method for handling selection changed. Determines whether the Remove button is enabled.
+
+        Args:
+            selected (QItemSelection): Items selected.
+            deselected (QItemSelection): Items deselected.
+        """
         has_more_than_one_id = self._model.rowCount() > 1
         # Do not let user select and delete last ID.
         self.ui.btnDelete.setEnabled(len(selected) > 0 and has_more_than_one_id)
