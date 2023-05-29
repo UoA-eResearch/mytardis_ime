@@ -43,7 +43,7 @@ class DatasetPropertyEditor(QWidget):
         dataset: The `Dataset` to edit.
         """
         self.dataset.set_object(dataset)
-        self.ui.identifierList.set_data(dataset.identifiers_delegate)
+        self.ui.identifierList.set_data(dataset.identifiers_methods)
         if dataset.data_status == "INGESTED":
             self.ui.page.setEnabled(False)
             self.ui.page_2.setEnabled(False)
@@ -138,7 +138,7 @@ class ExperimentPropertyEditor(QWidget):
             experiment: The experiment to be set.
         """
         self.exp.set_object(experiment)
-        self.ui.identifierList.set_data(experiment.identifiers_delegate)
+        self.ui.identifierList.set_data(experiment.identifiers_methods)
         if experiment.data_status == "INGESTED":
             self.ui.page_4.setEnabled(False)
             self.ui.page_5.setEnabled(False)
@@ -186,7 +186,7 @@ class ProjectPropertyEditor(QWidget):
             project (Project): The `Project` object to set.
         """
         self.project.set_object(project)
-        self.ui.identifierList.set_data(project.identifiers_delegate)
+        self.ui.identifierList.set_data(project.identifiers_methods)
         if project.data_status == "INGESTED":
             self.ui.page_7.setEnabled(False)
             self.ui.page_8.setEnabled(False)
