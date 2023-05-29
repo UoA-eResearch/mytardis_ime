@@ -1,15 +1,16 @@
-from typing import List, Dict, Any, Literal, Optional, Type, TypeAlias, TypeVar, Union
+from typing import List, Dict, Any, Optional, Type
 from dataclasses import dataclass, field
 from enum import Enum
 import yaml
 from yaml.loader import Loader
-from yaml.nodes import Node
+from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 import logging
-from pathlib import Path ### added
+
+from ime.blueprints.custom_data_types import Username
 
 class YAMLSerializable(yaml.YAMLObject):
     @classmethod
-    def from_yaml(cls: Type, loader: Loader, node: Node) -> Any:
+    def from_yaml(cls: Type, loader: Loader, node: MappingNode) -> Any:
         """
         Convert a representation node to a Python object,
         calling __init__ to create a new object.
@@ -24,50 +25,39 @@ class YAMLSerializable(yaml.YAMLObject):
         """
         fields = loader.construct_mapping(node)
         return cls(**fields)
+@dataclass
+class UserACL(YAMLSerializable):
+    """Model to define user access control. This differs from the group
+    access control in that it validates the username against a known regex.
+    """
+    yaml_tag = "!UserACL"
+    yaml_loader = yaml.SafeLoader
+    user: Username = field(default=Username(), metadata={"label": "Username"})
+    is_owner: bool = field(default=False, metadata={"label": "Is owner?"})
+    can_download: bool = field(default=False, metadata={"label": "Can download?"})
+    see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
 
 @dataclass
-class IProjectAccessControl:
-    """
-    A class representing fields related to access
-    control. This class represents fields for Projects,
-    while the IDerviedAccessControl class represents fields
-    for experiments, datasets and datafiles.
-    """
-    admin_groups: List[str] = field(default_factory=list)
-    admin_users: List[str] = field(default_factory=list)
-    read_groups: List[str] = field(default_factory=list)
-    read_users: List[str] = field(default_factory=list)
-    download_groups: List[str] = field(default_factory=list)
-    download_users: List[str] = field(default_factory=list)
-    sensitive_groups: List[str] = field(default_factory=list)
-    sensitive_users: List[str] = field(default_factory=list)
-
+class GroupACL(YAMLSerializable):
+    """Model to define group access control."""
+    yaml_tag = "!GroupACL"
+    yaml_loader = yaml.SafeLoader
+    group: str = field(default="", metadata={"label": "Group ID"})
+    is_owner: bool = field(default=False, metadata={"label": "Is owner?"})
+    can_download: bool = field(default=False, metadata={"label": "Can download?"})
+    see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
 
 @dataclass
-class IDerivedAccessControl:
+class IAccessControl:
     """
     A class representing fields related to access
-    control. This class represents fields for Experiments,
-    Datasets and Datafiles,while the IProjectAccessControl
-    class represents fields for Projects.
+    control.
     When set to None, the fields represent that they are inheriting
     access control fields from the Project, Experiment or Dataset higher up
     in the hierarchy.
     """
-    admin_groups: Optional[List[str]] = field(default=None)
-    admin_users: Optional[List[str]] = field(default=None)
-    read_groups: Optional[List[str]] = field(default=None)
-    read_users: Optional[List[str]] = field(default=None)
-    download_groups: Optional[List[str]] = field(default=None)
-    download_users: Optional[List[str]] = field(default=None)
-    sensitive_groups: Optional[List[str]] = field(default=None)
-    sensitive_users: Optional[List[str]] = field(default=None)
-
-
-"""
-A union type alias for both types of Access Control types.
-"""
-IAccessControl:TypeAlias = Union[IProjectAccessControl, IDerivedAccessControl]    
+    users: Optional[List[UserACL]] = None
+    groups: Optional[List[GroupACL]] = None
 
 class DataClassification(Enum):
     """An enumerator for data classification.
@@ -96,7 +86,7 @@ class IMetadata:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
-class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassification):
+class Project(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Project objects.
     """
@@ -108,11 +98,10 @@ class Project(YAMLSerializable, IProjectAccessControl, IMetadata, IDataClassific
     alternate_ids: List[str] = field(default_factory=list)
     lead_researcher: str = ""
     name: str = ""
-    principal_investigator: str = "abcd123"
-
+    principal_investigator: str = ""
 
 @dataclass
-class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
+class Experiment(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -127,7 +116,7 @@ class Experiment(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassi
 
 
 @dataclass
-class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassification):
+class Dataset(YAMLSerializable, IAccessControl, IMetadata, IDataClassification):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -138,42 +127,60 @@ class Dataset(YAMLSerializable, IDerivedAccessControl, IMetadata, IDataClassific
     experiment_id: List[str] = field(default_factory=list)
     dataset_id: str = ""
     instrument_id: str = ""
-    description: str = "" ## description field was added
-    instrument: str = "" ## instrument field was added
-    experiments: List[str] = field(default_factory=list) ## experiments field was added
+    description: str = ""
+    instrument: str = ""
+    experiments: List[str] = field(default_factory=list)
 
 
 @dataclass
-class FileInfo(YAMLSerializable, IDerivedAccessControl, IMetadata):
-    """
-    A class representing MyTardis Datafile objects.
-    """
-    yaml_tag = "!FileInfo"
-    yaml_loader = yaml.SafeLoader
-    name: str = ""
-    # Size property is not serialised.
-    size: int = field(repr=False, default=0)
-    filename: str = ""
-    directory: str = ""
-    md5sum: str = ""
-    mimetype: str = ""
-    dataset: str = ""
-
-### create new Datafile class to match fields in ingestion script
-@dataclass
-class Datafile(YAMLSerializable, IDerivedAccessControl, IMetadata):
+class Datafile(YAMLSerializable, IAccessControl, IMetadata):
     """
     A class representing MyTardis Datafile objects.
     """
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
-    size: float = ""
+    size: float = field(repr=False, default=0)
     filename: str = ""
     directory: str = ""
     md5sum: str = ""
     mimetype: str = ""
     dataset: str = ""
     dataset_id: str = ""
+
+
+def Username_yaml_representer(dumper: Dumper, data: 'Username') -> ScalarNode:
+    """Function for representing this Username in YAML.
+    When serialising to YAML that contains Username instances, you'll
+    need to add this function as a representer.
+
+    `yaml.add_representer(Username, Username.yaml_representer)`_
+    
+    Args:
+        dumper (Dumper): The pyyaml dumper.
+        data (Username): The Username to dump.
+
+    Returns:
+        ScalarNode: A serialised yaml Node.
+    """
+    return dumper.represent_scalar(u"!Username", str(data))
+
+def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: Node) -> 'Username':
+    """Function for deserialising a node from YAML.
+    When parsing YAML that contains Username instances, you'll
+    need to add this function as a constructor.
+    
+    `yaml.add_constructor('!Username', Username.yaml_constructor)`_
+
+    Args:
+        loader (Loader): The pyyaml loader.
+        node (ScalarNode): The node representing a Username.
+
+    Returns:
+        Username: A constructed username.
+    """
+    assert type(node) == ScalarNode
+    value = loader.construct_scalar(node)
+    return Username(value)
 
 @dataclass
 class IngestionMetadata:
@@ -188,6 +195,17 @@ class IngestionMetadata:
     experiments: List[Experiment] = field(default_factory=list)
     datasets: List[Dataset] = field(default_factory=list)
     datafiles: List[Datafile] = field(default_factory=list)        
+
+    _has_initialised: bool = False
+
+    def __post_init__(self):
+        """Initialises YAML constructor and representer required to parse
+        and serialise model data.
+        """
+        if not self._has_initialised:
+            yaml.SafeLoader.add_constructor('!Username', Username_yaml_constructor)
+            yaml.add_representer(Username, Username_yaml_representer)
+            self._has_initialised = True
 
     def is_empty(self) -> bool:
         return (len(self.projects) == 0 and
