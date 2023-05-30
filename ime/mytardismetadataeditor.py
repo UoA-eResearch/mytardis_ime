@@ -672,6 +672,7 @@ class MyTardisMetadataEditor(QMainWindow):
             msg_box.setWindowTitle("Error loading file")
             msg_box.setText("There was an error loading the metadata file. Please check to ensure it's valid.")
             msg_box.exec()
+            self.display_load_data(IngestionMetadata())
 
     def display_load_data(self,data_loaded: IngestionMetadata):
         """

@@ -738,12 +738,16 @@ class IngestionMetadata:
         # based on type.
         for obj in objects:
             if isinstance(obj, Project):
+                obj._store = metadata
                 metadata.projects.append(obj)
             elif isinstance(obj, Experiment):
+                obj._store = metadata
                 metadata.experiments.append(obj)
             elif isinstance(obj, Dataset):
+                obj._store = metadata
                 metadata.datasets.append(obj)
             elif isinstance(obj, Datafile):
+                obj._store = metadata
                 metadata.datafiles.append(obj)
             else:
                 logging.warning(
