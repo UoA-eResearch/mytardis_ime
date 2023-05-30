@@ -10,10 +10,10 @@ class IdentifierListModel(PythonListModel):
     """Custom Qt View Model for identifiers."""
     object_with_ids: IIdentifiers
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         
-    def set_object_with_ids(self, obj: IIdentifiers):
+    def set_object_with_ids(self, obj: IIdentifiers) -> None:
         """Set the backing model this list is used for.
 
         Args:
@@ -81,7 +81,7 @@ class IdentifierList(QWidget):
         self.ui.btnDelete.setDisabled(True)
         self.ui.identifierList.selectionModel().selectionChanged.connect(self._handle_select_change)
 
-    def set_data(self, data: IIdentifiers):
+    def set_data(self, data: IIdentifiers) -> None:
         """Sets the identifiers to display by the widget.
 
         Args:
@@ -92,7 +92,7 @@ class IdentifierList(QWidget):
             data.identifiers = []
         self._model.set_object_with_ids(data)
 
-    def _handle_insert_new(self):
+    def _handle_insert_new(self) -> None:
         """Private method for handling Add button clicked.
         """
         idx = self._model.rowCount()
@@ -101,7 +101,7 @@ class IdentifierList(QWidget):
         self.ui.identifierList.setCurrentIndex(model_idx)
         self.ui.identifierList.edit(model_idx)
 
-    def _handle_remove_from_list(self):
+    def _handle_remove_from_list(self) -> None:
         """Private method for handling remove button clicked.
         """
         idx_list = self.ui.identifierList.selectedIndexes()
@@ -113,7 +113,7 @@ class IdentifierList(QWidget):
         for row in rows_to_remove:
             self._model.removeRow(row)
 
-    def _handle_select_change(self, selected: QItemSelection, deselected: QItemSelection):
+    def _handle_select_change(self, selected: QItemSelection, deselected: QItemSelection) -> None:
         """Private method for handling selection changed. Determines whether the Remove button is enabled.
 
         Args:
