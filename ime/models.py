@@ -92,7 +92,7 @@ class IIdentifiers:
     identifiers: Optional[List[str]]
 
     def __init__(self, identifiers: Optional[List[str]]) -> None:
-        self.identifiers = identifiers or []
+        self.identifiers = identifiers
     
     def first(self) -> str:
         """Returns the first identifier in the list, if any. 
