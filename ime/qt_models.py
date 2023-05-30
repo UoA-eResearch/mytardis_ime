@@ -36,7 +36,7 @@ class PythonListModel(QAbstractListModel):
     means the original Python list doesn't get updated.
     """
     list: List[str]
-    def __init__(self, parent = None):
+    def __init__(self, parent = None) -> None:
         super().__init__(parent)
 
     def setStringList(self, sourceList: List[str]) -> None:
@@ -124,7 +124,7 @@ class IngestionMetadataModel:
     also derive read-only or filtered versions of each model using
     DataclassTableProxy - see below.
     """
-    def __init__(self, metadata = IngestionMetadata()):
+    def __init__(self, metadata = IngestionMetadata()) -> None:
         """
         Initializes an instance of the IngestionMetadataModel class.
         Args:
@@ -222,7 +222,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         proxy.set_show_fields(fields)
         return proxy
 
-    def __init__(self, type: Type[T], parent=None):
+    def __init__(self, type: Type[T], parent=None) -> None:
         """
         Instantiate DataclassTableModel. The `type` passed in will be
         inspected for its dataclass fields.
@@ -239,7 +239,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         """
         return self.instance_list[row]
 
-    def set_instance_list(self, instance_list: List[T]):
+    def set_instance_list(self, instance_list: List[T]) -> None:
         """
         Set the backing dataclass list this model will represent. 
         """
@@ -396,7 +396,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     def __init__(self, parent: typing.Optional[QObject] = None) -> None:
         super().__init__(parent)
 
-    def set_show_fields(self, show_fields: List[str]):
+    def set_show_fields(self, show_fields: List[str]) -> None:
         """
         Given a list of field names, sets which dataclass fields should be 
         shown by the proxy model. If show_fields is an empty list, then all fields
@@ -404,7 +404,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         self.show_fields = show_fields
 
-    def set_read_only(self, read_only: bool):
+    def set_read_only(self, read_only: bool) -> None:
         """
         Sets whether the proxy model should use read-only flags. 
         This primarily affects native Qt View widgets, which shows an editing widget or
@@ -412,7 +412,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         self.read_only = read_only
 
-    def set_filter_by_instance(self, predicate: Callable[[T], bool]):
+    def set_filter_by_instance(self, predicate: Callable[[T], bool]) -> None:
         """
         Applies a predicate (a function that takes an argument and returns
         True or False) to each dataclass instance in the model, and filter out

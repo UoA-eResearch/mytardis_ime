@@ -26,7 +26,7 @@ class UiFileModifiedHandler(PatternMatchingEventHandler):
     def __init__(self) -> None:
         super().__init__(["**/*.ui"],ignore_directories=True)
     
-    def on_created(self, event: FileCreatedEvent):
+    def on_created(self, event: FileCreatedEvent) -> None:
         """
         Called when a new file is created. Compiles the UI file to Python code.
 
@@ -40,7 +40,7 @@ class UiFileModifiedHandler(PatternMatchingEventHandler):
         print("Generating python file for new file " + fpath)
         compile_ui_file(fpath)
 
-    def on_modified(self, event: FileModifiedEvent):
+    def on_modified(self, event: FileModifiedEvent) -> None:
         """
         Called when a file is modified. Compiles the UI file to Python code.
 
@@ -54,7 +54,7 @@ class UiFileModifiedHandler(PatternMatchingEventHandler):
         print("Generating python file for modified file " + fpath)
         compile_ui_file(fpath)
 
-def compile_ui_file(fpath: str):
+def compile_ui_file(fpath: str) -> None:
     """
     Compiles a UI file to Python code and saves it as a new file.
 
@@ -71,7 +71,7 @@ def compile_ui_file(fpath: str):
         except:
             print("Error generating python file for " + fpath)
 
-def compile_initial():
+def compile_initial() -> None:
     """
     Compiles all existing UI files in the current directory and its subdirectories
     to Python code and saves them as new files.
@@ -86,7 +86,7 @@ def compile_initial():
         print("Generating python file for " + f)
         compile_ui_file(f)
 
-def watch_and_compile(fpath):
+def watch_and_compile(fpath) -> None:
     """
     Watches UI files for modifications and compiles them to Python code.
 

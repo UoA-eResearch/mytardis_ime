@@ -242,13 +242,13 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     identifiers: Optional[list[str]] = field(default_factory=list)
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
     
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.identifiers_methods = ProjectIdentifiers(self)
 
 
 class ProjectIdentifiers(IIdentifiers):
     """Project-specific methods related to identifiers."""
-    def __init__(self, project: Project):
+    def __init__(self, project: Project) -> None:
         self.project = project
         super().__init__(project.identifiers)
     
@@ -349,7 +349,7 @@ class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, 
     identifiers: Optional[list[str]] = field(default_factory=list)
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.identifiers_methods = ExperimentIdentifiers(self)
 
 class ExperimentIdentifiers(IIdentifiers):
@@ -358,7 +358,7 @@ class ExperimentIdentifiers(IIdentifiers):
         self.experiment = experiment
         super().__init__(experiment.identifiers)
 
-    def _is_unique(self, id: str):
+    def _is_unique(self, id: str) -> bool:
         """Private method to check whether an id is unique across all 
         Projects in the store.
 
@@ -390,7 +390,7 @@ class ExperimentIdentifiers(IIdentifiers):
             return False
         return super().add(value)
 
-    def update(self, old_id: str, id: str):
+    def update(self, old_id: str, id: str) -> bool:
         """Updates an existing identifier in this Experiment and
         all related Datasets in the store. Checks if the identifier
         is unique. Returns True if successful, False if not.
@@ -413,7 +413,7 @@ class ExperimentIdentifiers(IIdentifiers):
                 dataset.experiment_id.append(id)
         return super().update(old_id, id)
 
-    def delete(self, id_to_delete: str):
+    def delete(self, id_to_delete: str) -> bool:
         """Deletes an identifier in this Experiment,
         and updates identifiers in related Datasets to use
         an alternative identifier. 
@@ -457,12 +457,12 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     experiments: List[str] = field(default_factory=list)
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.identifiers_methods = DatasetIdentifiers(self)
 
 class DatasetIdentifiers(IIdentifiers):
     """Dataset-specific methods related to identifiers."""
-    def __init__(self, dataset: Dataset):
+    def __init__(self, dataset: Dataset) -> None:
         self.dataset = dataset
         super().__init__(dataset.identifiers)
 
@@ -621,7 +621,7 @@ class IngestionMetadata:
             len(self.datafiles) == 0
         )
 
-    def to_file(self, file_path: str):
+    def to_file(self, file_path: str) -> None:
         """Saves metadata to `file_path`_. Datafiles will be
         relative to the directory.
 
@@ -657,7 +657,7 @@ class IngestionMetadata:
                 curr_path = file.path_abs.parent
                 file.directory = Path(os.path.relpath(curr_path, relative_to_dir))
 
-    def _to_yaml(self):
+    def _to_yaml(self) -> Any:
         """
         Returns a string of the YAML representation of the metadata.
         """
