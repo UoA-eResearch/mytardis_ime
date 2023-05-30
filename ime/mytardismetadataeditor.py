@@ -83,6 +83,8 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         index = self.ui.datasetTreeWidget.indexAt(point)
         item = self.ui.datasetTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         menu = QMenu()
         if not index.isValid() or index.parent().isValid(): # if the item is not a dataset
@@ -175,6 +177,8 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         index = self.ui.experimentTreeWidget.indexAt(point)
         item = self.ui.experimentTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # We build the menu.
         menu = QMenu()
@@ -259,6 +263,8 @@ class MyTardisMetadataEditor(QMainWindow):
         # We build the menu.
         index = self.ui.projectTreeWidget.indexAt(point)
         item = self.ui.projectTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # We build the menu.
         menu = QMenu()
