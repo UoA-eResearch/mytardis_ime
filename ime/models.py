@@ -1,4 +1,5 @@
 from typing import List, Dict, Any, Optional, Sequence, Type
+from datetime import datetime
 from dataclasses import dataclass, field, fields, is_dataclass
 from enum import Enum
 import yaml
@@ -234,6 +235,8 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     lead_researcher: str = ""
     name: str = ""
     principal_investigator: str = ""
+    autoarchive_offset: Optional[int] = None 
+    delete_offset: Optional[int] = None
     identifiers: Optional[list[str]] = field(default_factory=list)
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
     
@@ -444,6 +447,10 @@ class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
     mimetype: str = ""
     dataset: str = ""
     dataset_id: str = ""
+    archive_date: Optional[datetime] = None
+    delete_date: Optional[datetime] = None
+    archive_offset: Optional[int] = None
+    delete_offset: Optional[int] = None
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
 def Username_yaml_representer(dumper: Dumper, data: 'Username') -> ScalarNode:
