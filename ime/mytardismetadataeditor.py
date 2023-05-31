@@ -72,7 +72,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
-    def datasetMenuContextTree(self, point):
+    def datasetMenuContextTree(self, point) -> None:
         """
         Event handler for the context menu triggered in the datasetTreeWidget.
 
@@ -83,6 +83,8 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         index = self.ui.datasetTreeWidget.indexAt(point)
         item = self.ui.datasetTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         menu = QMenu()
         if not index.isValid() or index.parent().isValid(): # if the item is not a dataset
@@ -188,7 +190,7 @@ class MyTardisMetadataEditor(QMainWindow):
                 else:
                     pass
 
-    def experimentMenuTreeWidget(self, point):
+    def experimentMenuTreeWidget(self, point) -> None:
         """
         Displays a context menu with the option to add a new dataset to the selected experiment.
         If a valid experiment item is not selected, the menu is not displayed.
@@ -200,6 +202,8 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         index = self.ui.experimentTreeWidget.indexAt(point)
         item = self.ui.experimentTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # We build the menu.
         menu = QMenu()
@@ -279,7 +283,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
-    def projectMenuTreeWidget(self, point):
+    def projectMenuTreeWidget(self, point) -> None:
         """
         Displays a context menu with the option to add a new experiment to the selected project.
         If a valid project item is not selected, the menu is not displayed.
@@ -292,6 +296,8 @@ class MyTardisMetadataEditor(QMainWindow):
         # We build the menu.
         index = self.ui.projectTreeWidget.indexAt(point)
         item = self.ui.projectTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # We build the menu.
         menu = QMenu()
