@@ -5,9 +5,7 @@ import yaml
 from yaml.loader import Loader
 from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 import logging
-import os.path
-from ime.yaml_helpers import initialise_yaml_helpers
-
+from os.path import relpath
 from pathlib import Path
 from ime.yaml_helpers import initialise_yaml_helpers
 
@@ -530,14 +528,14 @@ class IngestionMetadata:
             # in file.directory, then relativise to the new path.
             for file in self.datafiles:
                 curr_path = self.file_path.parent.joinpath(file.directory)
-                new_path = Path(os.path.relpath(curr_path, relative_to_dir))
+                new_path = Path(relpath(curr_path, relative_to_dir))
                 file.directory = new_path
         else:
             # If this file is not previously saved, then use the absolute path for this
             # file.
             for file in self.datafiles:
                 curr_path = file.path_abs.parent
-                file.directory = Path(os.path.relpath(curr_path, relative_to_dir))
+                file.directory = Path(relpath(curr_path, relative_to_dir))
 
     def _to_yaml(self):
         """
