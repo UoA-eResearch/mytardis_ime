@@ -88,7 +88,7 @@ class MyTardisMetadataEditor(QMainWindow):
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         menu = QMenu()
         if not index.isValid() or index.parent().isValid(): # if the item is not a dataset
-            delete_action = menu.addAction("Delete this File")
+            delete_action = menu.addAction("Remove this File")
             for datafile in self.metadata.datafiles:
                 if datafile.filename == item_data:
                     file = datafile
@@ -100,7 +100,7 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             action = menu.addAction("Add New File...")
             action.triggered.connect(self.openWizardWindowSkipDataset)
-            delete_action = menu.addAction("Delete this Dataset")
+            delete_action = menu.addAction("Remove this Dataset")
             # disable delete action if dataset has been ingested in MyTardis
             if item_data.data_status == 'INGESTED':
                 delete_action.setEnabled(False)  
@@ -209,7 +209,7 @@ class MyTardisMetadataEditor(QMainWindow):
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
         action.triggered.connect(self.openWizardWindowSkipExperiment)
-        delete_action = menu.addAction("Delete this Experiment")
+        delete_action = menu.addAction("Remove this Experiment")
         if item_data.data_status == 'INGESTED':
             delete_action.setEnabled(False)
         else:
@@ -303,7 +303,7 @@ class MyTardisMetadataEditor(QMainWindow):
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
         action.triggered.connect(self.openWizardWindowSkipProject)
-        delete_action = menu.addAction("Delete this Project")
+        delete_action = menu.addAction("Remove this Project")
         if item_data.data_status == 'INGESTED':
             delete_action.setEnabled(False)
         else:
