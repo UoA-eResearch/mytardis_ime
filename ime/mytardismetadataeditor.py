@@ -146,9 +146,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.datasetTreeWidget.currentItem() ## it's the Dataset
         if selected_item:
             confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the dataset?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setWindowTitle("Remove this dataset?")
+            confirm_msg.setText('Remove this dataset?')
+            confirm_msg.setInformativeText("You will have to add this dataset again once you remove it.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -174,9 +174,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.datasetTreeWidget.currentItem() ### it's the file name
         if selected_item:
             confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the dataset?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setWindowTitle("Remove this file?")
+            confirm_msg.setText('Remove this file?')
+            confirm_msg.setInformativeText("You will have to add this file again once removed.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -228,9 +228,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.experimentTreeWidget.currentItem() ## it's the Experiment
         if selected_item:
             confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the experiment?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setWindowTitle("Remove this experiment?")
+            confirm_msg.setText('Remove this experiment?')
+            confirm_msg.setInformativeText("You will have to add this experiment again once you remove it.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -322,9 +322,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.projectTreeWidget.currentItem()
         if selected_item:
             confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the project?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setWindowTitle("Remove this project?")
+            confirm_msg.setText('Remove this project?')
+            confirm_msg.setInformativeText("You will have to add this project again once you remove it.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
