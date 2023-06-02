@@ -623,20 +623,11 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionNewFile"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionImport_data_files"/>
   </widget>
-  <action name="actionNewFile">
-   <property name="text">
-    <string>New...</string>
-   </property>
-   <property name="toolTip">
-    <string>Create a new metadata file</string>
-   </property>
-  </action>
   <action name="actionFrom_a_template">
    <property name="text">
     <string>From a template...</string>
