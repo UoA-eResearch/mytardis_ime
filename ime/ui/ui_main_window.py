@@ -300,7 +300,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MyTardis Ingestion Editor"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Instrument Data Wizard"))
         self.projectTreeWidget.headerItem().setText(0, _translate("MainWindow", "Name"))
         self.projectTreeWidget.headerItem().setText(1, _translate("MainWindow", "Size"))
         self.label_56.setText(_translate("MainWindow", "No project selected."))
