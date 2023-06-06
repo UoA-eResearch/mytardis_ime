@@ -72,7 +72,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
-    def datasetMenuContextTree(self, point):
+    def datasetMenuContextTree(self, point) -> None:
         """
         Event handler for the context menu triggered in the datasetTreeWidget.
 
@@ -83,10 +83,12 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         index = self.ui.datasetTreeWidget.indexAt(point)
         item = self.ui.datasetTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         menu = QMenu()
         if not index.isValid() or index.parent().isValid(): # if the item is not a dataset
-            delete_action = menu.addAction("Delete this File")
+            delete_action = menu.addAction("Remove this File")
             for datafile in self.metadata.datafiles:
                 if datafile.filename == item_data:
                     file = datafile
@@ -98,7 +100,7 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             action = menu.addAction("Add New File...")
             action.triggered.connect(self.openWizardWindowSkipDataset)
-            delete_action = menu.addAction("Delete this Dataset")
+            delete_action = menu.addAction("Remove this Dataset")
             # disable delete action if dataset has been ingested in MyTardis
             if item_data.data_status == DataStatus.INGESTED.value:
                 delete_action.setEnabled(False)  
@@ -144,9 +146,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.datasetTreeWidget.currentItem() ## it's the Dataset
         if selected_item:
             confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the dataset?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setWindowTitle("Remove this dataset?")
+            confirm_msg.setText('Remove this dataset?')
+            confirm_msg.setInformativeText("You will have to add this dataset again once you remove it.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -172,9 +174,15 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.datasetTreeWidget.currentItem() ### it's the file name
         if selected_item:
             confirm_msg = QMessageBox()
+<<<<<<< HEAD
             confirm_msg.setWindowTitle("Open another file?")
             confirm_msg.setText('Confirm to remove the file?')
             confirm_msg.setInformativeText("Removed data will not be able to restore.")
+=======
+            confirm_msg.setWindowTitle("Remove this file?")
+            confirm_msg.setText('Remove this file?')
+            confirm_msg.setInformativeText("You will have to add this file again once removed.")
+>>>>>>> bb8068badace86222c7d7285d58726ab4444d6ba
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -195,7 +203,7 @@ class MyTardisMetadataEditor(QMainWindow):
         for file in self.metadata.datafiles:
             self.add_datafile_to_tree(file)
 
-    def experimentMenuTreeWidget(self, point):
+    def experimentMenuTreeWidget(self, point) -> None:
         """
         Displays a context menu with the option to add a new dataset to the selected experiment.
         If a valid experiment item is not selected, the menu is not displayed.
@@ -207,13 +215,20 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         index = self.ui.experimentTreeWidget.indexAt(point)
         item = self.ui.experimentTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
         action.triggered.connect(self.openWizardWindowSkipExperiment)
+<<<<<<< HEAD
         delete_action = menu.addAction("Delete this Experiment")
         if item_data.data_status == DataStatus.INGESTED.value:
+=======
+        delete_action = menu.addAction("Remove this Experiment")
+        if item_data.data_status == 'INGESTED':
+>>>>>>> bb8068badace86222c7d7285d58726ab4444d6ba
             delete_action.setEnabled(False)
         else:
             delete_action.triggered.connect(self.delete_items_experiment)
@@ -231,9 +246,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.experimentTreeWidget.currentItem() ## it's the Experiment
         if selected_item:
             confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the experiment?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setWindowTitle("Remove this experiment?")
+            confirm_msg.setText('Remove this experiment?')
+            confirm_msg.setInformativeText("You will have to add this experiment again once you remove it.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -286,7 +301,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
-    def projectMenuTreeWidget(self, point):
+    def projectMenuTreeWidget(self, point) -> None:
         """
         Displays a context menu with the option to add a new experiment to the selected project.
         If a valid project item is not selected, the menu is not displayed.
@@ -299,13 +314,20 @@ class MyTardisMetadataEditor(QMainWindow):
         # We build the menu.
         index = self.ui.projectTreeWidget.indexAt(point)
         item = self.ui.projectTreeWidget.itemAt(point)
+        if item is None:
+            return
         item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         # We build the menu.
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
         action.triggered.connect(self.openWizardWindowSkipProject)
+<<<<<<< HEAD
         delete_action = menu.addAction("Delete this Project")
         if item_data.data_status == DataStatus.INGESTED.value:
+=======
+        delete_action = menu.addAction("Remove this Project")
+        if item_data.data_status == 'INGESTED':
+>>>>>>> bb8068badace86222c7d7285d58726ab4444d6ba
             delete_action.setEnabled(False)
         else:
             delete_action.triggered.connect(self.delete_items_project)
@@ -323,9 +345,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.projectTreeWidget.currentItem()
         if selected_item:
             confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the project?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
+            confirm_msg.setWindowTitle("Remove this project?")
+            confirm_msg.setText('Remove this project?')
+            confirm_msg.setInformativeText("You will have to add this project again once you remove it.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
