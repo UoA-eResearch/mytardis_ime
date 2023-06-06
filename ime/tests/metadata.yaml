@@ -1,6 +1,6 @@
 !Project
 data_classification: null
-data_status: null
+data_status: 5
 description: ''
 groups:
 - !GroupACL
@@ -127,7 +127,7 @@ object_schema: ''
 users: null
 --- !Dataset
 data_classification: null
-data_status: null
+data_status: 5
 dataset_name: biru-ds3
 description: ''
 experiment_id:
@@ -210,7 +210,7 @@ object_schema: ''
 size: 373
 users: null
 --- !Datafile
-data_status: null
+data_status: 5
 dataset: ''
 dataset_id: ds4
 directory: !Path '.'
