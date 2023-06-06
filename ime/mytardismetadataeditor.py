@@ -98,7 +98,7 @@ class MyTardisMetadataEditor(QMainWindow):
                 delete_action.triggered.connect(self.delete_items_datafile)
         
         else:
-            action = menu.addAction("Add New File...")
+            action = menu.addAction("Add New Files...")
             action.triggered.connect(self.openWizardWindowSkipDataset)
             delete_action = menu.addAction("Remove this Dataset")
             # disable delete action if dataset has been ingested in MyTardis
