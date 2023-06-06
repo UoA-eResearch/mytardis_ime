@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>677</width>
-    <height>692</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,14 +21,23 @@
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="label_9">
+       <widget class="QLabel" name="label_14">
         <property name="font">
          <font>
-          <pointsize>10</pointsize>
+          <pointsize>17</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>Welcome! This dialog will get you started with importing your data and organising them.</string>
+         <string>Welcome</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>This dialog will get you started with importing your data and organising them.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -80,20 +89,34 @@
            <property name="pixmap">
             <pixmap resource="../../default.qrc">:/resources/text66-1-7.png</pixmap>
            </property>
+           <property name="margin">
+            <number>0</number>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_10">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
            <property name="text">
             <string>In MyTardis, data are organised in a hierarchy. Files are grouped into Datasets. Datasets are organised into Experiments. Experiments belong to a Project. You can attach metadata at each level to make it easier for you and your collaborators to find and reuse your data. </string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
+           </property>
+           <property name="margin">
+            <number>0</number>
            </property>
           </widget>
          </item>
@@ -118,11 +141,6 @@
       </item>
       <item>
        <widget class="QLabel" name="label_11">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string>This dialog will help you create the Project, Experiment and Dataset to put your files under. You can re-run this dialog for other files that need to be organised separately.</string>
         </property>
@@ -140,6 +158,20 @@
     <string notr="true">2</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLabel" name="label_4">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Project</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
@@ -202,14 +234,14 @@
     <string notr="true">10</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_10">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QLabel" name="label_13">
       <property name="text">
-       <string>You've chosen to create a new project. Enter some basic details, then click next.</string>
+       <string>Enter some basic details for the new project, then click next.</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="2" column="0">
      <widget class="QWidget" name="newProjectForm" native="true">
       <layout class="QFormLayout" name="_3">
        <item row="0" column="0">
@@ -257,10 +289,24 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="3" column="0">
      <widget class="QLabel" name="label_15">
       <property name="text">
        <string>You can add more metadata and access controls for the project later.</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>New Project</string>
       </property>
      </widget>
     </item>
@@ -271,6 +317,20 @@
     <string notr="true">4</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QLabel" name="label_18">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Experiment</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QLabel" name="label_3">
       <property name="text">
@@ -331,9 +391,23 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
+     <widget class="QLabel" name="label_20">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>New Experiment</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label_16">
       <property name="text">
-       <string>You've chosen to create a new experiment. Enter some basic details, then click next.</string>
+       <string>Enter some basic details for the new experiment, then click next.</string>
       </property>
      </widget>
     </item>
@@ -400,9 +474,23 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
+     <widget class="QLabel" name="label_21">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Dataset</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>Nearly there! Let's find or create the dataset for your data files</string>
+       <string>Nearly there! Let's find or create the dataset for your data files.</string>
       </property>
      </widget>
     </item>
@@ -459,9 +547,23 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_8">
     <item>
+     <widget class="QLabel" name="label_22">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>New Dataset</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label_19">
       <property name="text">
-       <string>You've chosen to create a new dataset. Enter some basic details, then click next.</string>
+       <string>Enter some basic details for the new dataset, then click next.</string>
       </property>
      </widget>
     </item>
@@ -528,14 +630,28 @@
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_6">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_7">
+      <item row="3" column="0">
+       <widget class="QPushButton" name="datafileAddPushButton">
         <property name="text">
-         <string>Finally, choose the files you wish to include in this dataset.</string>
+         <string>Add files...</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="3" column="1">
+       <widget class="QPushButton" name="datafileDeletePushButton">
+        <property name="text">
+         <string>Remove files</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>You can override inherited metadata and access controls later.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
        <widget class="QTableWidget" name="datafiletableWidget">
         <property name="minimumSize">
          <size>
@@ -599,24 +715,24 @@
         </column>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="datafileAddPushButton">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Add files...</string>
+         <string>Finally, choose the files you wish to include in this dataset.</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="datafileDeletePushButton">
-        <property name="text">
-         <string>Delete files</string>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_23">
+        <property name="font">
+         <font>
+          <pointsize>17</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>You can override inherited metadata and access controls later.</string>
+         <string>Datafiles</string>
         </property>
        </widget>
       </item>

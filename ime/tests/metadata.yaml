@@ -1,0 +1,224 @@
+!Project
+data_classification: null
+data_status: 5
+description: ''
+groups:
+- !GroupACL
+  can_download: true
+  group: biru-group1
+  is_owner: true
+  see_sensitive: true
+identifiers:
+- p1
+lead_researcher: ''
+metadata: {}
+name: biru-p1
+object_schema: https://130.216.218.45/ProjectSchema-BIRUbbbbb
+principal_investigator: ''
+users:
+- !UserACL
+  can_download: true
+  is_owner: false
+  see_sensitive: true
+  user: !Username 'xli677'
+--- !Project
+data_classification: null
+data_status: null
+description: ''
+groups: null
+identifiers:
+- p2
+lead_researcher: ''
+metadata: {}
+name: biru-p2
+object_schema: ''
+principal_investigator: ''
+users: null
+--- !Experiment
+data_classification: null
+data_status: null
+description: ''
+experiment_id: ''
+groups:
+- !GroupACL
+  can_download: true
+  group: biru-group1
+  is_owner: true
+  see_sensitive: true
+identifiers:
+- exp1
+metadata: {}
+object_schema: https://130.216.218.45/ExperimentSchema-BIRU
+project_id: p1
+title: biru-exp1
+users:
+- !UserACL
+  can_download: true
+  is_owner: false
+  see_sensitive: true
+  user: !Username 'xli677'
+--- !Experiment
+data_classification: null
+data_status: null
+description: ''
+experiment_id: ''
+groups: null
+identifiers:
+- exp2
+metadata: {}
+object_schema: ''
+project_id: p1
+title: biru-exp2
+users: null
+--- !Experiment
+data_classification: null
+data_status: null
+description: ''
+experiment_id: ''
+groups: null
+identifiers:
+- exp3
+metadata: {}
+object_schema: ''
+project_id: p2
+title: biru-exp3
+users: null
+--- !Dataset
+data_classification: null
+data_status: null
+dataset_name: biru-ds1
+description: ''
+experiment_id:
+- exp1
+experiments: []
+groups:
+- !GroupACL
+  can_download: true
+  group: biru-group1
+  is_owner: true
+  see_sensitive: true
+identifiers:
+- ds1
+instrument: ''
+instrument_id: ''
+metadata: {}
+object_schema: https://130.216.218.45/DatasetSchema-BIRU
+users:
+- !UserACL
+  can_download: true
+  is_owner: false
+  see_sensitive: true
+  user: !Username 'xli677'
+--- !Dataset
+data_classification: null
+data_status: null
+dataset_name: biru-ds2
+description: ''
+experiment_id:
+- exp1
+experiments: []
+groups: null
+identifiers:
+- ds2
+instrument: ''
+instrument_id: ''
+metadata: {}
+object_schema: ''
+users: null
+--- !Dataset
+data_classification: null
+data_status: 5
+dataset_name: biru-ds3
+description: ''
+experiment_id:
+- exp2
+experiments: []
+groups: null
+identifiers:
+- ds3
+instrument: ''
+instrument_id: ''
+metadata: {}
+object_schema: ''
+users: null
+--- !Dataset
+data_classification: null
+data_status: null
+dataset_name: biru-ds4
+description: ''
+experiment_id:
+- exp3
+experiments: []
+groups: null
+identifiers:
+- ds4
+instrument: ''
+instrument_id: ''
+metadata: {}
+object_schema: ''
+users: null
+--- !Datafile
+data_status: null
+dataset: ''
+dataset_id: ds1
+directory: !Path 'ime/tests'
+filename: test_metadata_tab.py
+groups: null
+md5sum: ''
+metadata: {}
+mimetype: ''
+object_schema: ''
+size: 3452
+users: null
+--- !Datafile
+data_status: null
+dataset: ''
+dataset_id: ds2
+directory: !Path '.'
+filename: test_access_control_tab.py
+groups: null
+md5sum: ''
+metadata: {}
+mimetype: ''
+object_schema: ''
+size: 5544
+users: null
+--- !Datafile
+data_status: null
+dataset: ''
+dataset_id: ds2
+directory: !Path '.'
+filename: fixtures.yaml
+groups: null
+md5sum: ''
+metadata: {}
+mimetype: ''
+object_schema: ''
+size: 3813
+users: null
+--- !Datafile
+data_status: null
+dataset: ''
+dataset_id: ds3
+directory: !Path '.'
+filename: conftest.py
+groups: null
+md5sum: ''
+metadata: {}
+mimetype: ''
+object_schema: ''
+size: 373
+users: null
+--- !Datafile
+data_status: 5
+dataset: ''
+dataset_id: ds4
+directory: !Path '.'
+filename: test_qt_models.py
+groups: null
+md5sum: ''
+metadata: {}
+mimetype: ''
+object_schema: ''
+size: 2300
+users: null

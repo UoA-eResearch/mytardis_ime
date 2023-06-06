@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QLineEdit
 from PyQt5.uic import loadUi
 from ime.bindable import BoundObject
 from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project, DataStatus
+from ime.qt_models import PythonListModel
 from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
 from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
@@ -12,6 +13,7 @@ from ime.widgets.metadata_tab import MetadataTab
 class DatasetPropertyEditor(QWidget):
     dataset: BoundObject[Dataset]
     metadata_tab: MetadataTab
+    identifiers_model: PythonListModel
 
     def __init__(self, parent=None):
         """
@@ -24,7 +26,6 @@ class DatasetPropertyEditor(QWidget):
         self.ui = Ui_DatasetProps()
         self.ui.setupUi(self)
         self.metadata_tab = self.ui.page_3
-    
         self._set_bound_dataset(BoundObject())
     
     def set_read_only(widget: QWidget, read_only: bool = True):
@@ -42,6 +43,7 @@ class DatasetPropertyEditor(QWidget):
         dataset: The `Dataset` to edit.
         """
         self.dataset.set_object(dataset)
+        self.ui.identifierList.set_data(dataset.identifiers_delegate)
         if dataset.data_status == DataStatus.INGESTED.value:
             self.ui.page.setEnabled(False)
             self.ui.page_2.setEnabled(False)
@@ -63,7 +65,6 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset = dataset
         self.dataset.bind_input("dataset_name", self.ui.datasetNameLineEdit)
-        self.dataset.bind_input("dataset_id", self.ui.datasetIDLineEdit)
         self.dataset.bind_input("instrument_id", self.ui.instrumentIDLineEdit)
 
 class DatafilePropertyEditor(QWidget):
@@ -157,7 +158,6 @@ class ExperimentPropertyEditor(QWidget):
         """
         self.exp = experiment
         self.exp.bind_input("title", self.ui.experimentNameLineEdit)
-        self.exp.bind_input("experiment_id", self.ui.experimentIDLineEdit)
         self.exp.bind_input("description", self.ui.experimentDescriptionLineEdit)
 
 class ProjectPropertyEditor(QWidget):
@@ -205,6 +205,5 @@ class ProjectPropertyEditor(QWidget):
         """
         self.project = project
         self.project.bind_input("name", self.ui.projectNameLineEdit)
-        self.project.bind_input("project_id", self.ui.projectIDLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
         self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)

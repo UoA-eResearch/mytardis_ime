@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 from typing import Dict, List
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
+from PyQt5.QtGui import QValidator
+from PyQt5.QtWidgets import QLineEdit, QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
 from ime.utils import file_size_to_str
 from ime.models import IngestionMetadata,Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
@@ -22,6 +23,16 @@ class AddFilesWizardResult:
     is_new_dataset: bool
     #datafile: Datafile 
     file_list: List[Datafile]
+
+class UniqueValueValidator(QValidator):
+    def __init__(self, existing_values_list: list[str], parent: QtCore.QObject | None = None) -> None:
+        self.existing = existing_values_list
+        super().__init__(parent)
+
+    def validate(self, to_validate: str, a1: int) -> tuple[QValidator.State, str, int]:
+        if to_validate in self.existing:
+            return tuple([QValidator.State.Intermediate, to_validate, a1]) # type: ignore
+        return tuple([QValidator.State.Acceptable, to_validate, a1]) # type: ignore
 
 class AddFilesWizard(QWizard):
     """A wizard for adding data files to a metadata model.
@@ -153,6 +164,50 @@ class AddFilesWizard(QWizard):
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
+        self._setup_validated_input()
+
+    def _update_widget_validation_style(self,line_edit: QLineEdit):
+        """Private method that gets called to update line edit style
+        to reflect validation status.
+
+        Args:
+            line_edit (QLineEdit): The line edit to update.
+        """
+        if line_edit.hasAcceptableInput():
+            line_edit.setStyleSheet("")
+        else:
+            # Add pink to indicate invalid input.
+            line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
+
+    def _setup_validated_input(self):
+        """Private method to set up uniqueness validation for
+        Project/Experiment/Dataset ID entries.
+        """
+        # Projects
+        all_project_ids: list[str] = []
+        for project in self.metadataModel.metadata.projects:
+            all_project_ids += project.identifiers or []
+        new_id_validator = UniqueValueValidator(all_project_ids, self)
+        proj_line_edit = self.ui.projectIDLineEdit
+        proj_line_edit.setValidator(new_id_validator)
+        proj_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(proj_line_edit))
+        # Experiments
+        all_exp_ids: list[str] = []
+        for exp in self.metadataModel.metadata.experiments:
+            all_exp_ids += exp.identifiers or []
+        new_id_validator = UniqueValueValidator(all_exp_ids, self)
+        exp_line_edit = self.ui.experimentIDLineEdit
+        exp_line_edit.setValidator(new_id_validator)
+        exp_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(exp_line_edit))
+        # Datasets
+        all_dataset_ids: list[str] = []
+        for ds in self.metadataModel.metadata.datasets:
+            all_dataset_ids += ds.identifiers or []
+        new_id_validator = UniqueValueValidator(all_dataset_ids, self)
+        ds_line_edit = self.ui.datasetIDLineEdit
+        ds_line_edit.setValidator(new_id_validator)
+        ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
+
 
     def addFiles_handler(self):
         """Add files to the table.
@@ -198,34 +253,38 @@ class AddFilesWizard(QWizard):
             result.project = self.selected_existing_project
         else:
             result.project = Project()
+            result.project._store = self.metadataModel.metadata
             result.project.name = self.ui.projectNameLineEdit.text()
-            result.project.project_id = self.ui.projectIDLineEdit.text()
+            result.project.identifiers_delegate.add(self.ui.projectIDLineEdit.text())
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
             
         if self.field('isExistingExperiment'):
             result.experiment = self.selected_existing_experiment
         else:
             result.experiment = Experiment()
+            result.experiment._store = self.metadataModel.metadata
             result.experiment.title = self.ui.experimentNameLineEdit.text()
-            result.experiment.experiment_id = self.ui.experimentIDLineEdit.text()
-            result.experiment.project_id = result.project.project_id
+            result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
+            result.experiment.project_id = result.project.identifiers_delegate.first()
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
         if self.field('isExistingDataset'):
             result.dataset = self.selected_existing_dataset
         else:
             result.dataset = Dataset()
+            result.dataset._store = self.metadataModel.metadata
             result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-            result.dataset.dataset_id = self.ui.datasetIDLineEdit.text()
+            result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
-            result.dataset.experiment_id = [result.experiment.experiment_id]
+            result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.dataset_id
+            datafile._store = self.metadataModel.metadata
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             path = Path(table.item(row, 2).text())
@@ -304,6 +363,7 @@ class AddFilesWizardSkipDataset(QWizard):
         super(QWizard, self).__init__()
         self.ui = Ui_ImportDataFiles_skip()
         self.metadataModel = metadataModel
+        
         self.ui.setupUi(self)
         self._make_page_ids()
         self._register_fields()
@@ -317,6 +377,50 @@ class AddFilesWizardSkipDataset(QWizard):
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
+        self._setup_validated_input()
+
+    def _update_widget_validation_style(self,line_edit: QLineEdit):
+        """Private method that gets called to update line edit style
+        to reflect validation status.
+
+        Args:
+            line_edit (QLineEdit): The line edit to update.
+        """
+        if line_edit.hasAcceptableInput():
+            line_edit.setStyleSheet("")
+        else:
+            # Add pink to indicate invalid input.
+            line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
+
+    def _setup_validated_input(self):
+        """Private method to set up uniqueness validation for
+        Project/Experiment/Dataset ID entries.
+        """
+        # Projects
+        all_project_ids: list[str] = []
+        for project in self.metadataModel.metadata.projects:
+            all_project_ids += project.identifiers or []
+        new_id_validator = UniqueValueValidator(all_project_ids, self)
+        proj_line_edit = self.ui.projectIDLineEdit
+        proj_line_edit.setValidator(new_id_validator)
+        proj_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(proj_line_edit))
+        # Experiments
+        all_exp_ids: list[str] = []
+        for exp in self.metadataModel.metadata.experiments:
+            all_exp_ids += exp.identifiers or []
+        new_id_validator = UniqueValueValidator(all_exp_ids, self)
+        exp_line_edit = self.ui.experimentIDLineEdit
+        exp_line_edit.setValidator(new_id_validator)
+        exp_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(exp_line_edit))
+        # Datasets
+        all_dataset_ids: list[str] = []
+        for ds in self.metadataModel.metadata.datasets:
+            all_dataset_ids += ds.identifiers or []
+        new_id_validator = UniqueValueValidator(all_dataset_ids, self)
+        ds_line_edit = self.ui.datasetIDLineEdit
+        ds_line_edit.setValidator(new_id_validator)
+        ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
+
 
     def addFiles_handler(self):
         """Add files to the table.
@@ -368,7 +472,8 @@ class AddFilesWizardSkipDataset(QWizard):
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.dataset_id
+            datafile._store = self.metadataModel.metadata
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -467,6 +572,50 @@ class AddFilesWizardSkipExperiment(QWizard):
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
+        self._setup_validated_input()
+
+    def _update_widget_validation_style(self,line_edit: QLineEdit):
+        """Private method that gets called to update line edit style
+        to reflect validation status.
+
+        Args:
+            line_edit (QLineEdit): The line edit to update.
+        """
+        if line_edit.hasAcceptableInput():
+            line_edit.setStyleSheet("")
+        else:
+            # Add pink to indicate invalid input.
+            line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
+
+    def _setup_validated_input(self):
+        """Private method to set up uniqueness validation for
+        Project/Experiment/Dataset ID entries.
+        """
+        # Projects
+        all_project_ids: list[str] = []
+        for project in self.metadataModel.metadata.projects:
+            all_project_ids += project.identifiers or []
+        new_id_validator = UniqueValueValidator(all_project_ids, self)
+        proj_line_edit = self.ui.projectIDLineEdit
+        proj_line_edit.setValidator(new_id_validator)
+        proj_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(proj_line_edit))
+        # Experiments
+        all_exp_ids: list[str] = []
+        for exp in self.metadataModel.metadata.experiments:
+            all_exp_ids += exp.identifiers or []
+        new_id_validator = UniqueValueValidator(all_exp_ids, self)
+        exp_line_edit = self.ui.experimentIDLineEdit
+        exp_line_edit.setValidator(new_id_validator)
+        exp_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(exp_line_edit))
+        # Datasets
+        all_dataset_ids: list[str] = []
+        for ds in self.metadataModel.metadata.datasets:
+            all_dataset_ids += ds.identifiers or []
+        new_id_validator = UniqueValueValidator(all_dataset_ids, self)
+        ds_line_edit = self.ui.datasetIDLineEdit
+        ds_line_edit.setValidator(new_id_validator)
+        ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
+
 
     def addFiles_handler(self):
         """Add files to the table.
@@ -517,18 +666,20 @@ class AddFilesWizardSkipExperiment(QWizard):
 
         ### assume new dataset
         result.dataset = Dataset()
+        result.dataset._store = self.metadataModel.metadata
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.dataset_id = self.ui.datasetIDLineEdit.text()
+        result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.experiment_id]
+        result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.dataset_id
+            datafile._store = self.metadataModel.metadata
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -641,7 +792,51 @@ class AddFilesWizardSkipProject(QWizard):
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
-    
+        self._setup_validated_input()
+
+    def _update_widget_validation_style(self,line_edit: QLineEdit):
+        """Private method that gets called to update line edit style
+        to reflect validation status.
+
+        Args:
+            line_edit (QLineEdit): The line edit to update.
+        """
+        if line_edit.hasAcceptableInput():
+            line_edit.setStyleSheet("")
+        else:
+            # Add pink to indicate invalid input.
+            line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
+
+    def _setup_validated_input(self):
+        """Private method to set up uniqueness validation for
+        Project/Experiment/Dataset ID entries.
+        """
+        # Projects
+        all_project_ids: list[str] = []
+        for project in self.metadataModel.metadata.projects:
+            all_project_ids += project.identifiers or []
+        new_id_validator = UniqueValueValidator(all_project_ids, self)
+        proj_line_edit = self.ui.projectIDLineEdit
+        proj_line_edit.setValidator(new_id_validator)
+        proj_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(proj_line_edit))
+        # Experiments
+        all_exp_ids: list[str] = []
+        for exp in self.metadataModel.metadata.experiments:
+            all_exp_ids += exp.identifiers or []
+        new_id_validator = UniqueValueValidator(all_exp_ids, self)
+        exp_line_edit = self.ui.experimentIDLineEdit
+        exp_line_edit.setValidator(new_id_validator)
+        exp_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(exp_line_edit))
+        # Datasets
+        all_dataset_ids: list[str] = []
+        for ds in self.metadataModel.metadata.datasets:
+            all_dataset_ids += ds.identifiers or []
+        new_id_validator = UniqueValueValidator(all_dataset_ids, self)
+        ds_line_edit = self.ui.datasetIDLineEdit
+        ds_line_edit.setValidator(new_id_validator)
+        ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
+
+
     def addFiles_handler(self):
         """Add files to the table.
 
@@ -687,24 +882,27 @@ class AddFilesWizardSkipProject(QWizard):
 
         ### assume new experiment
         result.experiment = Experiment()
+        result.experiment._store = self.metadataModel.metadata
         result.experiment.title = self.ui.experimentNameLineEdit.text()
-        result.experiment.experiment_id = self.ui.experimentIDLineEdit.text()
-        result.experiment.project_id = result.project.project_id
+        result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
+        result.experiment.project_id = result.project.identifiers_delegate.first()
         result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
         ### assume new dataset
         result.dataset = Dataset()
+        result.dataset._store = self.metadataModel.metadata
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.dataset_id = self.ui.datasetIDLineEdit.text()
+        result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.experiment_id]
+        result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
-            datafile.dataset_id = result.dataset.dataset_id
+            datafile._store = self.metadataModel.metadata
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())

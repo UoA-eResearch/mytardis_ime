@@ -1,13 +1,11 @@
-from typing import List, Dict, Any, Optional, Type
+from typing import List, Dict, Any, Optional, Sequence, Type
 from dataclasses import dataclass, field, fields, is_dataclass
 from enum import Enum
 import yaml
 from yaml.loader import Loader
 from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 import logging
-import os.path
-from ime.yaml_helpers import initialise_yaml_helpers
-
+from os.path import relpath
 from pathlib import Path
 from ime.yaml_helpers import initialise_yaml_helpers
 
@@ -83,6 +81,96 @@ class IAccessControl:
     users: Optional[List[UserACL]] = None
     groups: Optional[List[GroupACL]] = None
 
+@dataclass
+class IIdentifiers:
+    """An interface for MyTardis objects with identifiers.
+    """
+    identifiers: Optional[List[str]] = field(default_factory=list)
+    
+    def first(self) -> str:
+        """Returns the first identifier in the list, if any. 
+        Otherwise return an empty string.
+
+        Returns:
+            str: The value of the ID.
+        """
+        if (self.identifiers is not None and 
+            len(self.identifiers) > 0):
+            return self.identifiers[0]
+        else:
+            return ""
+
+    def has(self, ids: str|List[str]) -> bool:
+        """Returns whether this object has identifier `ids`_ .
+        If `ids`_ is a list, then returns whether this object has any
+        identifier matching any in `ids`_
+
+        Args:
+            ids (str | List[str]): The id or list of ids to match
+
+        Returns:
+            bool: Whether any identifiers match.
+        """
+        if self.identifiers is None:
+            return False
+        elif type(ids) is str:
+            return ids in self.identifiers
+        else:
+            # If we are comparing with a list of ids,
+            # create sets with each list then get the
+            # intersection of the sets. If there are none,
+            # then we don't have any of the identifiers.
+            id_set = set(self.identifiers or [])
+            compare_set = set(ids)
+            intersection = id_set & compare_set
+            return len(intersection) > 0
+    
+    def add(self, value: str) -> bool:
+        """Adds an identifier to the list. Classes
+        inheriting may override with custom behaviour.
+
+        Args:
+            value (str): The new ID to add.
+        """
+        if self.identifiers is None:
+            # Create the identifiers list with the new value.
+            self.identifiers = [value]
+            return True
+        elif value not in self.identifiers:
+            # If the value is not in the identifiers list,
+            # then add to list.
+            self.identifiers.append(value)
+            return True
+        else:
+            # If the id is already in the list, 
+            # then don't do anything.
+            return False
+
+    def update(self, old_id: str, id: str) -> bool:
+        """Method for updating an identifier. Classes
+        inheriting may override with custom behaviour.
+
+        Args:
+            id (str): The new ID.
+            old_id (str): The old ID to be replaced.
+        """
+        assert self.identifiers is not None
+        idx = self.identifiers.index(old_id)
+        self.identifiers[idx] = id
+        return True
+
+
+    def delete(self, id_to_delete: str) -> bool:
+        """Method for deleting an identifier. Classes
+        inheriting may override with custom behaviour.
+
+        Args:
+            id_to_delete (str): The ID to delete.
+        """
+        assert self.identifiers is not None
+        self.identifiers.remove(id_to_delete)
+        return True
+
 class DataClassification(Enum):
     """An enumerator for data classification.
     Gaps have been left deliberately in the enumeration to allow for intermediate
@@ -140,12 +228,65 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
 
     yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
-    name: str = ""
     description: str = ""
-    project_id: str = ""
-    alternate_ids: List[str] = field(default_factory=list)
     lead_researcher: str = ""
+    name: str = ""
     principal_investigator: str = ""
+    identifiers: Optional[list[str]] = field(default_factory=list)
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
+    
+    def __post_init__(self):
+        self.identifiers_delegate = ProjectIdentifiers(self)
+
+
+class ProjectIdentifiers(IIdentifiers):
+    def __init__(self, project: Project):
+        self.project = project
+        super().__init__(project.identifiers)
+    
+    def _is_unique(self, id: str):
+        """Private method to check whether an id is unique across all 
+        Projects in the store.
+
+        Args:
+            id (str): The ID to check
+        """
+        assert self.project._store is not None
+        for project in self.project._store.projects:
+            # If the project has this ID, then it isn't unique.
+            if project.identifiers_delegate.has(id or []):
+                return False
+        return True
+
+    def add(self, value: str):
+        if not self._is_unique(value):
+            # Check if the new ID is unique.
+            return False
+        return super().add(value)
+
+    def update(self, old_id: str, id: str):
+        assert self.project._store is not None
+        # Find all experiments and update their IDs.
+        if not self._is_unique(id):
+            # Check if the new ID is unique.
+            return False
+        for experiment in self.project._store.experiments:
+            if experiment.project_id == old_id:
+                experiment.project_id = id
+        return super().update(old_id, id)
+
+    def delete(self, id_to_delete: str):
+        if self.identifiers is None:
+            return False
+        if len(self.identifiers) <= 1:
+            return False
+        super().delete(id_to_delete)
+        new_id = self.first()
+        assert self.project._store is not None
+        for experiment in self.project._store.experiments:
+            if experiment.project_id == id_to_delete:
+                experiment.project_id = new_id
+        return True
 
 @dataclass
 class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus):
@@ -158,10 +299,63 @@ class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, 
     title: str = ""
     experiment_id: str = ""
     project_id: str = ""
-    alternate_ids: List[str] = field(default_factory=list)
     description: str = ""
+    title: str = ""
+    identifiers: Optional[list[str]] = field(default_factory=list)
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
+    def __post_init__(self):
+        self.identifiers_delegate = ExperimentIdentifiers(self)
 
+class ExperimentIdentifiers(IIdentifiers):
+    def __init__(self, experiment: Experiment):
+        self.experiment = experiment
+        super().__init__(experiment.identifiers)
+
+    def _is_unique(self, id: str):
+        """Private method to check whether an id is unique across all 
+        Projects in the store.
+
+        Args:
+            id (str): The ID to check
+        """
+        assert self.experiment._store is not None
+        for experiment in self.experiment._store.experiments:
+            # If the experiment has this ID, then it isn't unique.
+            if experiment.identifiers_delegate.has(id or []):
+                return False
+        return True
+
+    def add(self, value: str) -> bool:
+        if not self._is_unique(value):
+            return False
+        return super().add(value)
+
+    def update(self, old_id: str, id: str):
+        assert self.experiment._store is not None
+        # Find all datasets and update their IDs.
+        if not self._is_unique(id):
+            # Check if the new ID is unique.
+            return False
+        for dataset in self.experiment._store.datasets:
+            if old_id in dataset.experiment_id:
+                dataset.experiment_id.remove(old_id)
+                dataset.experiment_id.append(id)
+        return super().update(old_id, id)
+
+    def delete(self, id_to_delete: str):
+        if self.identifiers is None:
+            return False
+        if len(self.identifiers) <= 1:
+            return False
+        super().delete(id_to_delete)
+        new_id = self.first()
+        assert self.experiment._store is not None
+        for dataset in self.experiment._store.datasets:
+            if id_to_delete in dataset.experiment_id:
+                dataset.experiment_id.remove(id_to_delete)
+                dataset.experiment_id.append(new_id)
+        return True
 
 @dataclass
 class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus):
@@ -173,12 +367,63 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     yaml_loader = yaml.SafeLoader
     dataset_name: str = ""
     description: str = ""
-    dataset_id: str = ""
     experiment_id: List[str] = field(default_factory=list)
     instrument_id: str = ""
+    description: str = ""
     instrument: str = ""
+    identifiers: Optional[list[str]] = field(default_factory=list)
     experiments: List[str] = field(default_factory=list)
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
+    def __post_init__(self):
+        self.identifiers_delegate = DatasetIdentifiers(self)
+
+class DatasetIdentifiers(IIdentifiers):
+    def __init__(self, dataset: Dataset):
+        self.dataset = dataset
+        super().__init__(dataset.identifiers)
+
+    def _is_unique(self, id: str):
+        """Private method to check whether an id is unique across all 
+        Projects in the store.
+
+        Args:
+            id (str): The ID to check
+        """
+        assert self.dataset._store is not None
+        for dataset in self.dataset._store.datasets:
+            # If the experiment has this ID, then it isn't unique.
+            if dataset.identifiers_delegate.has(id or []):
+                return False
+        return True    
+
+    def add(self, value: str) -> bool:
+        if not self._is_unique(value):
+            return False
+        return super().add(value)
+
+    def update(self, old_id: str, id: str):
+        assert self.dataset._store is not None
+        if not self._is_unique(id):
+            return False
+        # Find all experiments and update their IDs.
+        for datafile in self.dataset._store.datafiles:
+            if datafile.dataset_id == old_id:
+                datafile.dataset_id = id
+        return super().update(old_id, id)
+
+    def delete(self, id_to_delete: str):
+        if self.identifiers is None:
+            return False
+        if len(self.identifiers) <= 1:
+            return False
+        super().delete(id_to_delete)
+        new_id = self.first()
+        assert self.dataset._store is not None
+        for datafile in self.dataset._store.datafiles:
+            if datafile.dataset_id == id_to_delete:
+                datafile.dataset_id = new_id
+        return True
 
 @dataclass
 class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
@@ -197,7 +442,7 @@ class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
     mimetype: str = ""
     dataset: str = ""
     dataset_id: str = ""
-
+    _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
 def Username_yaml_representer(dumper: Dumper, data: 'Username') -> ScalarNode:
     """Function for representing this Username in YAML.
@@ -247,7 +492,7 @@ class IngestionMetadata:
     datasets: List[Dataset] = field(default_factory=list)
     datafiles: List[Datafile] = field(default_factory=list)
     # Ingestion metadata file location
-    file_path: Optional[Path] = None       
+    file_path: Optional[Path] = None      
 
     def is_empty(self) -> bool:
         return (len(self.projects) == 0 and
@@ -283,14 +528,14 @@ class IngestionMetadata:
             # in file.directory, then relativise to the new path.
             for file in self.datafiles:
                 curr_path = self.file_path.parent.joinpath(file.directory)
-                new_path = Path(os.path.relpath(curr_path, relative_to_dir))
+                new_path = Path(relpath(curr_path, relative_to_dir))
                 file.directory = new_path
         else:
             # If this file is not previously saved, then use the absolute path for this
             # file.
             for file in self.datafiles:
                 curr_path = file.path_abs.parent
-                file.directory = Path(os.path.relpath(curr_path, relative_to_dir))
+                file.directory = Path(relpath(curr_path, relative_to_dir))
 
     def _to_yaml(self):
         """
@@ -307,10 +552,9 @@ class IngestionMetadata:
         """
         Returns datafiles that belong to a dataset.
         """
-        id = dataset.dataset_id
         all_files: List[Datafile] = []
         for file in self.datafiles:
-            if not file.dataset_id == id:
+            if not dataset.identifiers_delegate.has(file.dataset_id):
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
@@ -321,10 +565,10 @@ class IngestionMetadata:
         """
         Returns datasets that belong to a experiment.
         """
-        id = exp.experiment_id
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
-            if id not in dataset.experiment_id:
+            # Check if any dataset experiment ids match experiment identifiers
+            if not exp.identifiers_delegate.has(dataset.experiment_id):
                 continue
             all_datasets.append(dataset)
         return all_datasets
@@ -333,10 +577,9 @@ class IngestionMetadata:
         """
         Returns experiments that belong to a project.
         """
-        id = proj.project_id
         all_exps: List[Experiment] = []
         for exp in self.experiments:
-            if not exp.project_id == id:
+            if not proj.identifiers_delegate.has(exp.project_id):
                 continue
             all_exps.append(exp)
         return all_exps

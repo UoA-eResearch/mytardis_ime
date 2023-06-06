@@ -19,6 +19,20 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
+     <widget class="QLabel" name="label_9">
+      <property name="font">
+       <font>
+        <pointsize>19</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add an Experiment to a Project</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label">
       <property name="text">
        <string>You will be adding a new Experiment into the following Project:</string>
@@ -65,14 +79,14 @@
     <string notr="true">10</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_10">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QLabel" name="label_13">
       <property name="text">
-       <string>You've chosen to create a new project. Enter some basic details, then click next.</string>
+       <string>Enter some basic details for the new project, then click next.</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="2" column="0">
      <widget class="QWidget" name="newProjectForm" native="true">
       <layout class="QFormLayout" name="_3">
        <item row="0" column="0">
@@ -120,10 +134,24 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="3" column="0">
      <widget class="QLabel" name="label_15">
       <property name="text">
        <string>You can add more metadata and access controls for the project later.</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="font">
+       <font>
+        <pointsize>19</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>New Project</string>
       </property>
      </widget>
     </item>
@@ -135,9 +163,23 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
+     <widget class="QLabel" name="label_11">
+      <property name="font">
+       <font>
+        <pointsize>19</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add a Dataset to an Experiment</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>You will be adding a new Dataset into the following Project, and Experiment:</string>
+       <string>You will be adding a new Dataset into the following Project and Experiment:</string>
       </property>
      </widget>
     </item>
@@ -196,9 +238,23 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
+     <widget class="QLabel" name="label_12">
+      <property name="font">
+       <font>
+        <pointsize>19</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>New Experiment</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label_16">
       <property name="text">
-       <string>You've chosen to create a new experiment. Enter some basic details, then click next.</string>
+       <string>Enter some basic details for the new experiment, then click next.</string>
       </property>
      </widget>
     </item>
@@ -264,6 +320,20 @@
     <string notr="true">6</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <widget class="QLabel" name="label_22">
+      <property name="font">
+       <font>
+        <pointsize>19</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add Datafiles to a Dataset</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QLabel" name="label_5">
       <property name="text">
@@ -340,9 +410,23 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_8">
     <item>
+     <widget class="QLabel" name="label_23">
+      <property name="font">
+       <font>
+        <pointsize>19</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>New Dataset</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label_19">
       <property name="text">
-       <string>You've chosen to create a new dataset. Enter some basic details, then click next.</string>
+       <string>Enter some basic details for the new dataset, then click next.</string>
       </property>
      </widget>
     </item>
@@ -409,14 +493,14 @@
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_6">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_7">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Finally, choose the files you wish to include in this dataset.</string>
+         <string>You can override inherited metadata and access controls later.</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="2" column="0" colspan="2">
        <widget class="QTableWidget" name="datafiletableWidget">
         <property name="minimumSize">
          <size>
@@ -480,24 +564,38 @@
         </column>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QPushButton" name="datafileAddPushButton">
         <property name="text">
          <string>Add files...</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QPushButton" name="datafileDeletePushButton">
         <property name="text">
-         <string>Delete files</string>
+         <string>Remove files</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_8">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>You can override inherited metadata and access controls later.</string>
+         <string>Choose the files you wish to include in this dataset.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_24">
+        <property name="font">
+         <font>
+          <pointsize>19</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Datafiles</string>
         </property>
        </widget>
       </item>
@@ -510,7 +608,7 @@
   <customwidget>
    <class>ProjectPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages_skip</header>
+   <header>ime.widgets.add_files_wizard_pages</header>
    <container>1</container>
   </customwidget>
   <customwidget>

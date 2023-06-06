@@ -1,11 +1,11 @@
 !Project
-alternate_ids: []
 description: ''
 data_status: 5
 lead_researcher: ''
 name: BIRU_MultipleLungCancer
 principal_investigator: csea004
-project_id: biru-multipleLungcancer
+identifiers: 
+  - biru-multipleLungcancer
 metadata:
   startdate: 2022-08-01
   owner: Jacqui Ross
@@ -30,13 +30,13 @@ users:
     can_download: true
     see_sensitive: true
 --- !Project
-alternate_ids: []
 description: ''
 lead_researcher: ''
 metadata: {}
 name: BIRU_GastricCancer
 principal_investigator: csea004
-project_id: biru-gastriccancer
+identifiers: 
+  - biru-gastriccancer
 groups:
   - !GroupACL 
     group: test_admin
@@ -57,9 +57,9 @@ users:
     can_download: true
     see_sensitive: true
 --- !Experiment
-alternate_ids: []
 description: ''
-experiment_id: biru-lungcancer1
+identifiers: 
+  - biru-lungcancer1
 metadata: 
   lens: 4
   excitation: 488
@@ -87,22 +87,23 @@ users:
     can_download: true
     see_sensitive: true
 --- !Experiment
-alternate_ids: []
 description: ''
-experiment_id: biru-lungcancer2
+identifiers: 
+  - biru-lungcancer2
 metadata: {}
 project_id: biru-multipleLungcancer
 title: BIRU lungcancer2_DrugA
 --- !Experiment
-alternate_ids: []
 description: ''
-experiment_id: biru-gastriccancer
+identifiers: 
+  - biru-gastriccancer
 metadata: {}
 project_id: biru-gastriccancer
 title: BIRU gastriccancer
 
 --- !Dataset
-dataset_id: BIRU-DataSet1
+identifiers: 
+  - BIRU-DataSet1
 dataset_name: BIRU-DataSet1
 description: ''
 experiment_id:
@@ -112,7 +113,8 @@ instrument: ''
 instrument_id: ''
 metadata: {}
 --- !Dataset
-dataset_id: BIRU-DataSet2
+identifiers: 
+  - BIRU-DataSet2
 dataset_name: BIRU-DataSet2
 description: ''
 experiment_id:
@@ -122,7 +124,8 @@ instrument: ''
 instrument_id: ''
 metadata: {}
 --- !Dataset
-dataset_id: BIRU-DataSet3               
+identifiers: 
+  - BIRU-DataSet3               
 dataset_name: BIRU-DataSet33
 data_status: 5
 description: ''
@@ -133,7 +136,8 @@ instrument: ''
 instrument_id: 'Olympus FV1000 live cell imaging confocal microscope'
 metadata: {}
 --- !Dataset
-dataset_id: BIRU-DataSet4
+identifiers: 
+  - BIRU-DataSet4
 dataset_name: BIRU-DataSet4
 description: ''
 experiment_id:

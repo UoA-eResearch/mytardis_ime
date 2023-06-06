@@ -8,6 +8,8 @@ from PyQt5.QtCore import pyqtSignal, Qt
 from ime.models import IMetadata
 import logging
 
+from ime.utils import setup_header_layout
+
 class MetadataTab(QWidget, IBindableInput):
     """A tab widget for displaying and editing metadata information for an object."""
     metadata_object: IMetadata
@@ -22,6 +24,7 @@ class MetadataTab(QWidget, IBindableInput):
         self.ui.schemaLineEdit.textChanged.connect(self.handle_schema_changed)
         self.ui.metadata_table.selectionModel().selectionChanged.connect(self.handle_selection_changed)
         self.ui.remove_rows_btn.clicked.connect(self.handle_remove_rows_click)
+        setup_header_layout(self.ui.metadata_table.horizontalHeader())
 
     def handle_schema_changed(self, schema: str):
         """Handles the schema text box changing."""
