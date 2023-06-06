@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ImportDataFiles(object):
     def setupUi(self, ImportDataFiles):
         ImportDataFiles.setObjectName("ImportDataFiles")
-        ImportDataFiles.resize(677, 692)
+        ImportDataFiles.resize(677, 690)
         self.introductionPage = QtWidgets.QWizardPage()
         self.introductionPage.setObjectName("introductionPage")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.introductionPage)
@@ -380,7 +380,7 @@ class Ui_ImportDataFiles(object):
         self.experimentDescriptionLineEdit.setPlaceholderText(_translate("ImportDataFiles", "Optional description of the experiment"))
         self.label_17.setText(_translate("ImportDataFiles", "You can add more metadata and access controls for the experiment later."))
         self.label_21.setText(_translate("ImportDataFiles", "Dataset"))
-        self.label_5.setText(_translate("ImportDataFiles", "Nearly there! Let\'s find or create the dataset for your data files"))
+        self.label_5.setText(_translate("ImportDataFiles", "Nearly there! Let\'s find or create the dataset for your data files."))
         self.existingDatasetRadioButton.setText(_translate("ImportDataFiles", "Add this data to an existing dataset."))
         self.newDatasetRadioButton.setText(_translate("ImportDataFiles", "Create a new dataset for this data."))
         self.label_22.setText(_translate("ImportDataFiles", "New Dataset"))

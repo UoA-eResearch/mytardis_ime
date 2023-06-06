@@ -3,7 +3,7 @@ from pyexpat import model
 import typing
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
+from PyQt5.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 from typing import Any, Callable, cast
 
 from ime.ui.ui_main_window import Ui_MainWindow
@@ -14,7 +14,7 @@ from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
 import default_rc
-from .utils import file_size_to_str
+from .utils import file_size_to_str, setup_header_layout
 
 class MyTardisMetadataEditor(QMainWindow):
     """
@@ -54,6 +54,10 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
         self.ui.projectTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
+
+        setup_header_layout(self.ui.projectTreeWidget.header())
+        setup_header_layout(self.ui.experimentTreeWidget.header())
+        setup_header_layout(self.ui.datasetTreeWidget.header())
 
         self.show()
 

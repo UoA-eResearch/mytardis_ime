@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>677</width>
-    <height>692</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -490,7 +490,7 @@
     <item>
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>Nearly there! Let's find or create the dataset for your data files</string>
+       <string>Nearly there! Let's find or create the dataset for your data files.</string>
       </property>
      </widget>
     </item>
@@ -640,7 +640,7 @@
       <item row="3" column="1">
        <widget class="QPushButton" name="datafileDeletePushButton">
         <property name="text">
-         <string>Delete files</string>
+         <string>Remove files</string>
         </property>
        </widget>
       </item>
