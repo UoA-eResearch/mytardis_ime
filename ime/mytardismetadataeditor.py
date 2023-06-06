@@ -174,15 +174,9 @@ class MyTardisMetadataEditor(QMainWindow):
         selected_item = self.ui.datasetTreeWidget.currentItem() ### it's the file name
         if selected_item:
             confirm_msg = QMessageBox()
-<<<<<<< HEAD
-            confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Confirm to remove the file?')
-            confirm_msg.setInformativeText("Removed data will not be able to restore.")
-=======
             confirm_msg.setWindowTitle("Remove this file?")
             confirm_msg.setText('Remove this file?')
             confirm_msg.setInformativeText("You will have to add this file again once removed.")
->>>>>>> bb8068badace86222c7d7285d58726ab4444d6ba
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -222,13 +216,8 @@ class MyTardisMetadataEditor(QMainWindow):
         menu = QMenu()
         action = menu.addAction("Add New Dataset...")
         action.triggered.connect(self.openWizardWindowSkipExperiment)
-<<<<<<< HEAD
         delete_action = menu.addAction("Delete this Experiment")
         if item_data.data_status == DataStatus.INGESTED.value:
-=======
-        delete_action = menu.addAction("Remove this Experiment")
-        if item_data.data_status == 'INGESTED':
->>>>>>> bb8068badace86222c7d7285d58726ab4444d6ba
             delete_action.setEnabled(False)
         else:
             delete_action.triggered.connect(self.delete_items_experiment)
@@ -321,13 +310,8 @@ class MyTardisMetadataEditor(QMainWindow):
         menu = QMenu()
         action = menu.addAction("Add New Experiment...")
         action.triggered.connect(self.openWizardWindowSkipProject)
-<<<<<<< HEAD
         delete_action = menu.addAction("Delete this Project")
         if item_data.data_status == DataStatus.INGESTED.value:
-=======
-        delete_action = menu.addAction("Remove this Project")
-        if item_data.data_status == 'INGESTED':
->>>>>>> bb8068badace86222c7d7285d58726ab4444d6ba
             delete_action.setEnabled(False)
         else:
             delete_action.triggered.connect(self.delete_items_project)
