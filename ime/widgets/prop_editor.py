@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLineEdit
 from PyQt5.uic import loadUi
 from ime.bindable import BoundObject
-from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project
+from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project, DataStatus
 from ime.qt_models import PythonListModel
 from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
@@ -44,7 +44,7 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset.set_object(dataset)
         self.ui.identifierList.set_data(dataset.identifiers_delegate)
-        if dataset.data_status == "INGESTED":
+        if dataset.data_status == DataStatus.INGESTED.value:
             self.ui.page.setEnabled(False)
             self.ui.page_2.setEnabled(False)
             self.ui.page_3.setEnabled(False)
@@ -92,7 +92,7 @@ class DatafilePropertyEditor(QWidget):
         datafile: The `Datafile` to edit.
         """
         self.df.set_object(datafile)
-        if datafile.data_status == "INGESTED":
+        if datafile.data_status == DataStatus.INGESTED.value:
             self.ui.fileinfoDescription.setEnabled(False)
             self.ui.page_10.setEnabled(False)
             self.ui.metadata_tab.setEnabled(False)
@@ -138,8 +138,7 @@ class ExperimentPropertyEditor(QWidget):
             experiment: The experiment to be set.
         """
         self.exp.set_object(experiment)
-        self.ui.identifierList.set_data(experiment.identifiers_delegate)
-        if experiment.data_status == "INGESTED":
+        if experiment.data_status == DataStatus.INGESTED.value:
             self.ui.page_4.setEnabled(False)
             self.ui.page_5.setEnabled(False)
             self.ui.metadata_tab.setEnabled(False)
@@ -186,8 +185,7 @@ class ProjectPropertyEditor(QWidget):
             project (Project): The `Project` object to set.
         """
         self.project.set_object(project)
-        self.ui.identifierList.set_data(project.identifiers_delegate)
-        if project.data_status == "INGESTED":
+        if project.data_status == DataStatus.INGESTED.value:
             self.ui.page_7.setEnabled(False)
             self.ui.page_8.setEnabled(False)
             self.ui.metadata_tab.setEnabled(False)

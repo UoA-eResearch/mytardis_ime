@@ -1,5 +1,6 @@
 !Project
 description: ''
+data_status: 5
 lead_researcher: ''
 name: BIRU_MultipleLungCancer
 principal_investigator: csea004
@@ -126,6 +127,7 @@ metadata: {}
 identifiers: 
   - BIRU-DataSet3               
 dataset_name: BIRU-DataSet33
+data_status: 5
 description: ''
 experiment_id:
 - biru-lungcancer2
@@ -192,6 +194,7 @@ size: 7389184.0
 --- !Datafile
 dataset: ''
 dataset_id: BIRU-DataSet1
+data_status: 5
 directory: ''
 filename: good image 02.oib
 md5sum: ''
