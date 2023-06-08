@@ -353,7 +353,7 @@ class Ui_ImportDataFiles(object):
         item = self.datafiletableWidget.horizontalHeaderItem(2)
         item.setText(_translate("ImportDataFiles", "File Path"))
         self.datafileAddPushButton.setText(_translate("ImportDataFiles", "Add files..."))
-        self.datafileDeletePushButton.setText(_translate("ImportDataFiles", "Delete files"))
+        self.datafileDeletePushButton.setText(_translate("ImportDataFiles", "Remove files"))
         self.label_7.setText(_translate("ImportDataFiles", "Choose the files you wish to include in this dataset."))
         self.label_24.setText(_translate("ImportDataFiles", "Datafiles"))
 from ime.widgets.add_files_wizard_pages import ProjectPage

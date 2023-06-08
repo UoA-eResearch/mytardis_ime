@@ -23,12 +23,17 @@ class MetadataTab(QWidget, IBindableInput):
         self.ui.metadata_table.cellChanged.connect(self.handle_cell_changed)
         self.ui.schemaLineEdit.textChanged.connect(self.handle_schema_changed)
         self.ui.metadata_table.selectionModel().selectionChanged.connect(self.handle_selection_changed)
+        self.ui.add_row_btn.clicked.connect(self._handle_add_row_click)
         self.ui.remove_rows_btn.clicked.connect(self.handle_remove_rows_click)
+        self.ui.notes_textedit.textChanged.connect(self.handleNotes_changed)
         setup_header_layout(self.ui.metadata_table.horizontalHeader())
 
     def handle_schema_changed(self, schema: str):
         """Handles the schema text box changing."""
         self.metadata_object.object_schema = self.ui.schemaLineEdit.text()
+
+    def handleNotes_changed(self):
+        self.metadata_object.metadata['Notes'] = self.ui.notes_textedit.toPlainText()
 
     def add_insert_metadata_row(self):
         """Adds an empty row to the metadata table."""
@@ -106,6 +111,14 @@ class MetadataTab(QWidget, IBindableInput):
                 return
             self.metadata_object.metadata[key] = cell_val
 
+    def _handle_add_row_click(self) -> None:
+        """Private method for handling when the Add button is
+        clicked. Focuses the editing on the new edit row.
+        """
+        table = self.ui.metadata_table
+        edit_row_name_cell = table.model().index(table.rowCount() - 1, 0)
+        self.ui.metadata_table.edit(edit_row_name_cell)
+
     def handle_remove_rows_click(self):
         """Handles the click event for the Remove Rows button."""
         table = self.ui.metadata_table
@@ -133,11 +146,18 @@ class MetadataTab(QWidget, IBindableInput):
             table.clearContents()
             table.setRowCount(0)
             # Then, populate table with new items 
-            metadata = metadata_obj.metadata
+            metadata = metadata_obj.metadata                
             num_new = len(metadata)
+            if "Notes" in metadata:
+                # Remove a line if there are Notes.
+                num_new = num_new - 1
             table.setRowCount(num_new)
             row_idx = 0
             for key,val in metadata.items():
+                if key == "Notes":
+                    # Skip the notes field. Display it in the separate notes
+                    # section instead
+                    continue
                 key_item, val_item = self.get_metadata_row(key, str(val))
                 table.setItem(row_idx, 0, key_item)
                 table.setItem(row_idx, 1, val_item)
@@ -147,3 +167,10 @@ class MetadataTab(QWidget, IBindableInput):
         # Update schema
         object_schema_value = metadata_obj.object_schema
         self.ui.schemaLineEdit.setText(str(object_schema_value))
+        # Update notes section
+        if 'Notes' in metadata_obj.metadata:
+            notes = metadata_obj.metadata['Notes']
+        else:
+            notes = ""
+        with QSignalBlocker(self.ui.notes_textedit):
+            self.ui.notes_textedit.setText(notes)
