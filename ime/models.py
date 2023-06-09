@@ -241,7 +241,7 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
     
     def __post_init__(self):
-        self.identifiers_methods = ProjectIdentifiers(self)
+        self.identifiers_delegate = ProjectIdentifiers(self)
 
 
 class ProjectIdentifiers(IIdentifiers):
@@ -263,7 +263,7 @@ class ProjectIdentifiers(IIdentifiers):
         assert self.project._store is not None
         for project in self.project._store.projects:
             # If the project has this ID, then it isn't unique.
-            if project.identifiers_methods.has(id or []):
+            if project.identifiers_delegate.has(id or []):
                 return False
         return True
 
@@ -348,7 +348,7 @@ class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, 
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
     def __post_init__(self):
-        self.identifiers_methods = ExperimentIdentifiers(self)
+        self.identifiers_delegate = ExperimentIdentifiers(self)
 
 class ExperimentIdentifiers(IIdentifiers):
     """Experiment-specific methods related to identifiers."""
@@ -369,7 +369,7 @@ class ExperimentIdentifiers(IIdentifiers):
         assert self.experiment._store is not None
         for experiment in self.experiment._store.experiments:
             # If the experiment has this ID, then it isn't unique.
-            if experiment.identifiers_methods.has(id or []):
+            if experiment.identifiers_delegate.has(id or []):
                 return False
         return True
 
@@ -456,7 +456,7 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
 
     def __post_init__(self):
-        self.identifiers_methods = DatasetIdentifiers(self)
+        self.identifiers_delegate = DatasetIdentifiers(self)
 
 class DatasetIdentifiers(IIdentifiers):
     """Dataset-specific methods related to identifiers."""
@@ -477,7 +477,7 @@ class DatasetIdentifiers(IIdentifiers):
         assert self.dataset._store is not None
         for dataset in self.dataset._store.datasets:
             # If the experiment has this ID, then it isn't unique.
-            if dataset.identifiers_methods.has(id or []):
+            if dataset.identifiers_delegate.has(id or []):
                 return False
         return True    
 
@@ -672,7 +672,7 @@ class IngestionMetadata:
         """
         all_files: List[Datafile] = []
         for file in self.datafiles:
-            if not dataset.identifiers_methods.has(file.dataset_id):
+            if not dataset.identifiers_delegate.has(file.dataset_id):
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
@@ -686,7 +686,7 @@ class IngestionMetadata:
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
             # Check if any dataset experiment ids match experiment identifiers
-            if not exp.identifiers_methods.has(dataset.experiment_id):
+            if not exp.identifiers_delegate.has(dataset.experiment_id):
                 continue
             all_datasets.append(dataset)
         return all_datasets
@@ -697,7 +697,7 @@ class IngestionMetadata:
         """
         all_exps: List[Experiment] = []
         for exp in self.experiments:
-            if not proj.identifiers_methods.has(exp.project_id):
+            if not proj.identifiers_delegate.has(exp.project_id):
                 continue
             all_exps.append(exp)
         return all_exps

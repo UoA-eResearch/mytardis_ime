@@ -267,7 +267,7 @@ class AddFilesWizard(QWizard):
             result.project = Project()
             result.project._store = self.metadataModel.metadata
             result.project.name = self.ui.projectNameLineEdit.text()
-            result.project.identifiers_methods.add(self.ui.projectIDLineEdit.text())
+            result.project.identifiers_delegate.add(self.ui.projectIDLineEdit.text())
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
             
         if self.field('isExistingExperiment'):
@@ -276,8 +276,8 @@ class AddFilesWizard(QWizard):
             result.experiment = Experiment()
             result.experiment._store = self.metadataModel.metadata
             result.experiment.title = self.ui.experimentNameLineEdit.text()
-            result.experiment.identifiers_methods.add(self.ui.experimentIDLineEdit.text())
-            result.experiment.project_id = result.project.identifiers_methods.first()
+            result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
+            result.experiment.project_id = result.project.identifiers_delegate.first()
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
         if self.field('isExistingDataset'):
@@ -286,17 +286,17 @@ class AddFilesWizard(QWizard):
             result.dataset = Dataset()
             result.dataset._store = self.metadataModel.metadata
             result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-            result.dataset.identifiers_methods.add(self.ui.datasetIDLineEdit.text())
+            result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
-            result.dataset.experiment_id = [result.experiment.identifiers_methods.first()]
+            result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_methods.first()
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             path = Path(table.item(row, 2).text())
@@ -485,7 +485,7 @@ class AddFilesWizardSkipDataset(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_methods.first()
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -680,10 +680,10 @@ class AddFilesWizardSkipExperiment(QWizard):
         result.dataset = Dataset()
         result.dataset._store = self.metadataModel.metadata
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.identifiers_methods.add(self.ui.datasetIDLineEdit.text())
+        result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.identifiers_methods.first()]
+        result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
@@ -691,7 +691,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_methods.first()
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -896,17 +896,17 @@ class AddFilesWizardSkipProject(QWizard):
         result.experiment = Experiment()
         result.experiment._store = self.metadataModel.metadata
         result.experiment.title = self.ui.experimentNameLineEdit.text()
-        result.experiment.identifiers_methods.add(self.ui.experimentIDLineEdit.text())
-        result.experiment.project_id = result.project.identifiers_methods.first()
+        result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
+        result.experiment.project_id = result.project.identifiers_delegate.first()
         result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
         ### assume new dataset
         result.dataset = Dataset()
         result.dataset._store = self.metadataModel.metadata
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.identifiers_methods.add(self.ui.datasetIDLineEdit.text())
+        result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.identifiers_methods.first()]
+        result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
@@ -914,7 +914,7 @@ class AddFilesWizardSkipProject(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_methods.first()
+            datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
