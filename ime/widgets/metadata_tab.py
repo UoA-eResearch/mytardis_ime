@@ -20,7 +20,7 @@ class MetadataTab(QWidget, IBindableInput):
         super(QWidget, self).__init__(parent)
         self.ui = Ui_MetadataTab()
         self.ui.setupUi(self)
-        self.ui.metadata_table.cellChanged.connect(self.handle_cell_changed)
+        self.ui.metadata_table.cellChanged.connect(self._handle_cell_changed)
         self.ui.schemaLineEdit.textChanged.connect(self.handle_schema_changed)
         self.ui.metadata_table.selectionModel().selectionChanged.connect(self.handle_selection_changed)
         self.ui.add_row_btn.clicked.connect(self._handle_add_row_click)
@@ -60,7 +60,11 @@ class MetadataTab(QWidget, IBindableInput):
         # key_edit.setText(key)
         # key_edit.setPlaceholderText("Name for the field, e.g. Batch number")
         key_item = QTableWidgetItem(key)
-        key_item.setFlags(Qt.ItemFlag.ItemIsSelectable)
+        # Use the UserRole to store another copy of the key,
+        # so when user has edited the item we can find the
+        # associated value.
+        key_item.setData(Qt.ItemDataRole.UserRole, key)
+        # key_item.setFlags(Qt.ItemFlag.ItemIsSelectable)
         # val_edit = QLineEdit()
         # val_edit.setText(val)
         # val_edit.setPlaceholderText("Value for the field, e.g. 400")
@@ -83,25 +87,46 @@ class MetadataTab(QWidget, IBindableInput):
             return
         self.ui.remove_rows_btn.setEnabled(len(selected_rows) > 0)
 
-    def handle_cell_changed(self, row: int, col: int):
-        """Handles the change event for a cell in the metadata table.
+    def _handle_cell_changed(self, row: int, col: int):
+        """Private method that handles the change event for a cell in the metadata table.
 
         Args:
             row (int): The row index of the changed cell.
             col (int): The column index of the changed cell.
         """
         table = self.ui.metadata_table
+        metadata = self.metadata_object.metadata
         cell = table.item(row, col)
         cell_val = cell.text()
         if col == 0:
-            # This is a new metadata key being inserted!
-            # Disable editing of key name
-            with QSignalBlocker(self.ui.metadata_table):
-                cell.setFlags(Qt.ItemFlag.ItemIsSelectable)
-                # Add a new row to the bottom.
-                # Use a signal blocker to prevent a signal being sent
-                # causing recursion
-                self.add_insert_metadata_row()
+            if row != table.rowCount() - 1:
+                old_name = cell.data(Qt.ItemDataRole.UserRole)
+                if cell_val in metadata:
+                    # If the user has duplicated a name,
+                    # do not modify underlying data and
+                    # undo the change.
+                    with QSignalBlocker(table):
+                        cell.setText(old_name)
+                        return
+                metadata_value = self.metadata_object.metadata[old_name]
+                del self.metadata_object.metadata[old_name]
+                self.metadata_object.metadata[cell_val] = metadata_value
+                with QSignalBlocker(table):
+                    cell.setData(Qt.ItemDataRole.UserRole, cell_val)
+            else:
+                # This is a new metadata key being inserted!
+                if cell_val in metadata:
+                    # If the key already exists, undo the editing.
+                    with QSignalBlocker(table):
+                        cell.setText('')
+                    return
+                with QSignalBlocker(table):
+                    # Add a new row to the bottom.
+                    # Use a signal blocker to prevent a signal being sent
+                    # causing recursion
+                    metadata[cell_val] = ''
+                    self.add_insert_metadata_row()
+                    cell.setData(Qt.ItemDataRole.UserRole, cell_val)
         else:
             # The user has edited a metadata value
             # TODO Empty key fields should be checked and enforced!
@@ -123,8 +148,9 @@ class MetadataTab(QWidget, IBindableInput):
         """Handles the click event for the Remove Rows button."""
         table = self.ui.metadata_table
         items = table.selectedItems()
-        for item in items:
-            row = item.row()
+        # Extract the rows that need to be deleted.
+        rows = set([item.row() for item in items])
+        for row in rows:
             if row == table.rowCount() - 1:
                 # Skip deleting the empty row.
                 continue
