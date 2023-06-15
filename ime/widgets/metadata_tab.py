@@ -15,7 +15,7 @@ class MetadataTab(QWidget, IBindableInput):
     metadata_object: IMetadata
     ui: Ui_MetadataTab
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """Initializes the metadata tab with the given parent widget."""
         super(QWidget, self).__init__(parent)
         self.ui = Ui_MetadataTab()
@@ -26,11 +26,11 @@ class MetadataTab(QWidget, IBindableInput):
         self.ui.remove_rows_btn.clicked.connect(self.handle_remove_rows_click)
         setup_header_layout(self.ui.metadata_table.horizontalHeader())
 
-    def handle_schema_changed(self, schema: str):
+    def handle_schema_changed(self, schema: str) -> None:
         """Handles the schema text box changing."""
         self.metadata_object.object_schema = self.ui.schemaLineEdit.text()
 
-    def add_insert_metadata_row(self):
+    def add_insert_metadata_row(self) -> None:
         """Adds an empty row to the metadata table."""
         table = self.ui.metadata_table
         # key_item, val_item = self.get_metadata_row("", "")
@@ -62,7 +62,7 @@ class MetadataTab(QWidget, IBindableInput):
         val_item = QTableWidgetItem(val)
         return key_item, val_item
 
-    def handle_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
+    def handle_selection_changed(self, selected: QItemSelection, deselected: QItemSelection) -> None:
         """Enables the "Remove Rows" button if rows are selected in the metadata table.
 
         Args:
@@ -78,7 +78,7 @@ class MetadataTab(QWidget, IBindableInput):
             return
         self.ui.remove_rows_btn.setEnabled(len(selected_rows) > 0)
 
-    def handle_cell_changed(self, row: int, col: int):
+    def handle_cell_changed(self, row: int, col: int) -> None:
         """Handles the change event for a cell in the metadata table.
 
         Args:
@@ -106,7 +106,7 @@ class MetadataTab(QWidget, IBindableInput):
                 return
             self.metadata_object.metadata[key] = cell_val
 
-    def handle_remove_rows_click(self):
+    def handle_remove_rows_click(self) -> None:
         """Handles the click event for the Remove Rows button."""
         table = self.ui.metadata_table
         items = table.selectedItems()
@@ -119,7 +119,7 @@ class MetadataTab(QWidget, IBindableInput):
             self.metadata_object.metadata.pop(key)
             table.removeRow(row)
 
-    def update_metadata_object(self, metadata_obj: IMetadata):
+    def update_metadata_object(self, metadata_obj: IMetadata) -> None:
         """Updates the object this tab is modifying.
 
         Args:

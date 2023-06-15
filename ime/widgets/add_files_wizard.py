@@ -25,11 +25,23 @@ class AddFilesWizardResult:
     file_list: List[Datafile]
 
 class UniqueValueValidator(QValidator):
+    """A Validator for Qt Line Edits to ensure the user input
+    value is unique in a list.    """
     def __init__(self, existing_values_list: list[str], parent: QtCore.QObject | None = None) -> None:
-        self.existing = existing_values_list
+        self.existing = set(existing_values_list)
         super().__init__(parent)
 
     def validate(self, to_validate: str, a1: int) -> tuple[QValidator.State, str, int]:
+        """Override method to validate that a value is unique.
+
+        Args:
+            to_validate (str): The value to validate.
+            a1 (int): Cursor position
+
+        Returns:
+            tuple[QValidator.State, str, int]: A tuple with whether the input is acceptable,
+            a new suggested value and new cursor position.
+        """
         if to_validate in self.existing:
             return tuple([QValidator.State.Intermediate, to_validate, a1]) # type: ignore
         return tuple([QValidator.State.Acceptable, to_validate, a1]) # type: ignore
@@ -58,7 +70,7 @@ class AddFilesWizard(QWizard):
     selected_existing_experiment: Experiment
     selected_existing_dataset: Dataset
 
-    def _register_fields(self):
+    def _register_fields(self) -> None:
         """Set up the fields and connect signals for isComplete states."""
         # Project pages
         proj_page = self.ui.projectPage
@@ -94,7 +106,7 @@ class AddFilesWizard(QWizard):
         ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
-    def _make_page_ids(self):
+    def _make_page_ids(self) -> None:
         """
         Creates a dictionary of page names and their corresponding IDs. The page IDs are obtained by calling the 
         `pageIds()` method of the QWizard, and the objectName() of each page is used as the key in the dictionary.
@@ -147,7 +159,7 @@ class AddFilesWizard(QWizard):
         else:
             return super().nextId()
 
-    def __init__(self, metadataModel: IngestionMetadataModel):
+    def __init__(self, metadataModel: IngestionMetadataModel) -> None:
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -166,7 +178,7 @@ class AddFilesWizard(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
 
-    def _update_widget_validation_style(self,line_edit: QLineEdit):
+    def _update_widget_validation_style(self,line_edit: QLineEdit) -> None:
         """Private method that gets called to update line edit style
         to reflect validation status.
 
@@ -179,7 +191,7 @@ class AddFilesWizard(QWizard):
             # Add pink to indicate invalid input.
             line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
 
-    def _setup_validated_input(self):
+    def _setup_validated_input(self) -> None:
         """Private method to set up uniqueness validation for
         Project/Experiment/Dataset ID entries.
         """
@@ -209,7 +221,7 @@ class AddFilesWizard(QWizard):
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
 
 
-    def addFiles_handler(self):
+    def addFiles_handler(self) -> None:
         """Add files to the table.
 
         Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
@@ -222,7 +234,7 @@ class AddFilesWizard(QWizard):
         files_to_add = DialogUtils.open_add_files_dialog()
         DialogUtils.add_file_table_rows(table,files_to_add)
 
-    def deleteFiles_handler(self):
+    def deleteFiles_handler(self) -> None:
         """Delete files from the table.
 
         Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
@@ -238,7 +250,7 @@ class AddFilesWizard(QWizard):
         for index in index_list:
             self.ui.datafiletableWidget.removeRow(index.row())
     
-    def on_submit(self):
+    def on_submit(self) -> None:
         """
         Builds a result class based on the user's choices and emits them through the signal.
 
@@ -255,7 +267,7 @@ class AddFilesWizard(QWizard):
             result.project = Project()
             result.project._store = self.metadataModel.metadata
             result.project.name = self.ui.projectNameLineEdit.text()
-            result.project.identifiers_delegate.add(self.ui.projectIDLineEdit.text())
+            result.project.identifiers_methods.add(self.ui.projectIDLineEdit.text())
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
             
         if self.field('isExistingExperiment'):
@@ -264,8 +276,8 @@ class AddFilesWizard(QWizard):
             result.experiment = Experiment()
             result.experiment._store = self.metadataModel.metadata
             result.experiment.title = self.ui.experimentNameLineEdit.text()
-            result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
-            result.experiment.project_id = result.project.identifiers_delegate.first()
+            result.experiment.identifiers_methods.add(self.ui.experimentIDLineEdit.text())
+            result.experiment.project_id = result.project.identifiers_methods.first()
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
         if self.field('isExistingDataset'):
@@ -274,17 +286,17 @@ class AddFilesWizard(QWizard):
             result.dataset = Dataset()
             result.dataset._store = self.metadataModel.metadata
             result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-            result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
+            result.dataset.identifiers_methods.add(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
-            result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
+            result.dataset.experiment_id = [result.experiment.identifiers_methods.first()]
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_delegate.first()
+            datafile.dataset_id = result.dataset.identifiers_methods.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             path = Path(table.item(row, 2).text())
@@ -319,7 +331,7 @@ class AddFilesWizardSkipDataset(QWizard):
     selected_existing_experiment: Experiment
     selected_existing_dataset: Dataset
 
-    def _register_fields(self):
+    def _register_fields(self) -> None:
         # Set up the fields and connect signals for isComplete states.
         # dataset pages
         ds_page = self.ui.pedPage
@@ -336,7 +348,7 @@ class AddFilesWizardSkipDataset(QWizard):
         ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
-    def _make_page_ids(self):
+    def _make_page_ids(self) -> None:
         """
         Creates a dictionary of page names and their corresponding IDs. The page IDs are obtained by calling the 
         `pageIds()` method of the QWizard, and the objectName() of each page is used as the key in the dictionary.
@@ -353,7 +365,7 @@ class AddFilesWizardSkipDataset(QWizard):
         else:
             return super().nextId()
 
-    def __init__(self, metadataModel: IngestionMetadataModel, ds_data: Dataset, exp_data: Experiment, pro_data: Project):
+    def __init__(self, metadataModel: IngestionMetadataModel, ds_data: Dataset, exp_data: Experiment, pro_data: Project) -> None:
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -379,7 +391,7 @@ class AddFilesWizardSkipDataset(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
 
-    def _update_widget_validation_style(self,line_edit: QLineEdit):
+    def _update_widget_validation_style(self,line_edit: QLineEdit) -> None:
         """Private method that gets called to update line edit style
         to reflect validation status.
 
@@ -392,7 +404,7 @@ class AddFilesWizardSkipDataset(QWizard):
             # Add pink to indicate invalid input.
             line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
 
-    def _setup_validated_input(self):
+    def _setup_validated_input(self) -> None:
         """Private method to set up uniqueness validation for
         Project/Experiment/Dataset ID entries.
         """
@@ -422,7 +434,7 @@ class AddFilesWizardSkipDataset(QWizard):
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
 
 
-    def addFiles_handler(self):
+    def addFiles_handler(self) -> None:
         """Add files to the table.
 
         Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
@@ -435,7 +447,7 @@ class AddFilesWizardSkipDataset(QWizard):
         files_to_add = DialogUtils.open_add_files_dialog()
         DialogUtils.add_file_table_rows(table,files_to_add)
 
-    def deleteFiles_handler(self):
+    def deleteFiles_handler(self) -> None:
         """Delete files from the table.
 
         Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
@@ -451,7 +463,7 @@ class AddFilesWizardSkipDataset(QWizard):
         for index in index_list:
             self.ui.datafiletableWidget.removeRow(index.row())
     
-    def on_submit(self):
+    def on_submit(self) -> None:
         """
         Builds a result class based on the user's choices and emits them through the signal.
 
@@ -473,7 +485,7 @@ class AddFilesWizardSkipDataset(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_delegate.first()
+            datafile.dataset_id = result.dataset.identifiers_methods.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -504,7 +516,7 @@ class AddFilesWizardSkipExperiment(QWizard):
     selected_existing_experiment: Experiment
     #selected_existing_dataset: Dataset
 
-    def _register_fields(self):
+    def _register_fields(self) -> None:
         """
         A method that registers the fields of the pages of the wizard.
         """
@@ -527,7 +539,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
 
-    def _make_page_ids(self):
+    def _make_page_ids(self) -> None:
         """
         Creates a dictionary of page names and their corresponding IDs. The page IDs are obtained by calling the 
         `pageIds()` method of the QWizard, and the objectName() of each page is used as the key in the dictionary.
@@ -550,7 +562,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         else:
             return super().nextId()
         
-    def __init__(self, metadataModel: IngestionMetadataModel, exp_data: Experiment, pro_data: Project):
+    def __init__(self, metadataModel: IngestionMetadataModel, exp_data: Experiment, pro_data: Project) -> None:
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -574,7 +586,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
 
-    def _update_widget_validation_style(self,line_edit: QLineEdit):
+    def _update_widget_validation_style(self,line_edit: QLineEdit) -> None:
         """Private method that gets called to update line edit style
         to reflect validation status.
 
@@ -587,7 +599,7 @@ class AddFilesWizardSkipExperiment(QWizard):
             # Add pink to indicate invalid input.
             line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
 
-    def _setup_validated_input(self):
+    def _setup_validated_input(self) -> None:
         """Private method to set up uniqueness validation for
         Project/Experiment/Dataset ID entries.
         """
@@ -617,7 +629,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
 
 
-    def addFiles_handler(self):
+    def addFiles_handler(self) -> None:
         """Add files to the table.
 
         Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
@@ -630,7 +642,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         files_to_add = DialogUtils.open_add_files_dialog()
         DialogUtils.add_file_table_rows(table,files_to_add)
 
-    def deleteFiles_handler(self):
+    def deleteFiles_handler(self) -> None:
         """Delete files from the table.
 
         Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
@@ -647,7 +659,7 @@ class AddFilesWizardSkipExperiment(QWizard):
             self.ui.datafiletableWidget.removeRow(index.row())
 
     
-    def on_submit(self):
+    def on_submit(self) -> None:
         """
         Builds a result class based on the user's choices and emits them through the signal.
 
@@ -668,10 +680,10 @@ class AddFilesWizardSkipExperiment(QWizard):
         result.dataset = Dataset()
         result.dataset._store = self.metadataModel.metadata
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
+        result.dataset.identifiers_methods.add(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
+        result.dataset.experiment_id = [result.experiment.identifiers_methods.first()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
@@ -679,7 +691,7 @@ class AddFilesWizardSkipExperiment(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_delegate.first()
+            datafile.dataset_id = result.dataset.identifiers_methods.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -710,7 +722,7 @@ class AddFilesWizardSkipProject(QWizard):
     #selected_existing_experiment: Experiment
     #selected_existing_dataset: Dataset
 
-    def _register_fields(self):
+    def _register_fields(self) -> None:
         # Set up the fields and connect signals for isComplete states.
         """
         Register fields for each page in the wizard.
@@ -732,7 +744,7 @@ class AddFilesWizardSkipProject(QWizard):
         ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
         ds_new_page.registerField('isNewDataset',self.ui.datasetNameLabel_2)
 
-    def _make_page_ids(self):
+    def _make_page_ids(self) -> None:
         """
         Create a dictionary of page names and their corresponding IDs.
 
@@ -771,7 +783,7 @@ class AddFilesWizardSkipProject(QWizard):
         else:
             return super().nextId()
 
-    def __init__(self, metadataModel: IngestionMetadataModel, pro_data: Project):
+    def __init__(self, metadataModel: IngestionMetadataModel, pro_data: Project) -> None:
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -794,7 +806,7 @@ class AddFilesWizardSkipProject(QWizard):
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
 
-    def _update_widget_validation_style(self,line_edit: QLineEdit):
+    def _update_widget_validation_style(self,line_edit: QLineEdit) -> None:
         """Private method that gets called to update line edit style
         to reflect validation status.
 
@@ -807,7 +819,7 @@ class AddFilesWizardSkipProject(QWizard):
             # Add pink to indicate invalid input.
             line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
 
-    def _setup_validated_input(self):
+    def _setup_validated_input(self) -> None:
         """Private method to set up uniqueness validation for
         Project/Experiment/Dataset ID entries.
         """
@@ -837,7 +849,7 @@ class AddFilesWizardSkipProject(QWizard):
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
 
 
-    def addFiles_handler(self):
+    def addFiles_handler(self) -> None:
         """Add files to the table.
 
         Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
@@ -850,7 +862,7 @@ class AddFilesWizardSkipProject(QWizard):
         files_to_add = DialogUtils.open_add_files_dialog()
         DialogUtils.add_file_table_rows(table,files_to_add)
 
-    def deleteFiles_handler(self):
+    def deleteFiles_handler(self) -> None:
         """Delete files from the table.
 
         Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
@@ -866,7 +878,7 @@ class AddFilesWizardSkipProject(QWizard):
         for index in index_list:
             self.ui.datafiletableWidget.removeRow(index.row())
 
-    def on_submit(self):
+    def on_submit(self) -> None:
         """
         Builds a result class based on the user's choices and emits them through the signal.
 
@@ -884,17 +896,17 @@ class AddFilesWizardSkipProject(QWizard):
         result.experiment = Experiment()
         result.experiment._store = self.metadataModel.metadata
         result.experiment.title = self.ui.experimentNameLineEdit.text()
-        result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
-        result.experiment.project_id = result.project.identifiers_delegate.first()
+        result.experiment.identifiers_methods.add(self.ui.experimentIDLineEdit.text())
+        result.experiment.project_id = result.project.identifiers_methods.first()
         result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
         ### assume new dataset
         result.dataset = Dataset()
         result.dataset._store = self.metadataModel.metadata
         result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
-        result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
+        result.dataset.identifiers_methods.add(self.ui.datasetIDLineEdit.text())
         # Because a dataset can belong to multiple experiments,
         # we are creating a list around the experiment we captured.
-        result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
+        result.dataset.experiment_id = [result.experiment.identifiers_methods.first()]
 
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
@@ -902,7 +914,7 @@ class AddFilesWizardSkipProject(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_delegate.first()
+            datafile.dataset_id = result.dataset.identifiers_methods.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
@@ -915,9 +927,11 @@ class AddFilesWizardSkipProject(QWizard):
 
 class DialogUtils:
     @staticmethod
-    def __init__(self):
+    def __init__(self) -> None:
         pass
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
+
+    @staticmethod
     def open_add_files_dialog() -> List[QtCore.QFileInfo]:
         """Open a file dialog and get the list of files to add.
 
@@ -941,7 +955,8 @@ class DialogUtils:
                 continue
             new_files.append(info)
         return new_files
-    
+
+    @staticmethod
     def add_file_table_rows(table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
         """Add rows to the table.
 
