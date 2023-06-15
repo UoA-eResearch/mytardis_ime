@@ -22,7 +22,7 @@ class OverridableAccessControlTab(QWidget):
     _user_model: DataclassTableModel[UserACL]
     _group_model: DataclassTableModel[GroupACL]
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None) -> None:
         """Initializes the widget with the given parent and sets up the user interface."""
         super().__init__(parent)
         ui = Ui_OverridableAccessControlTab()
@@ -51,7 +51,7 @@ class OverridableAccessControlTab(QWidget):
         with QSignalBlocker(check_box):
             check_box.setChecked(value)
     
-    def set_data(self, data: IAccessControl, inherited_data: IAccessControl):
+    def set_data(self, data: IAccessControl, inherited_data: IAccessControl) -> None:
         """Sets the MyTardis object which has access control fields `data`_ to display,
         and resets the AccessControlTab to display it.
 
@@ -100,7 +100,7 @@ class OverridableAccessControlTab(QWidget):
         res = msg.exec()
         return res == QMessageBox.StandardButton.Ok
     
-    def _handle_users_override_toggled(self, enabled: bool):
+    def _handle_users_override_toggled(self, enabled: bool) -> None:
         """Private method for handling when the override checkbox
         is checked.
 
@@ -125,7 +125,7 @@ class OverridableAccessControlTab(QWidget):
                 self._user_model.set_instance_list(self._inherited_data.users or [])
                 self.ui.users.set_disabled(True)
 
-    def _handle_groups_override_toggled(self, enabled: bool):
+    def _handle_groups_override_toggled(self, enabled: bool) -> None:
         if enabled:
             # Add an empty array in the field, which represents overriding the
             # inherited field.

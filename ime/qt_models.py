@@ -9,7 +9,7 @@ which implement/extend Qt model and proxy interfaces; and an IngestionMetadataMo
 model which adapts IngestionMetadata from models.py for Qt, using the two other
 models.
 """
-from typing import Any, Callable, Generic, List, Optional, TypeVar, Type
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Type, cast
 import typing
 from PyQt5.QtCore import (
     QAbstractListModel,
@@ -36,7 +36,7 @@ class PythonListModel(QAbstractListModel):
     means the original Python list doesn't get updated.
     """
     list: List[str]
-    def __init__(self, parent = None):
+    def __init__(self, parent = None) -> None:
         super().__init__(parent)
 
     def setStringList(self, sourceList: List[str]) -> None:
@@ -46,7 +46,9 @@ class PythonListModel(QAbstractListModel):
         Args:
             sourceList (List[str]): The backing Python string list.
         """
+        self.beginResetModel()
         self.list = sourceList
+        self.endResetModel()
 
     def remove_value(self, val: str) -> bool:
         """Remove a given value from the list, and send appropriate
@@ -73,6 +75,8 @@ class PythonListModel(QAbstractListModel):
 
     def rowCount(self, parent = QModelIndex()) -> int:
         """Returns the number of rows in the model."""
+        if not hasattr(self, 'list'):
+            return 0
         return len(self.list)
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
@@ -88,7 +92,7 @@ class PythonListModel(QAbstractListModel):
 
     def data(self, index: QModelIndex, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
         """Returns the data stored under the given role for the item referred to by the index."""
-        if role == Qt.ItemDataRole.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
             return self.list[index.row()]
 
     def insertRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
@@ -120,7 +124,7 @@ class IngestionMetadataModel:
     also derive read-only or filtered versions of each model using
     DataclassTableProxy - see below.
     """
-    def __init__(self, metadata = IngestionMetadata()):
+    def __init__(self, metadata = IngestionMetadata()) -> None:
         """
         Initializes an instance of the IngestionMetadataModel class.
         Args:
@@ -139,9 +143,10 @@ class IngestionMetadataModel:
         Returns a filtered data model of all Experiments that belong 
         to a Project in this model. 
         """
-        id = project.project_id
         proxy = self.experiments.proxy()
-        proxy.set_filter_by_instance(lambda exp: exp.project_id == id)
+        proxy.set_filter_by_instance(lambda exp: 
+            project.identifiers_methods.has(cast(Experiment, exp).project_id)
+        )
         return proxy
 
     def datasets_for_experiment(self, experiment: Experiment):
@@ -149,11 +154,12 @@ class IngestionMetadataModel:
         Returns a filtered data model of all Datasets that belong to an
         Experiment in this model.
         """
-        id = experiment.experiment_id
         proxy = self.datasets.proxy()
         # Since the experiment_id field is a list, we add
         # a filter function to go through the list.
-        proxy.set_filter_by_instance(lambda dataset: (id in dataset.experiment_id))
+        proxy.set_filter_by_instance(lambda dataset:
+            experiment.identifiers_methods.has(cast(Dataset, dataset).experiment_id)
+        )
         return proxy
     
     def project_for_experiment(self, experiment: Experiment):
@@ -162,9 +168,10 @@ class IngestionMetadataModel:
         :param experiment: An Experiment object.
         :return: A DataclassTableProxy of projects.
         """
-        id = experiment.project_id
         proxy = self.projects.proxy()
-        proxy.set_filter_by_instance(lambda proj: proj.project_id == id)
+        proxy.set_filter_by_instance(lambda proj: 
+            cast(Project, proj).identifiers_methods.has(experiment.project_id)
+        )
         return proxy
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
@@ -215,7 +222,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         proxy.set_show_fields(fields)
         return proxy
 
-    def __init__(self, type: Type[T], parent=None):
+    def __init__(self, type: Type[T], parent=None) -> None:
         """
         Instantiate DataclassTableModel. The `type` passed in will be
         inspected for its dataclass fields.
@@ -232,7 +239,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         """
         return self.instance_list[row]
 
-    def set_instance_list(self, instance_list: List[T]):
+    def set_instance_list(self, instance_list: List[T]) -> None:
         """
         Set the backing dataclass list this model will represent. 
         """
@@ -389,7 +396,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     def __init__(self, parent: typing.Optional[QObject] = None) -> None:
         super().__init__(parent)
 
-    def set_show_fields(self, show_fields: List[str]):
+    def set_show_fields(self, show_fields: List[str]) -> None:
         """
         Given a list of field names, sets which dataclass fields should be 
         shown by the proxy model. If show_fields is an empty list, then all fields
@@ -397,7 +404,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         self.show_fields = show_fields
 
-    def set_read_only(self, read_only: bool):
+    def set_read_only(self, read_only: bool) -> None:
         """
         Sets whether the proxy model should use read-only flags. 
         This primarily affects native Qt View widgets, which shows an editing widget or
@@ -405,7 +412,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         self.read_only = read_only
 
-    def set_filter_by_instance(self, predicate: Callable[[T], bool]):
+    def set_filter_by_instance(self, predicate: Callable[[T], bool]) -> None:
         """
         Applies a predicate (a function that takes an argument and returns
         True or False) to each dataclass instance in the model, and filter out

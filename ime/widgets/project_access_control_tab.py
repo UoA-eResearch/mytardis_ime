@@ -11,7 +11,7 @@ class ProjectAccessControlTab(QWidget):
     _user_model: DataclassTableModel[UserACL]
     _group_model: DataclassTableModel[GroupACL]
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None) -> None:
         super().__init__(parent)
         ui = Ui_ProjectAccessControlTab()
         ui.setupUi(self)
@@ -22,7 +22,7 @@ class ProjectAccessControlTab(QWidget):
         ui.users.set_model(self._user_model)
         ui.groups.set_model(self._group_model)
 
-    def set_data(self, data: IAccessControl):
+    def set_data(self, data: IAccessControl) -> None:
         """Sets the MyTardis object `val` that this access control tab should display information for.
         Resets widgets to display information in `val`.
 
