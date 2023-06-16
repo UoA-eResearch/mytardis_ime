@@ -52,9 +52,9 @@ class DatasetPropertyEditor(QWidget):
             self.ui.page.setEnabled(True)
             self.ui.page_2.setEnabled(True)
             self.ui.page_3.setEnabled(True)
-            self.metadata_tab.update_metadata_object(dataset)
-            inherited_acl = IAccessControl() # Stub - empty list.
-            self.ui.accessControlTab.set_data(dataset, inherited_acl)
+        self.metadata_tab.update_metadata_object(dataset)
+        inherited_acl = IAccessControl() # Stub - empty list.
+        self.ui.accessControlTab.set_data(dataset, inherited_acl)
         
     def _set_bound_dataset(self, dataset: BoundObject[Dataset]) -> None:
         """
@@ -100,9 +100,9 @@ class DatafilePropertyEditor(QWidget):
             self.ui.fileinfoDescription.setEnabled(True)
             self.ui.page_10.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
-            self.metadata_tab.update_metadata_object(datafile)
-            inherited_acl = IAccessControl() # Stub - empty list.
-            self.ui.accessControlTab.set_data(datafile, inherited_acl)
+        self.metadata_tab.update_metadata_object(datafile)
+        inherited_acl = IAccessControl() # Stub - empty list.
+        self.ui.accessControlTab.set_data(datafile, inherited_acl)
     
     def _set_bound_file(self, datafile: BoundObject[Datafile]) -> None:
         """
@@ -147,9 +147,9 @@ class ExperimentPropertyEditor(QWidget):
             self.ui.page_4.setEnabled(True)
             self.ui.page_5.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
-            self.metadata_tab.update_metadata_object(experiment)
-            inherited_acl = IAccessControl() # Stub - empty list.
-            self.ui.accessControlTab.set_data(experiment, inherited_acl)
+        self.metadata_tab.update_metadata_object(experiment)
+        inherited_acl = IAccessControl() # Stub - empty list.
+        self.ui.accessControlTab.set_data(experiment, inherited_acl)
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]) -> None:
         """Set a bound object for the experiment.
@@ -195,8 +195,8 @@ class ProjectPropertyEditor(QWidget):
             self.ui.page_7.setEnabled(True)
             self.ui.page_8.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
-            self.metadata_tab.update_metadata_object(project)
-            self.ui.accessControlTab.set_data(project)
+        self.metadata_tab.update_metadata_object(project)
+        self.ui.accessControlTab.set_data(project)
 
     def _set_bound_project(self, project: BoundObject[Project]) -> None:
         """
