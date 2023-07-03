@@ -3,6 +3,15 @@ utils.py - miscellaneous functions.
 """
 
 def file_size_to_str(size: float) -> str:
+    """
+    Given a file size, return a human-friendly string representation.
+
+    Args:
+        size (float): Size of the file in bytes.
+
+    Returns:
+        str: Human-friendly string representation of the file size.
+    """
     """Given a file size, return a human-friendly string."""
     for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
         if size < 1024.0:

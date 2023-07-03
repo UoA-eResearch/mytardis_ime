@@ -7,34 +7,31 @@ from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.models import Experiment, IngestionMetadata
 
 @pytest.fixture
-def experiments():
+def experiments(metadata: IngestionMetadata):
     # This path is relative to where pytest is run.
     # So run pytest at the root directory.
-    with open('ime/tests/fixtures_qt_models.yaml') as f:
-        content = f.read()
-        fixtures = IngestionMetadata.from_yaml(content)
-        source_mdl = DataclassTableModel(Experiment)
-        source_mdl.set_instance_list(fixtures.experiments)
-        return source_mdl
+    source_mdl = DataclassTableModel(Experiment)
+    source_mdl.set_instance_list(metadata.experiments)
+    return source_mdl
 
 def test_show_experiment_table(qtbot: QtBot, experiments: DataclassTableModel[Experiment]):
     view = QTableView()
-    model = experiments.proxy(["experiment_id", "experiment_name"])
+    model = experiments.proxy(["experiment_id", "title"])
     model.set_read_only(True)
     view.setModel(model)
     # view.setColumnHidden(model.column_for_field("project_id"), True)
     qtbot.add_widget(view)
     view.show()
     qtbot.wait_exposed(view)
-    qtbot.stop()
     # Assert that the proxy model shows the correct data in the first row, second column.
-    assert model.rowCount() == 2
-    assert model.data(model.index(0,1), Qt.ItemDataRole.DisplayRole) == "Calibration 10 X"
+    assert model.rowCount() == 3
+    assert model.data(model.index(0,1), Qt.ItemDataRole.DisplayRole) == "BIRU lungcancer1_NoTreatment"
 
 def test_retrieve_instance(qtbot: QtBot, experiments: DataclassTableModel[Experiment]):
     view = QTableView()
-    model = experiments.proxy(['experiment_id', 'experiment_name'])
-    model.instance(0)
+    model = experiments.proxy(['experiment_id', 'title'])
+    instance = model.instance(0)
+    assert instance.title == "BIRU lungcancer1_NoTreatment"
 
 # def test_simple_edit_experiment_table(qtbot: QtBot, experiments: List[Experiment]):
 #     view = QDialog()

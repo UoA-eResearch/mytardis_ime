@@ -14,6 +14,18 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QStackedWidget" name="datasetTabProps">
      <property name="currentIndex">
@@ -23,6 +35,12 @@
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
         <widget class="QToolBox" name="toolBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>500</width>
@@ -37,12 +55,18 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>524</width>
-            <height>516</height>
+            <width>548</width>
+            <height>528</height>
            </rect>
           </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <attribute name="label">
-           <string>Description</string>
+           <string>General</string>
           </attribute>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
@@ -62,20 +86,6 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Dataset ID</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="datasetIDLineEdit">
-             <property name="placeholderText">
-              <string>A unique dataset identifier, RAiD for UoA datasets, could also be Dataset DOIs</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_24">
              <property name="text">
@@ -90,6 +100,29 @@
              </property>
             </widget>
            </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Identifiers</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="IdentifierList" name="identifierList" native="true"/>
+           </item>
+           <item row="3" column="1">
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="page_2">
@@ -97,16 +130,16 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>524</width>
+            <width>548</width>
             <height>516</height>
            </rect>
           </property>
           <attribute name="label">
-           <string>Users and groups</string>
+           <string>User and group access</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="AccessControlTab" name="accessControlTab" native="true"/>
+            <widget class="OverridableAccessControlTab" name="accessControlTab" native="true"/>
            </item>
           </layout>
          </widget>
@@ -115,7 +148,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>524</width>
+            <width>548</width>
             <height>516</height>
            </rect>
           </property>
@@ -146,8 +179,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>121</width>
-            <height>46</height>
+            <width>486</width>
+            <height>50</height>
            </rect>
           </property>
           <attribute name="label">
@@ -175,8 +208,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>296</width>
-            <height>642</height>
+            <width>334</width>
+            <height>640</height>
            </rect>
           </property>
           <attribute name="label">
@@ -307,8 +340,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>28</height>
+            <width>100</width>
+            <height>30</height>
            </rect>
           </property>
           <attribute name="label">
@@ -441,9 +474,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>AccessControlTab</class>
+   <class>OverridableAccessControlTab</class>
    <extends>QWidget</extends>
-   <header>ime.widgets.access_control_tab</header>
+   <header>ime.widgets.overridable_access_control_tab</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IdentifierList</class>
+   <extends>QWidget</extends>
+   <header>ime.widgets.identifier_list</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -30,12 +30,12 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>500</width>
-        <height>186</height>
+        <width>506</width>
+        <height>180</height>
        </rect>
       </property>
       <attribute name="label">
-       <string>Description</string>
+       <string>General</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
@@ -59,16 +59,16 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>500</width>
-        <height>186</height>
+        <width>506</width>
+        <height>180</height>
        </rect>
       </property>
       <attribute name="label">
-       <string>Users and groups</string>
+       <string>User and group access</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="AccessControlTab" name="accessControlTab" native="true"/>
+        <widget class="OverridableAccessControlTab" name="accessControlTab" native="true"/>
        </item>
       </layout>
      </widget>
@@ -77,8 +77,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>500</width>
-        <height>186</height>
+        <width>506</width>
+        <height>180</height>
        </rect>
       </property>
       <attribute name="label">
@@ -97,9 +97,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>AccessControlTab</class>
+   <class>OverridableAccessControlTab</class>
    <extends>QWidget</extends>
-   <header>ime.widgets.access_control_tab</header>
+   <header>ime.widgets.overridable_access_control_tab</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

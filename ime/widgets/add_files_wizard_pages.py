@@ -10,7 +10,7 @@ from ime.qt_models import IngestionMetadataModel
 
 class ProjectPage(QWizardPage):
 
-    def selected_existing_project_changed(self, idx: int):
+    def selected_existing_project_changed(self, idx: int) -> None:
         # Look up and record the selected existing project.
         project = self.model.instance(idx)
         self.wizard().selected_existing_project = project
@@ -23,7 +23,7 @@ class ProjectPage(QWizardPage):
         wizard = self.wizard()
         # Display the list of projects.
         list_view = wizard.ui.existingProjectList
-        self.model = wizard.metadataModel.projects.proxy(['project_name'])
+        self.model = wizard.metadataModel.projects.proxy(['name'])
         self.model.set_read_only(True)
         list_view.setModel(self.model)
         self.selected_existing_project_changed(wizard.ui.existingProjectList.currentIndex())
@@ -45,7 +45,7 @@ class ProjectPage(QWizardPage):
         return self.field('isNewProject') or (self.field('isExistingProject') and self.field('existingProject') is not None)
 
 class ExperimentPage(QWizardPage):
-    def selected_existing_exp_changed(self,idx: int):
+    def selected_existing_exp_changed(self,idx: int) -> None:
         # Look up and record the selected existing experiment.
         wizard = self.wizard()
         exp = self.model.instance(wizard.ui.existingExperimentList.currentIndex())
@@ -62,7 +62,7 @@ class ExperimentPage(QWizardPage):
         project = wizard.selected_existing_project
         self.model = wizard.metadataModel.experiments_for_project(project)
         self.model.set_read_only(True)
-        self.model.set_show_fields(['experiment_name'])
+        self.model.set_show_fields(['title'])
         wizard.ui.existingExperimentList.setModel(self.model)
         self.selected_existing_exp_changed(wizard.ui.existingExperimentList.currentIndex())
         wizard.ui.existingExperimentList.currentIndexChanged.connect(self.selected_existing_exp_changed)
@@ -82,7 +82,7 @@ class ExperimentPage(QWizardPage):
         return self.field('isNewExperiment') or (self.field('isExistingExperiment') and self.field('existingExperiment') is not None)
 
 class DatasetPage(QWizardPage):
-    def selected_existing_dataset_changed(self, idx: int):
+    def selected_existing_dataset_changed(self, idx: int) -> None:
         # Look up and record the selected existing dataset.
         ds = self.model.instance(idx)
         self.wizard().selected_existing_dataset = ds

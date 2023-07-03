@@ -1,8 +1,13 @@
 .venv
 .vscode
+venv3.10/
 .gitignore
+lib/
 .DS_Store
 **/__pycache__/
-dist
 .qt_for_python/
+# PyInstaller clutter.
+dist
+build
+app.spec
 docs/_build
