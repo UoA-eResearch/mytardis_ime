@@ -1,0 +1,49 @@
+name: Build documentation and upload it to GitHub Pages
+on:
+  push:
+    branches: 
+      - main
+      - IDS-23_user-documentation
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+  
+jobs:
+  ci:
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+        poetry-version: ["1.4.1"]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install poetry
+        run: poetry install --only=dev
+      - name: Build documentation
+        run: poetry run make html
+        working-directory: docs
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: 'docs/_build/html'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

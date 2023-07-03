@@ -8,6 +8,7 @@ A metadata editor for files being ingested into MyTardis. Written with PyQt and 
     - widgets - Python code for individual custom widgets
     - tests - test suite for the project. Each test file has to start with test_.
     resources - Assets used in the UI.
+    docs - user and developer documentation.
     scripts - scripts used for devlopment
     dist - generated executable.
 ```
@@ -18,9 +19,13 @@ This project uses [poetry](https://python-poetry.org/).
 Set up Poetry, then run:
 ```
 poetry install
-poetry shell # This activates the virtual envrionment
-python -m app
+poetry run python -m app
 ``` 
+
+This will install all the project dependencies, then run the app in the Python virtual environment created by `poetry`. 
+
+If you need to run a command in the created virtual environment, you need to prepend the command with `poetry run`. Or, you can run `poetry shell` to spawn a shell with the virtual environment activated. This means all subsequent commands will be run in the virtual environment.
+
 Note:
 If you are using an M1 Macbook, you need to install PyQt5 by using Rosetta Terminal.
 To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwaj.medium.com/m1-mac-switching-terminal-between-x86-64-and-arm64-e45f324184d9
@@ -37,7 +42,7 @@ poetry shell # This activates the virtual envrionment
 python -m app
 ``` 
 
-## UI files
+# UI files
 You can automate the generation of PyQt Python files from `.ui` files by running:
 ```
 ./scripts/uic.py
@@ -45,13 +50,22 @@ You can automate the generation of PyQt Python files from `.ui` files by running
 The script will watch `.ui` files and regenerate Python files when changed.
 
 # Tests
-Ensure you're in the Poetry virtual environment, run tests using:
+This project uses [Pytest](https://www.pytest.org/). Run tests using:
 ```
-pytest
+poetry run pytest
 ```
 
-# Generating executables
-This project uses [pyinstaller](https://pypi.org/project/pyinstaller/) to generate a compiled executable. To use, ensure you're in the Poetry virtual environment, then run:
+# Documentation
+This project uses [Sphinx](https://www.sphinx-doc.org/) to generate user and developer documentation. Run:
 ```
-pyinstaller app.py
+cd docs
+poetry run make html
+```
+
+The resulting HTML documentation is available in the `docs/_build/html` directory.
+
+# Generating executables
+This project uses [pyinstaller](https://pypi.org/project/pyinstaller/) to generate a compiled executable. To use, run:
+```
+poetry run pyinstaller app.py
 ```
