@@ -20,7 +20,7 @@ A `Project`, `Experiment`, `Dataset` or `Datafile` can have multiple `Schemas` a
     
     It's best to create a data dictionary document with your collaborators to specify what metadata should be stored. See :ref:`data-dictionary`. 
     
-    As part of onboarding, |service_name| can support you in creating a data dictionary, and create any `Schemas` for your research group. 
+    As part of onboarding, |service_name| can support you in creating a data dictionary, and create any `Schemas` for your research group. Contact |service_contact|_ for more information.
 
 In the Instrument Data Wizard, first select the `Project`, `Experiment`, `Dataset` or `Datafile` you wish to edit, then you can change metadata on the right-hand pane.
 

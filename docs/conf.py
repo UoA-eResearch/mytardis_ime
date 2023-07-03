@@ -21,6 +21,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 rst_epilog = """
 .. |service_name| replace:: Instrument Data Service
 .. |institution_name| replace:: Waipapa Taumata Rau The University of Auckland
+.. |service_contact| replace:: Chris Seal
+.. _service_contact: https://profiles.auckland.ac.nz/c-seal
 """
 
 # -- Options for HTML output -------------------------------------------------

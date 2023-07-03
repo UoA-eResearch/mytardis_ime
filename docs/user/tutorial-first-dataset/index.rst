@@ -32,4 +32,6 @@ By the end of this tutorial, you will learn about the Instrument Data Wizard and
 
 :download:`Tutorial data <tutorial-data.zip>`
 
+Contact |service_contact|_ if you need assistance getting set up on |service_name|.
+
 Ready? Let's begin!
