@@ -21,7 +21,7 @@ Here are some things to consider when deciding how your data should fit into thi
 
 * Usually, there should be one `Project` that corresponds to the research project or unit of research activity that you are collecting data for.
 * Use `Experiments` to represent a study sample or variable you are studying. Store properties about the sample as metadata in each `Experiment` .
-* Use `Datasets` to represent a single instrument run. They can then be organised under `Experiments`. Store instrument run conditions as metadata in each `Dataset`.
+* Create one `Dataset` for each instrument you are using for acquiring data. Use the `Dataset` to contain all data files from that instrument for the `Experiment`. Store instrument run conditions as metadata in each `Dataset`.
 * If the data is already using a directory structure, consider how that could translate into the hierarchical groupings.
 * Consider whether you need to restrict access for a subset of your data. If so, you can group them as separate `Experiments` or `Datasets`. Later, you can restrict access to them as a whole group.
 
