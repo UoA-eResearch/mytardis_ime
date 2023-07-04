@@ -10,6 +10,7 @@ from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
 from pathlib import Path
+from ime.parser.image_parser import ImageProcessor
 
 class AddFilesWizardResult:
     """
@@ -293,18 +294,21 @@ class AddFilesWizard(QWizard):
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
+        image_processor = ImageProcessor()
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
             datafile.dataset_id = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
-            path = Path(table.item(row, 2).text())
+            dir_path = Path(table.item(row, 2).text())
             datafile.filename = file_name
             datafile.size = file_size
-            datafile.path_abs = path
+            datafile.path_abs = dir_path
+            # get image metadata and attach to datafile's metadata
+            image_metadata = image_processor.get_metadata(dir_path.as_posix())
+            datafile.metadata = image_metadata
             result.file_list.append(datafile)
-        #print(result.file_list)
         self.submitted.emit(result)
 
 class AddFilesWizardSkipDataset(QWizard):
@@ -433,7 +437,6 @@ class AddFilesWizardSkipDataset(QWizard):
         ds_line_edit.setValidator(new_id_validator)
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
 
-
     def addFiles_handler(self):
         """Add files to the table.
 
@@ -445,6 +448,7 @@ class AddFilesWizardSkipDataset(QWizard):
         """
         table = self.ui.datafiletableWidget
         files_to_add = DialogUtils.open_add_files_dialog()
+        # start the JVM
         DialogUtils.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
@@ -482,6 +486,7 @@ class AddFilesWizardSkipDataset(QWizard):
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
+        image_processor = ImageProcessor()
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
@@ -492,6 +497,9 @@ class AddFilesWizardSkipDataset(QWizard):
             datafile.filename = file_name
             datafile.size = file_size
             datafile.path_abs = dir_path
+            # get image metadata and attach to datafile's metadata
+            image_metadata = image_processor.get_metadata(dir_path.as_posix())
+            datafile.metadata = image_metadata
             result.file_list.append(datafile)
         #print(result.file_list)
         self.submitted.emit(result)
@@ -688,6 +696,8 @@ class AddFilesWizardSkipExperiment(QWizard):
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
+
+        image_processor = ImageProcessor()
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
@@ -698,8 +708,10 @@ class AddFilesWizardSkipExperiment(QWizard):
             datafile.filename = file_name
             datafile.size = file_size
             datafile.path_abs = dir_path
+            # get image metadata and attach to datafile's metadata
+            image_metadata = image_processor.get_metadata(dir_path.as_posix())
+            datafile.metadata = image_metadata
             result.file_list.append(datafile)
-        #print(result.file_list)
         self.submitted.emit(result)
 
 class AddFilesWizardSkipProject(QWizard):
@@ -911,6 +923,8 @@ class AddFilesWizardSkipProject(QWizard):
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
+
+        image_processor = ImageProcessor()
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
@@ -921,6 +935,9 @@ class AddFilesWizardSkipProject(QWizard):
             datafile.filename = file_name
             datafile.size = file_size
             datafile.path_abs = dir_path
+            # get image metadata and attach to datafile's metadata
+            image_metadata = image_processor.get_metadata(dir_path.as_posix())
+            datafile.metadata = image_metadata
             result.file_list.append(datafile)
         self.submitted.emit(result)
 

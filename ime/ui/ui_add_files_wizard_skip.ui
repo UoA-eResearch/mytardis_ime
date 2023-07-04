@@ -608,7 +608,7 @@
   <customwidget>
    <class>ProjectPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
+   <header>ime.widgets.add_files_wizard_pages_skip</header>
    <container>1</container>
   </customwidget>
   <customwidget>
