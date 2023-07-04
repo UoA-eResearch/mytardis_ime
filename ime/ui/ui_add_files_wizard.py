@@ -391,7 +391,7 @@ class Ui_ImportDataFiles(object):
         self.datasetIDLineEdit.setPlaceholderText(_translate("ImportDataFiles", "An unique identifier for the dataset"))
         self.label_6.setText(_translate("ImportDataFiles", "You can add more metadata and access controls for the dataset later."))
         self.datafileAddPushButton.setText(_translate("ImportDataFiles", "Add files..."))
-        self.datafileDeletePushButton.setText(_translate("ImportDataFiles", "Delete files"))
+        self.datafileDeletePushButton.setText(_translate("ImportDataFiles", "Remove files"))
         self.label_8.setText(_translate("ImportDataFiles", "You can override inherited metadata and access controls later."))
         self.datafiletableWidget.setToolTip(_translate("ImportDataFiles", "<html><head/><body><p><br/></p></body></html>"))
         item = self.datafiletableWidget.horizontalHeaderItem(0)

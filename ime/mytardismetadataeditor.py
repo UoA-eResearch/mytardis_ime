@@ -5,12 +5,14 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 from typing import Any, Callable, cast
+import javabridge
 
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
 import logging
 from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipExperiment, AddFilesWizardSkipProject
 from ime.qt_models import IngestionMetadataModel
+from ime.parser.image_parser import ImageProcessor
 
 # Import the resources file
 import default_rc
@@ -60,6 +62,11 @@ class MyTardisMetadataEditor(QMainWindow):
         setup_header_layout(self.ui.datasetTreeWidget.header())
 
         self.show()
+
+    def closeEvent(self, event):
+        # Terminate the JVM when the app is closed
+        javabridge.kill_vm()
+        event.accept()
 
     def openWizardWindow(self):  
         """
