@@ -5,7 +5,7 @@ description = "An ingestion metadata editor for MyTardis"
 authors = ["Noel <noel.zeng@auckland.ac.nz>", "Libby Li <libby.li@auckland.ac.nz>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.12"
 PyQt5 = ">=5.15.2"
 PyYAML = "^6.0"
 pydantic = "^1.10.7"
