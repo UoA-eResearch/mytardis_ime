@@ -10,7 +10,7 @@ from ime.qt_models import IngestionMetadataModel
 
 class ProjectPage(QWizardPage):
 
-    def selected_existing_project_changed(self, idx: int):
+    def selected_existing_project_changed(self, idx: int) -> None:
         # Look up and record the selected existing project.
         project = self.model.instance(idx)
         self.wizard().selected_existing_project = project
@@ -45,7 +45,7 @@ class ProjectPage(QWizardPage):
         return self.field('isNewProject') or (self.field('isExistingProject') and self.field('existingProject') is not None)
 
 class ExperimentPage(QWizardPage):
-    def selected_existing_exp_changed(self,idx: int):
+    def selected_existing_exp_changed(self,idx: int) -> None:
         # Look up and record the selected existing experiment.
         wizard = self.wizard()
         exp = self.model.instance(wizard.ui.existingExperimentList.currentIndex())
@@ -82,7 +82,7 @@ class ExperimentPage(QWizardPage):
         return self.field('isNewExperiment') or (self.field('isExistingExperiment') and self.field('existingExperiment') is not None)
 
 class DatasetPage(QWizardPage):
-    def selected_existing_dataset_changed(self, idx: int):
+    def selected_existing_dataset_changed(self, idx: int) -> None:
         # Look up and record the selected existing dataset.
         ds = self.model.instance(idx)
         self.wizard().selected_existing_dataset = ds

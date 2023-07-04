@@ -63,7 +63,7 @@ class Username(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls, value) -> None:
         """Custom validator to ensure that the value is a string object and that it matches
         the regex defined for users"""
         if not isinstance(value, str):

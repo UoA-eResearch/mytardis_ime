@@ -79,7 +79,7 @@ def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: 
     value = loader.construct_scalar(node)
     return Username(value)
 
-def initialise_yaml_helpers():
+def initialise_yaml_helpers() -> None:
     """Initialises YAML constructor and representer required to parse
     and serialise MyTardis model data. This is called when the ime.models 
     module is loaded and do not need a separate call.

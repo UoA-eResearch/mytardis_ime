@@ -15,7 +15,7 @@ class DatasetPropertyEditor(QWidget):
     metadata_tab: MetadataTab
     identifiers_model: PythonListModel
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """
         Constructs a new instance of the DatasetPropertyEditor class.
         
@@ -28,14 +28,14 @@ class DatasetPropertyEditor(QWidget):
         self.metadata_tab = self.ui.page_3
         self._set_bound_dataset(BoundObject())
     
-    def set_read_only(widget: QWidget, read_only: bool = True):
+    def set_read_only(widget: QWidget, read_only: bool = True) -> None:
         for child in widget.findChildren(QLineEdit):
             if read_only:
                 child.setReadOnly(True)
             else:
                 child.setEnabled(False)
 
-    def set_dataset(self, dataset: Dataset):
+    def set_dataset(self, dataset: Dataset) -> None:
         """
         Sets the current `Dataset` to edit in this widget.
         
@@ -56,7 +56,7 @@ class DatasetPropertyEditor(QWidget):
         inherited_acl = IAccessControl() # Stub - empty list.
         self.ui.accessControlTab.set_data(dataset, inherited_acl)
         
-    def _set_bound_dataset(self, dataset: BoundObject[Dataset]):
+    def _set_bound_dataset(self, dataset: BoundObject[Dataset]) -> None:
         """
         Binds a `BoundObject` to this editor to keep its properties synchronized with the UI.
         
@@ -71,7 +71,7 @@ class DatafilePropertyEditor(QWidget):
     df:BoundObject[Datafile]
     metadata_tab: MetadataTab
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """
         Constructs a new instance of the DatafilePropertyEditor class.
         
@@ -84,7 +84,7 @@ class DatafilePropertyEditor(QWidget):
         self.metadata_tab = self.ui.metadata_tab
         self._set_bound_file(BoundObject())
     ### create new Datafile
-    def set_datafile(self, datafile: Datafile):
+    def set_datafile(self, datafile: Datafile) -> None:
         """
         Sets the current `Datafile` to edit in this widget.
         
@@ -104,7 +104,7 @@ class DatafilePropertyEditor(QWidget):
         inherited_acl = IAccessControl() # Stub - empty list.
         self.ui.accessControlTab.set_data(datafile, inherited_acl)
     
-    def _set_bound_file(self, datafile: BoundObject[Datafile]):
+    def _set_bound_file(self, datafile: BoundObject[Datafile]) -> None:
         """
         Binds a `BoundObject` to this editor to keep its properties synchronized with the UI.
         
@@ -119,7 +119,7 @@ class ExperimentPropertyEditor(QWidget):
     exp: BoundObject[Experiment]
     metadata_tab: MetadataTab
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """Initialize an ExperimentPropertyEditor object.
 
         Args:
@@ -131,7 +131,7 @@ class ExperimentPropertyEditor(QWidget):
         self.metadata_tab = self.ui.metadata_tab
         self._set_bound_experiment(BoundObject())
 
-    def set_experiment(self, experiment: Experiment):
+    def set_experiment(self, experiment: Experiment) -> None:
         """Set the current experiment.
 
         Args:
@@ -151,7 +151,7 @@ class ExperimentPropertyEditor(QWidget):
         inherited_acl = IAccessControl() # Stub - empty list.
         self.ui.accessControlTab.set_data(experiment, inherited_acl)
 
-    def _set_bound_experiment(self, experiment: BoundObject[Experiment]):
+    def _set_bound_experiment(self, experiment: BoundObject[Experiment]) -> None:
         """Set a bound object for the experiment.
 
         Args:
@@ -165,7 +165,7 @@ class ProjectPropertyEditor(QWidget):
     project: BoundObject[Project]
     metadata_tab: MetadataTab
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """
         Constructor for the ProjectPropertyEditor class.
 
@@ -178,7 +178,7 @@ class ProjectPropertyEditor(QWidget):
         self.metadata_tab = self.ui.metadata_tab
         self._set_bound_project(BoundObject())
 
-    def set_project(self, project: Project):
+    def set_project(self, project: Project) -> None:
         """
         Sets the `Project` object for the editor.
 
@@ -198,7 +198,7 @@ class ProjectPropertyEditor(QWidget):
         self.metadata_tab.update_metadata_object(project)
         self.ui.accessControlTab.set_data(project)
 
-    def _set_bound_project(self, project: BoundObject[Project]):
+    def _set_bound_project(self, project: BoundObject[Project]) -> None:
         """
         Binds the `Project` object to the UI elements.
 
