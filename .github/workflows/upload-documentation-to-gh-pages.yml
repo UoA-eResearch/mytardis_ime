@@ -5,6 +5,7 @@ on:
       - main
       - IDS-23_user-documentation
       - biru-user-testing-dev
+      - IDS-176-copy-changes
 permissions:
   contents: read
   pages: write

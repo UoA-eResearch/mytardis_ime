@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>677</width>
-    <height>690</height>
+    <width>863</width>
+    <height>494</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,19 +93,6 @@
             <number>0</number>
            </property>
           </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
          <item>
           <widget class="QLabel" name="label_10">
@@ -261,25 +248,35 @@
        <item row="2" column="0">
         <widget class="QLabel" name="projectIDLabel">
          <property name="text">
-          <string>Project ID</string>
+          <string>Project identifier</string>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
         <widget class="QLineEdit" name="projectIDLineEdit">
          <property name="placeholderText">
-          <string>An unique identifier for the project</string>
+          <string>A label for the Project, must be unique across Projects. Use letters and numbers.</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_24">
+         <property name="text">
+          <string>&lt;a href=&quot;https://uoa-eresearch.github.io/mytardis_ime/user/data-dictionary.html&quot;&gt;What should I use as an identifier?&lt;/a&gt;</string>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
         <widget class="QLabel" name="projectDescriptionLabel">
          <property name="text">
           <string>Description</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QTextEdit" name="projectDescriptionLineEdit">
          <property name="placeholderText">
           <string>Optional description of your project to differentiate it from others</string>
@@ -431,25 +428,35 @@
        <item row="1" column="0">
         <widget class="QLabel" name="experimentIDLabel">
          <property name="text">
-          <string>Experiment ID</string>
+          <string>Experiment identifier</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QLineEdit" name="experimentIDLineEdit">
          <property name="placeholderText">
-          <string>An unique identifier for the experiment</string>
+          <string>A label for the Experiment, must be unique across Experiments. Use letters and numbers.</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="2" column="1">
+        <widget class="QLabel" name="label_25">
+         <property name="text">
+          <string>&lt;a href=&quot;https://uoa-eresearch.github.io/mytardis_ime/user/data-dictionary.html&quot;&gt;What should I use as an identifier?&lt;/a&gt;</string>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
         <widget class="QLabel" name="experimentdescriptionLabel">
          <property name="text">
           <string>Description</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <widget class="QTextEdit" name="experimentDescriptionLineEdit">
          <property name="placeholderText">
           <string>Optional description of the experiment</string>
@@ -587,14 +594,24 @@
        <item row="1" column="0">
         <widget class="QLabel" name="datasetIDLabel_2">
          <property name="text">
-          <string>Dataset ID</string>
+          <string>Dataset identifier</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QLineEdit" name="datasetIDLineEdit">
          <property name="placeholderText">
-          <string>An unique identifier for the dataset</string>
+          <string>A label for the Dataset, must be unique across Datasets. Use letters and numbers.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="label_26">
+         <property name="text">
+          <string>&lt;a href=&quot;https://uoa-eresearch.github.io/mytardis_ime/user/data-dictionary.html&quot;&gt;What should I use as an identifier?&lt;/a&gt;</string>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
