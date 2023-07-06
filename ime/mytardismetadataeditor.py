@@ -16,7 +16,7 @@ from ime.parser.image_parser import ImageProcessor
 
 # Import the resources file
 import default_rc
-from .utils import file_size_to_str, setup_header_layout
+from .utils import file_size_to_str, setup_header_layout, setup_section_autoresize
 
 class MyTardisMetadataEditor(QMainWindow):
     """
@@ -57,9 +57,9 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.projectTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
 
-        setup_header_layout(self.ui.projectTreeWidget.header())
-        setup_header_layout(self.ui.experimentTreeWidget.header())
-        setup_header_layout(self.ui.datasetTreeWidget.header())
+        setup_section_autoresize(self.ui.projectTreeWidget)
+        setup_section_autoresize(self.ui.experimentTreeWidget)
+        setup_section_autoresize(self.ui.datasetTreeWidget)
 
         self.show()
 
@@ -706,6 +706,9 @@ class MyTardisMetadataEditor(QMainWindow):
                 cast(Project, data).identifiers_delegate.has(result.project.identifiers or [])
             ))
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
+        # self.ui.projectTreeWidget.resizeColumnToContents(0)
+        # self.ui.experimentTreeWidget.resizeColumnToContents(0)
+        # self.ui.
 
     def loadYaml(self):
         """
