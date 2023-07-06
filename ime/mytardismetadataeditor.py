@@ -772,6 +772,6 @@ class MyTardisMetadataEditor(QMainWindow):
         Saves the metadata to a YAML file. It prompts the user to select a file name and location, then writes the metadata
         to the selected file.
         """
-        filename = QFileDialog.getSaveFileName(self,"Save File",directory = "metadata.yaml", initialFilter='Yaml File(*.yaml)')[0]
+        filename = QFileDialog.getSaveFileName(self,"Save ingestion file",directory = "ingestion.yaml", initialFilter='Yaml File(*.yaml)')[0]
         if filename:
             self.metadata.to_file(filename)
