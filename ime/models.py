@@ -8,6 +8,7 @@ import logging
 from os.path import relpath
 from pathlib import Path
 from ime.yaml_helpers import initialise_yaml_helpers
+import os
 
 from ime.blueprints.custom_data_types import Username
 
@@ -596,6 +597,11 @@ def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: 
     value = loader.construct_scalar(node)
     return Username(value)
 
+def st_dev(path: Path) -> int:
+    return path.stat().st_dev
+
+class DifferentDeviceException(Exception):
+    pass
 @dataclass
 class IngestionMetadata:
     """
@@ -610,7 +616,19 @@ class IngestionMetadata:
     datasets: List[Dataset] = field(default_factory=list)
     datafiles: List[Datafile] = field(default_factory=list)
     # Ingestion metadata file location
-    file_path: Optional[Path] = None      
+    file_path: Optional[Path] = None
+    
+    def _data_st_dev(self) -> Optional[int]:
+        """Private method for getting the device that the data
+        are stored on. All data and the ingestion file should be stored
+        on the same device.  
+        """
+        if self.file_path is not None:
+            return st_dev(self.file_path)
+        elif len(self.datafiles) > 0: 
+            return st_dev(self.datafiles[0].directory)
+        else:
+            return None
 
     def is_empty(self) -> bool:
         return (len(self.projects) == 0 and
@@ -627,6 +645,9 @@ class IngestionMetadata:
             file_path (str): The file path to save the metadata file in.
         """
         path = Path(file_path)
+        new_path_dev = st_dev(path.parent)
+        if new_path_dev != self._data_st_dev():
+            raise DifferentDeviceException()
         with open(path, 'w') as file:
             self._relativise_file_paths(path.parent)
             file.write(self._to_yaml())
@@ -641,7 +662,7 @@ class IngestionMetadata:
         """
         assert relative_to_dir.is_absolute
         if self.file_path is not None:
-            # If this was deserialised from a previously saved metadata file,
+            # If this file was previously saved,
             # then join the previous metadata file path with the relative path
             # in file.directory, then relativise to the new path.
             for file in self.datafiles:

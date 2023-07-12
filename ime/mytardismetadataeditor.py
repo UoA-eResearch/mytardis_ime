@@ -8,7 +8,7 @@ from typing import Any, Callable, cast
 import javabridge
 
 from ime.ui.ui_main_window import Ui_MainWindow
-from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
+from ime.models import DifferentDeviceException, IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
 import logging
 from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipExperiment, AddFilesWizardSkipProject
 from ime.qt_models import IngestionMetadataModel
@@ -772,6 +772,43 @@ class MyTardisMetadataEditor(QMainWindow):
         Saves the metadata to a YAML file. It prompts the user to select a file name and location, then writes the metadata
         to the selected file.
         """
-        filename = QFileDialog.getSaveFileName(self,"Save ingestion file",directory = "ingestion.yaml", initialFilter='Yaml File(*.yaml)')[0]
-        if filename:
-            self.metadata.to_file(filename)
+        while True:
+            filename = QFileDialog.getSaveFileName(self,"Save ingestion file",directory = "ingestion.yaml", initialFilter='Yaml File(*.yaml)')[0]
+            if filename == "":
+                # If the user cancelled and did not provide a filename, then do nothing.
+                return
+            try:
+                self.metadata.to_file(filename)
+                break
+            except DifferentDeviceException:
+                # User is trying to save ingestion file into a different device.
+                # Reject and ask if they want to try another path.
+                drive_msg = "the same drive" 
+                if self.metadata.file_path is not None:
+
+                    drive = self.metadata.file_path.drive
+                    if drive != "":
+                        drive_msg = f"the {drive} drive"
+                retry_msg = QMessageBox()
+                retry_msg.setWindowTitle("Can't save ingestion file in this location")
+                retry_msg.setText("Please save the ingestion file in the same drive as your data.")
+                retry_msg.setInformativeText(f'The ingestion file needs to be saved in the same mapped drive as your data in order to be found by the ingestion process. Please save the ingestion file in {drive_msg}.')
+                retry_msg.setStandardButtons(
+                    typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Retry | QMessageBox.StandardButton.Cancel))
+                res = retry_msg.exec()
+                if res == QMessageBox.StandardButton.Cancel:
+                    # If user did not want to proceed, then exit.
+                    break
+                if res == QMessageBox.StandardButton.Retry:
+                    # If retrying, restart the loop.
+                    continue
+            except Exception:
+                error_msg = QMessageBox()
+                error_msg.setWindowTitle("Can't save ingestion file")
+                error_msg.setText("An error occurred when saving the ingestion file.")
+                error_msg.setInformativeText("Please try again later.")
+                error_msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+                error_msg.exec()
+                break
+
+
