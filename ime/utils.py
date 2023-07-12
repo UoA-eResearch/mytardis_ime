@@ -2,6 +2,7 @@
 utils.py - miscellaneous functions.
 """
 
+from pathlib import Path
 from PyQt5.QtWidgets import QHeaderView, QTreeWidget
 
 
@@ -47,3 +48,15 @@ def setup_header_layout(header: QHeaderView) -> None:
     for i in range(1, header.model().columnCount()):
         header.setSectionResizeMode(i, QHeaderView.ResizeMode.ResizeToContents)
 
+def st_dev(path: Path) -> int:
+    """Returns the device that the file
+    `path`_ is stored on. This function uses
+    os.Path.stat() to get the device id.
+
+    Args:
+        path (Path): The Path of the file.
+
+    Returns:
+        int: the device id.
+    """
+    return path.stat().st_dev

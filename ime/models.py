@@ -7,6 +7,7 @@ from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, Unsa
 import logging
 from os.path import relpath
 from pathlib import Path
+from ime.utils import st_dev
 from ime.yaml_helpers import initialise_yaml_helpers
 import os
 
@@ -597,9 +598,6 @@ def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: 
     value = loader.construct_scalar(node)
     return Username(value)
 
-def st_dev(path: Path) -> int:
-    return path.stat().st_dev
-
 class DifferentDeviceException(Exception):
     pass
 @dataclass
@@ -618,15 +616,22 @@ class IngestionMetadata:
     # Ingestion metadata file location
     file_path: Optional[Path] = None
     
-    def _data_st_dev(self) -> Optional[int]:
-        """Private method for getting the device that the data
-        are stored on. All data and the ingestion file should be stored
-        on the same device.  
+    @property
+    def data_path(self) -> Optional[Path]:
+        """Property for the effective path for the data.
+        Useful for checking if new data is stored in the same
+        drive. If this IngestionMetadata was previously saved,
+        the ingestion file path will be returned. Otherwise,
+        this will return the first datafile's directory path.
+        If there are no datafiles, a None will be returned.
+
+        Returns:
+            Optional[Path]: The effective path for the data
         """
         if self.file_path is not None:
-            return st_dev(self.file_path)
-        elif len(self.datafiles) > 0: 
-            return st_dev(self.datafiles[0].directory)
+            return self.file_path.parent
+        elif len(self.datafiles) > 0:
+            return self.datafiles[0].directory
         else:
             return None
 
@@ -645,9 +650,11 @@ class IngestionMetadata:
             file_path (str): The file path to save the metadata file in.
         """
         path = Path(file_path)
-        new_path_dev = st_dev(path.parent)
-        if new_path_dev != self._data_st_dev():
-            raise DifferentDeviceException()
+        if self.data_path is not None:
+            new_path_dev = st_dev(path.parent)
+            data_dev = st_dev(self.data_path)
+            if new_path_dev != data_dev:
+                raise DifferentDeviceException()
         with open(path, 'w') as file:
             self._relativise_file_paths(path.parent)
             file.write(self._to_yaml())
