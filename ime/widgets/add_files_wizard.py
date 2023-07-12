@@ -189,6 +189,10 @@ class AddFilesWizard(QWizard):
         self.ui.setupUi(self)
         self._make_page_ids()
         self._register_fields()
+        if not self.metadataModel.metadata.is_empty():
+            # If there is already metadata, skip the introduction
+            # page.
+            self.setStartId(self.page_ids['projectPage'])
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
