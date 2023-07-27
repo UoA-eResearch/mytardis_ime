@@ -12,11 +12,10 @@ pydantic = "^1.10.7"
 schema = "^0.7.5"
 oiffile = "^2022.9.29"
 numpy = "^1.25.0"
-python-bioformats = "^4.0.7"
 xmltodict = "^0.13.0"
 wheel = "^0.40.0"
-pandas = "^2.0.2"
 jsonschema = "^4.17.3"
+python-bioformats = "^4.0.7"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.13.9"
