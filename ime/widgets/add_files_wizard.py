@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
+import os
 from typing import Dict, List
 import typing
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QLineEdit, QMessageBox, QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
 from ime.utils import file_size_to_str, st_dev
@@ -195,6 +195,7 @@ class AddFilesWizard(QWizard):
             self.setStartId(self.page_ids['projectPage'])
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
+        self.ui.dirAddPushButton.clicked.connect(self.addDir_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
@@ -241,8 +242,59 @@ class AddFilesWizard(QWizard):
         ds_line_edit.setValidator(new_id_validator)
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
 
+    def _display_confirm_import_message(self, filepaths: list[Path]) -> bool:
+        """Displays a confirmation message to check if user wants to proceed with importing
+        the files. Returns whether the user has confirmed.
 
-    def addFiles_handler(self):
+        Args:
+            filepaths (list[Path]): The file paths being imported.
+
+        Returns:
+            bool: True if the user has confirmed, False if not.
+        """
+        num_files = len(filepaths)
+        confirm_msg = QMessageBox()
+        confirm_msg.setWindowTitle("Confirm import folder of files")
+        confirm_msg.setText(f"Import {num_files} file{'s' if num_files > 1 else ''}?")
+        confirm_msg.setInformativeText("All files in this folder and sub-folders will be imported, with folder structure preserved.")
+        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        res = confirm_msg.exec()
+        return res == QMessageBox.StandardButton.Ok
+
+    def addDir_handler(self) -> None:
+        """Handler for adding a directory of files to the table.
+
+        Returns:
+            None
+        """
+        # Set up a QFileDialog to import a folder.
+        file_dialog = QFileDialog()
+        file_dialog.setFileMode(QFileDialog.FileMode.Directory)
+        file_dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        dir = file_dialog.getExistingDirectory()
+        if dir == '':
+            # If user didn't choose a folder, exit.
+            return
+        filepaths: list[Path] = []
+        for root, _, files in os.walk(dir):
+            # Go through all the nested subdirectories. 
+            for file in files:
+                # Go through file in each nested directory.
+                path = Path(os.path.join(root, file))
+                # Add the file with a complete path.
+                filepaths.append(path)
+        # If the user confirms importing all the files, then add
+        # files to the table.
+        if len(filepaths) < 20:
+            # If there are fewer than 20 files in this directory,
+            # then add files directly, no need to check.
+            self.add_files_to_table(filepaths)
+        elif self._display_confirm_import_message(filepaths):
+            # If 20 or more, then first check whether the user wants this.
+            self.add_files_to_table(filepaths)
+
+
+    def addFiles_handler(self) -> None:
         """Add files to the table.
 
         Gets the table, calls the open_add_files_dialog() method to open a file dialog and get the list of files to add.
@@ -251,8 +303,12 @@ class AddFilesWizard(QWizard):
         Returns:
             None.
         """
-        table = self.ui.datafiletableWidget
         files_to_add = DialogUtils.open_add_files_dialog()
+        self.add_files_to_table(files_to_add)
+
+        
+    def add_files_to_table(self, files_to_add: list[Path]) -> None:
+        table = self.ui.datafiletableWidget
         if len(files_to_add) == 0:
             return
         # Check all datafiles are from same drive.
@@ -273,12 +329,12 @@ class AddFilesWizard(QWizard):
                 # If there aren't any files already imported,
                 # we use the first file from the currently selected
                 # list. 
-                data_path = Path(files_to_add[0].absoluteFilePath()).parent
+                data_path = files_to_add[0].parent
                 data_dev = st_dev(data_path)
         for file in files_to_add:
             # Go through each file to check whether they are stored
             # on the same drive.
-            file_dev = st_dev(Path(file.absoluteFilePath()))
+            file_dev = st_dev(file)
             if file_dev != data_dev:
                 display_add_files_failed_error(data_path)
                 return
@@ -1080,9 +1136,8 @@ class AddFilesWizardSkipProject(QWizard):
 
 
 class DialogUtils:
-    # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
     @staticmethod
-    def open_add_files_dialog() -> List[QtCore.QFileInfo]:
+    def open_add_files_dialog() -> List[Path]:
         """Open a file dialog and get the list of files to add.
 
         Creates a file dialog, opens it to allow the user to select files to add.
@@ -1092,7 +1147,7 @@ class DialogUtils:
             A list of QFileInfo objects for the selected files.
         """
         file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
+        file_dialog.setFileMode(QFileDialog.FileMode.ExistingFiles)
         filename = file_dialog.getOpenFileNames()  
         fpath = filename[0]
 
@@ -1100,14 +1155,14 @@ class DialogUtils:
         for f in fpath:
             if f == "":
                 continue
-            info = QtCore.QFileInfo(f)
-            if info in new_files:
+            path = Path(f)
+            if path in new_files:
                 continue
-            new_files.append(info)
+            new_files.append(path)
         return new_files
     
     @staticmethod
-    def add_file_table_rows(table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
+    def add_file_table_rows(table: QTableWidget,files_to_add: List[Path]) -> None:
         """Add rows to the table.
 
         Gets the table and the list of files to add.
@@ -1128,13 +1183,13 @@ class DialogUtils:
         new_row_index = 0
         for file in files_to_add:
             # Create corresponding cells for file and insert them into table.
-            name_cell = QTableWidgetItem(file.fileName())
-            size = file.size()
+            name_cell = QTableWidgetItem(file.name)
+            size = file.stat().st_size
             size_str = file_size_to_str(size)
             size_cell = QTableWidgetItem(size_str)
             # Store actual size value in cell. 
             size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
-            fpath_cell = QTableWidgetItem(file.filePath())
+            fpath_cell = QTableWidgetItem(str(file))
             # Insert cells into the table.
             row_index = initial_row_count + new_row_index
             table.setItem(row_index, 0, name_cell)
