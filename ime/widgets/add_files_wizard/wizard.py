@@ -109,10 +109,6 @@ class AddFilesWizard(QWizard):
             self.page_ids[self.page(id).objectName()] = id
 
     def nextId(self) -> int:
-        # Function for determining which page the wizard should advance to.
-        # Custom WizardPages in add_files_wizard_pages have their own nextId()
-        # logic and they are used in the else clause, which calls the default
-        # nextId function.
         """
         Determines which page the wizard should advance to based on the user's input. The function checks the current 
         page ID against the page IDs in the `self.page_ids` dictionary, and returns the next page ID based on the 
@@ -176,15 +172,18 @@ class AddFilesWizard(QWizard):
 
 
     def _set_existing_status(self) -> None:
-        """Private method for initialising the existing fields in constructor.
+        """Private method for initialising existing fields in constructor.
         In cases where a project, experiment or dataset are passed in. 
         """
         if self.selected_existing_project is not None:
             self.setField('isExistingProject', True)
+            self.setField('isNewProject', False)
         if self.selected_existing_experiment is not None:
             self.setField('isExistingExperiment', True)
+            self.setField('isNewExperiment', False)
         if self.selected_existing_dataset is not None:
             self.setField('isExistingDataset', True)
+            self.setField('isNewDataset', False)
         
 
     def __init__(self, 
