@@ -6,32 +6,33 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QWizardPage
 import ime.widgets.add_files_wizard as afw
 
-class ProjectPage(QWizardPage):
+class SkipProjectIntroPage(QWizardPage):
     """ A wizard page for selecting an existing project or creating a new one.
 
     Args:
         QWizardPage (_type_):  The type of the parent class.
     """
-    def wizard(self):
+    def wizard(self) -> afw.AddFilesWizard:
         # Add type cast so type checker isn't annoyed below.
         """Return the wizard object with type cast.
 
         Returns:
             _type_: _description_
         """
-        return typing.cast(afw.AddFilesWizardSkipProject, super().wizard())
+        return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
         """Display the list of projects and initialize the selected project."""
         wizard = self.wizard()
         # Display the list of projects.
-        pro = wizard.pro_passed
+        project = wizard.selected_existing_project
+        assert project is not None
+        wizard.ui.skipProject_existingProjectName.setText(project.name)
 
-        wizard.ui.existingProjectName.setText(pro.name)
+    def nextId(self) -> int:
+        return self.wizard().page_ids["experimentPage"]
 
-        wizard.selected_existing_project = pro
-
-class PExperimentPage(QWizardPage):
+class SkipExperimentIntroPage(QWizardPage):
     """A wizard page for selecting an existing project and experiment or creating a new one."""
     
     def wizard(self):
@@ -42,7 +43,7 @@ class PExperimentPage(QWizardPage):
         Returns:
             The wizard object with type casting.
         """
-        return typing.cast(afw.AddFilesWizardSkipExperiment, super().wizard())
+        return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
         """
@@ -50,32 +51,19 @@ class PExperimentPage(QWizardPage):
         """
         wizard = self.wizard()
 
-        exp = wizard.exp_passed
-        pro = wizard.pro_passed
+        exp = wizard.selected_existing_experiment
+        project = wizard.selected_existing_project
 
-        wizard.ui.existingExperimentList_1.addItem(exp.title)
-        wizard.ui.existingProjectList_2.addItem(pro.name)
+        assert exp is not None
+        assert project is not None
 
-        wizard.selected_existing_project = pro
-        wizard.selected_existing_experiment = exp
+        wizard.ui.skipExp_existingExpName.setText(exp.title)
+        wizard.ui.skipExp_existingProjectName.setText(project.name)
 
-    def cleanupPage(self) -> None:
-        """
-        Disconnect signals when the wizard page is closed.
-        """
-        self.wizard().ui.existingExperimentList_1.currentIndexChanged.disconnect()
-        self.wizard().ui.existingProjectList_2.currentIndexChanged.disconnect()
+    def nextId(self) -> int:
+        return self.wizard().page_ids["datasetPage"]
 
-    def isComplete(self) -> bool:
-        """
-        Check if the user has selected an existing project and experiment.
-
-        Returns:
-            True if the user has selected an existing project and experiment, False otherwise.
-        """
-        return self.field('isExistingProject') is not None and self.field('isExistingExperiment') is not None
-
-class PEDatasetPage(QWizardPage):
+class SkipDatasetIntroPage(QWizardPage):
     """A wizard page for selecting an existing project, experiment, and dataset.
 
     Args:
@@ -87,34 +75,23 @@ class PEDatasetPage(QWizardPage):
         Returns:
             afw.AddFilesWizardSkipDataset: The wizard object.
         """
-        return typing.cast(afw.AddFilesWizardSkipDataset, super().wizard())
+        return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
         """Initializes the wizard page."""
 
         wizard = self.wizard()
-        ds = wizard.ds_passed
-        exp = wizard.exp_passed
-        pro = wizard.pro_passed
+        ds = wizard.selected_existing_dataset
+        exp = wizard.selected_existing_experiment
+        project = wizard.selected_existing_project
 
-        wizard.ui.existingDatasetList_1.addItem(ds.dataset_name)
-        wizard.ui.existingExperimentList_2.addItem(exp.title)
-        wizard.ui.existingProjectList_3.addItem(pro.name)
+        assert project is not None
+        assert exp is not None
+        assert ds is not None
 
-        wizard.selected_existing_project = pro
-        wizard.selected_existing_experiment = exp
-        wizard.selected_existing_dataset = ds
+        wizard.ui.skipDataset_existingDatasetName.setText(ds.dataset_name)
+        wizard.ui.skipDataset_existingExpName.setText(exp.title)
+        wizard.ui.skipDataset_existingProjectName.setText(project.name)
 
-    def cleanupPage(self) -> None:
-        """Cleans up the wizard page."""
-        self.wizard().ui.existingDatasetList_1.currentIndexChanged.disconnect()
-        self.wizard().ui.existingExperimentList_2.currentIndexChanged.disconnect()
-        self.wizard().ui.existingProjectList_3.currentIndexChanged.disconnect()
-
-    def isComplete(self) -> bool:
-        """Checks whether the selection of existing project, experiment, and dataset is complete.
-
-        Returns:
-            bool: True if the selection is complete; False otherwise.
-        """
-        return self.field('isExistingProject') is not None and self.field('isExistingExperiment') is not None and self.field('isExistingDataset') is not None
+    def nextId(self) -> int:
+        return self.wizard().page_ids["includedFilesPage"]

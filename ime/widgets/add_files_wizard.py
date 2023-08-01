@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 import typing
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QValidator
@@ -83,9 +83,6 @@ class AddFilesWizard(QWizard):
     """
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
-    selected_existing_project: Project
-    selected_existing_experiment: Experiment
-    selected_existing_dataset: Dataset
 
     def _register_fields(self):
         """Set up the fields and connect signals for isComplete states."""
@@ -176,7 +173,41 @@ class AddFilesWizard(QWizard):
         else:
             return super().nextId()
 
-    def __init__(self, metadataModel: IngestionMetadataModel):
+    def _set_start_id(self) -> None:
+        """Sets the starting wizard page.
+        """
+        if self.selected_existing_dataset is not None:
+            # If a dataset is passed in, then start with add to dataset page.
+            self.setStartId(self.page_ids['skipDatasetPage'])
+        elif self.selected_existing_experiment is not None:
+            # If an experiment is passed in, then start with add to experiment page.
+            self.setStartId(self.page_ids['skipExpPage'])
+        elif self.selected_existing_project is not None:
+            # If a project is passed in, then start with add to project page.
+            self.setStartId(self.page_ids['skipProjectPage'])
+        else:
+            # If nothing is passed in, then start with the introduction page.
+            if not self.metadataModel.metadata.is_empty():
+            # If there is already metadata, skip the introduction
+            # page.
+                self.setStartId(self.page_ids['projectPage'])
+            else:
+                self.setStartId(self.page_ids['introductionPage'])
+
+
+    def _set_existing_status(self) -> None:
+        """Private method for initialising the existing fields in constructor.
+        In cases where a project, experiment or dataset are passed in. 
+        """
+        if self.selected_existing_project is not None:
+            self.setField('existingProject', )
+
+    def __init__(self, 
+            metadataModel: IngestionMetadataModel, 
+            selected_project: Optional[Project] = None,
+            selected_experiment: Optional[Experiment] = None,
+            selected_dataset: Optional[Dataset] = None
+        ):
         """
         Initializes the QWizard with the specified `metadataModel`. The UI is set up using the `Ui_ImportDataFiles`
         class. The page IDs are created using the `_make_page_ids()` method and the fields are registered using 
@@ -189,16 +220,18 @@ class AddFilesWizard(QWizard):
         self.ui.setupUi(self)
         self._make_page_ids()
         self._register_fields()
-        if not self.metadataModel.metadata.is_empty():
-            # If there is already metadata, skip the introduction
-            # page.
-            self.setStartId(self.page_ids['projectPage'])
+        self.selected_existing_project = selected_project
+        self.selected_existing_experiment = selected_experiment
+        self.selected_existing_dataset = selected_dataset
+        self._set_existing_status()
+        self._set_start_id()
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.dirAddPushButton.clicked.connect(self.addDir_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
+
 
     def _update_widget_validation_style(self,line_edit: QLineEdit):
         """Private method that gets called to update line edit style
@@ -369,6 +402,7 @@ class AddFilesWizard(QWizard):
         result.is_new_experiment = self.field('isNewExperiment')
         result.is_new_dataset = self.field('isNewDataset')
         if self.field('isExistingProject'):
+            assert self.selected_existing_project is not None
             result.project = self.selected_existing_project
         else:
             result.project = Project()
@@ -378,6 +412,7 @@ class AddFilesWizard(QWizard):
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
             
         if self.field('isExistingExperiment'):
+            assert self.selected_existing_experiment is not None
             result.experiment = self.selected_existing_experiment
         else:
             result.experiment = Experiment()
@@ -388,6 +423,7 @@ class AddFilesWizard(QWizard):
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
         if self.field('isExistingDataset'):
+            assert self.selected_existing_dataset is not None
             result.dataset = self.selected_existing_dataset
         else:
             result.dataset = Dataset()
