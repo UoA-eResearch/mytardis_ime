@@ -862,7 +862,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="includedFilesPage">
+  <widget class="IncludedFilesPage" name="includedFilesPage">
    <attribute name="pageId">
     <string notr="true">669</string>
    </attribute>
@@ -995,37 +995,43 @@
   <customwidget>
    <class>ProjectPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
+   <header>ime.widgets.add_files_wizard.project_page</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ExperimentPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
+   <header>ime.widgets.add_files_wizard.experiment_page</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>DatasetPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
+   <header>ime.widgets.add_files_wizard.dataset_page</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>SkipProjectIntroPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_page_skip</header>
+   <header>ime.widgets.add_files_wizard.skip_project_intro_page</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>SkipExperimentIntroPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_page_skip</header>
+   <header>ime.widgets.add_files_wizard.skip_experiment_intro_page</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>SkipDatasetIntroPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_page_skip</header>
+   <header>ime.widgets.add_files_wizard.skip_dataset_intro_page</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IncludedFilesPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard.included_files_page</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

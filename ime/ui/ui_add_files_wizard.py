@@ -417,7 +417,7 @@ class Ui_ImportDataFiles(object):
         spacerItem8 = QtWidgets.QSpacerItem(20, 253, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_10.addItem(spacerItem8)
         ImportDataFiles.addPage(self.skipDatasetPage)
-        self.includedFilesPage = QtWidgets.QWizardPage()
+        self.includedFilesPage = IncludedFilesPage()
         self.includedFilesPage.setObjectName("includedFilesPage")
         self.gridLayout = QtWidgets.QGridLayout(self.includedFilesPage)
         self.gridLayout.setObjectName("gridLayout")
@@ -551,6 +551,11 @@ class Ui_ImportDataFiles(object):
         self.datafileAddPushButton.setText(_translate("ImportDataFiles", "Add files"))
         self.datafileDeletePushButton.setText(_translate("ImportDataFiles", "Remove files"))
         self.label_8.setText(_translate("ImportDataFiles", "You can override inherited metadata and access controls later."))
-from ime.widgets.add_files_wizard_page_skip import SkipDatasetIntroPage, SkipExperimentIntroPage, SkipProjectIntroPage
-from ime.widgets.add_files_wizard_pages import DatasetPage, ExperimentPage, ProjectPage
+from ime.widgets.add_files_wizard.dataset_page import DatasetPage
+from ime.widgets.add_files_wizard.experiment_page import ExperimentPage
+from ime.widgets.add_files_wizard.included_files_page import IncludedFilesPage
+from ime.widgets.add_files_wizard.project_page import ProjectPage
+from ime.widgets.add_files_wizard.skip_dataset_intro_page import SkipDatasetIntroPage
+from ime.widgets.add_files_wizard.skip_experiment_intro_page import SkipExperimentIntroPage
+from ime.widgets.add_files_wizard.skip_project_intro_page import SkipProjectIntroPage
 import default_rc
