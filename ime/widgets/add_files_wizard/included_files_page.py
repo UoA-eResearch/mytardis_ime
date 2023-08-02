@@ -231,6 +231,7 @@ class IncludedFilesPage(QWizardPage):
             # If the files aren't valid, then do not add.
             return
         self._add_file_table_rows(files_to_add)
+        self.completeChanged.emit()
 
     def _add_file_table_rows(self, files_to_add: list[Path]) -> None:
         """Add rows to the table.
@@ -267,5 +268,3 @@ class IncludedFilesPage(QWizardPage):
             table.setItem(row_index, 2, fpath_cell)
             # Increment for the next row
             new_row_index += 1
-        self.completeChanged.emit()
-
