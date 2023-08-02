@@ -15,16 +15,36 @@ class IncludedFilesPage(QWizardPage):
         return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
+        """Reimplementation of Qt QWizardPage method for initialising the page.
+
+        Returns:
+            None.
+        """
         wizard = self.wizard()
         wizard.ui.datafileAddPushButton.clicked.connect(self._handle_add_files_clicked)
         wizard.ui.dirAddPushButton.clicked.connect(self._handle_add_directory_clicked)
         wizard.ui.datafileDeletePushButton.clicked.connect(self._handle_delete_files_clicked)
 
     def cleanupPage(self) -> None:
+        """Reimplementation of Qt QWizardPage method for cleaning up the page.
+        Returns:
+            None.
+        """
         wizard = self.wizard()
         wizard.ui.datafileAddPushButton.clicked.disconnect(self._handle_add_files_clicked)
         wizard.ui.dirAddPushButton.clicked.disconnect(self._handle_add_directory_clicked)
         wizard.ui.datafileDeletePushButton.clicked.disconnect(self._handle_delete_files_clicked)    
+
+    def isComplete(self) -> bool:
+        """Reimplementation of Qt QWizardPage method for checking if a
+        page is complete. This will only be marked complete when user
+        has added files.
+
+        Returns:
+            bool: Whether the page is complete.
+        """
+        # Only allow user to finish when they've chosen some files.
+        return self.wizard().ui.datafiletableWidget.rowCount() > 0
 
     def _handle_add_directory_clicked(self) -> None:
         """Handler for adding a directory of files to the table.
@@ -58,7 +78,7 @@ class IncludedFilesPage(QWizardPage):
             # If 20 or more, then first check whether the user wants this.
             self._add_files_to_table(filepaths)
 
-    def _handle_delete_files_clicked(self):
+    def _handle_delete_files_clicked(self) -> None:
         """Delete files from the table.
 
         Gets the selected rows from the table, creates a list of QModelIndex objects for those rows.
@@ -132,7 +152,7 @@ class IncludedFilesPage(QWizardPage):
         res = confirm_msg.exec()
         return res == QMessageBox.StandardButton.Ok
 
-    def _display_add_files_failed_error(self, correct_drive_path: Path):
+    def _display_add_files_failed_error(self, correct_drive_path: Path) -> None:
         drive_msg = f"the drive for {correct_drive_path}" 
         drive = correct_drive_path.drive
         if drive != "":
@@ -248,9 +268,4 @@ class IncludedFilesPage(QWizardPage):
             # Increment for the next row
             new_row_index += 1
         self.completeChanged.emit()
-
-    def isComplete(self) -> bool:
-        # Only allow user to finish when they've chosen some files.
-        return self.wizard().ui.datafiletableWidget.rowCount() > 0
-
 
