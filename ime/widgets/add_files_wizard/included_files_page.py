@@ -73,6 +73,7 @@ class IncludedFilesPage(QWizardPage):
             index_list.append(index)
         for index in index_list:
             self.wizard().ui.datafiletableWidget.removeRow(index.row())
+        self.completeChanged.emit()
 
     def _handle_add_files_clicked(self) -> None:
         """Add files to the table.
@@ -246,6 +247,10 @@ class IncludedFilesPage(QWizardPage):
             table.setItem(row_index, 2, fpath_cell)
             # Increment for the next row
             new_row_index += 1
+        self.completeChanged.emit()
 
+    def isComplete(self) -> bool:
+        # Only allow user to finish when they've chosen some files.
+        return self.wizard().ui.datafiletableWidget.rowCount() > 0
 
 
