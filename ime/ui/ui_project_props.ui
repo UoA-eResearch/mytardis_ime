@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
+    <width>524</width>
     <height>553</height>
    </rect>
   </property>
@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>506</width>
-        <height>433</height>
+        <width>500</width>
+        <height>427</height>
        </rect>
       </property>
       <attribute name="label">
@@ -77,7 +77,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="leadResearcherLabel">
             <property name="text">
-             <string>Lead researcher</string>
+             <string>Principal Investigator</string>
             </property>
            </widget>
           </item>
@@ -97,8 +97,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>506</width>
-        <height>433</height>
+        <width>98</width>
+        <height>34</height>
        </rect>
       </property>
       <attribute name="label">
@@ -115,8 +115,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>506</width>
-        <height>433</height>
+        <width>98</width>
+        <height>28</height>
        </rect>
       </property>
       <attribute name="label">

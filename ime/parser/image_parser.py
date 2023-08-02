@@ -17,8 +17,7 @@ class ImageProcessor():
 
     """
 
-    @staticmethod
-    def initialize_java_vm():
+    def initialize_java_vm(self):
         """
         Initializes the Java virtual machine required for bioformats.
 
@@ -46,7 +45,8 @@ class ImageProcessor():
         """
         javabridge.kill_vm() 
 
-    def get_metadata(self, inf: str) -> str:
+    @staticmethod
+    def get_metadata(inf: str):
         """
         Retrieves metadata from an image file.
 
@@ -57,17 +57,21 @@ class ImageProcessor():
             str: The extracted metadata if the file is a CZI or OIB file. Otherwise, a string indicating it is not a CZI or OIB file.
 
         """
-        xml_string = bioformats.get_omexml_metadata(inf)
-        my_dict = MetadataExtractor.xml_to_dict(xml_string)
-
-        if Path(inf).suffix == '.czi' or Path(inf).suffix == '.oib':
+        suffix = Path(inf).suffix
+        suffix_available = ['.czi', '.oib']
+        if suffix not in suffix_available:
+            return dict()
+        else:
+            # get xml string
+            xml_string = bioformats.get_omexml_metadata(inf)
+            # convert xml string to dictionary
+            my_dict = MetadataExtractor.xml_to_dict(xml_string)
             # create schema
-            schema_czi = MetadataExtractor.create_schema_czi()
+            schema_czi = MetadataExtractor.create_schema_czi() # type: ignore
             # clean the raw dictionary to remove the first layer and @ symbol from the keys
             updated_dict = MetadataExtractor.remove_at_symbol(my_dict)
             # extract metadata that matchs schema
             metadata = extract_metadata(updated_dict, schema_czi)
-            metadata_flattened = flatten_dict_keys_unique_id(metadata)
-            return metadata_flattened
-        else:
-            return "Not a CZI file or OIB file."
+            return flatten_dict_keys_unique_id(metadata)
+            
+        
