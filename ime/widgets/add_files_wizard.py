@@ -932,9 +932,10 @@ class AddFilesWizardSkipProject(QWizard):
 
 class DialogUtils:
     @staticmethod
-    def __init__(self):
+    def __init__():
         pass
     # calculate sizes of added datafiles in bytes,KB,MB,GB,TB
+    @staticmethod
     def open_add_files_dialog() -> List[QtCore.QFileInfo]:
         """Open a file dialog and get the list of files to add.
 
@@ -959,6 +960,7 @@ class DialogUtils:
             new_files.append(info)
         return new_files
     
+    @staticmethod
     def add_file_table_rows(table: QTableWidget,files_to_add: List[QtCore.QFileInfo]) -> None:
         """Add rows to the table.
 
