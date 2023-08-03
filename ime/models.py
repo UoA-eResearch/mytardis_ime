@@ -236,9 +236,8 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
     description: str = ""
-    lead_researcher: str = ""
     name: str = ""
-    principal_investigator: str = ""
+    principal_investigator: Username = field(default=Username(), metadata={"label": "Username"})
     identifiers: Optional[list[str]] = field(default_factory=list)
     _store: Optional['IngestionMetadata'] = field(repr=False, default=None)
     

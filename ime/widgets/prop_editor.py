@@ -208,4 +208,4 @@ class ProjectPropertyEditor(QWidget):
         self.project = project
         self.project.bind_input("name", self.ui.projectNameLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
-        self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)
+        self.project.bind_input("principal_investigator", self.ui.leadResearcherLineEdit)

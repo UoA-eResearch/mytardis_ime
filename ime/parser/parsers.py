@@ -1,11 +1,10 @@
-import yaml
-from jsonschema import validate, exceptions
+from typing import Union
 import xmltodict
-import javabridge
-import bioformats
+
 
 class MetadataExtractor:
-    def create_schema_czi():
+    @staticmethod
+    def create_schema_czi() -> dict:
         """Create a schema for CZI metadata.
 
         Returns:
@@ -38,6 +37,7 @@ class MetadataExtractor:
         }         
         return schema
     
+    @staticmethod
     def create_schema_test():
         """Create a test schema.
 
@@ -59,8 +59,8 @@ class MetadataExtractor:
         }         
         return schema
 
-        
-    def xml_to_dict(xml_string: str):
+    @staticmethod  
+    def xml_to_dict(xml_string) -> dict:
         """Convert XML string to a dictionary.
 
         Args:
@@ -72,12 +72,13 @@ class MetadataExtractor:
         # convert xml to a dictionary
         data_dict = xmltodict.parse(xml_string)
 
-        # Exclude the first layer of keys
-        result_dict = list(data_dict.values())[0]
+        # Extract the first layer of keys using a dictionary comprehension
+        result_dict = {key: value for nested in data_dict.values() for key, value in nested.items()}
 
         return result_dict
     
-    def remove_at_symbol(raw_dict: dict):
+    @staticmethod
+    def remove_at_symbol(raw_dict:dict) -> dict:
         """Remove '@' symbol from dictionary keys recursively.
 
         Args:
@@ -91,9 +92,9 @@ class MetadataExtractor:
             else:
                 return obj
             
-        return remove_at_recursive(raw_dict)
-
-def extract_metadata(dictionary: dict, schema: dict):
+        return remove_at_recursive(raw_dict) # type: ignore
+    
+def extract_metadata(dictionary: dict, schema: dict) -> dict:
     """Extract metadata from the dictionary based on the schema.
 
     Args:
@@ -114,6 +115,7 @@ def extract_metadata(dictionary: dict, schema: dict):
     #extracted_metadata_flattened = flatten_dict_keys(extract_metadata, separator='|')
     return extracted_metadata
 
+@staticmethod
 def flatten_dict_keys_unique_id(dictionary, separator='|', prefix='', id_key='ID'):
     """
     Flatten the keys of a nested dictionary while incorporating the 'ID' value as part of the key.
