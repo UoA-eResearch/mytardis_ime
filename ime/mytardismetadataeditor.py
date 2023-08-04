@@ -275,7 +275,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.datasetTreeWidget.clear()
         for ds in self.metadata.datasets:    
             self.add_dataset_to_tree(ds)
-        ds_id = [ds.dataset_id for ds in self.metadata.datasets]
+        ds_id = [ds.identifiers for ds in self.metadata.datasets]
 
         for file in self.metadata.datafiles:
             if file.dataset_id in ds_id: 
@@ -383,7 +383,7 @@ class MyTardisMetadataEditor(QMainWindow):
             self.add_dataset_to_tree(ds)
         
         # clear the datafile tree widget and repopulate it with the remaining datafiles
-        ds_id = [ds.dataset_id for ds in self.metadata.datasets]
+        ds_id = [ds.identifiers for ds in self.metadata.datasets]
         for file in self.metadata.datafiles:
             if file.dataset_id in ds_id: 
                 #print(file)
