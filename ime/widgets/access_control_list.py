@@ -19,7 +19,7 @@ class AccessControlListTableProxy(DataclassTableProxy[ACL_T], Generic[ACL_T]):
     """
     boolean_fields: list[str]
 
-    def __init__(self, parent:Optional[QObject] = None):
+    def __init__(self, parent:Optional[QObject] = None) -> None:
         super().__init__(parent)
         self.boolean_fields = []
 
@@ -199,7 +199,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
     """
     _model: AccessControlListTableProxy[ACL_T]
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None) -> None:
         """Constructor for AccessControlList widget.
 
         Args:
@@ -213,7 +213,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         # Disable delete button by default.
         self.ui.btnDelete.setDisabled(True)
 
-    def set_model(self, model: DataclassTableModel[ACL_T]):
+    def set_model(self, model: DataclassTableModel[ACL_T]) -> None:
         """Sets the DataclassTableModel this list will display,
         resets the interface with data. Any changes to the UserACL
         or GroupACL to display will come through the Model's
@@ -248,7 +248,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         self.ui.btnDelete.setDisabled(disabled)
         self.ui.aclTable.setDisabled(disabled)
 
-    def _handle_insert_new(self):
+    def _handle_insert_new(self) -> None:
         """
         Handle the click of the "Add" button.
 
@@ -261,7 +261,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         self.ui.aclTable.setCurrentIndex(model_idx)
         self.ui.aclTable.edit(model_idx)
 
-    def _handle_remove(self):
+    def _handle_remove(self) -> None:
         """
         Handle the click of the "Remove" button.
 
@@ -276,7 +276,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         for row in rows_to_remove:
             self._model.removeRow(row)
 
-    def _handle_select_change(self, selected: QItemSelection, deselected: QItemSelection):
+    def _handle_select_change(self, selected: QItemSelection, deselected: QItemSelection) -> None:
         """Handler method for changes to which access control items are selected.
 
         Args:

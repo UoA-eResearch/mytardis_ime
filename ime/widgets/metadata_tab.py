@@ -20,15 +20,20 @@ class MetadataTab(QWidget, IBindableInput):
         super(QWidget, self).__init__(parent)
         self.ui = Ui_MetadataTab()
         self.ui.setupUi(self)
-        self.ui.metadata_table.cellChanged.connect(self.handle_cell_changed)
+        self.ui.metadata_table.cellChanged.connect(self._handle_cell_changed)
         self.ui.schemaLineEdit.textChanged.connect(self.handle_schema_changed)
         self.ui.metadata_table.selectionModel().selectionChanged.connect(self.handle_selection_changed)
+        self.ui.add_row_btn.clicked.connect(self._handle_add_row_click)
         self.ui.remove_rows_btn.clicked.connect(self.handle_remove_rows_click)
+        self.ui.notes_textedit.textChanged.connect(self.handleNotes_changed)
         setup_header_layout(self.ui.metadata_table.horizontalHeader())
 
     def handle_schema_changed(self, schema: str):
         """Handles the schema text box changing."""
         self.metadata_object.object_schema = self.ui.schemaLineEdit.text()
+
+    def handleNotes_changed(self):
+        self.metadata_object.metadata['Notes'] = self.ui.notes_textedit.toPlainText()
 
     def add_insert_metadata_row(self):
         """Adds an empty row to the metadata table."""
@@ -55,7 +60,11 @@ class MetadataTab(QWidget, IBindableInput):
         # key_edit.setText(key)
         # key_edit.setPlaceholderText("Name for the field, e.g. Batch number")
         key_item = QTableWidgetItem(key)
-        key_item.setFlags(Qt.ItemFlag.ItemIsSelectable)
+        # Use the UserRole to store another copy of the key,
+        # so when user has edited the item we can find the
+        # associated value.
+        key_item.setData(Qt.ItemDataRole.UserRole, key)
+        # key_item.setFlags(Qt.ItemFlag.ItemIsSelectable)
         # val_edit = QLineEdit()
         # val_edit.setText(val)
         # val_edit.setPlaceholderText("Value for the field, e.g. 400")
@@ -78,25 +87,46 @@ class MetadataTab(QWidget, IBindableInput):
             return
         self.ui.remove_rows_btn.setEnabled(len(selected_rows) > 0)
 
-    def handle_cell_changed(self, row: int, col: int):
-        """Handles the change event for a cell in the metadata table.
+    def _handle_cell_changed(self, row: int, col: int):
+        """Private method that handles the change event for a cell in the metadata table.
 
         Args:
             row (int): The row index of the changed cell.
             col (int): The column index of the changed cell.
         """
         table = self.ui.metadata_table
+        metadata = self.metadata_object.metadata
         cell = table.item(row, col)
         cell_val = cell.text()
         if col == 0:
-            # This is a new metadata key being inserted!
-            # Disable editing of key name
-            with QSignalBlocker(self.ui.metadata_table):
-                cell.setFlags(Qt.ItemFlag.ItemIsSelectable)
-                # Add a new row to the bottom.
-                # Use a signal blocker to prevent a signal being sent
-                # causing recursion
-                self.add_insert_metadata_row()
+            if row != table.rowCount() - 1:
+                old_name = cell.data(Qt.ItemDataRole.UserRole)
+                if cell_val in metadata:
+                    # If the user has duplicated a name,
+                    # do not modify underlying data and
+                    # undo the change.
+                    with QSignalBlocker(table):
+                        cell.setText(old_name)
+                        return
+                metadata_value = self.metadata_object.metadata[old_name]
+                del self.metadata_object.metadata[old_name]
+                self.metadata_object.metadata[cell_val] = metadata_value
+                with QSignalBlocker(table):
+                    cell.setData(Qt.ItemDataRole.UserRole, cell_val)
+            else:
+                # This is a new metadata key being inserted!
+                if cell_val in metadata:
+                    # If the key already exists, undo the editing.
+                    with QSignalBlocker(table):
+                        cell.setText('')
+                    return
+                with QSignalBlocker(table):
+                    # Add a new row to the bottom.
+                    # Use a signal blocker to prevent a signal being sent
+                    # causing recursion
+                    metadata[cell_val] = ''
+                    self.add_insert_metadata_row()
+                    cell.setData(Qt.ItemDataRole.UserRole, cell_val)
         else:
             # The user has edited a metadata value
             # TODO Empty key fields should be checked and enforced!
@@ -106,12 +136,21 @@ class MetadataTab(QWidget, IBindableInput):
                 return
             self.metadata_object.metadata[key] = cell_val
 
+    def _handle_add_row_click(self) -> None:
+        """Private method for handling when the Add button is
+        clicked. Focuses the editing on the new edit row.
+        """
+        table = self.ui.metadata_table
+        edit_row_name_cell = table.model().index(table.rowCount() - 1, 0)
+        self.ui.metadata_table.edit(edit_row_name_cell)
+
     def handle_remove_rows_click(self):
         """Handles the click event for the Remove Rows button."""
         table = self.ui.metadata_table
         items = table.selectedItems()
-        for item in items:
-            row = item.row()
+        # Extract the rows that need to be deleted.
+        rows = set([item.row() for item in items])
+        for row in rows:
             if row == table.rowCount() - 1:
                 # Skip deleting the empty row.
                 continue
@@ -133,11 +172,18 @@ class MetadataTab(QWidget, IBindableInput):
             table.clearContents()
             table.setRowCount(0)
             # Then, populate table with new items 
-            metadata = metadata_obj.metadata
+            metadata = metadata_obj.metadata                
             num_new = len(metadata)
+            if "Notes" in metadata:
+                # Remove a line if there are Notes.
+                num_new = num_new - 1
             table.setRowCount(num_new)
             row_idx = 0
             for key,val in metadata.items():
+                if key == "Notes":
+                    # Skip the notes field. Display it in the separate notes
+                    # section instead
+                    continue
                 key_item, val_item = self.get_metadata_row(key, str(val))
                 table.setItem(row_idx, 0, key_item)
                 table.setItem(row_idx, 1, val_item)
@@ -147,3 +193,10 @@ class MetadataTab(QWidget, IBindableInput):
         # Update schema
         object_schema_value = metadata_obj.object_schema
         self.ui.schemaLineEdit.setText(str(object_schema_value))
+        # Update notes section
+        if 'Notes' in metadata_obj.metadata:
+            notes = metadata_obj.metadata['Notes']
+        else:
+            notes = ""
+        with QSignalBlocker(self.ui.notes_textedit):
+            self.ui.notes_textedit.setText(notes)

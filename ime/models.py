@@ -7,7 +7,9 @@ from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, Unsa
 import logging
 from os.path import relpath
 from pathlib import Path
+from ime.utils import st_dev
 from ime.yaml_helpers import initialise_yaml_helpers
+import os
 
 from ime.blueprints.custom_data_types import Username
 
@@ -81,11 +83,16 @@ class IAccessControl:
     users: Optional[List[UserACL]] = None
     groups: Optional[List[GroupACL]] = None
 
-@dataclass
 class IIdentifiers:
-    """An interface for MyTardis objects with identifiers.
+    """An abstract class for methods working with identifiers,
+    with default implementations. Specific MyTardis objects may
+    override with specific constraints, for example to enforce
+    uniqueness.
     """
-    identifiers: Optional[List[str]] = field(default_factory=list)
+    identifiers: Optional[List[str]]
+
+    def __init__(self, identifiers: Optional[List[str]]) -> None:
+        self.identifiers = identifiers
     
     def first(self) -> str:
         """Returns the first identifier in the list, if any. 
@@ -239,16 +246,20 @@ class Project(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
 
 
 class ProjectIdentifiers(IIdentifiers):
+    """Project-specific methods related to identifiers."""
     def __init__(self, project: Project):
         self.project = project
         super().__init__(project.identifiers)
     
-    def _is_unique(self, id: str):
+    def _is_unique(self, id: str) -> bool:
         """Private method to check whether an id is unique across all 
         Projects in the store.
 
         Args:
             id (str): The ID to check
+
+        Returns:
+            bool: True if the identifier is unique, False if not.
         """
         assert self.project._store is not None
         for project in self.project._store.projects:
@@ -257,13 +268,34 @@ class ProjectIdentifiers(IIdentifiers):
                 return False
         return True
 
-    def add(self, value: str):
+    def add(self, value: str) -> bool:
+        """Adds a new identifier after checking
+        if it's unique. Returns True if successfully added,
+        returns False if it's not unique.
+
+        Args:
+            value (str): The new identifier.
+
+        Returns:
+            bool: Whether adding was successful.
+        """
         if not self._is_unique(value):
             # Check if the new ID is unique.
             return False
         return super().add(value)
 
-    def update(self, old_id: str, id: str):
+    def update(self, old_id: str, id: str) -> bool:
+        """Updates an existing identifier in this Project and
+        all related Experiments in the store. Checks if the identifier
+        is unique. Returns True if successful, False if not.
+
+        Args:
+            old_id (str): The ID to update
+            id (str): The new ID.
+
+        Returns:
+            bool: True if successfully updated, False if not unique.
+        """
         assert self.project._store is not None
         # Find all experiments and update their IDs.
         if not self._is_unique(id):
@@ -274,7 +306,20 @@ class ProjectIdentifiers(IIdentifiers):
                 experiment.project_id = id
         return super().update(old_id, id)
 
-    def delete(self, id_to_delete: str):
+    def delete(self, id_to_delete: str) -> bool:
+        """Deletes an identifier in this Project,
+        and updates identifiers in related objects to use
+        an alternative identifier. 
+        Returns True if successfully deleted and updated, False if
+        there are no other identifiers to use for related objects. 
+
+        Args:
+            id_to_delete (str): The identifier to delete.
+
+        Returns:
+            bool: True if successfully deleted, False if unable
+            to delete.
+        """
         if self.identifiers is None:
             return False
         if len(self.identifiers) <= 1:
@@ -307,6 +352,7 @@ class Experiment(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, 
         self.identifiers_delegate = ExperimentIdentifiers(self)
 
 class ExperimentIdentifiers(IIdentifiers):
+    """Experiment-specific methods related to identifiers."""
     def __init__(self, experiment: Experiment):
         self.experiment = experiment
         super().__init__(experiment.identifiers)
@@ -317,6 +363,9 @@ class ExperimentIdentifiers(IIdentifiers):
 
         Args:
             id (str): The ID to check
+
+        Returns:
+            bool: True if the identifier is unique, False if not.
         """
         assert self.experiment._store is not None
         for experiment in self.experiment._store.experiments:
@@ -326,11 +375,32 @@ class ExperimentIdentifiers(IIdentifiers):
         return True
 
     def add(self, value: str) -> bool:
+        """Adds a new identifier after checking
+        if it's unique. Returns True if successfully added,
+        returns False if it's not unique.
+
+        Args:
+            value (str): The new identifier.
+
+        Returns:
+            bool: Whether adding was successful.
+        """
         if not self._is_unique(value):
             return False
         return super().add(value)
 
     def update(self, old_id: str, id: str):
+        """Updates an existing identifier in this Experiment and
+        all related Datasets in the store. Checks if the identifier
+        is unique. Returns True if successful, False if not.
+
+        Args:
+            old_id (str): The ID to update
+            id (str): The new ID.
+
+        Returns:
+            bool: True if successfully updated, False if not unique.
+        """
         assert self.experiment._store is not None
         # Find all datasets and update their IDs.
         if not self._is_unique(id):
@@ -343,6 +413,19 @@ class ExperimentIdentifiers(IIdentifiers):
         return super().update(old_id, id)
 
     def delete(self, id_to_delete: str):
+        """Deletes an identifier in this Experiment,
+        and updates identifiers in related Datasets to use
+        an alternative identifier. 
+        Returns True if successfully deleted and updated, False if
+        there are no other identifiers to use for related objects. 
+
+        Args:
+            id_to_delete (str): The identifier to delete.
+
+        Returns:
+            bool: True if successfully deleted, False if unable
+            to delete.
+        """
         if self.identifiers is None:
             return False
         if len(self.identifiers) <= 1:
@@ -368,7 +451,6 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
     description: str = ""
     experiment_id: List[str] = field(default_factory=list)
     instrument_id: str = ""
-    description: str = ""
     instrument: str = ""
     identifiers: Optional[list[str]] = field(default_factory=list)
     experiments: List[str] = field(default_factory=list)
@@ -378,16 +460,20 @@ class Dataset(YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDa
         self.identifiers_delegate = DatasetIdentifiers(self)
 
 class DatasetIdentifiers(IIdentifiers):
+    """Dataset-specific methods related to identifiers."""
     def __init__(self, dataset: Dataset):
         self.dataset = dataset
         super().__init__(dataset.identifiers)
 
-    def _is_unique(self, id: str):
+    def _is_unique(self, id: str) -> bool:
         """Private method to check whether an id is unique across all 
         Projects in the store.
 
         Args:
             id (str): The ID to check
+
+        Returns:
+            bool: True if the identifier is unique, False if not.
         """
         assert self.dataset._store is not None
         for dataset in self.dataset._store.datasets:
@@ -397,11 +483,32 @@ class DatasetIdentifiers(IIdentifiers):
         return True    
 
     def add(self, value: str) -> bool:
+        """Adds a new identifier after checking
+        if it's unique. Returns True if successfully added,
+        returns False if it's not unique.
+
+        Args:
+            value (str): The new identifier.
+
+        Returns:
+            bool: Whether adding was successful.
+        """
         if not self._is_unique(value):
             return False
         return super().add(value)
 
-    def update(self, old_id: str, id: str):
+    def update(self, old_id: str, id: str) -> bool:
+        """Updates an existing identifier in this Dataset and
+        all related Datafiles in the store. Checks if the identifier
+        is unique. Returns True if successful, False if not.
+
+        Args:
+            old_id (str): The ID to update
+            id (str): The new ID.
+
+        Returns:
+            bool: True if successfully updated, False if not unique.
+        """
         assert self.dataset._store is not None
         if not self._is_unique(id):
             return False
@@ -411,7 +518,20 @@ class DatasetIdentifiers(IIdentifiers):
                 datafile.dataset_id = id
         return super().update(old_id, id)
 
-    def delete(self, id_to_delete: str):
+    def delete(self, id_to_delete: str) -> bool:
+        """Deletes an identifier in this Dataset,
+        and updates identifiers in related Datafiles to use
+        an alternative identifier. 
+        Returns True if successfully deleted and updated, False if
+        there are no other identifiers to use for related objects. 
+
+        Args:
+            id_to_delete (str): The identifier to delete.
+
+        Returns:
+            bool: True if successfully deleted, False if unable
+            to delete.
+        """
         if self.identifiers is None:
             return False
         if len(self.identifiers) <= 1:
@@ -477,6 +597,8 @@ def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: 
     value = loader.construct_scalar(node)
     return Username(value)
 
+class DifferentDeviceException(Exception):
+    pass
 @dataclass
 class IngestionMetadata:
     """
@@ -491,7 +613,26 @@ class IngestionMetadata:
     datasets: List[Dataset] = field(default_factory=list)
     datafiles: List[Datafile] = field(default_factory=list)
     # Ingestion metadata file location
-    file_path: Optional[Path] = None      
+    file_path: Optional[Path] = None
+    
+    @property
+    def data_path(self) -> Optional[Path]:
+        """Property for the effective path for the data.
+        Useful for checking if new data is stored in the same
+        drive. If this IngestionMetadata was previously saved,
+        the ingestion file path will be returned. Otherwise,
+        this will return the first datafile's directory path.
+        If there are no datafiles, a None will be returned.
+
+        Returns:
+            Optional[Path]: The effective path for the data
+        """
+        if self.file_path is not None:
+            return self.file_path.parent
+        elif len(self.datafiles) > 0:
+            return self.datafiles[0].directory
+        else:
+            return None
 
     def is_empty(self) -> bool:
         return (len(self.projects) == 0 and
@@ -508,6 +649,11 @@ class IngestionMetadata:
             file_path (str): The file path to save the metadata file in.
         """
         path = Path(file_path)
+        if self.data_path is not None:
+            new_path_dev = st_dev(path.parent)
+            data_dev = st_dev(self.data_path)
+            if new_path_dev != data_dev:
+                raise DifferentDeviceException()
         with open(path, 'w') as file:
             self._relativise_file_paths(path.parent)
             file.write(self._to_yaml())
@@ -522,7 +668,7 @@ class IngestionMetadata:
         """
         assert relative_to_dir.is_absolute
         if self.file_path is not None:
-            # If this was deserialised from a previously saved metadata file,
+            # If this file was previously saved,
             # then join the previous metadata file path with the relative path
             # in file.directory, then relativise to the new path.
             for file in self.datafiles:
@@ -617,12 +763,16 @@ class IngestionMetadata:
         # based on type.
         for obj in objects:
             if isinstance(obj, Project):
+                obj._store = metadata
                 metadata.projects.append(obj)
             elif isinstance(obj, Experiment):
+                obj._store = metadata
                 metadata.experiments.append(obj)
             elif isinstance(obj, Dataset):
+                obj._store = metadata
                 metadata.datasets.append(obj)
             elif isinstance(obj, Datafile):
+                obj._store = metadata
                 metadata.datafiles.append(obj)
             else:
                 logging.warning(

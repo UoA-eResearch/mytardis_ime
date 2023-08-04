@@ -1,16 +1,32 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
+import typing
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QValidator
-from PyQt5.QtWidgets import QLineEdit, QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
-from ime.utils import file_size_to_str
-from ime.models import IngestionMetadata,Project, Experiment, Dataset, Datafile
+from PyQt5.QtWidgets import QLineEdit, QMessageBox, QWidget, QWizard, QTableWidget, QTableWidgetItem,QFileDialog, QWizardPage
+from ime.utils import file_size_to_str, st_dev
+from ime.models import DifferentDeviceException, IngestionMetadata,Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from ime.ui.ui_add_files_wizard_skip import Ui_ImportDataFiles as Ui_ImportDataFiles_skip
 from pathlib import Path
 from ime.parser.image_parser import ImageProcessor
+
+def display_add_files_failed_error(correct_drive_path: Path):
+    drive_msg = f"the drive for {correct_drive_path}" 
+    drive = correct_drive_path.drive
+    if drive != "":
+        drive_msg = f"the {drive} drive"
+    error_msg = QMessageBox()
+    error_msg.setWindowTitle("Can't import data files")
+    error_msg.setText("Your data can\'t be imported. Previously imported data "
+        f"were stored on {drive_msg}, but the selected data files are "
+        "stored in a different drive. All your data needs to be on "
+        "the same drive to be found by the ingestion process.")
+    error_msg.setInformativeText(f"Please move your data to {drive_msg}, then try again.")
+    error_msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+    error_msg.exec()
 
 class AddFilesWizardResult:
     """
@@ -26,11 +42,23 @@ class AddFilesWizardResult:
     file_list: List[Datafile]
 
 class UniqueValueValidator(QValidator):
+    """A Validator for Qt Line Edits to ensure the user input
+    value is unique in a list.    """
     def __init__(self, existing_values_list: list[str], parent: QtCore.QObject | None = None) -> None:
-        self.existing = existing_values_list
+        self.existing = set(existing_values_list)
         super().__init__(parent)
 
     def validate(self, to_validate: str, a1: int) -> tuple[QValidator.State, str, int]:
+        """Override method to validate that a value is unique.
+
+        Args:
+            to_validate (str): The value to validate.
+            a1 (int): Cursor position
+
+        Returns:
+            tuple[QValidator.State, str, int]: A tuple with whether the input is acceptable,
+            a new suggested value and new cursor position.
+        """
         if to_validate in self.existing:
             return tuple([QValidator.State.Intermediate, to_validate, a1]) # type: ignore
         return tuple([QValidator.State.Acceptable, to_validate, a1]) # type: ignore
@@ -161,6 +189,10 @@ class AddFilesWizard(QWizard):
         self.ui.setupUi(self)
         self._make_page_ids()
         self._register_fields()
+        if not self.metadataModel.metadata.is_empty():
+            # If there is already metadata, skip the introduction
+            # page.
+            self.setStartId(self.page_ids['projectPage'])
         # define out widgets
         self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
@@ -221,7 +253,37 @@ class AddFilesWizard(QWizard):
         """
         table = self.ui.datafiletableWidget
         files_to_add = DialogUtils.open_add_files_dialog()
+        if len(files_to_add) == 0:
+            return
+        # Check all datafiles are from same drive.
+        data_path = self.metadataModel.metadata.data_path
+        if data_path is not None:
+            # If there is an effective path, use that to determine
+            # the drive the data should be stored on.
+            data_dev = st_dev(data_path)
+        else:
+            # If we are adding to a blank file...
+            if table.rowCount() > 0:
+                # If there are already other files the user has
+                # imported in this dialog, we use the first file's
+                # drive.
+                data_path = Path(table.item(0,2).text()).parent
+                data_dev = st_dev(data_path)
+            else:
+                # If there aren't any files already imported,
+                # we use the first file from the currently selected
+                # list. 
+                data_path = Path(files_to_add[0].absoluteFilePath()).parent
+                data_dev = st_dev(data_path)
+        for file in files_to_add:
+            # Go through each file to check whether they are stored
+            # on the same drive.
+            file_dev = st_dev(Path(file.absoluteFilePath()))
+            if file_dev != data_dev:
+                display_add_files_failed_error(data_path)
+                return
         DialogUtils.add_file_table_rows(table,files_to_add)
+
 
     def deleteFiles_handler(self):
         """Delete files from the table.
@@ -436,7 +498,35 @@ class AddFilesWizardSkipDataset(QWizard):
         """
         table = self.ui.datafiletableWidget
         files_to_add = DialogUtils.open_add_files_dialog()
-        # start the JVM
+        if len(files_to_add) == 0:
+            return
+        # Check all datafiles are from same drive.
+        data_path = self.metadataModel.metadata.data_path
+        if data_path is not None:
+            # If there is an effective path, use that to determine
+            # the drive the data should be stored on.
+            data_dev = st_dev(data_path)
+        else:
+            # If we are adding to a blank file...
+            if table.rowCount() > 0:
+                # If there are already other files the user has
+                # imported in this dialog, we use the first file's
+                # drive.
+                data_path = Path(table.item(0,2).text()).parent
+                data_dev = st_dev(data_path)
+            else:
+                # If there aren't any files already imported,
+                # we use the first file from the currently selected
+                # list. 
+                data_path = Path(files_to_add[0].absoluteFilePath()).parent
+                data_dev = st_dev(data_path)
+        for file in files_to_add:
+            # Go through each file to check whether they are stored
+            # on the same drive.
+            file_dev = st_dev(Path(file.absoluteFilePath()))
+            if file_dev != data_dev:
+                display_add_files_failed_error(data_path)
+                return
         DialogUtils.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
@@ -636,6 +726,35 @@ class AddFilesWizardSkipExperiment(QWizard):
         """
         table = self.ui.datafiletableWidget
         files_to_add = DialogUtils.open_add_files_dialog()
+        if len(files_to_add) == 0:
+            return
+        # Check all datafiles are from same drive.
+        data_path = self.metadataModel.metadata.data_path
+        if data_path is not None:
+            # If there is an effective path, use that to determine
+            # the drive the data should be stored on.
+            data_dev = st_dev(data_path)
+        else:
+            # If we are adding to a blank file...
+            if table.rowCount() > 0:
+                # If there are already other files the user has
+                # imported in this dialog, we use the first file's
+                # drive.
+                data_path = Path(table.item(0,2).text()).parent
+                data_dev = st_dev(data_path)
+            else:
+                # If there aren't any files already imported,
+                # we use the first file from the currently selected
+                # list. 
+                data_path = Path(files_to_add[0].absoluteFilePath()).parent
+                data_dev = st_dev(data_path)
+        for file in files_to_add:
+            # Go through each file to check whether they are stored
+            # on the same drive.
+            file_dev = st_dev(Path(file.absoluteFilePath()))
+            if file_dev != data_dev:
+                display_add_files_failed_error(data_path)
+                return
         DialogUtils.add_file_table_rows(table,files_to_add)
 
     def deleteFiles_handler(self):
@@ -860,7 +979,37 @@ class AddFilesWizardSkipProject(QWizard):
         """
         table = self.ui.datafiletableWidget
         files_to_add = DialogUtils.open_add_files_dialog()
+        if len(files_to_add) == 0:
+            return
+        # Check all datafiles are from same drive.
+        data_path = self.metadataModel.metadata.data_path
+        if data_path is not None:
+            # If there is an effective path, use that to determine
+            # the drive the data should be stored on.
+            data_dev = st_dev(data_path)
+        else:
+            # If we are adding to a blank file...
+            if table.rowCount() > 0:
+                # If there are already other files the user has
+                # imported in this dialog, we use the first file's
+                # drive.
+                data_path = Path(table.item(0,2).text()).parent
+                data_dev = st_dev(data_path)
+            else:
+                # If there aren't any files already imported,
+                # we use the first file from the currently selected
+                # list. 
+                data_path = Path(files_to_add[0].absoluteFilePath()).parent
+                data_dev = st_dev(data_path)
+        for file in files_to_add:
+            # Go through each file to check whether they are stored
+            # on the same drive.
+            file_dev = st_dev(Path(file.absoluteFilePath()))
+            if file_dev != data_dev:
+                display_add_files_failed_error(data_path)
+                return
         DialogUtils.add_file_table_rows(table,files_to_add)
+
 
     def deleteFiles_handler(self):
         """Delete files from the table.
@@ -947,7 +1096,9 @@ class DialogUtils:
         """
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        filename = file_dialog.getOpenFileNames()  
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        filename = file_dialog.getOpenFileNames(options=options)  
         fpath = filename[0]
 
         new_files = []
