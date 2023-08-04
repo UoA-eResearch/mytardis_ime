@@ -617,7 +617,7 @@ class IngestionMetadata:
     
     @property
     def data_path(self) -> Optional[Path]:
-        """Property for the effective workspace for the data.
+        """Property for the effective workspace path for the data.
         Useful for checking if new data is stored in the same
         drive. If this IngestionMetadata was previously saved,
         the ingestion file path will be returned. Otherwise,
@@ -625,7 +625,7 @@ class IngestionMetadata:
         If there are no datafiles, a None will be returned.
 
         Returns:
-            Optional[Path]: The effective workspace for the data
+            Optional[Path]: The effective workspace path for the data
         """
         if self.file_path is not None:
             return self.file_path.parent
