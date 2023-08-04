@@ -625,6 +625,9 @@ files = [
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
 ]
 
+[package.dependencies]
+pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
+
 [[package]]
 name = "pathspec"
 version = "0.9.0"
@@ -1023,12 +1026,19 @@ files = [
 numpy = ">=1.20.1"
 
 [[package]]
+<<<<<<< HEAD
 name = "pytz"
 version = "2023.3"
 description = "World timezone definitions, modern and historical"
+=======
+name = "pywin32-ctypes"
+version = "0.2.2"
+description = "A (partial) reimplementation of pywin32 using ctypes/cffi"
+>>>>>>> 5a031f8a53c2f88b9bf64817f13068ec03c25207
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 files = [
+<<<<<<< HEAD
     {file = "pytz-2023.3-py2.py3-none-any.whl", hash = "sha256:a151b3abb88eda1d4e34a9814df37de2a80e301e68ba0fd856fb9b46bfbbbffb"},
     {file = "pytz-2023.3.tar.gz", hash = "sha256:1d8ce29db189191fb55338ee6d0387d82ab59f3d00eac103412d64e0ebd0c588"},
 ]
@@ -1040,6 +1050,8 @@ description = "A (partial) reimplementation of pywin32 using ctypes/cffi"
 optional = false
 python-versions = ">=3.6"
 files = [
+=======
+>>>>>>> 5a031f8a53c2f88b9bf64817f13068ec03c25207
     {file = "pywin32-ctypes-0.2.2.tar.gz", hash = "sha256:3426e063bdd5fd4df74a14fa3cf80a0b42845a87e1d1e81f6549f9daec593a60"},
     {file = "pywin32_ctypes-0.2.2-py3-none-any.whl", hash = "sha256:bf490a1a709baf35d688fe0ecf980ed4de11d2b3e37b51e5442587a75d9957e7"},
 ]
@@ -1385,6 +1397,7 @@ files = [
 name = "typing-extensions"
 version = "4.2.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
+<<<<<<< HEAD
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1396,11 +1409,18 @@ files = [
 name = "tzdata"
 version = "2023.3"
 description = "Provider of IANA time zone data"
+=======
+>>>>>>> 5a031f8a53c2f88b9bf64817f13068ec03c25207
 optional = false
 python-versions = ">=2"
 files = [
+<<<<<<< HEAD
     {file = "tzdata-2023.3-py2.py3-none-any.whl", hash = "sha256:7e65763eef3120314099b6939b5546db7adce1e7d6f2e179e3df563c70511eda"},
     {file = "tzdata-2023.3.tar.gz", hash = "sha256:11ef1e08e54acb0d4f95bdb1be05da659673de4acbd21bf9c69e94cc5e907a3a"},
+=======
+    {file = "typing_extensions-4.2.0-py3-none-any.whl", hash = "sha256:6657594ee297170d19f67d55c05852a874e7eb634f4f753dbd667855e07c1708"},
+    {file = "typing_extensions-4.2.0.tar.gz", hash = "sha256:f1c24655a0da0d1b67f07e17a5e6b2a105894e6824b92096378bb3668ef02376"},
+>>>>>>> 5a031f8a53c2f88b9bf64817f13068ec03c25207
 ]
 
 [[package]]

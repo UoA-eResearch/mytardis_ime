@@ -640,35 +640,257 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="includedFilesPage">
+  <widget class="SkipProjectIntroPage" name="skipProjectPage">
+   <layout class="QVBoxLayout" name="verticalLayout_7">
+    <item>
+     <widget class="QLabel" name="label_28">
+      <property name="font">
+       <font>
+        <family>Noto Sans</family>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add an Experiment to a Project</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_27">
+      <property name="text">
+       <string>You will be adding a new Experiment into the following Project:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingProjectForm_3" native="true">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0" rowspan="2" colspan="2">
+        <widget class="QLabel" name="label_29">
+         <property name="text">
+          <string>Project</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="skipProject_existingProjectName">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>305</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="SkipExperimentIntroPage" name="skipExpPage">
+   <layout class="QVBoxLayout" name="verticalLayout_9">
+    <item>
+     <widget class="QLabel" name="label_30">
+      <property name="font">
+       <font>
+        <family>Noto Sans</family>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add a Dataset to an Experiment</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_33">
+      <property name="text">
+       <string>You will be adding a new Dataset into the following Project and Experiment:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingProjectForm_4" native="true">
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_31">
+         <property name="text">
+          <string>Project</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_32">
+         <property name="text">
+          <string>Experiment</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="skipExp_existingProjectName">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="skipExp_existingExpName">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_8">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>281</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="SkipDatasetIntroPage" name="skipDatasetPage">
+   <layout class="QVBoxLayout" name="verticalLayout_10">
+    <item>
+     <widget class="QLabel" name="label_35">
+      <property name="font">
+       <font>
+        <family>Noto Sans</family>
+        <pointsize>17</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add Datafiles to a Dataset</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_34">
+      <property name="text">
+       <string>You will be adding new data files into the following Project, Experiment, and Dataset:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="existingDatasetForm_2" native="true">
+      <layout class="QGridLayout" name="gridLayout_13">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_36">
+         <property name="text">
+          <string>Project</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_37">
+         <property name="text">
+          <string>Experiment</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_38">
+         <property name="text">
+          <string>Dataset</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="skipDataset_existingExpName">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="skipDataset_existingProjectName">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="skipDataset_existingDatasetName">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_9">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>253</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="IncludedFilesPage" name="includedFilesPage">
    <attribute name="pageId">
     <string notr="true">669</string>
    </attribute>
-   <layout class="QGridLayout" name="gridLayout_5">
+   <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_6">
-      <item row="3" column="0">
-       <widget class="QPushButton" name="datafileAddPushButton">
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <item>
+       <widget class="QLabel" name="label_23">
+        <property name="font">
+         <font>
+          <pointsize>17</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
-         <string>Add files...</string>
+         <string>Datafiles</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="datafileDeletePushButton">
+      <item>
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Remove files</string>
+         <string>Finally, choose the files you wish to include in this dataset.</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>You can override inherited metadata and access controls later.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
+      <item>
        <widget class="QTableWidget" name="datafiletableWidget">
         <property name="minimumSize">
          <size>
@@ -732,24 +954,35 @@
         </column>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Finally, choose the files you wish to include in this dataset.</string>
-        </property>
-       </widget>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="dirAddPushButton">
+          <property name="text">
+           <string>Add a folder...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="datafileAddPushButton">
+          <property name="text">
+           <string>Add files</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="datafileDeletePushButton">
+          <property name="text">
+           <string>Remove files</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_23">
-        <property name="font">
-         <font>
-          <pointsize>17</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
+      <item>
+       <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Datafiles</string>
+         <string>You can override inherited metadata and access controls later.</string>
         </property>
        </widget>
       </item>
@@ -762,19 +995,43 @@
   <customwidget>
    <class>ProjectPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
+   <header>ime.widgets.add_files_wizard.project_page</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ExperimentPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
+   <header>ime.widgets.add_files_wizard.experiment_page</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>DatasetPage</class>
    <extends>QWizardPage</extends>
-   <header>ime.widgets.add_files_wizard_pages</header>
+   <header>ime.widgets.add_files_wizard.dataset_page</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SkipProjectIntroPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard.skip_project_intro_page</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SkipExperimentIntroPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard.skip_experiment_intro_page</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SkipDatasetIntroPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard.skip_dataset_intro_page</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IncludedFilesPage</class>
+   <extends>QWizardPage</extends>
+   <header>ime.widgets.add_files_wizard.included_files_page</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

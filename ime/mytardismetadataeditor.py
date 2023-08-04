@@ -10,7 +10,7 @@ import javabridge
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import DifferentDeviceException, IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
 import logging
-from ime.widgets.add_files_wizard import AddFilesWizard, AddFilesWizardResult, AddFilesWizardSkipDataset, AddFilesWizardSkipExperiment, AddFilesWizardSkipProject
+from ime.widgets.add_files_wizard.wizard import AddFilesWizard, AddFilesWizardResult
 from ime.qt_models import IngestionMetadataModel
 from ime.parser.image_parser import ImageProcessor
 
@@ -24,6 +24,8 @@ class MyTardisMetadataEditor(QMainWindow):
 
     Inherits from QMainWindow.
     """
+
+    
 
     def __init__(self):
         """
@@ -132,13 +134,13 @@ class MyTardisMetadataEditor(QMainWindow):
         """  
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()
-        ds_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        ds_data = cast(Dataset, item.data(0, QtCore.Qt.ItemDataRole.UserRole))
         # print(data, data.dataset_name, data.experiment_id)
         # To do: create a dic with info about related exp, project
         exp_data = self.experiment_for_dataset(ds_data)
         pro_data = self.project_for_experiment(exp_data)
 
-        self.import_wizard_ui = AddFilesWizardSkipDataset(model,ds_data,exp_data,pro_data)
+        self.import_wizard_ui = AddFilesWizard(model, pro_data, exp_data, ds_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
     
@@ -294,10 +296,10 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.experimentTreeWidget.currentItem()
-        exp_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        exp_data = cast(Experiment, item.data(0, QtCore.Qt.ItemDataRole.UserRole))
         pro_data = self.project_for_experiment(exp_data)
 
-        self.import_wizard_ui = AddFilesWizardSkipExperiment(model,exp_data,pro_data)
+        self.import_wizard_ui = AddFilesWizard(model,pro_data, exp_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -403,7 +405,7 @@ class MyTardisMetadataEditor(QMainWindow):
         item = self.ui.projectTreeWidget.currentItem()
         pro_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
 
-        self.import_wizard_ui = AddFilesWizardSkipProject(model,pro_data)
+        self.import_wizard_ui = AddFilesWizard(model,pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
     

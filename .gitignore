@@ -7,6 +7,11 @@ lib/
 **/__pycache__/
 .qt_for_python/
 docs/_build
+<<<<<<< HEAD
+=======
+# Git-related files
+*.orig
+>>>>>>> 5a031f8a53c2f88b9bf64817f13068ec03c25207
 # PyInstaller clutter.
 dist
 build
