@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QLineEdit,  QWizard
+from ime.blueprints.custom_data_types import Username
 from ime.models import Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
@@ -43,6 +44,31 @@ class UniqueValueValidator(QValidator):
             return tuple([QValidator.State.Intermediate, to_validate, a1]) # type: ignore
         return tuple([QValidator.State.Acceptable, to_validate, a1]) # type: ignore
 
+class ProjectPrincipalInvestigatorValidator(QValidator):
+    """A Validator for Qt Line Edits to ensure the Principal Investigator
+    field conforms to username's validation rules."""
+    # def __init__(self, parent: QtCore.QObject | None = None) -> None:
+    #     super().__init__(parent)
+
+    def validate(self, to_validate: str, a1: int) -> tuple[QValidator.State, str, int]:
+        """Override method to validate that the input conforms to Username's rules.
+
+        Args:
+            to_validate (str): The input string
+            a1 (int): Cursor position
+
+        Returns:
+            tuple[QValidator.State, str, int]: A tuple with whether the input is acceptable,
+            a new suggested value and new cursor position.
+        """
+        try:
+            Username.validate(to_validate)
+            return tuple([QValidator.State.Acceptable, to_validate, a1]) # type: ignore
+        except ValueError:
+            return tuple([QValidator.State.Intermediate, to_validate, a1]) # type: ignore
+
+    
+
 class AddFilesWizard(QWizard):
     """A wizard for adding data files to a metadata model.
 
@@ -77,6 +103,7 @@ class AddFilesWizard(QWizard):
         proj_page.registerField("existingProject", self.ui.existingProjectList)
         proj_new_page.registerField("projectIDLineEdit*", self.ui.projectIDLineEdit)
         proj_new_page.registerField("projectNameLineEdit*", self.ui.projectNameLineEdit)
+        proj_new_page.registerField("piLineEdit*", self.ui.piLineEdit)
         # Experiment pages
         exp_page = self.ui.experimentPage
         exp_new_page = self.ui.newExperimentPage
@@ -242,6 +269,9 @@ class AddFilesWizard(QWizard):
         proj_line_edit = self.ui.projectIDLineEdit
         proj_line_edit.setValidator(new_id_validator)
         proj_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(proj_line_edit))
+        pi_line_edit = self.ui.piLineEdit
+        pi_line_edit.setValidator(ProjectPrincipalInvestigatorValidator())
+        pi_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(pi_line_edit))
         # Experiments
         all_exp_ids: list[str] = []
         for exp in self.metadataModel.metadata.experiments:
@@ -279,7 +309,7 @@ class AddFilesWizard(QWizard):
             result.project.name = self.ui.projectNameLineEdit.text()
             result.project.identifiers_delegate.add(self.ui.projectIDLineEdit.text())
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
-            
+            result.project.principal_investigator = Username(self.ui.piLineEdit.text())
         if self.field('isExistingExperiment'):
             assert self.selected_existing_experiment is not None
             result.experiment = self.selected_existing_experiment

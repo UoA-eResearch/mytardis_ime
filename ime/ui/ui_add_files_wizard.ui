@@ -269,17 +269,31 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QLabel" name="projectDescriptionLabel">
          <property name="text">
           <string>Description</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <widget class="QTextEdit" name="projectDescriptionLineEdit">
          <property name="placeholderText">
           <string>Optional description of your project to differentiate it from others</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="piLabel">
+         <property name="text">
+          <string>Principal Investigator</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="piLineEdit">
+         <property name="placeholderText">
+          <string>Username of the researcher primarily responsible for this project.</string>
          </property>
         </widget>
        </item>
@@ -1035,6 +1049,30 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>existingProjectRadioButton</tabstop>
+  <tabstop>existingProjectList</tabstop>
+  <tabstop>newProjectRadioButton</tabstop>
+  <tabstop>projectNameLineEdit</tabstop>
+  <tabstop>projectIDLineEdit</tabstop>
+  <tabstop>piLineEdit</tabstop>
+  <tabstop>projectDescriptionLineEdit</tabstop>
+  <tabstop>existingExperimentList</tabstop>
+  <tabstop>newExperimentRadioButton</tabstop>
+  <tabstop>experimentNameLineEdit</tabstop>
+  <tabstop>experimentIDLineEdit</tabstop>
+  <tabstop>experimentDescriptionLineEdit</tabstop>
+  <tabstop>existingDatasetRadioButton</tabstop>
+  <tabstop>existingDatasetList</tabstop>
+  <tabstop>newDatasetRadioButton</tabstop>
+  <tabstop>datasetNameLineEdit</tabstop>
+  <tabstop>datasetIDLineEdit</tabstop>
+  <tabstop>datafiletableWidget</tabstop>
+  <tabstop>dirAddPushButton</tabstop>
+  <tabstop>datafileAddPushButton</tabstop>
+  <tabstop>datafileDeletePushButton</tabstop>
+  <tabstop>existingExperimentRadioButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../default.qrc"/>
   <include location="../../default.qrc"/>
