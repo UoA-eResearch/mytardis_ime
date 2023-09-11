@@ -16,6 +16,9 @@ xmltodict = "^0.13.0"
 wheel = "^0.40.0"
 jsonschema = "^4.17.3"
 python-bioformats = "^4.0.7"
+pyimagej = "^1.4.1"
+scyjava = "^1.9.1"
+jpype1 = "^1.4.1"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.13.9"
