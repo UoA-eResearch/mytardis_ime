@@ -4,8 +4,8 @@ import typing
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
+import jpype
 from typing import Any, Callable, cast
-import javabridge
 
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import DifferentDeviceException, IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
@@ -67,7 +67,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def closeEvent(self, event):
         # Terminate the JVM when the app is closed
-        javabridge.kill_vm()
+        jpype.shutdownJVM()
         event.accept()
 
     def openWizardWindow(self):  
