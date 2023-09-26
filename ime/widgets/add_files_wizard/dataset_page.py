@@ -1,5 +1,6 @@
 
 import typing
+from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
 import ime.widgets.add_files_wizard.wizard as afw
 from PyQt5.QtWidgets import QWizardPage
 
@@ -29,11 +30,11 @@ class DatasetPage(QWizardPage):
 
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizard, self.wizard())
-        if self.field('isNewDataset'):
+        if self.field(FieldNames.IS_NEW_DATASET.value):
             # Go to the new project page
-            return wizard.page_ids['newDatasetPage']
+            return wizard.page_ids[PageNames.NEW_DATASET.value]
         else:
-            return wizard.page_ids['includedFilesPage']
+            return wizard.page_ids[PageNames.INCLUDED_FILES.value]
 
     def isComplete(self) -> bool:
-        return self.field('isNewDataset') or (self.field('isExistingDataset') and self.field("existingDataset") is not None)
+        return self.field(FieldNames.IS_NEW_DATASET.value) or (self.field(FieldNames.IS_EXISTING_DATASET.value) and self.field(FieldNames.EXISTING_DATASET.value) is not None)

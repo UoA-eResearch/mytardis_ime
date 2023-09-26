@@ -1,5 +1,6 @@
 import typing
 from PyQt5.QtWidgets import QWizardPage
+from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
 import ime.widgets.add_files_wizard.wizard as afw
 
 class ProjectPage(QWizardPage):
@@ -28,12 +29,12 @@ class ProjectPage(QWizardPage):
 
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizard, self.wizard())
-        if self.field('isNewProject'):
+        if self.field(FieldNames.IS_NEW_PROJECT.value):
             # Go to the new project page
-            return wizard.page_ids['newProjectPage']
+            return wizard.page_ids[PageNames.NEW_PROJECT.value]
         else:
-            return wizard.page_ids['experimentPage']
+            return wizard.page_ids[PageNames.EXPERIMENT.value]
 
     def isComplete(self) -> bool:
         # Block Next button until required fields are filled.
-        return self.field('isNewProject') or (self.field('isExistingProject') and self.field('existingProject') is not None)
+        return self.field(FieldNames.IS_NEW_PROJECT.value) or (self.field(FieldNames.IS_EXISTING_PROJECT.value) and self.field(FieldNames.EXISTING_PROJECT.value) is not None)

@@ -8,6 +8,7 @@ from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
 from pathlib import Path
 from ime.parser.image_parser import ImageProcessor
+from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
 
 class AddFilesWizardResult:
     """
@@ -90,42 +91,57 @@ class AddFilesWizard(QWizard):
     submitted = QtCore.pyqtSignal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
 
-    def _register_fields(self):
-        """Set up the fields and connect signals for isComplete states."""
-        # Project pages
+    def _register_project_fields(self) -> None:
+        "Private method that sets up signals and fields for Project pages."
         proj_page = self.ui.projectPage
         proj_new_page = self.ui.newProjectPage
-        proj_page.registerField("isNewProject", self.ui.newProjectRadioButton)
-        proj_page.registerField("isExistingProject", self.ui.existingProjectRadioButton)
+        proj_page.registerField(FieldNames.IS_NEW_PROJECT.value, self.ui.newProjectRadioButton)
+        proj_page.registerField(FieldNames.IS_EXISTING_PROJECT.value, self.ui.existingProjectRadioButton)
         self.ui.newProjectRadioButton.clicked.connect(proj_page.completeChanged)
         self.ui.existingProjectRadioButton.clicked.connect(proj_page.completeChanged)
         self.ui.existingProjectList.currentIndexChanged.connect(proj_page.completeChanged)
-        proj_page.registerField("existingProject", self.ui.existingProjectList)
-        proj_new_page.registerField("projectIDLineEdit*", self.ui.projectIDLineEdit)
-        proj_new_page.registerField("projectNameLineEdit*", self.ui.projectNameLineEdit)
-        proj_new_page.registerField("piLineEdit*", self.ui.piLineEdit)
-        # Experiment pages
+        proj_page.registerField(FieldNames.EXISTING_PROJECT.value, self.ui.existingProjectList)
+        proj_new_page.registerField(FieldNames.PROJECT_ID.value + "*", self.ui.projectIDLineEdit)
+        proj_new_page.registerField(FieldNames.PROJECT_NAME.value + "*", self.ui.projectNameLineEdit)
+        proj_new_page.registerField(FieldNames.PROJECT_PI.value + "*", self.ui.piLineEdit)
+
+    def _register_experiment_fields(self) -> None:
+        """Private method that sets up signals and fields for Experiment pages.
+        """
         exp_page = self.ui.experimentPage
         exp_new_page = self.ui.newExperimentPage
-        exp_page.registerField("isNewExperiment", self.ui.newExperimentRadioButton)
-        exp_page.registerField("isExistingExperiment", self.ui.existingExperimentRadioButton)
+        exp_page.registerField(FieldNames.IS_NEW_EXPERIMENT.value, self.ui.newExperimentRadioButton)
+        exp_page.registerField(FieldNames.IS_EXISTING_EXPERIMENT.value, self.ui.existingExperimentRadioButton)
         self.ui.newExperimentRadioButton.clicked.connect(exp_page.completeChanged)
         self.ui.existingExperimentRadioButton.clicked.connect(exp_page.completeChanged)
         self.ui.existingExperimentList.currentIndexChanged.connect(exp_page.completeChanged)
-        exp_page.registerField("existingExperiment", self.ui.existingExperimentList)
-        exp_new_page.registerField("experimentNameLineEdit*", self.ui.experimentNameLineEdit)
-        exp_new_page.registerField("experimentIDLineEdit*", self.ui.experimentIDLineEdit)
-        # Dataset pages
+        exp_page.registerField(FieldNames.EXISTING_EXPERIMENT.value, self.ui.existingExperimentList)
+        exp_new_page.registerField(FieldNames.EXPERIMENT_NAME.value + "*", self.ui.experimentNameLineEdit)
+        exp_new_page.registerField(FieldNames.EXPERIMENT_ID.value + "*", self.ui.experimentIDLineEdit)
+
+    def _register_dataset_fields(self) -> None:
+        """Private method that sets up signals and fields for Dataset pages.
+        """
         ds_page = self.ui.datasetPage
         ds_new_page = self.ui.newDatasetPage
-        ds_page.registerField("isNewDataset", self.ui.newDatasetRadioButton)
-        ds_page.registerField("isExistingDataset", self.ui.existingDatasetRadioButton)
+        ds_page.registerField(FieldNames.IS_NEW_DATASET.value, self.ui.newDatasetRadioButton)
+        ds_page.registerField(FieldNames.IS_EXISTING_DATASET.value, self.ui.existingDatasetRadioButton)
         self.ui.newDatasetRadioButton.clicked.connect(ds_page.completeChanged)
         self.ui.existingDatasetRadioButton.clicked.connect(ds_page.completeChanged)
         self.ui.existingDatasetList.currentIndexChanged.connect(ds_page.completeChanged)
-        ds_page.registerField("existingDataset", self.ui.existingDatasetList)
-        ds_new_page.registerField("datasetIDLineEdit*",self.ui.datasetIDLineEdit)
-        ds_new_page.registerField("datasetNameLineEdit*",self.ui.datasetNameLineEdit)
+        ds_page.registerField(FieldNames.EXISTING_DATASET.value, self.ui.existingDatasetList)
+        ds_new_page.registerField(FieldNames.DATASET_ID.value + "*",self.ui.datasetIDLineEdit)
+        ds_new_page.registerField(FieldNames.DATASET_NAME.value + "*",self.ui.datasetNameLineEdit)
+
+
+    def _register_fields(self):
+        """Set up the fields and connect signals for isComplete states."""
+        # Project pages
+        self._register_project_fields()
+        # Experiment pages
+        self._register_experiment_fields()
+        # Dataset pages
+        self._register_dataset_fields()
 
     def _make_page_ids(self):
         """
@@ -151,28 +167,28 @@ class AddFilesWizard(QWizard):
         """
         current = self.currentId()
         pages = self.page_ids
-        if current == pages['introductionPage']:
+        if current == pages[PageNames.INTRODUCTION.value]:
             # Check if there are existing projects.
             # If there are, go to the choice page, otherwise go to the new project page.
             if self.metadataModel.projects.rowCount() > 0:
-                return pages['projectPage']
+                return pages[PageNames.PROJECT.value]
             else:
                 # Need to set the fields manually since we're not showing
                 # user the project choice page. Ditto for the fields
                 # in experiment and dataset pages. 
-                self.setField('isNewProject', True)
-                self.setField('isExistingProject', False)
-                return pages['newProjectPage']
-        if current == pages['newProjectPage']:
-            self.setField('isNewExperiment', True)
-            self.setField('isExistingExperiment', False)
-            return pages['newExperimentPage']
-        elif current == pages['newExperimentPage']:
-            self.setField('isNewDataset', True)
-            self.setField('isExistingDataset', False)
-            return pages['newDatasetPage']
-        elif current == pages['newDatasetPage']:
-            return pages['includedFilesPage']
+                self.setField(FieldNames.IS_NEW_PROJECT.value, True)
+                self.setField(FieldNames.IS_EXISTING_PROJECT.value, False)
+                return pages[PageNames.NEW_PROJECT.value]
+        if current == pages[PageNames.NEW_PROJECT.value]:
+            self.setField(FieldNames.IS_NEW_EXPERIMENT.value, True)
+            self.setField(FieldNames.IS_EXISTING_EXPERIMENT.value, False)
+            return pages[PageNames.NEW_EXPERIMENT.value]
+        elif current == pages[PageNames.NEW_EXPERIMENT.value]:
+            self.setField(FieldNames.IS_NEW_DATASET.value, True)
+            self.setField(FieldNames.IS_EXISTING_DATASET.value, False)
+            return pages[PageNames.NEW_DATASET.value]
+        elif current == pages[PageNames.NEW_DATASET.value]:
+            return pages[PageNames.INCLUDED_FILES.value]
         else:
             return super().nextId()
 
@@ -181,21 +197,21 @@ class AddFilesWizard(QWizard):
         """
         if self.selected_existing_dataset is not None:
             # If a dataset is passed in, then start with add to dataset page.
-            self.setStartId(self.page_ids['skipDatasetPage'])
+            self.setStartId(self.page_ids[PageNames.SKIP_DATASET.value])
         elif self.selected_existing_experiment is not None:
             # If an experiment is passed in, then start with add to experiment page.
-            self.setStartId(self.page_ids['skipExpPage'])
+            self.setStartId(self.page_ids[PageNames.SKIP_EXPERIMENT.value])
         elif self.selected_existing_project is not None:
             # If a project is passed in, then start with add to project page.
-            self.setStartId(self.page_ids['skipProjectPage'])
+            self.setStartId(self.page_ids[PageNames.SKIP_PROJECT.value])
         else:
             # If nothing is passed in, then start with the introduction page.
             if not self.metadataModel.metadata.is_empty():
             # If there is already metadata, skip the introduction
             # page.
-                self.setStartId(self.page_ids['projectPage'])
+                self.setStartId(self.page_ids[PageNames.PROJECT.value])
             else:
-                self.setStartId(self.page_ids['introductionPage'])
+                self.setStartId(self.page_ids[PageNames.INTRODUCTION.value])
 
 
     def _set_existing_status(self) -> None:
@@ -203,14 +219,14 @@ class AddFilesWizard(QWizard):
         In cases where a project, experiment or dataset are passed in. 
         """
         if self.selected_existing_project is not None:
-            self.setField('isExistingProject', True)
-            self.setField('isNewProject', False)
+            self.setField(FieldNames.IS_EXISTING_PROJECT.value, True)
+            self.setField(FieldNames.IS_NEW_PROJECT.value, False)
         if self.selected_existing_experiment is not None:
-            self.setField('isExistingExperiment', True)
-            self.setField('isNewExperiment', False)
+            self.setField(FieldNames.IS_EXISTING_EXPERIMENT.value, True)
+            self.setField(FieldNames.IS_NEW_EXPERIMENT.value, False)
         if self.selected_existing_dataset is not None:
-            self.setField('isExistingDataset', True)
-            self.setField('isNewDataset', False)
+            self.setField(FieldNames.IS_EXISTING_DATASET.value, True)
+            self.setField(FieldNames.IS_NEW_DATASET.value, False)
         
 
     def __init__(self, 
@@ -297,10 +313,10 @@ class AddFilesWizard(QWizard):
             None
         """
         result = AddFilesWizardResult()
-        result.is_new_project = self.field('isNewProject')
-        result.is_new_experiment = self.field('isNewExperiment')
-        result.is_new_dataset = self.field('isNewDataset')
-        if self.field('isExistingProject'):
+        result.is_new_project = self.field(FieldNames.IS_NEW_PROJECT.value)
+        result.is_new_experiment = self.field(FieldNames.IS_NEW_EXPERIMENT.value)
+        result.is_new_dataset = self.field(FieldNames.IS_NEW_DATASET.value)
+        if self.field(FieldNames.IS_EXISTING_PROJECT.value):
             assert self.selected_existing_project is not None
             result.project = self.selected_existing_project
         else:
@@ -310,7 +326,7 @@ class AddFilesWizard(QWizard):
             result.project.identifiers_delegate.add(self.ui.projectIDLineEdit.text())
             result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
             result.project.principal_investigator = Username(self.ui.piLineEdit.text())
-        if self.field('isExistingExperiment'):
+        if self.field(FieldNames.IS_EXISTING_EXPERIMENT.value):
             assert self.selected_existing_experiment is not None
             result.experiment = self.selected_existing_experiment
         else:
@@ -321,7 +337,7 @@ class AddFilesWizard(QWizard):
             result.experiment.project_id = result.project.identifiers_delegate.first()
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
-        if self.field('isExistingDataset'):
+        if self.field(FieldNames.IS_EXISTING_DATASET.value):
             assert self.selected_existing_dataset is not None
             result.dataset = self.selected_existing_dataset
         else:

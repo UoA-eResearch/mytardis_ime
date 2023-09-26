@@ -1,5 +1,6 @@
 import typing
 from PyQt5.QtWidgets import QWizardPage
+from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
 import ime.widgets.add_files_wizard.wizard as afw
 
 class ExperimentPage(QWizardPage):
@@ -28,14 +29,14 @@ class ExperimentPage(QWizardPage):
 
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizard, self.wizard())
-        if self.field('isNewExperiment'):
+        if self.field(FieldNames.IS_NEW_EXPERIMENT.value):
             # Go to the new project page
-            return wizard.page_ids['newExperimentPage']
+            return wizard.page_ids[PageNames.NEW_EXPERIMENT.value]
         else:
-            return wizard.page_ids['datasetPage']
+            return wizard.page_ids[PageNames.DATASET.value]
 
     def cleanupPage(self) -> None:
         self.wizard().ui.existingExperimentList.currentIndexChanged.disconnect()
 
     def isComplete(self) -> bool:
-        return self.field('isNewExperiment') or (self.field('isExistingExperiment') and self.field('existingExperiment') is not None)
+        return self.field(FieldNames.IS_NEW_EXPERIMENT.value) or (self.field(FieldNames.IS_EXISTING_EXPERIMENT.value) and self.field(FieldNames.EXISTING_EXPERIMENT.value) is not None)
