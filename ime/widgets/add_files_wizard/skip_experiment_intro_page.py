@@ -24,11 +24,18 @@ class SkipExperimentIntroPage(QWizardPage):
         exp = wizard.selected_existing_experiment
         project = wizard.selected_existing_project
 
+        # Checks eproject and experiment are set.
         assert exp is not None
         assert project is not None
 
+        # Sets the text on project and experiment.
         wizard.ui.skipExp_existingExpName.setText(exp.title)
         wizard.ui.skipExp_existingProjectName.setText(project.name)
 
     def nextId(self) -> int:
+        """Override method for determining which page to advance to next.
+
+        Returns:
+            int: The page ID for next page to advance to.
+        """
         return self.wizard().page_ids["datasetPage"]

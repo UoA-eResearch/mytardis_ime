@@ -28,13 +28,6 @@ class DatasetPropertyEditor(QWidget):
         self.metadata_tab = self.ui.page_3
         self._set_bound_dataset(BoundObject())
     
-    def set_read_only(widget: QWidget, read_only: bool = True) -> None:
-        for child in widget.findChildren(QLineEdit):
-            if read_only:
-                child.setReadOnly(True)
-            else:
-                child.setEnabled(False)
-
     def set_dataset(self, dataset: Dataset) -> None:
         """
         Sets the current `Dataset` to edit in this widget.

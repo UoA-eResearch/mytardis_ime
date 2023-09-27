@@ -28,14 +28,15 @@ class MetadataTab(QWidget, IBindableInput):
         self.ui.notes_textedit.textChanged.connect(self.handleNotes_changed)
         setup_header_layout(self.ui.metadata_table.horizontalHeader())
 
-    def handle_schema_changed(self, schema: str):
+    def handle_schema_changed(self, schema: str) -> None:
         """Handles the schema text box changing."""
         self.metadata_object.object_schema = self.ui.schemaLineEdit.text()
 
-    def handleNotes_changed(self):
+    def handleNotes_changed(self) -> None:
+        """Handler method for notes changed."""
         self.metadata_object.metadata['Notes'] = self.ui.notes_textedit.toPlainText()
 
-    def add_insert_metadata_row(self):
+    def add_insert_metadata_row(self) -> None:
         """Adds an empty row to the metadata table."""
         table = self.ui.metadata_table
         # key_item, val_item = self.get_metadata_row("", "")
@@ -46,7 +47,7 @@ class MetadataTab(QWidget, IBindableInput):
         table.setItem(row_idx, 0, key_item)
         table.setItem(row_idx, 1, val_item)
     
-    def get_metadata_row(self, key: str, val: str):
+    def get_metadata_row(self, key: str, val: str) -> tuple[QTableWidgetItem, QTableWidgetItem]:
         """Returns a key-value metadata row as QTableWidgetItem objects.
 
         Args:
@@ -71,7 +72,7 @@ class MetadataTab(QWidget, IBindableInput):
         val_item = QTableWidgetItem(val)
         return key_item, val_item
 
-    def handle_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
+    def handle_selection_changed(self, selected: QItemSelection, deselected: QItemSelection) -> None:
         """Enables the "Remove Rows" button if rows are selected in the metadata table.
 
         Args:
@@ -87,7 +88,7 @@ class MetadataTab(QWidget, IBindableInput):
             return
         self.ui.remove_rows_btn.setEnabled(len(selected_rows) > 0)
 
-    def _handle_cell_changed(self, row: int, col: int):
+    def _handle_cell_changed(self, row: int, col: int) -> None:
         """Private method that handles the change event for a cell in the metadata table.
 
         Args:
@@ -144,7 +145,7 @@ class MetadataTab(QWidget, IBindableInput):
         edit_row_name_cell = table.model().index(table.rowCount() - 1, 0)
         self.ui.metadata_table.edit(edit_row_name_cell)
 
-    def handle_remove_rows_click(self):
+    def handle_remove_rows_click(self) -> None:
         """Handles the click event for the Remove Rows button."""
         table = self.ui.metadata_table
         items = table.selectedItems()
@@ -158,7 +159,7 @@ class MetadataTab(QWidget, IBindableInput):
             self.metadata_object.metadata.pop(key)
             table.removeRow(row)
 
-    def update_metadata_object(self, metadata_obj: IMetadata):
+    def update_metadata_object(self, metadata_obj: IMetadata) -> None:
         """Updates the object this tab is modifying.
 
         Args:

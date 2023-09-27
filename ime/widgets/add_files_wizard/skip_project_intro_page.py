@@ -27,4 +27,9 @@ class SkipProjectIntroPage(QWizardPage):
         wizard.ui.skipProject_existingProjectName.setText(project.name)
 
     def nextId(self) -> int:
+        """Override method for determining the next page of the wizard.
+
+        Returns:
+            int: The page ID for the next page of the wizard.
+        """
         return self.wizard().page_ids[PageNames.EXPERIMENT.value]

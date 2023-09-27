@@ -164,6 +164,9 @@ class AddFilesWizard(QWizard):
         - If the current page is the 'newExperimentPage', go to the 'newDatasetPage'.
         - If the current page is the 'newDatasetPage', go to the 'includedFilesPage'.
         - Otherwise, call the default `nextId()` function.
+
+        Returns:
+            int: The page ID for the next page.
         """
         current = self.currentId()
         pages = self.page_ids
@@ -260,7 +263,7 @@ class AddFilesWizard(QWizard):
         self._setup_validated_input()
 
 
-    def _update_widget_validation_style(self,line_edit: QLineEdit):
+    def _update_widget_validation_style(self,line_edit: QLineEdit) -> None:
         """Private method that gets called to update line edit style
         to reflect validation status.
 
@@ -273,7 +276,7 @@ class AddFilesWizard(QWizard):
             # Add pink to indicate invalid input.
             line_edit.setStyleSheet("QLineEdit { background-color: pink; }")
 
-    def _setup_validated_input(self):
+    def _setup_validated_input(self) -> None:
         """Private method to set up uniqueness validation for
         Project/Experiment/Dataset ID entries.
         """
@@ -305,7 +308,7 @@ class AddFilesWizard(QWizard):
         ds_line_edit.setValidator(new_id_validator)
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
     
-    def on_submit(self):
+    def on_submit(self) -> None:
         """
         Builds a result class based on the user's choices and emits them through the signal.
 
