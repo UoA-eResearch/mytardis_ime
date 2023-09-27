@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any, Union
 import xmltodict
 
 
@@ -38,7 +38,7 @@ class MetadataExtractor:
         return schema
     
     @staticmethod
-    def create_schema_test():
+    def create_schema_test() -> dict[str, Any]:
         """Create a test schema.
 
         Returns:
@@ -60,7 +60,7 @@ class MetadataExtractor:
         return schema
 
     @staticmethod  
-    def xml_to_dict(xml_string) -> dict:
+    def xml_to_dict(xml_string: str) -> dict:
         """Convert XML string to a dictionary.
 
         Args:
@@ -116,7 +116,7 @@ def extract_metadata(dictionary: dict, schema: dict) -> dict:
     return extracted_metadata
 
 @staticmethod
-def flatten_dict_keys_unique_id(dictionary, separator='|', prefix='', id_key='ID'):
+def flatten_dict_keys_unique_id(dictionary: dict, separator: str ='|', prefix: str='', id_key: str='ID') -> dict:
     """
     Flatten the keys of a nested dictionary while incorporating the 'ID' value as part of the key.
 

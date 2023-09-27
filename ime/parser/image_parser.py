@@ -17,7 +17,7 @@ class ImageProcessor():
 
     """
 
-    def initialize_java_vm(self):
+    def initialize_java_vm(self) -> None:
         """
         Initializes the Java virtual machine required for bioformats.
 
@@ -32,7 +32,7 @@ class ImageProcessor():
         javabridge.start_vm(class_path=bioformats.JARS)
 
     @staticmethod
-    def kill_vm():
+    def kill_vm() -> None:
         """
         Terminates the Java virtual machine.
 
@@ -46,7 +46,7 @@ class ImageProcessor():
         javabridge.kill_vm() 
 
     @staticmethod
-    def get_metadata(inf: str):
+    def get_metadata(inf: str) -> dict[str, str]:
         """
         Retrieves metadata from an image file.
 
@@ -54,7 +54,8 @@ class ImageProcessor():
             inf (str): The path to the image file.
 
         Returns:
-            str: The extracted metadata if the file is a CZI or OIB file. Otherwise, a string indicating it is not a CZI or OIB file.
+            dict[str,str]: The extracted metadata if the file is a CZI or OIB file.
+            Otherwise, returns a nempty dictionary.
 
         """
         suffix = Path(inf).suffix
