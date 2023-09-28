@@ -15,6 +15,8 @@ A metadata editor for files being ingested into MyTardis. Written with PyQt and 
 
 
 # Set up for development
+In order to run the image metadata extraction scripts, your device needs JAVA installed. Download [Java JDK](https://www.oracle.com/nz/java/technologies/downloads/#jdk20-linux)
+
 This project uses [poetry](https://python-poetry.org/).
 Set up Poetry, then run:
 ```

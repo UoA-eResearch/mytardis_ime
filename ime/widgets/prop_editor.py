@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLineEdit
 from PyQt5.uic import loadUi
 from ime.bindable import BoundObject
-from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project
+from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project, DataStatus
 from ime.qt_models import PythonListModel
 from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
@@ -15,7 +15,7 @@ class DatasetPropertyEditor(QWidget):
     metadata_tab: MetadataTab
     identifiers_model: PythonListModel
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent=None):
         """
         Constructs a new instance of the DatasetPropertyEditor class.
         
@@ -28,13 +28,6 @@ class DatasetPropertyEditor(QWidget):
         self.metadata_tab = self.ui.page_3
         self._set_bound_dataset(BoundObject())
     
-    def set_read_only(widget: QWidget, read_only: bool = True) -> None:
-        for child in widget.findChildren(QLineEdit):
-            if read_only:
-                child.setReadOnly(True)
-            else:
-                child.setEnabled(False)
-
     def set_dataset(self, dataset: Dataset) -> None:
         """
         Sets the current `Dataset` to edit in this widget.
@@ -43,8 +36,8 @@ class DatasetPropertyEditor(QWidget):
         dataset: The `Dataset` to edit.
         """
         self.dataset.set_object(dataset)
-        self.ui.identifierList.set_data(dataset.identifiers_methods)
-        if dataset.data_status == "INGESTED":
+        self.ui.identifierList.set_data(dataset.identifiers_delegate)
+        if dataset.data_status == DataStatus.INGESTED.value:
             self.ui.page.setEnabled(False)
             self.ui.page_2.setEnabled(False)
             self.ui.page_3.setEnabled(False)
@@ -52,9 +45,9 @@ class DatasetPropertyEditor(QWidget):
             self.ui.page.setEnabled(True)
             self.ui.page_2.setEnabled(True)
             self.ui.page_3.setEnabled(True)
-            self.metadata_tab.update_metadata_object(dataset)
-            inherited_acl = IAccessControl() # Stub - empty list.
-            self.ui.accessControlTab.set_data(dataset, inherited_acl)
+        self.metadata_tab.update_metadata_object(dataset)
+        inherited_acl = IAccessControl() # Stub - empty list.
+        self.ui.accessControlTab.set_data(dataset, inherited_acl)
         
     def _set_bound_dataset(self, dataset: BoundObject[Dataset]) -> None:
         """
@@ -92,7 +85,7 @@ class DatafilePropertyEditor(QWidget):
         datafile: The `Datafile` to edit.
         """
         self.df.set_object(datafile)
-        if datafile.data_status == "INGESTED":
+        if datafile.data_status == DataStatus.INGESTED.value:
             self.ui.fileinfoDescription.setEnabled(False)
             self.ui.page_10.setEnabled(False)
             self.ui.metadata_tab.setEnabled(False)
@@ -100,9 +93,9 @@ class DatafilePropertyEditor(QWidget):
             self.ui.fileinfoDescription.setEnabled(True)
             self.ui.page_10.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
-            self.metadata_tab.update_metadata_object(datafile)
-            inherited_acl = IAccessControl() # Stub - empty list.
-            self.ui.accessControlTab.set_data(datafile, inherited_acl)
+        self.metadata_tab.update_metadata_object(datafile)
+        inherited_acl = IAccessControl() # Stub - empty list.
+        self.ui.accessControlTab.set_data(datafile, inherited_acl)
     
     def _set_bound_file(self, datafile: BoundObject[Datafile]) -> None:
         """
@@ -138,8 +131,8 @@ class ExperimentPropertyEditor(QWidget):
             experiment: The experiment to be set.
         """
         self.exp.set_object(experiment)
-        self.ui.identifierList.set_data(experiment.identifiers_methods)
-        if experiment.data_status == "INGESTED":
+        self.ui.identifierList.set_data(experiment.identifiers_delegate)
+        if experiment.data_status == DataStatus.INGESTED.value:
             self.ui.page_4.setEnabled(False)
             self.ui.page_5.setEnabled(False)
             self.ui.metadata_tab.setEnabled(False)
@@ -147,9 +140,9 @@ class ExperimentPropertyEditor(QWidget):
             self.ui.page_4.setEnabled(True)
             self.ui.page_5.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
-            self.metadata_tab.update_metadata_object(experiment)
-            inherited_acl = IAccessControl() # Stub - empty list.
-            self.ui.accessControlTab.set_data(experiment, inherited_acl)
+        self.metadata_tab.update_metadata_object(experiment)
+        inherited_acl = IAccessControl() # Stub - empty list.
+        self.ui.accessControlTab.set_data(experiment, inherited_acl)
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]) -> None:
         """Set a bound object for the experiment.
@@ -186,8 +179,8 @@ class ProjectPropertyEditor(QWidget):
             project (Project): The `Project` object to set.
         """
         self.project.set_object(project)
-        self.ui.identifierList.set_data(project.identifiers_methods)
-        if project.data_status == "INGESTED":
+        self.ui.identifierList.set_data(project.identifiers_delegate)
+        if project.data_status == DataStatus.INGESTED.value:
             self.ui.page_7.setEnabled(False)
             self.ui.page_8.setEnabled(False)
             self.ui.metadata_tab.setEnabled(False)
@@ -195,8 +188,8 @@ class ProjectPropertyEditor(QWidget):
             self.ui.page_7.setEnabled(True)
             self.ui.page_8.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
-            self.metadata_tab.update_metadata_object(project)
-            self.ui.accessControlTab.set_data(project)
+        self.metadata_tab.update_metadata_object(project)
+        self.ui.accessControlTab.set_data(project)
 
     def _set_bound_project(self, project: BoundObject[Project]) -> None:
         """
@@ -208,4 +201,4 @@ class ProjectPropertyEditor(QWidget):
         self.project = project
         self.project.bind_input("name", self.ui.projectNameLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
-        self.project.bind_input("lead_researcher", self.ui.leadResearcherLineEdit)
+        self.project.bind_input("principal_investigator", self.ui.leadResearcherLineEdit)

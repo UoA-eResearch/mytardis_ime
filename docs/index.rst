@@ -20,6 +20,8 @@ Welcome to Instrument Data Wizard's documentation!
    user/adding-to-existing-structure
    user/data-dictionary
    user/finding-instrument-id
+   user/identifiers
+   
 .. 
    Indices and tables
    ==================

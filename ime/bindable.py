@@ -12,10 +12,20 @@ class IBindableInput:
     """
     _value_changed_slot: Optional[Callable]
     value_changed: Optional[pyqtBoundSignal]
-    def set_input_value(self, value) -> None:
+    def set_input_value(self, value: str) -> None:
+        """Abstract function for setting the input value.
+
+        Args:
+            value (str): The value that should be set on this input.
+        """
         pass
 
-    def get_input_value(self) -> Any:
+    def get_input_value(self) -> str:
+        """Abstract function for getting the input value.
+
+        Returns:
+            str: The value on this input.
+        """
         return ""
 
 class QLineEditInput(IBindableInput):
@@ -27,10 +37,20 @@ class QLineEditInput(IBindableInput):
         self.value_changed = typing.cast(pyqtBoundSignal, widget.editingFinished)
 
     def set_input_value(self, value:str) -> None:
+        """Concrete function that sets the value of the line edit widget.
+
+        Args:
+            value (str): The value for this widget.
+        """
         with QSignalBlocker(self.widget):
             self.widget.setText(value)
 
-    def get_input_value(self):
+    def get_input_value(self) -> str:
+        """Concrete function that gets the line edit widget value.
+
+        Returns:
+            str: The value of the widget.
+        """
         return self.widget.text()
 
 class QPlainTextEditInput(IBindableInput):
@@ -41,11 +61,21 @@ class QPlainTextEditInput(IBindableInput):
         self.widget = widget
         self.value_changed = typing.cast(pyqtBoundSignal, widget.textChanged)
     
-    def set_input_value(self, value:str):
+    def set_input_value(self, value:str) -> None:
+        """Concrete function that sets the value of the plain text edit widget.
+
+        Args:
+            value (str): The value for this widget.
+        """
         with QSignalBlocker(self.widget):
             self.widget.setPlainText(value)
 
-    def get_input_value(self):
+    def get_input_value(self) -> str:
+        """Concrete function that gets the value of the plain text edit widget.
+
+        Returns:
+            str: The value for this widget.
+        """
         return self.widget.toPlainText()
 
 # Binder
@@ -66,7 +96,7 @@ class BoundObject(QObject, Generic[T]):
         Binds the given object to this BoundObject. Triggers `bound_object_changed` signal.
 
         Args:
-            obj: The object to bind to this BoundObject.
+            obj (T): The object to bind to this BoundObject.
         """
         old_obj = getattr(self, "_bound_object", None)
         self._bound_object = obj
@@ -76,7 +106,7 @@ class BoundObject(QObject, Generic[T]):
                 self._set_initial_val_and_connect(field_name, input)
 
     
-    def bind_input(self, field_name: str, input: Union[IBindableInput, QWidget]):
+    def bind_input(self, field_name: str, input: Union[IBindableInput, QWidget]) -> None:
         """
         Binds the given input to the given field of the bound object.
 
@@ -107,10 +137,11 @@ class BoundObject(QObject, Generic[T]):
                 if input.value_changed is None or getattr(input, "_value_changed_slot", None) is None:
                     continue
                 # Disconnect the slot we've created
+                assert input._value_changed_slot is not None
                 input.value_changed.disconnect(input._value_changed_slot)
                 input._value_changed_slot = None
 
-    def _bind_field_with_default(self, field_name: str, input: QWidget):
+    def _bind_field_with_default(self, field_name: str, input: QWidget) -> None:
         """
         Binds a field with a default input widget.
 
@@ -119,14 +150,14 @@ class BoundObject(QObject, Generic[T]):
             input: Input widget to bind the field with.
 
         Raises:
-            Exception: If the input widget type is unsupported.
+            ValueError: If the input widget type is unsupported.
         """
         if isinstance(input, QLineEdit):
             return self._bind_field(field_name, QLineEditInput(input))
         elif isinstance(input, QPlainTextEdit):
             return self._bind_field(field_name, QPlainTextEditInput(input))
         else:
-            raise Exception(f"Unsupported input {input}")
+            raise ValueError(f"Unsupported input {input}")
     
     def _set_initial_val_and_connect(self, field_name: str, input: IBindableInput) -> None:
         """
