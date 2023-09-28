@@ -153,6 +153,12 @@ class IncludedFilesPage(QWizardPage):
         return res == QMessageBox.StandardButton.Ok
 
     def _display_add_files_failed_error(self, correct_drive_path: Path) -> None:
+        """Private method that displays an error dialog for failure to import data
+        files due to files being stored in a different drive. 
+
+        Args:
+            correct_drive_path (Path): The path that files should be located at.
+        """
         drive_msg = f"the drive for {correct_drive_path}" 
         drive = correct_drive_path.drive
         if drive != "":

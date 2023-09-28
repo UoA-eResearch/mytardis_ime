@@ -26,6 +26,8 @@ poetry run python -m app
 
 This will install all the project dependencies, then run the app in the Python virtual environment created by `poetry`. 
 
+If you need to run a command in the created virtual environment, you need to prepend the command with `poetry run`. Or, you can run `poetry shell` to spawn a shell with the virtual environment activated. This means all subsequent commands will be run in the virtual environment.
+
 Note:
 If you are using an M1 Macbook, you need to install PyQt5 by using Rosetta Terminal.
 To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwaj.medium.com/m1-mac-switching-terminal-between-x86-64-and-arm64-e45f324184d9
@@ -41,9 +43,6 @@ poetry install
 poetry shell # This activates the virtual envrionment
 python -m app
 ``` 
-
-If you need to run a command in the created virtual environment, you need to prepend the command with `poetry run`. Or, you can run `poetry shell` to spawn a shell with the virtual environment activated. This means all subsequent commands will be run in the virtual environment.
-
 
 # UI files
 You can automate the generation of PyQt Python files from `.ui` files by running:
@@ -68,7 +67,7 @@ poetry run make html
 The resulting HTML documentation is available in the `docs/_build/html` directory.
 
 # Generating executables
-This project uses [pyinstaller](https://pypi.org/project/pyinstaller/) to generate a compiled executable. To use, ensure you're in the Poetry virtual environment, then run:
+This project uses [pyinstaller](https://pypi.org/project/pyinstaller/) to generate a compiled executable. To use, run:
 ```
 poetry run pyinstaller app.py
 ```

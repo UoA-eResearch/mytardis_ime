@@ -19,7 +19,7 @@ from PyQt5.QtCore import (
     QSortFilterProxyModel
 )
 
-from .models import (
+from ime.models import (
     Dataset,
     Experiment,
     IngestionMetadata,
@@ -36,7 +36,7 @@ class PythonListModel(QAbstractListModel):
     means the original Python list doesn't get updated.
     """
     list: List[str]
-    def __init__(self, parent = None) -> None:
+    def __init__(self, parent:Optional[QObject] = None) -> None:
         super().__init__(parent)
 
     def setStringList(self, sourceList: List[str]) -> None:
@@ -127,8 +127,10 @@ class IngestionMetadataModel:
     def __init__(self, metadata = IngestionMetadata()) -> None:
         """
         Initializes an instance of the IngestionMetadataModel class.
+
         Args:
-            metadata: An instance of the IngestionMetadata class from models.py. Defaults to an empty instance.
+            metadata: An instance of the IngestionMetadata class from models.py. 
+                Defaults to an empty instance.
         """
         self.metadata = metadata
         self.projects = DataclassTableModel(Project)
@@ -138,10 +140,17 @@ class IngestionMetadataModel:
         self.datasets = DataclassTableModel(Dataset)
         self.datasets.set_instance_list(metadata.datasets)
 
-    def experiments_for_project(self, project: Project):
+    def experiments_for_project(self, project: Project) -> 'DataclassTableProxy':
         """
         Returns a filtered data model of all Experiments that belong 
         to a Project in this model. 
+
+        Args:
+            project (Project): The project to look up experiments for.
+
+        Returns:
+            DataclassTableProxy: A proxy view filtering for experiments that the project
+                has.
         """
         proxy = self.experiments.proxy()
         proxy.set_filter_by_instance(lambda exp: 
@@ -149,10 +158,17 @@ class IngestionMetadataModel:
         )
         return proxy
 
-    def datasets_for_experiment(self, experiment: Experiment):
+    def datasets_for_experiment(self, experiment: Experiment) -> 'DataclassTableProxy':
         """
         Returns a filtered data model of all Datasets that belong to an
         Experiment in this model.
+
+        Args:
+            experiment (Experiment): The experiment to look up datasets for.
+
+        Returns:
+            DataclassTableProxy: A proxy view filtering for datasets that the experiment
+                has.
         """
         proxy = self.datasets.proxy()
         # Since the experiment_id field is a list, we add
@@ -162,11 +178,14 @@ class IngestionMetadataModel:
         )
         return proxy
     
-    def project_for_experiment(self, experiment: Experiment):
-        """
-        Returns a DataclassTableProxy of projects that have a given experiment as a part.
-        :param experiment: An Experiment object.
-        :return: A DataclassTableProxy of projects.
+    def project_for_experiment(self, experiment: Experiment) -> 'DataclassTableProxy':
+        """Returns a DataclassTableProxy of projects that have a given experiment as a part.
+        Args:
+            experiment (Experiment): The experiment to look up project for.
+
+        Returns:
+            DataclassTableProxy: A proxy view filtering for projects that the experiment
+            belongs to.
         """
         proxy = self.projects.proxy()
         proxy.set_filter_by_instance(lambda proj: 
@@ -197,6 +216,13 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
     def column_for_field(self, field: str) -> int:
         """
         Given a field name, return its column index.
+
+        Args:
+            field (str): The field name to look up column index for.
+
+        Returns:
+            int: The column index. 
+
         """
         for i, key in enumerate(self.fields):
             if key == field:
@@ -205,16 +231,32 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
 
     def field_for_column(self, column: int) -> Field:
         """
-        Given a column index, return the corresponding field name.
+        Given a column index, return the corresponding dataclass field.
+
+        Args:
+            column (int): The column index to look up.
+
+        Returns:
+            Field: The dataclass field that corresponds to the index.
         """
         return fields(self.type)[column]
 
-    def proxy(self, fields: List[str] = []):
+    def proxy(self, fields: List[str] = []) -> 'DataclassTableProxy':
         """
         Convenience function that returns a proxy model of the whole model, 
         useful for a filtered view or displaying in a View.
         Optionally you may specify a list of `fields` to show in this table. Fields will
         be ordered in the proxy model according to the order of the list.
+
+        Args:
+            fields (List[str]): Fields in the model that should be visible. 
+                Defaults to an empty list, which shows all fields.
+
+        Returns:
+            DataclassTableProxy: A proxy view that shows all rows in this model.
+                If fields is specified, only specified fields will be visible
+                when a Qt widget is using the proxy. 
+
         """
         instance_type = self.type
         proxy = DataclassTableProxy[instance_type]()
@@ -236,30 +278,24 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         """
         Given the row index, return the instance of dataclass represented
         in that row.
+
+        Args:
+            row (int): The row index
+
+        Returns:
+            T: The dataclass instance.
         """
         return self.instance_list[row]
 
     def set_instance_list(self, instance_list: List[T]) -> None:
         """
-        Set the backing dataclass list this model will represent. 
+        Set the backing dataclass list this model will represent.
+
+        instance_list (List[T]): The list of instances for this model.
         """
         self.beginResetModel()
         self.instance_list = instance_list
         self.endResetModel()
-    
-    def add_extra_field(self, field_name: str) -> int:
-        # TODO This will be useful for computed values like project/experiment/dataset size.
-        # And perhaps the effective ACL users and groups?
-        # compute_fn will be re-evaluated for an instance when any of its fields has changed.
-        # If an external dependency of the function changes, the model needs to be notified, 
-        # so compute_fn can be re-evaluated.
-        # e.g.  DataclassTableModel.field_changed(row, fields)? But may be circular.
-        raise NotImplementedError()
-
-    def field_changed(self, row: int, field: str):
-        # Notifies the model that this instance's field has changed.
-        # A wrapper around dataChanged().
-        raise NotImplementedError()
 
     # Implementations and overrides of QAbstractTableModel methods follow.
     # These methods are mainly for use by native Qt Views.
@@ -401,6 +437,9 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         Given a list of field names, sets which dataclass fields should be 
         shown by the proxy model. If show_fields is an empty list, then all fields
         will be shown.
+
+        Args:
+            show_fields (List[str]): The list of fields to show.
         """
         self.show_fields = show_fields
 
@@ -409,6 +448,9 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         Sets whether the proxy model should use read-only flags. 
         This primarily affects native Qt View widgets, which shows an editing widget or
         a plain label for each item depending on the flags.
+
+        Args:
+            read_only (bool): Whether the proxy should be read only.
         """
         self.read_only = read_only
 
@@ -417,10 +459,15 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         Applies a predicate (a function that takes an argument and returns
         True or False) to each dataclass instance in the model, and filter out
         instances that predicate returns False on. 
-        predicate should take an instance of the dataclass T,
-        and return True or False of whether it should be included.
+
         Note, if a predicate is set, then QSortFilterProxyModel's built-in filters
         (e.g. filterFixedString()) will not be applied even if set.
+
+        Args:
+            predicate (Callable[[T], bool]): A function that should take an 
+            instance of the dataclass T, and return True or False by
+            whether it should be included.
+
         """
         self.beginInsertColumns
         self.filter_by_instance = predicate
@@ -429,6 +476,12 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         Given a row index in the Proxy Model, returns the dataclass instance
         represented by the row.
+
+        Args:
+            row (int): The row index
+        
+        Returns:
+            T: The dataclass instance.
         """
         source_row = self.mapToSource(self.index(row,0)).row()
         return self.sourceModel().instance(source_row)
@@ -452,6 +505,9 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         Overrides the `sourceModel()` method of QSortFilterProxyModel to give richer
         type completion in type checkers.
+
+        Returns:
+            DataclassTableModel[T]: The source model for this proxy.
         """
         return typing.cast(DataclassTableModel, super().sourceModel())
 

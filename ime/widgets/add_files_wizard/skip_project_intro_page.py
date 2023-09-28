@@ -1,5 +1,6 @@
 import typing
 from PyQt5.QtWidgets import QWizardPage
+from ime.widgets.add_files_wizard.enums import PageNames
 import ime.widgets.add_files_wizard.wizard as afw
 
 class SkipProjectIntroPage(QWizardPage):
@@ -26,4 +27,9 @@ class SkipProjectIntroPage(QWizardPage):
         wizard.ui.skipProject_existingProjectName.setText(project.name)
 
     def nextId(self) -> int:
-        return self.wizard().page_ids["experimentPage"]
+        """Override method for determining the next page of the wizard.
+
+        Returns:
+            int: The page ID for the next page of the wizard.
+        """
+        return self.wizard().page_ids[PageNames.EXPERIMENT.value]

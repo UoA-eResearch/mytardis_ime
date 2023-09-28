@@ -7,7 +7,7 @@ When merged into the same repository, we will depend on that module directly.
 """
 
 import re
-from yaml import Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
+from typing import Generator, Type
 
 KNOWN_MYTARDIS_OBJECTS = [
     "datafileparameterset",
@@ -55,7 +55,7 @@ class Username(str):
     """
 
     @classmethod
-    def __get_validators__(cls):
+    def __get_validators__(cls: Type['Username']) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -63,7 +63,7 @@ class Username(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value) -> 'Username':
+    def validate(cls: Type['Username'], value: str) -> 'Username':
         """Custom validator to ensure that the value is a string object and that it matches
         the regex defined for users"""
         if not isinstance(value, str):
@@ -75,7 +75,7 @@ class Username(str):
             )
         return cls(f"{match.group(0)}")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Indicate that the username object is a username"""
         return f"Username({super().__repr__()})"
 
@@ -84,7 +84,7 @@ class URI(str):
     """Defines a MyTardis URI as a subclass of the string class"""
 
     @classmethod
-    def __get_validators__(cls):
+    def __get_validators__(cls: Type['URI']) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -92,7 +92,7 @@ class URI(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls: Type['URI'], value: str) -> 'URI':
         """Custom validator to ensure that the value is a string object and that it matches
         the regex defined for users"""
         if not isinstance(value, str):
@@ -120,7 +120,7 @@ class ISODateTime(str):
     """
 
     @classmethod
-    def __get_validators__(cls):
+    def __get_validators__(cls:Type['ISODateTime']) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -128,7 +128,7 @@ class ISODateTime(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls: Type['ISODateTime'], value: str) -> 'ISODateTime':
         """Custom validator to ensure that the value is a string object and that it matches
         the regex defined for an ISO 8601 formated datestime string"""
         if not isinstance(value, str):
@@ -144,7 +144,7 @@ class ISODateTime(str):
             )
         return cls(f"{value}")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Indicate that it is a formatted ISODateTime string via __repr__"""
         return f"ISODateTime({super().__repr__()})"
 
@@ -165,7 +165,7 @@ class BaseObjectType(str):
     ]
 
     @classmethod
-    def __get_validators__(cls):
+    def __get_validators__(cls: Type['BaseObjectType']) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -173,7 +173,7 @@ class BaseObjectType(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls: Type['BaseObjectType'], value: str) -> 'BaseObjectType':
         """Custom validator to ensure that the string is one of the known objects in
         MyTardis."""
         if not isinstance(value, str):
@@ -185,6 +185,6 @@ class BaseObjectType(str):
             )
         return cls(f"{value}")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Indicate that it is a formatted BaseObjectType string via __repr__"""
         return f"BaseObjectType({super().__repr__()})"

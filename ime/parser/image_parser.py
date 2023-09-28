@@ -39,7 +39,8 @@ class ImageProcessor():
             inf (str): The path to the image file.
 
         Returns:
-            str: The extracted metadata if the file is a CZI or OIB file. Otherwise, a string indicating it is not a CZI or OIB file.
+            dict[str,str]: The extracted metadata if the file is a CZI or OIB file.
+            Otherwise, returns a nempty dictionary.
 
         """
         suffix = Path(inf).suffix
