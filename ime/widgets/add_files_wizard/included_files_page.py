@@ -257,6 +257,7 @@ class IncludedFilesPage(QWizardPage):
             name_cell = QTableWidgetItem(file.name)
             size = file.stat().st_size
             size_str = file_size_to_str(size)
+            #md5sum = self._calculate_md5(file)
             size_cell = QTableWidgetItem(size_str)
             # Store actual size value in cell. 
             size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)

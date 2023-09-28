@@ -1,4 +1,6 @@
 from typing import Dict, List, Optional
+from pathlib import Path
+import hashlib
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QLineEdit,  QWizard
@@ -6,7 +8,7 @@ from ime.blueprints.custom_data_types import Username
 from ime.models import Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
-from pathlib import Path
+from ime.widgets.add_files_wizard.included_files_page import IncludedFilesPage
 from ime.parser.image_parser import ImageProcessor
 
 class AddFilesWizardResult:
@@ -289,6 +291,14 @@ class AddFilesWizard(QWizard):
         ds_line_edit.setValidator(new_id_validator)
         ds_line_edit.textEdited.connect(lambda: self._update_widget_validation_style(ds_line_edit))
     
+    def _calculate_md5(self, file_path):
+        """Calculate the MD5 checksum for a file."""
+        md5 = hashlib.md5()
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                md5.update(chunk)
+        return md5.hexdigest()
+    
     def on_submit(self):
         """
         Builds a result class based on the user's choices and emits them through the signal.
@@ -343,9 +353,11 @@ class AddFilesWizard(QWizard):
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
+            #md5sum = self._calculate_md5(dir_path)
             datafile.filename = file_name
             datafile.size = file_size
             datafile.path_abs = dir_path
+            #datafile.md5sum = md5sum
             # get image metadata and attach to datafile's metadata
             image_metadata = image_processor.get_metadata(dir_path.as_posix())
             datafile.metadata = image_metadata
