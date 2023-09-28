@@ -52,11 +52,11 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
 
-        self.ui.datasetTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.datasetTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.datasetMenuContextTree)
-        self.ui.experimentTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.experimentTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
-        self.ui.projectTreeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.projectTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
 
         setup_section_autoresize(self.ui.projectTreeWidget)
@@ -70,7 +70,7 @@ class MyTardisMetadataEditor(QMainWindow):
         javabridge.kill_vm()
         event.accept()
 
-    def openWizardWindow(self):  
+    def openWizardWindow(self) -> None:  
         """
         Displays a wizard window to add new files to an existing experiment. 
         This method extracts the relevant metadata from the currently selected item in the 
@@ -105,10 +105,10 @@ class MyTardisMetadataEditor(QMainWindow):
             for datafile in self.metadata.datafiles:
                 if datafile.filename == item_data:
                     file = datafile
-            if file.data_status == DataStatus.INGESTED.value:
-                delete_action.setEnabled(False)
-            else:
-                delete_action.triggered.connect(self.delete_items_datafile)
+                    if file.data_status == DataStatus.INGESTED.value:
+                        delete_action.setEnabled(False)
+                    else:
+                        delete_action.triggered.connect(self.delete_items_datafile)
         
         else:
             action = menu.addAction("Add New Files...")
@@ -157,23 +157,24 @@ class MyTardisMetadataEditor(QMainWindow):
             None
         """
         selected_item = self.ui.datasetTreeWidget.currentItem() ## it's the Dataset
-        if selected_item:
-            confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Remove this dataset?")
-            confirm_msg.setText('Remove this dataset?')
-            confirm_msg.setInformativeText("You will have to add this dataset again once you remove it.")
-            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
-            res = confirm_msg.exec()
-            if res == QMessageBox.StandardButton.Cancel:
-                # If user did not want to proceed, then exit.
-                return
-            self.ui.datasetTreeWidget.takeTopLevelItem(self.ui.datasetTreeWidget.indexOfTopLevelItem(selected_item))
-            datafiles_impacted = self.metadata.get_files_by_dataset(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
+        if not selected_item:
+            return
+        confirm_msg = QMessageBox()
+        confirm_msg.setWindowTitle("Remove this dataset?")
+        confirm_msg.setText('Remove this dataset?')
+        confirm_msg.setInformativeText("You will have to add this dataset again once you remove it.")
+        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        res = confirm_msg.exec()
+        if res == QMessageBox.StandardButton.Cancel:
+            # If user did not want to proceed, then exit.
+            return
+        self.ui.datasetTreeWidget.takeTopLevelItem(self.ui.datasetTreeWidget.indexOfTopLevelItem(selected_item))
+        datafiles_impacted = self.metadata.get_files_by_dataset(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
         self.metadata.datasets.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
         for file in datafiles_impacted:
             self.metadata.datafiles.remove(file)
 
-    def delete_items_datafile(self):
+    def delete_items_datafile(self) -> None:
         """
         Deletes the selected data file from the dataset tree.
 
@@ -246,25 +247,26 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """
         selected_item = self.ui.experimentTreeWidget.currentItem() ## it's the Experiment
-        if selected_item:
-            confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Remove this experiment?")
-            confirm_msg.setText('Remove this experiment?')
-            confirm_msg.setInformativeText("You will have to add this experiment again once you remove it.")
-            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
-            res = confirm_msg.exec()
-            if res == QMessageBox.StandardButton.Cancel:
-                # If user did not want to proceed, then exit.
-                return
-            self.ui.experimentTreeWidget.takeTopLevelItem(self.ui.experimentTreeWidget.indexOfTopLevelItem(selected_item))
-            experiment = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
-            datasets_impacted = self.metadata.get_datasets_by_experiment(experiment)
+        if not selected_item:
+            return
+        confirm_msg = QMessageBox()
+        confirm_msg.setWindowTitle("Remove this experiment?")
+        confirm_msg.setText('Remove this experiment?')
+        confirm_msg.setInformativeText("You will have to add this experiment again once you remove it.")
+        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        res = confirm_msg.exec()
+        if res == QMessageBox.StandardButton.Cancel:
+            # If user did not want to proceed, then exit.
+            return
+        self.ui.experimentTreeWidget.takeTopLevelItem(self.ui.experimentTreeWidget.indexOfTopLevelItem(selected_item))
+        experiment = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        datasets_impacted = self.metadata.get_datasets_by_experiment(experiment)
 
-            datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
-            for dataset in datasets_impacted:
-                datafiles_related = self.metadata.get_files_by_dataset(dataset)
-                datafiles_impacted.extend(datafiles_related)
-                self.metadata.datasets.remove(dataset)
+        datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
+        for dataset in datasets_impacted:
+            datafiles_related = self.metadata.get_files_by_dataset(dataset)
+            datafiles_impacted.extend(datafiles_related)
+            self.metadata.datasets.remove(dataset)
 
         self.metadata.experiments.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
 
@@ -275,7 +277,11 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.datasetTreeWidget.clear()
         for ds in self.metadata.datasets:    
             self.add_dataset_to_tree(ds)
-        ds_id = [ds.dataset_id for ds in self.metadata.datasets]
+
+        # Build a list of all dataset identifiers
+        ds_id = []
+        for ds in self.metadata.datasets:
+            ds_id += ds.identifiers
 
         for file in self.metadata.datafiles:
             if file.dataset_id in ds_id: 
@@ -340,31 +346,32 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns: None
         """
         selected_item = self.ui.projectTreeWidget.currentItem()
-        if selected_item:
-            confirm_msg = QMessageBox()
-            confirm_msg.setWindowTitle("Remove this project?")
-            confirm_msg.setText('Remove this project?')
-            confirm_msg.setInformativeText("You will have to add this project again once you remove it.")
-            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
-            res = confirm_msg.exec()
-            if res == QMessageBox.StandardButton.Cancel:
-                # If user did not want to proceed, then exit.
-                return
-            self.ui.projectTreeWidget.takeTopLevelItem(self.ui.projectTreeWidget.indexOfTopLevelItem(selected_item)) # remove the project from the project tree widget
-            # get the experiments and datasets impacted by the deletion of the project
-            project = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
-            experiments_impacted = self.metadata.get_experiments_by_project(project)
-            datasets_impacted = [] # the full list of datasets impacted by the deletion of the experiments
-            for experiment in experiments_impacted:
-                dataset_related = self.metadata.get_datasets_by_experiment(experiment)
-                datasets_impacted.extend(dataset_related)
-                self.metadata.experiments.remove(experiment)
+        if not selected_item:
+            return
+        confirm_msg = QMessageBox()
+        confirm_msg.setWindowTitle("Remove this project?")
+        confirm_msg.setText('Remove this project?')
+        confirm_msg.setInformativeText("You will have to add this project again once you remove it.")
+        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        res = confirm_msg.exec()
+        if res == QMessageBox.StandardButton.Cancel:
+            # If user did not want to proceed, then exit.
+            return
+        self.ui.projectTreeWidget.takeTopLevelItem(self.ui.projectTreeWidget.indexOfTopLevelItem(selected_item)) # remove the project from the project tree widget
+        # get the experiments and datasets impacted by the deletion of the project
+        project = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        experiments_impacted = self.metadata.get_experiments_by_project(project)
+        datasets_impacted = [] # the full list of datasets impacted by the deletion of the experiments
+        for experiment in experiments_impacted:
+            dataset_related = self.metadata.get_datasets_by_experiment(experiment)
+            datasets_impacted.extend(dataset_related)
+            self.metadata.experiments.remove(experiment)
 
-            datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
-            for dataset in datasets_impacted:
-                datafiles_related = self.metadata.get_files_by_dataset(dataset)
-                datafiles_impacted.extend(datafiles_related)
-                self.metadata.datasets.remove(dataset)
+        datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
+        for dataset in datasets_impacted:
+            datafiles_related = self.metadata.get_files_by_dataset(dataset)
+            datafiles_impacted.extend(datafiles_related)
+            self.metadata.datasets.remove(dataset)
 
         # remove the experiment from the metadata
         self.metadata.projects.remove(project)
@@ -383,7 +390,11 @@ class MyTardisMetadataEditor(QMainWindow):
             self.add_dataset_to_tree(ds)
         
         # clear the datafile tree widget and repopulate it with the remaining datafiles
-        ds_id = [ds.dataset_id for ds in self.metadata.datasets]
+        # Build a list of all dataset identifiers
+        ds_id = []
+        for ds in self.metadata.datasets:
+            ds_id += ds.identifiers
+
         for file in self.metadata.datafiles:
             if file.dataset_id in ds_id: 
                 #print(file)
@@ -409,18 +420,6 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
     
-    def clear(self, tree_widget: QTreeWidget):
-        """
-        Clears the tree widgets.
-
-        Args: None
-
-        Returns: None
-        """
-        self._itemDict = {}
-        self._firstItem = None
-        tree_widget.clear(self)
-
     def onSelectDataset(self, dataset: Dataset):
         """
         Updates the property editor with the properties of the selected dataset.
