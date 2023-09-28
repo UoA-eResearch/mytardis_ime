@@ -732,14 +732,14 @@ class IngestionMetadata:
             # in file.directory, then relativise to the new path.
             for file in self.datafiles:
                 curr_path = self.file_path.parent.joinpath(file.directory)
-                new_path = Path(relpath(curr_path, relative_to_dir))
+                new_path = curr_path.relative_to(relative_to_dir)
                 file.directory = new_path
         else:
             # If this file is not previously saved, then use the absolute path for this
             # file.
             for file in self.datafiles:
                 curr_path = file.path_abs.parent
-                file.directory = Path(relpath(curr_path, relative_to_dir))
+                file.directory = curr_path.relative_to(relative_to_dir)
 
     def _to_yaml(self) -> str:
         """
