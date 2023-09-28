@@ -459,7 +459,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         Applies a predicate (a function that takes an argument and returns
         True or False) to each dataclass instance in the model, and filter out
         instances that predicate returns False on. 
-        predicate 
+
         Note, if a predicate is set, then QSortFilterProxyModel's built-in filters
         (e.g. filterFixedString()) will not be applied even if set.
 

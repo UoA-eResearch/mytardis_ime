@@ -49,9 +49,9 @@ class YAMLDataclass(yaml.YAMLObject):
         """
         assert is_dataclass(self)
         return {
-            field.name: getattr(self, field.name)
-            for field in fields(self)
-            if field.repr is True  # Only include repr=True fields
+            field.name: getattr(self, field.name) 
+            for field in fields(self) 
+            if field.repr is True # Only include repr=True fields
         }
 
 
@@ -106,7 +106,7 @@ class IIdentifiers:
 
     def __init__(self, identifiers: Optional[List[str]]) -> None:
         self.identifiers = identifiers
-
+    
     def first(self) -> str:
         """Returns the first identifier in the list, if any.
         Otherwise return an empty string.

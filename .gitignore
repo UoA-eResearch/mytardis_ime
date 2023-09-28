@@ -13,3 +13,4 @@ docs/_build
 dist
 build
 app.spec
+docs/_build

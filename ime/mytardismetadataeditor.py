@@ -287,7 +287,7 @@ class MyTardisMetadataEditor(QMainWindow):
             else:
                 pass
         
-    def openWizardWindowSkipExperiment(self) -> None:  
+    def openWizardWindowSkipExperiment(self) -> None:
         """
         Displays a wizard window to add new files to an existing experiment. 
         This method extracts the relevant metadata from the currently selected item in the 
@@ -712,9 +712,6 @@ class MyTardisMetadataEditor(QMainWindow):
                 cast(Project, data).identifiers_delegate.has(result.project.identifiers or [])
             ))
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
-        # self.ui.projectTreeWidget.resizeColumnToContents(0)
-        # self.ui.experimentTreeWidget.resizeColumnToContents(0)
-        # self.ui.
 
     def loadYaml(self) -> None:
         """

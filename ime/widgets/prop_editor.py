@@ -15,7 +15,7 @@ class DatasetPropertyEditor(QWidget):
     metadata_tab: MetadataTab
     identifiers_model: PythonListModel
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent=None):
         """
         Constructs a new instance of the DatasetPropertyEditor class.
         

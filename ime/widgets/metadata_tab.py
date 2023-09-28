@@ -173,7 +173,7 @@ class MetadataTab(QWidget, IBindableInput):
             table.clearContents()
             table.setRowCount(0)
             # Then, populate table with new items 
-            metadata = metadata_obj.metadata                
+            metadata = metadata_obj.metadata
             num_new = len(metadata)
             if "Notes" in metadata:
                 # Remove a line if there are Notes.
