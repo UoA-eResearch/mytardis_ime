@@ -717,8 +717,10 @@ class IngestionMetadata:
         self.file_path = path
 
     def _relativise_file_paths(self, relative_to_dir: Path) -> None:
-        """Private method for changing the Datafile paths to be relative
-        to `relative_to_dir`_ . This is necessary before saving.
+        """Private method for modifying the Datafile paths to be relative
+        to `relative_to_dir`_ . This is necessary when saving the file, so
+        Datafile directory path is relative to the parent directory of
+        the ingestion file.
 
         Args:
             relative_to_dir (Path): The directory that it would be relative to.
