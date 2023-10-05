@@ -57,8 +57,8 @@ class DatasetPropertyEditor(QWidget):
         dataset: The `BoundObject` to bind to this editor.
         """
         self.dataset = dataset
-        self.dataset.bind_input("dataset_name", self.ui.datasetNameLineEdit)
-        self.dataset.bind_input("instrument_id", self.ui.instrumentIDLineEdit)
+        self.dataset.bind_input("description", self.ui.datasetNameLineEdit)
+        self.dataset.bind_input("instrument_identifier", self.ui.instrumentIDLineEdit)
 
 class DatafilePropertyEditor(QWidget):
     df:BoundObject[Datafile]

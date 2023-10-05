@@ -47,7 +47,8 @@ identifiers:
 - exp1
 metadata: {}
 object_schema: https://130.216.218.45/ExperimentSchema-BIRU
-project_id: p1
+projects:
+- p1
 title: biru-exp1
 users:
 - !UserACL
@@ -65,7 +66,8 @@ identifiers:
 - exp2
 metadata: {}
 object_schema: ''
-project_id: p1
+projects:
+- p1
 title: biru-exp2
 users: null
 --- !Experiment
@@ -78,7 +80,8 @@ identifiers:
 - exp3
 metadata: {}
 object_schema: ''
-project_id: p2
+projects:
+- p2
 title: biru-exp3
 users: null
 --- !Dataset
@@ -87,7 +90,6 @@ data_status: null
 description: biru-ds1
 experiment_id:
 - exp1
-experiments: []
 groups:
 - !GroupACL
   can_download: true
@@ -112,7 +114,6 @@ data_status: 5
 description: biru-ds2
 experiment_id:
 - exp1
-experiments: []
 groups: null
 identifiers:
 - ds2
@@ -127,12 +128,11 @@ data_status: 5
 description: biru-ds3
 experiment_id:
 - exp2
-experiments: []
 groups: null
 identifiers:
 - ds3
 instrument: ''
-instrument_id: ''
+instrument_identifier: ''
 metadata: {}
 object_schema: ''
 users: null
@@ -142,12 +142,11 @@ data_status: null
 description: biru-ds4
 experiment_id:
 - exp3
-experiments: []
 groups: null
 identifiers:
 - ds4
 instrument: ''
-instrument_id: ''
+instrument_identifier: ''
 metadata: {}
 object_schema: ''
 users: null
@@ -273,7 +272,6 @@ users: null
 --- !Datafile
 data_status: null
 dataset: ds2
-
 directory: !Path 'ime/tests'
 filename: 20190812 NT 100x 01 slice.oib
 groups: null
@@ -329,4 +327,63 @@ metadata:
 mimetype: ''
 object_schema: ''
 size: 10911744
+users: null
+--- !Datafile
+data_status: null
+dataset: ds1
+directory: !Path '.'
+filename: good image 02.oib
+groups: null
+md5sum: ''
+metadata:
+  Image|Pixels|Channel|Channel:0:0|DetectorSettings|ID: Detector:0:0
+  Image|Pixels|Channel|Channel:0:0|EmissionWavelength: '520.0'
+  Image|Pixels|Channel|Channel:0:0|EmissionWavelengthUnit: nm
+  Image|Pixels|Channel|Channel:0:0|ExcitationWavelength: '473.0'
+  Image|Pixels|Channel|Channel:0:0|ExcitationWavelengthUnit: nm
+  Image|Pixels|Channel|Channel:0:0|ID: Channel:0:0
+  Image|Pixels|Channel|Channel:0:0|IlluminationType: Epifluorescence
+  Image|Pixels|Channel|Channel:0:0|LightPath|DichroicRef|ID: Dichroic:0:1
+  Image|Pixels|Channel|Channel:0:0|LightPath|EmissionFilterRef|ID: Filter:0:0
+  Image|Pixels|Channel|Channel:0:0|LightSourceSettings|ID: LightSource:0:0
+  Image|Pixels|Channel|Channel:0:0|LightSourceSettings|Wavelength: '473.0'
+  Image|Pixels|Channel|Channel:0:0|LightSourceSettings|WavelengthUnit: nm
+  Image|Pixels|Channel|Channel:0:0|Name: CHS1
+  Image|Pixels|Channel|Channel:0:0|SamplesPerPixel: '1'
+  Image|Pixels|Channel|Channel:0:1|DetectorSettings|ID: Detector:0:1
+  Image|Pixels|Channel|Channel:0:1|EmissionWavelength: '603.0'
+  Image|Pixels|Channel|Channel:0:1|EmissionWavelengthUnit: nm
+  Image|Pixels|Channel|Channel:0:1|ExcitationWavelength: '559.0'
+  Image|Pixels|Channel|Channel:0:1|ExcitationWavelengthUnit: nm
+  Image|Pixels|Channel|Channel:0:1|ID: Channel:0:1
+  Image|Pixels|Channel|Channel:0:1|IlluminationType: Epifluorescence
+  Image|Pixels|Channel|Channel:0:1|LightPath|DichroicRef|ID: Dichroic:0:3
+  Image|Pixels|Channel|Channel:0:1|LightPath|EmissionFilterRef|ID: Filter:0:1
+  Image|Pixels|Channel|Channel:0:1|LightSourceSettings|ID: LightSource:0:1
+  Image|Pixels|Channel|Channel:0:1|LightSourceSettings|Wavelength: '559.0'
+  Image|Pixels|Channel|Channel:0:1|LightSourceSettings|WavelengthUnit: nm
+  Image|Pixels|Channel|Channel:0:1|Name: CHS2
+  Image|Pixels|Channel|Channel:0:1|SamplesPerPixel: '1'
+  Image|Pixels|DimensionOrder: XYCZT
+  Image|Pixels|SizeX: '1024'
+  Image|Pixels|SizeY: '1024'
+  Instrument|Detector|Detector:0:0|Gain: '1000.0'
+  Instrument|Detector|Detector:0:0|ID: Detector:0:0
+  Instrument|Detector|Detector:0:0|Type: PMT
+  Instrument|Detector|Detector:0:0|Voltage: '596.0'
+  Instrument|Detector|Detector:0:0|VoltageUnit: V
+  Instrument|Detector|Detector:0:1|Gain: '1000.0'
+  Instrument|Detector|Detector:0:1|ID: Detector:0:1
+  Instrument|Detector|Detector:0:1|Type: PMT
+  Instrument|Detector|Detector:0:1|Voltage: '657.0'
+  Instrument|Detector|Detector:0:1|VoltageUnit: V
+  Instrument|Objective|ID: Objective:0:0
+  Instrument|Objective|Immersion: Other
+  Instrument|Objective|Model: UPLSAPO   60X O  NA:1.35
+  Instrument|Objective|NominalMagnification: '60.0'
+  Instrument|Objective|WorkingDistance: '9999.0'
+  Instrument|Objective|WorkingDistanceUnit: "\xB5m"
+mimetype: ''
+object_schema: ''
+size: 4861952
 users: null

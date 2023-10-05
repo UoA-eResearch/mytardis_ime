@@ -330,8 +330,11 @@ class ProjectIdentifiers(IIdentifiers):
             # Check if the new ID is unique.
             return False
         for experiment in self.project._store.experiments:
-            if experiment.project_id == old_id:
-                experiment.project_id = id
+            if old_id in experiment.projects:
+                # Update the projects list with the new_id
+                experiment.projects.remove(old_id)
+                experiment.projects.append(id)
+
         return super().update(old_id, id)
 
     def delete(self, id_to_delete: str) -> bool:
@@ -356,8 +359,10 @@ class ProjectIdentifiers(IIdentifiers):
         new_id = self.first()
         assert self.project._store is not None
         for experiment in self.project._store.experiments:
-            if experiment.project_id == id_to_delete:
-                experiment.project_id = new_id
+            if id_to_delete in experiment.projects:
+                # Replace id_to_delete with the new_id within projects list
+                experiment.projects.remove(id_to_delete)
+                experiment.projects.append(new_id)
         return True
 
 
@@ -373,7 +378,8 @@ class Experiment(
     yaml_loader = yaml.SafeLoader
     title: str = ""
     experiment_id: str = ""
-    project_id: str = ""
+    #project_id: str = ""
+    projects: List[str] = field(default_factory=list)
     description: str = ""
     identifiers: list[str] = field(default_factory=list)
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
@@ -482,13 +488,13 @@ class Dataset(
 
     yaml_tag = "!Dataset"
     yaml_loader = yaml.SafeLoader
-    dataset_name: str = ""
+    #dataset_name: str = ""
     description: str = ""
     experiment_id: List[str] = field(default_factory=list)
-    instrument_id: str = ""
+    instrument_identifier: str = ""
     instrument: str = ""
     identifiers: list[str] = field(default_factory=list)
-    experiments: List[str] = field(default_factory=list)
+    #experiments: List[str] = field(default_factory=list)
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
@@ -553,8 +559,8 @@ class DatasetIdentifiers(IIdentifiers):
             return False
         # Find all experiments and update their IDs.
         for datafile in self.dataset._store.datafiles:
-            if datafile.dataset_id == old_id:
-                datafile.dataset_id = id
+            if datafile.dataset == old_id:
+                datafile.dataset = id
         return super().update(old_id, id)
 
     def delete(self, id_to_delete: str) -> bool:
@@ -579,8 +585,8 @@ class DatasetIdentifiers(IIdentifiers):
         new_id = self.first()
         assert self.dataset._store is not None
         for datafile in self.dataset._store.datafiles:
-            if datafile.dataset_id == id_to_delete:
-                datafile.dataset_id = new_id
+            if datafile.dataset == id_to_delete:
+                datafile.dataset = new_id
         return True
 
 
@@ -601,7 +607,7 @@ class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
     md5sum: str = ""
     mimetype: str = ""
     dataset: str = ""
-    dataset_id: str = ""
+    #dataset_id: str = ""
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
 
@@ -758,7 +764,7 @@ class IngestionMetadata:
         """
         all_files: List[Datafile] = []
         for file in self.datafiles:
-            if not dataset.identifiers_delegate.has(file.dataset_id):
+            if not dataset.identifiers_delegate.has(file.dataset):
                 continue
             # Concatenate list of fileinfo matching dataset
             # with current list
@@ -783,7 +789,7 @@ class IngestionMetadata:
         """
         all_exps: List[Experiment] = []
         for exp in self.experiments:
-            if not proj.identifiers_delegate.has(exp.project_id):
+            if not any(proj_ident in exp.projects for proj_ident in proj.identifiers_delegate):
                 continue
             all_exps.append(exp)
         return all_exps

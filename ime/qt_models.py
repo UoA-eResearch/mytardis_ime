@@ -154,7 +154,7 @@ class IngestionMetadataModel:
         """
         proxy = self.experiments.proxy()
         proxy.set_filter_by_instance(lambda exp: 
-            project.identifiers_delegate.has(cast(Experiment, exp).project_id)
+            project.identifiers_delegate.has(cast(Experiment, exp).projects)
         )
         return proxy
 
@@ -181,7 +181,7 @@ class IngestionMetadataModel:
     def project_for_experiment(self, experiment: Experiment) -> 'DataclassTableProxy':
         """Returns a DataclassTableProxy of projects that have a given experiment as a part.
         Args:
-            experiment (Experiment): The experiment to look up project for.
+            experiment (Experiment): The experiment to look up project for
 
         Returns:
             DataclassTableProxy: A proxy view filtering for projects that the experiment
@@ -189,7 +189,8 @@ class IngestionMetadataModel:
         """
         proxy = self.projects.proxy()
         proxy.set_filter_by_instance(lambda proj: 
-            cast(Project, proj).identifiers_delegate.has(experiment.project_id)
+            any(project_id in cast(Experiment, proj).project_id for project_id in experiment.projects)
+            #cast(Project, proj).identifiers_delegate.has(experiment.project_id)
         )
         return proxy
 

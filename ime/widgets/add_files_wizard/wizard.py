@@ -106,6 +106,7 @@ class AddFilesWizard(QWizard):
         proj_new_page.registerField(FieldNames.PROJECT_ID.value + "*", self.ui.projectIDLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_NAME.value + "*", self.ui.projectNameLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_PI.value + "*", self.ui.piLineEdit)
+        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionLineEdit)
 
     def _register_experiment_fields(self) -> None:
         """Private method that sets up signals and fields for Experiment pages.
@@ -133,7 +134,8 @@ class AddFilesWizard(QWizard):
         self.ui.existingDatasetList.currentIndexChanged.connect(ds_page.completeChanged)
         ds_page.registerField(FieldNames.EXISTING_DATASET.value, self.ui.existingDatasetList)
         ds_new_page.registerField(FieldNames.DATASET_ID.value + "*",self.ui.datasetIDLineEdit)
-        ds_new_page.registerField(FieldNames.DATASET_NAME.value + "*",self.ui.datasetNameLineEdit)
+        ds_new_page.registerField(FieldNames.DESCRIPTION.value + "*",self.ui.datasetNameLineEdit)
+        ds_new_page.registerField(FieldNames.DATASET_INSTRUMENT_IDENTIFIER.value + "*",self.ui.datasetInstrumentLineEdit)
 
 
     def _register_fields(self):
@@ -339,7 +341,8 @@ class AddFilesWizard(QWizard):
             result.experiment._store = self.metadataModel.metadata
             result.experiment.title = self.ui.experimentNameLineEdit.text()
             result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
-            result.experiment.project_id = result.project.identifiers_delegate.first()
+            #result.experiment.project_id = result.project.identifiers_delegate.first()
+            result.experiment.projects = [result.project.identifiers_delegate.first()]
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
         if self.field(FieldNames.IS_EXISTING_DATASET.value):
@@ -348,7 +351,7 @@ class AddFilesWizard(QWizard):
         else:
             result.dataset = Dataset()
             result.dataset._store = self.metadataModel.metadata
-            result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
+            result.dataset.DESCRIPTION = self.ui.datasetNameLineEdit.text()
             result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
@@ -360,7 +363,7 @@ class AddFilesWizard(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_delegate.first()
+            datafile.dataset = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())

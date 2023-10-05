@@ -31,7 +31,7 @@ class SkipDatasetIntroPage(QWizardPage):
         assert ds is not None
 
         # Show the names of the project, experiment and datsaet.
-        wizard.ui.skipDataset_existingDatasetName.setText(ds.dataset_name)
+        wizard.ui.skipDataset_existingDatasetName.setText(ds.description)
         wizard.ui.skipDataset_existingExpName.setText(exp.title)
         wizard.ui.skipDataset_existingProjectName.setText(project.name)
 
