@@ -762,9 +762,6 @@ class MyTardisMetadataEditor(QMainWindow):
         # self.metadata.datafiles += data_loaded.datafiles
 
         # Add loaded metadata to the tree widgets.
-        #print(data_loaded.projects)
-        #print(data_loaded.experiments)
-        #print(data_loaded.datasets)
         for pro in data_loaded.projects:
             self.add_project_to_tree(pro)
         for exp in data_loaded.experiments:

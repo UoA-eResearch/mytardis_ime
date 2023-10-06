@@ -378,7 +378,6 @@ class Experiment(
     yaml_loader = yaml.SafeLoader
     title: str = ""
     experiment_id: str = ""
-    #project_id: str = ""
     projects: List[str] = field(default_factory=list)
     description: str = ""
     identifiers: list[str] = field(default_factory=list)
@@ -488,7 +487,6 @@ class Dataset(
 
     yaml_tag = "!Dataset"
     yaml_loader = yaml.SafeLoader
-    #dataset_name: str = ""
     description: str = ""
     experiment_id: List[str] = field(default_factory=list)
     instrument_identifier: str = ""
@@ -607,7 +605,6 @@ class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
     md5sum: str = ""
     mimetype: str = ""
     dataset: str = ""
-    #dataset_id: str = ""
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
 
@@ -789,7 +786,7 @@ class IngestionMetadata:
         """
         all_exps: List[Experiment] = []
         for exp in self.experiments:
-            if not any(proj_ident in exp.projects for proj_ident in proj.identifiers_delegate):
+            if not proj.identifiers_delegate.has(exp.projects):
                 continue
             all_exps.append(exp)
         return all_exps

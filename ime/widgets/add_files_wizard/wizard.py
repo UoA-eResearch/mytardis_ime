@@ -351,7 +351,7 @@ class AddFilesWizard(QWizard):
         else:
             result.dataset = Dataset()
             result.dataset._store = self.metadataModel.metadata
-            result.dataset.DESCRIPTION = self.ui.datasetNameLineEdit.text()
+            result.dataset.description = self.ui.datasetNameLineEdit.text()
             result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
