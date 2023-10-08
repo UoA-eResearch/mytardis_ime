@@ -19,7 +19,7 @@ class FieldNames(Enum):
     PROJECT_ID = "projectIDLineEdit"
     PROJECT_NAME = "projectNameLineEdit"
     PROJECT_PI = "piLineEdit"
-    PROJECT_DESCRIPTION = "projectDescriptionLineEdit"
+    PROJECT_DESCRIPTION = "projectDescriptionTextEdit"
     EXPERIMENT_NAME = "experimentNameLineEdit"
     EXPERIMENT_ID = "experimentIDLineEdit"
     DATASET_ID = "datasetIDLineEdit"

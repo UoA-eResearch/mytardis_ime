@@ -106,7 +106,7 @@ class AddFilesWizard(QWizard):
         proj_new_page.registerField(FieldNames.PROJECT_ID.value + "*", self.ui.projectIDLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_NAME.value + "*", self.ui.projectNameLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_PI.value + "*", self.ui.piLineEdit)
-        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionLineEdit)
+        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionTextEdit, "plainText")
 
     def _register_experiment_fields(self) -> None:
         """Private method that sets up signals and fields for Experiment pages.
@@ -186,7 +186,7 @@ class AddFilesWizard(QWizard):
                 self.setField(FieldNames.IS_NEW_PROJECT.value, True)
                 self.setField(FieldNames.IS_EXISTING_PROJECT.value, False)
                 return pages[PageNames.NEW_PROJECT.value]
-        if current == pages[PageNames.NEW_PROJECT.value]:
+        if current == pages[PageNames.NEW_PROJECT.value]:  
             self.setField(FieldNames.IS_NEW_EXPERIMENT.value, True)
             self.setField(FieldNames.IS_EXISTING_EXPERIMENT.value, False)
             return pages[PageNames.NEW_EXPERIMENT.value]
@@ -331,7 +331,7 @@ class AddFilesWizard(QWizard):
             result.project._store = self.metadataModel.metadata
             result.project.name = self.ui.projectNameLineEdit.text()
             result.project.identifiers_delegate.add(self.ui.projectIDLineEdit.text())
-            result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
+            result.project.description = self.ui.projectDescriptionTextEdit.toPlainText()
             result.project.principal_investigator = Username(self.ui.piLineEdit.text())
         if self.field(FieldNames.IS_EXISTING_EXPERIMENT.value):
             assert self.selected_existing_experiment is not None

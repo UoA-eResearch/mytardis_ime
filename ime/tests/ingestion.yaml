@@ -174,7 +174,7 @@ groups: null
 identifiers:
 - testds
 instrument: ''
-instrument_identifier: ''
+instrument_identifier: testds
 metadata: {}
 object_schema: ''
 users: null

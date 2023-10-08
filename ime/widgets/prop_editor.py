@@ -37,6 +37,7 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset.set_object(dataset)
         self.ui.identifierList.set_data(dataset.identifiers_delegate)
+        self.ui.instrumentIDLineEdit.setText(dataset.instrument_identifier)
         if dataset.data_status == DataStatus.INGESTED.value:
             self.ui.page.setEnabled(False)
             self.ui.page_2.setEnabled(False)

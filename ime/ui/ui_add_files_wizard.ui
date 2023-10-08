@@ -291,7 +291,7 @@
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QTextEdit" name="projectDescriptionLineEdit">
+        <widget class="QTextEdit" name="projectDescriptionTextEdit">
          <property name="placeholderText">
           <string>Description of your project to differentiate it from others</string>
          </property>
@@ -1070,7 +1070,7 @@
   <tabstop>projectNameLineEdit</tabstop>
   <tabstop>projectIDLineEdit</tabstop>
   <tabstop>piLineEdit</tabstop>
-  <tabstop>projectDescriptionLineEdit</tabstop>
+  <tabstop>projectDescriptionTextEdit</tabstop>
   <tabstop>existingExperimentList</tabstop>
   <tabstop>newExperimentRadioButton</tabstop>
   <tabstop>experimentNameLineEdit</tabstop>
