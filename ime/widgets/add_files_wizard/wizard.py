@@ -1,7 +1,8 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
 from pathlib import Path
 import hashlib
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QLineEdit,  QWizard
 from ime.blueprints.custom_data_types import Username
@@ -106,7 +107,7 @@ class AddFilesWizard(QWizard):
         proj_new_page.registerField(FieldNames.PROJECT_ID.value + "*", self.ui.projectIDLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_NAME.value + "*", self.ui.projectNameLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_PI.value + "*", self.ui.piLineEdit)
-        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionTextEdit, "plainText")
+        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionTextEdit, "plainText", cast(pyqtSignal, self.ui.projectDescriptionTextEdit.textChanged))
 
     def _register_experiment_fields(self) -> None:
         """Private method that sets up signals and fields for Experiment pages.
@@ -263,7 +264,7 @@ class AddFilesWizard(QWizard):
         # self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         # self.ui.dirAddPushButton.clicked.connect(self.addDir_handler)
         # self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
-        self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
+        self.button(QtWidgets.QWizard.WizardButton.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
 
 
