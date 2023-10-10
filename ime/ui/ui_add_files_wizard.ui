@@ -643,6 +643,13 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="label_39">
+         <property name="text">
+          <string>&lt;a href=&quot;https://uoa-eresearch.github.io/mytardis_ime/user/finding-instrument-id.html&quot;&gt;How to find my instrument's persistent identifier(PID)?</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
