@@ -1,14 +1,12 @@
-import imagej
 import jpype
 import jpype.imports
 from jpype.types import *
 from ime.parser.parsers import MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
 from pathlib import Path
-import logging
 
 loci = jpype.JPackage("loci")
-if not jpype.isJVMStarted():
-    jpype.startJVM(classpath="ime/tests/testdata/bioformats_package.jar", convertStrings=True)
+if not jpype.isJVMStarted(): # type: ignore
+    jpype.startJVM(classpath="ime/tests/testdata/bioformats_package.jar", convertStrings=True) # type: ignore
 
 from loci import *
 from loci.formats import ImageReader

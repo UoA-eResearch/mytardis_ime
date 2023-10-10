@@ -23,7 +23,7 @@ class AddFilesWizardResult:
     is_new_experiment: bool
     dataset: Dataset
     is_new_dataset: bool
-    #datafile: Datafile 
+    #datafile: Datafile
     file_list: List[Datafile]
 
 class UniqueValueValidator(QValidator):
