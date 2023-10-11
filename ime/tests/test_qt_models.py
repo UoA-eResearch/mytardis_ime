@@ -16,7 +16,7 @@ def experiments(metadata: IngestionMetadata):
 
 def test_show_experiment_table(qtbot: QtBot, experiments: DataclassTableModel[Experiment]):
     view = QTableView()
-    model = experiments.proxy(["experiment_id", "title"])
+    model = experiments.proxy(["experiments", "title"])
     model.set_read_only(True)
     view.setModel(model)
     # view.setColumnHidden(model.column_for_field("project_id"), True)
@@ -29,7 +29,7 @@ def test_show_experiment_table(qtbot: QtBot, experiments: DataclassTableModel[Ex
 
 def test_retrieve_instance(qtbot: QtBot, experiments: DataclassTableModel[Experiment]):
     view = QTableView()
-    model = experiments.proxy(['experiment_id', 'title'])
+    model = experiments.proxy(['identifiers', 'title'])
     instance = model.instance(0)
     assert instance.title == "BIRU lungcancer1_NoTreatment"
 

@@ -376,7 +376,6 @@ class Experiment(
     yaml_tag = "!Experiment"
     yaml_loader = yaml.SafeLoader
     title: str = ""
-    experiment_id: str = ""
     projects: List[str] = field(default_factory=list)
     description: str = ""
     identifiers: list[str] = field(default_factory=list)
@@ -490,7 +489,6 @@ class Dataset(
     experiments: List[str] = field(default_factory=list)
     instrument: str = ""
     identifiers: list[str] = field(default_factory=list)
-    #experiments: List[str] = field(default_factory=list)
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
