@@ -242,7 +242,6 @@ class IMetadata:
     metadata: Dict[str, Any] = field(default_factory=dict)
     object_schema: str = ""
 
-
 @dataclass
 class Project(
     YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus
@@ -444,9 +443,9 @@ class ExperimentIdentifiers(IIdentifiers):
             # Check if the new ID is unique.
             return False
         for dataset in self.experiment._store.datasets:
-            if old_id in dataset.experiment_id:
-                dataset.experiment_id.remove(old_id)
-                dataset.experiment_id.append(id)
+            if old_id in dataset.experiments:
+                dataset.experiments.remove(old_id)
+                dataset.experiments.append(id)
         return super().update(old_id, id)
 
     def delete(self, id_to_delete: str) -> bool:
@@ -471,9 +470,9 @@ class ExperimentIdentifiers(IIdentifiers):
         new_id = self.first()
         assert self.experiment._store is not None
         for dataset in self.experiment._store.datasets:
-            if id_to_delete in dataset.experiment_id:
-                dataset.experiment_id.remove(id_to_delete)
-                dataset.experiment_id.append(new_id)
+            if id_to_delete in dataset.experiments:
+                dataset.experiments.remove(id_to_delete)
+                dataset.experiments.append(new_id)
         return True
 
 
@@ -488,8 +487,7 @@ class Dataset(
     yaml_tag = "!Dataset"
     yaml_loader = yaml.SafeLoader
     description: str = ""
-    experiment_id: List[str] = field(default_factory=list)
-    instrument_identifier: str = ""
+    experiments: List[str] = field(default_factory=list)
     instrument: str = ""
     identifiers: list[str] = field(default_factory=list)
     #experiments: List[str] = field(default_factory=list)
@@ -775,7 +773,7 @@ class IngestionMetadata:
         all_datasets: List[Dataset] = []
         for dataset in self.datasets:
             # Check if any dataset experiment ids match experiment identifiers
-            if not exp.identifiers_delegate.has(dataset.experiment_id):
+            if not exp.identifiers_delegate.has(dataset.experiments):
                 continue
             all_datasets.append(dataset)
         return all_datasets

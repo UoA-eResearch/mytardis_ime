@@ -37,7 +37,7 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset.set_object(dataset)
         self.ui.identifierList.set_data(dataset.identifiers_delegate)
-        self.ui.instrumentIDLineEdit.setText(dataset.instrument_identifier)
+        self.ui.instrumentIDLineEdit.setText(dataset.instrument)
         if dataset.data_status == DataStatus.INGESTED.value:
             self.ui.page.setEnabled(False)
             self.ui.page_2.setEnabled(False)
@@ -59,7 +59,7 @@ class DatasetPropertyEditor(QWidget):
         """
         self.dataset = dataset
         self.dataset.bind_input("description", self.ui.datasetNameLineEdit)
-        self.dataset.bind_input("instrument_identifier", self.ui.instrumentIDLineEdit)
+        self.dataset.bind_input("instrument", self.ui.instrumentIDLineEdit)
 
 class DatafilePropertyEditor(QWidget):
     df:BoundObject[Datafile]

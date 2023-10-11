@@ -115,7 +115,6 @@ class PythonListModel(QAbstractListModel):
         return True
 
 
-
 class IngestionMetadataModel:
     """
     An adaptor class for IngestionMetadata from models.py.
@@ -171,10 +170,10 @@ class IngestionMetadataModel:
                 has.
         """
         proxy = self.datasets.proxy()
-        # Since the experiment_id field is a list, we add
+        # Since the experiments field is a list, we add
         # a filter function to go through the list.
         proxy.set_filter_by_instance(lambda dataset:
-            experiment.identifiers_delegate.has(cast(Dataset, dataset).experiment_id)
+            experiment.identifiers_delegate.has(cast(Dataset, dataset).experiments)
         )
         return proxy
     

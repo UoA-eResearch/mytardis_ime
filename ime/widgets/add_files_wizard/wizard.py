@@ -353,10 +353,11 @@ class AddFilesWizard(QWizard):
             result.dataset = Dataset()
             result.dataset._store = self.metadataModel.metadata
             result.dataset.description = self.ui.datasetNameLineEdit.text()
+            result.dataset.instrument = self.ui.datasetInstrumentLineEdit.text()
             result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
-            result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
+            result.dataset.experiments = [result.experiment.identifiers_delegate.first()]
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
@@ -373,6 +374,7 @@ class AddFilesWizard(QWizard):
             datafile.size = file_size
             datafile.path_abs = dir_path
             #datafile.md5sum = md5sum
+            datafile.directory = dir_path
             # get image metadata and attach to datafile's metadata
             image_metadata = image_processor.get_metadata(dir_path.as_posix())
             datafile.metadata = image_metadata

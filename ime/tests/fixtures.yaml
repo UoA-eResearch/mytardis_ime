@@ -85,7 +85,7 @@ users: null
 data_classification: 1
 data_status: null
 description: biru-ds1
-experiment_id:
+experiments:
 - exp1
 experiments: []
 groups:
@@ -97,7 +97,6 @@ groups:
 identifiers:
 - ds1
 instrument: ''
-instrument_identifier: ''
 metadata: {}
 object_schema: https://130.216.218.45/DatasetSchema-BIRU
 users:
@@ -110,14 +109,13 @@ users:
 data_classification: 1
 data_status: 5
 description: biru-ds2
-experiment_id:
+experiments:
 - exp1
 experiments: []
 groups: null
 identifiers:
 - ds2
 instrument: ''
-instrument_identifier: ''
 metadata: {}
 object_schema: ''
 users: null
@@ -125,14 +123,13 @@ users: null
 data_classification: 1
 data_status: 5
 description: biru-ds3
-experiment_id:
+experiments:
 - exp2
 experiments: []
 groups: null
 identifiers:
 - ds3
 instrument: ''
-instrument_id: ''
 metadata: {}
 object_schema: ''
 users: null
@@ -140,14 +137,13 @@ users: null
 data_classification: 1
 data_status: null
 description: biru-ds4
-experiment_id:
+experiments:
 - exp3
 experiments: []
 groups: null
 identifiers:
 - ds4
 instrument: ''
-instrument_id: ''
 metadata: {}
 object_schema: ''
 users: null

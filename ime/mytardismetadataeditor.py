@@ -130,7 +130,6 @@ class MyTardisMetadataEditor(QMainWindow):
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()
         ds_data = cast(Dataset, item.data(0, QtCore.Qt.ItemDataRole.UserRole))
-        # print(data, data.description, data.experiment_id)
         # To do: create a dic with info about related exp, project
         exp_data = self.experiment_for_dataset(ds_data)
         pro_data = self.project_for_experiment(exp_data)
@@ -557,7 +556,7 @@ class MyTardisMetadataEditor(QMainWindow):
         - ValueError: If the dataset does not belong to any experiment.
         """
         for experiment in self.metadata.experiments:
-            if experiment.identifiers_delegate.has(dataset.experiment_id):
+            if experiment.identifiers_delegate.has(dataset.experiments):
                 return experiment
         raise ValueError()
 
