@@ -373,8 +373,6 @@ class AddFilesWizard(QWizard):
             datafile.filename = file_name
             datafile.size = file_size
             datafile.path_abs = dir_path
-            #datafile.md5sum = md5sum
-            datafile.directory = dir_path
             # get image metadata and attach to datafile's metadata
             image_metadata = image_processor.get_metadata(dir_path.as_posix())
             datafile.metadata = image_metadata

@@ -679,7 +679,7 @@ class IngestionMetadata:
         if self.file_path is not None:
             return self.file_path.parent
         elif len(self.datafiles) > 0:
-            return self.datafiles[0].directory
+            return self.datafiles[0].path_abs ### change to .path_abs?
         else:
             return None
 
@@ -739,6 +739,7 @@ class IngestionMetadata:
             for file in self.datafiles:
                 curr_path = file.path_abs.parent
                 file.directory = curr_path.relative_to(relative_to_dir)
+                
 
     def _to_yaml(self) -> str:
         """

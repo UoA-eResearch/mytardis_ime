@@ -788,7 +788,6 @@ class MyTardisMetadataEditor(QMainWindow):
                 # Reject and ask if they want to try another path.
                 drive_msg = "the same drive" 
                 if self.metadata.file_path is not None:
-
                     drive = self.metadata.file_path.drive
                     if drive != "":
                         drive_msg = f"the {drive} drive"
