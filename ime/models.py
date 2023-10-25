@@ -680,7 +680,10 @@ class IngestionMetadata:
         if self.file_path is not None:
             return self.file_path.parent
         elif len(self.datafiles) > 0:
-            return self.datafiles[0].directory
+            # If metadata file hasn't been saved, but there
+            # are datafiles, return the first datafile's
+            # absolute directory path.
+            return self.datafiles[0].path_abs
         else:
             return None
 
