@@ -20,7 +20,7 @@ class DatasetPage(QWizardPage):
         assert exp is not None
         self.model = wizard.metadataModel.datasets_for_experiment(exp)
         self.model.set_read_only(True)
-        self.model.set_show_fields(['dataset_name'])
+        self.model.set_show_fields(['description'])
         wizard.ui.existingDatasetList.setModel(self.model)
         self.selected_existing_dataset_changed(wizard.ui.existingDatasetList.currentIndex())
         wizard.ui.existingDatasetList.currentIndexChanged.connect(self.selected_existing_dataset_changed)

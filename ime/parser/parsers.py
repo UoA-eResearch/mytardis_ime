@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any
 import xmltodict
 
 
@@ -79,16 +79,18 @@ class MetadataExtractor:
     
     @staticmethod
     def remove_at_symbol(raw_dict:dict) -> dict:
-        """Remove '@' symbol from dictionary keys recursively.
+        """Remove '@' symbol from dictionary keys recursively and remove items with value None.
 
         Args:
             raw_dict (dict): The dictionary to process.
         """
         def remove_at_recursive(obj):
             if isinstance(obj, dict):
-                return {key.replace('@', ''): remove_at_recursive(value) for key, value in obj.items()}
+                # Filter out items with value None
+                filtered_dict = {key.replace('@', ''): remove_at_recursive(value) for key, value in obj.items() if value is not None}
+                return {k: v for k, v in filtered_dict.items() if v is not None}
             elif isinstance(obj, list):
-                return [remove_at_recursive(element) for element in obj]
+                return [remove_at_recursive(element) for element in obj if element is not None]
             else:
                 return obj
             

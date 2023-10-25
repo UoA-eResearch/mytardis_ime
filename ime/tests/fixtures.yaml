@@ -1,7 +1,7 @@
 !Project
 data_classification: 1
 data_status: 5
-description: ''
+description: sdfasfsdaf
 groups:
 - !GroupACL
   can_download: true
@@ -23,7 +23,7 @@ users:
 --- !Project
 data_classification: 1
 data_status: null
-description: ''
+description: rtrtdfgdfgfdhfdhdh
 groups: null
 identifiers:
 - p2
@@ -36,7 +36,6 @@ users: null
 data_classification: 1
 data_status: null
 description: ''
-experiment_id: ''
 groups:
 - !GroupACL
   can_download: true
@@ -47,7 +46,8 @@ identifiers:
 - exp1
 metadata: {}
 object_schema: https://130.216.218.45/ExperimentSchema-BIRU
-project_id: p1
+projects:
+- p1
 title: biru-exp1
 users:
 - !UserACL
@@ -59,36 +59,34 @@ users:
 data_classification: 1
 data_status: null
 description: ''
-experiment_id: ''
 groups: null
 identifiers:
 - exp2
 metadata: {}
 object_schema: ''
-project_id: p1
+projects:
+- p1
 title: biru-exp2
 users: null
 --- !Experiment
 data_classification: 1
 data_status: null
 description: ''
-experiment_id: ''
 groups: null
 identifiers:
 - exp3
 metadata: {}
 object_schema: ''
-project_id: p2
+projects:
+- p2
 title: biru-exp3
 users: null
 --- !Dataset
 data_classification: 1
 data_status: null
-dataset_name: biru-ds1
-description: ''
-experiment_id:
+description: biru-ds1
+experiments:
 - exp1
-experiments: []
 groups:
 - !GroupACL
   can_download: true
@@ -98,7 +96,6 @@ groups:
 identifiers:
 - ds1
 instrument: ''
-instrument_id: ''
 metadata: {}
 object_schema: https://130.216.218.45/DatasetSchema-BIRU
 users:
@@ -110,55 +107,45 @@ users:
 --- !Dataset
 data_classification: 1
 data_status: 5
-dataset_name: biru-ds2
-description: ''
-experiment_id:
+description: biru-ds2
+experiments:
 - exp1
-experiments: []
 groups: null
 identifiers:
 - ds2
 instrument: ''
-instrument_id: ''
 metadata: {}
 object_schema: ''
 users: null
 --- !Dataset
 data_classification: 1
 data_status: 5
-dataset_name: biru-ds3
-description: ''
-experiment_id:
+description: biru-ds3
+experiments:
 - exp2
-experiments: []
 groups: null
 identifiers:
 - ds3
 instrument: ''
-instrument_id: ''
 metadata: {}
 object_schema: ''
 users: null
 --- !Dataset
 data_classification: 1
 data_status: null
-dataset_name: biru-ds4
-description: ''
-experiment_id:
+description: biru-ds4
+experiments:
 - exp3
-experiments: []
 groups: null
 identifiers:
 - ds4
 instrument: ''
-instrument_id: ''
 metadata: {}
 object_schema: ''
 users: null
 --- !Datafile
 data_status: null
-dataset: ''
-dataset_id: ds1
+dataset: ds1
 directory: !Path 'ime/tests/ime/tests'
 filename: test_metadata_tab.py
 groups: null
@@ -170,8 +157,7 @@ size: 3452
 users: null
 --- !Datafile
 data_status: null
-dataset: ''
-dataset_id: ds2
+dataset: ds2
 directory: !Path 'ime/tests'
 filename: test_access_control_tab.py
 groups: null
@@ -183,8 +169,7 @@ size: 5544
 users: null
 --- !Datafile
 data_status: null
-dataset: ''
-dataset_id: ds2
+dataset: ds2
 directory: !Path 'ime/tests'
 filename: fixtures.yaml
 groups: null
@@ -196,8 +181,7 @@ size: 3813
 users: null
 --- !Datafile
 data_status: null
-dataset: ''
-dataset_id: ds3
+dataset: ds3
 directory: !Path 'ime/tests'
 filename: conftest.py
 groups: null
@@ -209,8 +193,7 @@ size: 373
 users: null
 --- !Datafile
 data_status: 5
-dataset: ''
-dataset_id: ds4
+dataset: ds4
 directory: !Path 'ime/tests'
 filename: test_qt_models.py
 groups: null
@@ -222,8 +205,7 @@ size: 2300
 users: null
 --- !Datafile
 data_status: null
-dataset: ''
-dataset_id: ds2
+dataset: ds2
 directory: !Path 'ime/tests'
 filename: 20190812 HF 01 stack.oib
 groups: null
@@ -282,8 +264,7 @@ size: 43941888
 users: null
 --- !Datafile
 data_status: null
-dataset: ''
-dataset_id: ds2
+dataset: ds2
 directory: !Path 'ime/tests'
 filename: 20190812 NT 100x 01 slice.oib
 groups: null

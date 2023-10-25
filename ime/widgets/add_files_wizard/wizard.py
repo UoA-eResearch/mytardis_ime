@@ -1,12 +1,15 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
+from pathlib import Path
+import hashlib
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QLineEdit,  QWizard
 from ime.blueprints.custom_data_types import Username
 from ime.models import Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
-from pathlib import Path
+from ime.widgets.add_files_wizard.included_files_page import IncludedFilesPage
 from ime.parser.image_parser import ImageProcessor
 from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
 
@@ -20,7 +23,7 @@ class AddFilesWizardResult:
     is_new_experiment: bool
     dataset: Dataset
     is_new_dataset: bool
-    #datafile: Datafile 
+    #datafile: Datafile
     file_list: List[Datafile]
 
 class UniqueValueValidator(QValidator):
@@ -104,6 +107,7 @@ class AddFilesWizard(QWizard):
         proj_new_page.registerField(FieldNames.PROJECT_ID.value + "*", self.ui.projectIDLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_NAME.value + "*", self.ui.projectNameLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_PI.value + "*", self.ui.piLineEdit)
+        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionTextEdit, "plainText", cast(pyqtSignal, self.ui.projectDescriptionTextEdit.textChanged))
 
     def _register_experiment_fields(self) -> None:
         """Private method that sets up signals and fields for Experiment pages.
@@ -131,7 +135,8 @@ class AddFilesWizard(QWizard):
         self.ui.existingDatasetList.currentIndexChanged.connect(ds_page.completeChanged)
         ds_page.registerField(FieldNames.EXISTING_DATASET.value, self.ui.existingDatasetList)
         ds_new_page.registerField(FieldNames.DATASET_ID.value + "*",self.ui.datasetIDLineEdit)
-        ds_new_page.registerField(FieldNames.DATASET_NAME.value + "*",self.ui.datasetNameLineEdit)
+        ds_new_page.registerField(FieldNames.DESCRIPTION.value + "*",self.ui.datasetNameLineEdit)
+        ds_new_page.registerField(FieldNames.DATASET_INSTRUMENT_IDENTIFIER.value + "*",self.ui.datasetInstrumentLineEdit)
 
 
     def _register_fields(self):
@@ -182,7 +187,7 @@ class AddFilesWizard(QWizard):
                 self.setField(FieldNames.IS_NEW_PROJECT.value, True)
                 self.setField(FieldNames.IS_EXISTING_PROJECT.value, False)
                 return pages[PageNames.NEW_PROJECT.value]
-        if current == pages[PageNames.NEW_PROJECT.value]:
+        if current == pages[PageNames.NEW_PROJECT.value]:  
             self.setField(FieldNames.IS_NEW_EXPERIMENT.value, True)
             self.setField(FieldNames.IS_EXISTING_EXPERIMENT.value, False)
             return pages[PageNames.NEW_EXPERIMENT.value]
@@ -259,7 +264,7 @@ class AddFilesWizard(QWizard):
         # self.ui.datafileAddPushButton.clicked.connect(self.addFiles_handler)
         # self.ui.dirAddPushButton.clicked.connect(self.addDir_handler)
         # self.ui.datafileDeletePushButton.clicked.connect(self.deleteFiles_handler)
-        self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.on_submit)
+        self.button(QtWidgets.QWizard.WizardButton.FinishButton).clicked.connect(self.on_submit)
         self._setup_validated_input()
 
 
@@ -327,7 +332,7 @@ class AddFilesWizard(QWizard):
             result.project._store = self.metadataModel.metadata
             result.project.name = self.ui.projectNameLineEdit.text()
             result.project.identifiers_delegate.add(self.ui.projectIDLineEdit.text())
-            result.project.description = self.ui.projectDescriptionLineEdit.toPlainText()
+            result.project.description = self.ui.projectDescriptionTextEdit.toPlainText()
             result.project.principal_investigator = Username(self.ui.piLineEdit.text())
         if self.field(FieldNames.IS_EXISTING_EXPERIMENT.value):
             assert self.selected_existing_experiment is not None
@@ -337,7 +342,8 @@ class AddFilesWizard(QWizard):
             result.experiment._store = self.metadataModel.metadata
             result.experiment.title = self.ui.experimentNameLineEdit.text()
             result.experiment.identifiers_delegate.add(self.ui.experimentIDLineEdit.text())
-            result.experiment.project_id = result.project.identifiers_delegate.first()
+            #result.experiment.project_id = result.project.identifiers_delegate.first()
+            result.experiment.projects = [result.project.identifiers_delegate.first()]
             result.experiment.description = self.ui.experimentDescriptionLineEdit.toPlainText()
 
         if self.field(FieldNames.IS_EXISTING_DATASET.value):
@@ -346,11 +352,12 @@ class AddFilesWizard(QWizard):
         else:
             result.dataset = Dataset()
             result.dataset._store = self.metadataModel.metadata
-            result.dataset.dataset_name = self.ui.datasetNameLineEdit.text()
+            result.dataset.description = self.ui.datasetNameLineEdit.text()
+            result.dataset.instrument = self.ui.datasetInstrumentLineEdit.text()
             result.dataset.identifiers_delegate.add(self.ui.datasetIDLineEdit.text())
             # Because a dataset can belong to multiple experiments,
             # we are creating a list around the experiment we captured.
-            result.dataset.experiment_id = [result.experiment.identifiers_delegate.first()]
+            result.dataset.experiments = [result.experiment.identifiers_delegate.first()]
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
@@ -358,10 +365,11 @@ class AddFilesWizard(QWizard):
         for row in range(table.rowCount()):
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
-            datafile.dataset_id = result.dataset.identifiers_delegate.first()
+            datafile.dataset = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
+            #md5sum = self._calculate_md5(dir_path)
             datafile.filename = file_name
             datafile.size = file_size
             datafile.path_abs = dir_path

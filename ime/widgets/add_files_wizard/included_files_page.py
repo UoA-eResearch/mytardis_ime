@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 import typing
@@ -211,7 +210,8 @@ class IncludedFilesPage(QWizardPage):
         """
         table = self.wizard().ui.datafiletableWidget
         # Check all datafiles are from same drive.
-        data_path = self.wizard().metadataModel.metadata.data_path
+        data = self.wizard().metadataModel.metadata
+        data_path = data.data_path
         if data_path is not None:
             # If there is an workspace path...
             return data_path
@@ -263,6 +263,7 @@ class IncludedFilesPage(QWizardPage):
             name_cell = QTableWidgetItem(file.name)
             size = file.stat().st_size
             size_str = file_size_to_str(size)
+            #md5sum = self._calculate_md5(file)
             size_cell = QTableWidgetItem(size_str)
             # Store actual size value in cell. 
             size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)

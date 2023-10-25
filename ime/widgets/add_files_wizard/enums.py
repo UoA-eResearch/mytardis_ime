@@ -19,10 +19,12 @@ class FieldNames(Enum):
     PROJECT_ID = "projectIDLineEdit"
     PROJECT_NAME = "projectNameLineEdit"
     PROJECT_PI = "piLineEdit"
+    PROJECT_DESCRIPTION = "projectDescriptionTextEdit"
     EXPERIMENT_NAME = "experimentNameLineEdit"
     EXPERIMENT_ID = "experimentIDLineEdit"
     DATASET_ID = "datasetIDLineEdit"
-    DATASET_NAME = "datasetNameLineEdit"
+    DESCRIPTION = "datasetNameLineEdit"
+    DATASET_INSTRUMENT_IDENTIFIER = "datasetInstrumentLineEdit"
 
 class PageNames(Enum):
     """Enum for wizard page names. These names are used to refer to specific wizard pages.

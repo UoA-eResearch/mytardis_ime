@@ -2,8 +2,8 @@ import typing
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
+import jpype
 from typing import Any, Callable, cast
-import javabridge
 
 from ime.ui.ui_main_window import Ui_MainWindow
 from ime.models import DifferentDeviceException, IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
@@ -21,8 +21,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
     Inherits from QMainWindow.
     """
-
-    
 
     def __init__(self):
         """
@@ -64,7 +62,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def closeEvent(self, event):
         # Terminate the JVM when the app is closed
-        javabridge.kill_vm()
+        jpype.shutdownJVM()
         event.accept()
 
     def openWizardWindow(self) -> None:  
@@ -132,7 +130,6 @@ class MyTardisMetadataEditor(QMainWindow):
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()
         ds_data = cast(Dataset, item.data(0, QtCore.Qt.ItemDataRole.UserRole))
-        # print(data, data.dataset_name, data.experiment_id)
         # To do: create a dic with info about related exp, project
         exp_data = self.experiment_for_dataset(ds_data)
         pro_data = self.project_for_experiment(exp_data)
@@ -281,7 +278,7 @@ class MyTardisMetadataEditor(QMainWindow):
             ds_id += ds.identifiers
 
         for file in self.metadata.datafiles:
-            if file.dataset_id in ds_id: 
+            if file.dataset in ds_id: 
                 #print(file)
                 self.add_datafile_to_tree(file)
             else:
@@ -393,7 +390,7 @@ class MyTardisMetadataEditor(QMainWindow):
             ds_id += ds.identifiers
 
         for file in self.metadata.datafiles:
-            if file.dataset_id in ds_id: 
+            if file.dataset in ds_id: 
                 #print(file)
                 self.add_datafile_to_tree(file)
             else:
@@ -541,7 +538,7 @@ class MyTardisMetadataEditor(QMainWindow):
         - ValueError: If the experiment does not belong to any project.
         """
         for project in self.metadata.projects:
-            if project.identifiers_delegate.has(experiment.project_id):
+            if project.identifiers_delegate.has(experiment.projects):
                 return project
         raise ValueError()
 
@@ -559,24 +556,24 @@ class MyTardisMetadataEditor(QMainWindow):
         - ValueError: If the dataset does not belong to any experiment.
         """
         for experiment in self.metadata.experiments:
-            if experiment.identifiers_delegate.has(dataset.experiment_id):
+            if experiment.identifiers_delegate.has(dataset.experiments):
                 return experiment
         raise ValueError()
 
     def dataset_for_datafile(self, datafile: Datafile) -> Dataset:
         """Return the Dataset object that corresponds to the given Datafile.
         This method searches for the Dataset object in the metadata attribute of the current object (which should be a class that contains metadata about one or more datasets), 
-        by comparing the dataset_id attribute of each Dataset object to the dataset_id attribute of the given Datafile object. If a match is found, the corresponding Dataset object is returned.
+        by comparing the dataset_id attribute of each Dataset object to the dataset attribute of the given Datafile object. If a match is found, the corresponding Dataset object is returned.
 
         Args:
             datafile: A Datafile object representing the file that we want to find the corresponding Dataset for.
         Returns:
             A Dataset object that corresponds to the given Datafile.
         Raises:
-            ValueError: If no Dataset object is found that matches the dataset_id of the given Datafile.
+            ValueError: If no Dataset object is found that matches the dataset of the given Datafile.
         """
         for dataset in self.metadata.datasets:
-            if dataset.identifiers_delegate.has(datafile.dataset_id):
+            if dataset.identifiers_delegate.has(datafile.dataset):
                 return dataset
         raise ValueError()
     
@@ -635,7 +632,7 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         dataset_size = file_size_to_str(self.dataset_size(dataset))
         experiment = self.experiment_for_dataset(dataset)
-        ds_item = QTreeWidgetItem([dataset.dataset_name, dataset_size,experiment.title])
+        ds_item = QTreeWidgetItem([dataset.description, dataset_size,experiment.title])
         ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset)
         self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
     
@@ -650,7 +647,7 @@ class MyTardisMetadataEditor(QMainWindow):
             None
         """
         ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: 
-            cast(Dataset, ds).identifiers_delegate.has(datafile.dataset_id)
+            cast(Dataset, ds).identifiers_delegate.has(datafile.dataset)
         )
         file_name = datafile.filename
         file_size = file_size_to_str(datafile.size)
@@ -791,7 +788,6 @@ class MyTardisMetadataEditor(QMainWindow):
                 # Reject and ask if they want to try another path.
                 drive_msg = "the same drive" 
                 if self.metadata.file_path is not None:
-
                     drive = self.metadata.file_path.drive
                     if drive != "":
                         drive_msg = f"the {drive} drive"

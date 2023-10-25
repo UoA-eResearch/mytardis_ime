@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>863</width>
-    <height>494</height>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -276,13 +276,6 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QTextEdit" name="projectDescriptionLineEdit">
-         <property name="placeholderText">
-          <string>Optional description of your project to differentiate it from others</string>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="0">
         <widget class="QLabel" name="piLabel">
          <property name="text">
@@ -294,6 +287,13 @@
         <widget class="QLineEdit" name="piLineEdit">
          <property name="placeholderText">
           <string>Username of the researcher primarily responsible for this project.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QTextEdit" name="projectDescriptionTextEdit">
+         <property name="placeholderText">
+          <string>Description of your project to differentiate it from others</string>
          </property>
         </widget>
        </item>
@@ -626,6 +626,27 @@
          </property>
          <property name="openExternalLinks">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="datasetInstrumentLineEdit">
+         <property name="placeholderText">
+          <string>A unique identifier to the instrument that the data was generated on. Currently there is no standard persistent identifier that has widespread community adoption (DOIs are the most likely candidate).</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="datasetInstrumentLabel">
+         <property name="text">
+          <string>Instrument identifier</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="label_39">
+         <property name="text">
+          <string>&lt;a href=&quot;https://uoa-eresearch.github.io/mytardis_ime/user/finding-instrument-id.html&quot;&gt;How to find my instrument's persistent identifier(PID)?</string>
          </property>
         </widget>
        </item>
@@ -1056,7 +1077,7 @@
   <tabstop>projectNameLineEdit</tabstop>
   <tabstop>projectIDLineEdit</tabstop>
   <tabstop>piLineEdit</tabstop>
-  <tabstop>projectDescriptionLineEdit</tabstop>
+  <tabstop>projectDescriptionTextEdit</tabstop>
   <tabstop>existingExperimentList</tabstop>
   <tabstop>newExperimentRadioButton</tabstop>
   <tabstop>experimentNameLineEdit</tabstop>
@@ -1077,7 +1098,7 @@
   <include location="../../default.qrc"/>
   <include location="../../default.qrc"/>
   <include location="../../default.qrc"/>
-  <include location="../../../../../default.qrc"/>
+  <include location="../../default.qrc"/>
  </resources>
  <connections/>
 </ui>
