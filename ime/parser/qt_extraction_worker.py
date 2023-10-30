@@ -1,7 +1,6 @@
-from pathlib import Path
-from typing import Any, Dict
-from PyQt5 import QtCore
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
+"""Module for a Qt-based thread metadata extraction worker.
+"""
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from ime.models import Datafile
 
 from ime.parser.image_parser import ImageProcessor
@@ -37,4 +36,6 @@ class MetadataExtractionWorkerThread(QThread):
             if file.metadata is None:
                 file.metadata = metadata
             else:
+                # If there is already metadata, add extracted
+                # metadata to it.
                 file.metadata.update(metadata)
