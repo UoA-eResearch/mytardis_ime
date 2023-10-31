@@ -16,6 +16,10 @@ class ExperimentPage(QWizardPage):
         return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
+        """Lifecycle method called by Qt when entering this wizard page. 
+        Looks up the associated experiments for the chosen project, and displays
+        the options.
+        """
         wizard = self.wizard()
         # Only show experiments from the selected project.
         project = wizard.selected_existing_project
@@ -24,8 +28,17 @@ class ExperimentPage(QWizardPage):
         self.model.set_read_only(True)
         self.model.set_show_fields(['title'])
         wizard.ui.existingExperimentList.setModel(self.model)
-        self.selected_existing_exp_changed(wizard.ui.existingExperimentList.currentIndex())
         wizard.ui.existingExperimentList.currentIndexChanged.connect(self.selected_existing_exp_changed)
+        if self.model.rowCount() == 0:
+            # When there are no experiments in selected project, disable
+            # the existing dataset option.
+            self.wizard().ui.existingExperimentRadioButton.setDisabled(True)
+            self.wizard().ui.existingExperimentList.setDisabled(True)
+            self.wizard().ui.newExperimentRadioButton.setChecked(True)
+        else:
+            # Set selected experiment to be the first experiment.
+            self.selected_existing_exp_changed(wizard.ui.existingExperimentList.currentIndex())
+        
 
     def nextId(self) -> int:
         wizard = typing.cast(afw.AddFilesWizard, self.wizard())
@@ -36,6 +49,12 @@ class ExperimentPage(QWizardPage):
             return wizard.page_ids[PageNames.DATASET.value]
 
     def cleanupPage(self) -> None:
+        """Lifecycle method called by Qt when leaving this wizard page. Cleans up
+        signals and resets form controls.
+        """
+        self.wizard().ui.existingExperimentRadioButton.setEnabled(True)
+        self.wizard().ui.existingExperimentList.setEnabled(True)
+        self.wizard().ui.existingExperimentRadioButton.setChecked(True)
         self.wizard().ui.existingExperimentList.currentIndexChanged.disconnect()
 
     def isComplete(self) -> bool:
