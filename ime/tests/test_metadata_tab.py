@@ -17,6 +17,7 @@ def table(widget: MetadataTab):
 def test_create_table_entries(qtbot: QtBot, metadata: IngestionMetadata, widget: MetadataTab, table: QTableWidget):
     assert table.rowCount() == 0
     exp = metadata.experiments[0]
+    assert exp.metadata is not None
     nrows = len(exp.metadata)
     widget.update_metadata_object(exp)
     qtbot.add_widget(widget)
@@ -46,6 +47,7 @@ def test_update_metadata_object_replaces_table_entries(qtbot: QtBot, metadata: I
 def test_update_metadata_key_changes_object(qtbot: QtBot, metadata: IngestionMetadata, widget: MetadataTab, table: QTableWidget):
     exp = metadata.experiments[0]
     widget.update_metadata_object(exp)
+    assert exp.metadata is not None
     nrows = len(exp.metadata)
     widget.show()
     qtbot.wait_exposed(widget)
@@ -64,6 +66,7 @@ def test_update_metadata_key_changes_object(qtbot: QtBot, metadata: IngestionMet
 def test_update_metadata_object_updates_value(qtbot: QtBot, metadata: IngestionMetadata, widget: MetadataTab, table: QTableWidget):
     exp = metadata.experiments[0]
     proj = metadata.projects[0]
+    assert proj.metadata is not None
     widget.update_metadata_object(exp)
     widget.show()
     qtbot.wait_exposed(widget)
@@ -76,6 +79,7 @@ def test_update_metadata_object_updates_value(qtbot: QtBot, metadata: IngestionM
 
 def test_delete_metadata_rows(qtbot: QtBot, metadata: IngestionMetadata, widget: MetadataTab, table: QTableWidget):
     exp = metadata.experiments[0]
+    assert exp.metadata is not None
     widget.update_metadata_object(exp)
     widget.show()
     qtbot.wait_exposed(widget)
