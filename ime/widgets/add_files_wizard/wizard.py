@@ -1,10 +1,10 @@
 from typing import Dict, List, Optional, cast
 from pathlib import Path
 import hashlib
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QValidator
-from PyQt5.QtWidgets import QLineEdit,  QWizard
+from PyQt6 import QtWidgets, QtCore
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QValidator
+from PyQt6.QtWidgets import QLineEdit,  QWizard
 from ime.blueprints.custom_data_types import Username
 from ime.models import Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel

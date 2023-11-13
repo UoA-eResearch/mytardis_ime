@@ -2,11 +2,11 @@ from dataclasses import fields
 from typing import Generic, List, Optional, Type, TypeVar, Union, cast
 import typing
 
-from PyQt5.QtCore import QItemSelection, QModelIndex, QObject, QVariant, Qt
+from PyQt6.QtCore import QItemSelection, QModelIndex, QObject, QVariant, Qt
 from ime.models import GroupACL, UserACL
 from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QWidget
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 ACL_T = TypeVar('ACL_T', bound=Union[GroupACL, UserACL])
 

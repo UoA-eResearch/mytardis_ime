@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtWidgets import QTableWidget, QUndoStack
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QRegExpValidator
+from PyQt6.QtWidgets import QTableWidget, QUndoStack
 from ime.widgets.metadata_tab import MetadataTab
 from ime.models import IngestionMetadata
 from pytestqt.qtbot import QtBot

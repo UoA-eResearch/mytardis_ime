@@ -1,8 +1,8 @@
 from dataclasses import field
 from typing import Any, Callable, Dict, List, Optional, TypeVar, Generic, Union
 import typing
-from PyQt5.QtCore import QLine, QObject, QSignalBlocker, pyqtBoundSignal, pyqtSignal
-from PyQt5.QtWidgets import QLineEdit, QPlainTextEdit, QWidget
+from PyQt6.QtCore import QLine, QObject, QSignalBlocker, pyqtBoundSignal, pyqtSignal
+from PyQt6.QtWidgets import QLineEdit, QPlainTextEdit, QWidget
 
 T = TypeVar('T')
 

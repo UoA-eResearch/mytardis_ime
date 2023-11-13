@@ -1,6 +1,6 @@
 from typing import List
-from PyQt5.QtCore import QModelIndex, Qt
-from PyQt5.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView
+from PyQt6.QtCore import QModelIndex, Qt
+from PyQt6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView
 from pytestqt.qtbot import QtBot
 import pytest
 from ime.qt_models import DataclassTableModel, DataclassTableProxy

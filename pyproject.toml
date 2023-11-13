@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "mytardis-ime"
+name = "ime"
 version = "0.1.0"
 description = "An ingestion metadata editor for MyTardis"
 authors = ["Noel <noel.zeng@auckland.ac.nz>", "Libby Li <libby.li@auckland.ac.nz>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-PyQt5 = ">=5.15.2"
+PyQt6 = "^6.6"
 PyYAML = "^6.0"
 pydantic = "^1.10.7"
 schema = "^0.7.5"

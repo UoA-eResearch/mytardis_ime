@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit
-from PyQt5.uic import loadUi
+from PyQt6.QtWidgets import QWidget, QLineEdit
+from PyQt6.uic import loadUi
 from ime.bindable import BoundObject
 from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project, DataStatus
 from ime.qt_models import PythonListModel

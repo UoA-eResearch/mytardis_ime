@@ -1,10 +1,10 @@
-from PyQt5.QtCore import QItemSelection, QModelIndex
-from PyQt5.QtWidgets import QWidget
-from PyQt5.sip import delete
+from PyQt6.QtCore import QItemSelection, QModelIndex
+from PyQt6.QtWidgets import QWidget
+from PyQt6.sip import delete
 from ime.models import IIdentifiers
 from ime.qt_models import PythonListModel
 from ime.ui.ui_identifier_list import Ui_IdentifierList
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 class IdentifierListModel(PythonListModel):
     """Custom Qt View Model for identifiers."""

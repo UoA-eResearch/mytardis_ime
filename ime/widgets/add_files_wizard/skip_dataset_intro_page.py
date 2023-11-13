@@ -1,5 +1,5 @@
 import typing
-from PyQt5.QtWidgets import QWizardPage
+from PyQt6.QtWidgets import QWizardPage
 from ime.widgets.add_files_wizard.enums import PageNames
 import ime.widgets.add_files_wizard.wizard as afw
 

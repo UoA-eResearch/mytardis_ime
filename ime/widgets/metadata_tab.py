@@ -1,10 +1,10 @@
 from typing import List
-from PyQt5.QtCore import QItemSelection, QLine, QSignalBlocker, pyqtSlot
+from PyQt6.QtCore import QItemSelection, QLine, QSignalBlocker, pyqtSlot
 
 from ime.bindable import IBindableInput
 from ime.ui.ui_metadata_tab import Ui_MetadataTab
-from PyQt5.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget, QLineEdit
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt6.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget, QLineEdit
+from PyQt6.QtCore import pyqtSignal, Qt
 from ime.models import IMetadata
 import logging
 

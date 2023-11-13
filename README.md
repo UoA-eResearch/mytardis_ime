@@ -29,7 +29,7 @@ This will install all the project dependencies, then run the app in the Python v
 If you need to run a command in the created virtual environment, you need to prepend the command with `poetry run`. Or, you can run `poetry shell` to spawn a shell with the virtual environment activated. This means all subsequent commands will be run in the virtual environment.
 
 Note:
-If you are using an M1 Macbook, you need to install PyQt5 by using Rosetta Terminal.
+If you are using an M1 Macbook, you need to install PyQt6 by using Rosetta Terminal.
 To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwaj.medium.com/m1-mac-switching-terminal-between-x86-64-and-arm64-e45f324184d9
 
 ```

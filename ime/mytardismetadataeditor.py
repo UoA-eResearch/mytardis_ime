@@ -1,7 +1,7 @@
 import typing
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
+from PyQt6 import QtCore
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 import jpype
 from typing import Any, Callable, cast
 
@@ -804,7 +804,7 @@ class MyTardisMetadataEditor(QMainWindow):
                 if res == QMessageBox.StandardButton.Retry:
                     # If retrying, restart the loop.
                     continue
-            except Exception:
+            except Exception as e:
                 error_msg = QMessageBox()
                 error_msg.setWindowTitle("Can't save ingestion file")
                 error_msg.setText("An error occurred when saving the ingestion file.")

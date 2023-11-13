@@ -1,6 +1,6 @@
 from typing import cast
-from PyQt5.QtCore import QSignalBlocker
-from PyQt5.QtWidgets import QCheckBox, QMessageBox, QWidget
+from PyQt6.QtCore import QSignalBlocker
+from PyQt6.QtWidgets import QCheckBox, QMessageBox, QWidget
 from ime.qt_models import DataclassTableModel
 from ime.ui.ui_overridable_access_control_tab import Ui_OverridableAccessControlTab
 from ime.models import GroupACL, IAccessControl, UserACL

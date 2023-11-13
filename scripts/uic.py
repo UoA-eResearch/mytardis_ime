@@ -5,7 +5,7 @@ python files.
 """
 import glob
 import os
-from PyQt5 import uic
+from PyQt6 import uic
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler, FileModifiedEvent, FileCreatedEvent
 

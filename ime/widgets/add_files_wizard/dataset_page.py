@@ -2,7 +2,7 @@
 import typing
 from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
 import ime.widgets.add_files_wizard.wizard as afw
-from PyQt5.QtWidgets import QWizardPage
+from PyQt6.QtWidgets import QWizardPage
 
 class DatasetPage(QWizardPage):
     def selected_existing_dataset_changed(self, idx: int) -> None:
