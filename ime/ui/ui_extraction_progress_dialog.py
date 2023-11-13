@@ -24,7 +24,7 @@ class Ui_ExtractionProgressDialog(object):
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.progressBar = QtWidgets.QProgressBar(ExtractionProgressDialog)
-        self.progressBar.setProperty("value", 24)
+        self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
         self.verticalLayout.addWidget(self.progressBar)
         self.fileName = QtWidgets.QLabel(ExtractionProgressDialog)
@@ -52,5 +52,5 @@ class Ui_ExtractionProgressDialog(object):
 
     def retranslateUi(self, ExtractionProgressDialog):
         _translate = QtCore.QCoreApplication.translate
-        ExtractionProgressDialog.setWindowTitle(_translate("ExtractionProgressDialog", "Finishing datafile import"))
-        self.label.setText(_translate("ExtractionProgressDialog", "Extracting instrument metadata from files..."))
+        ExtractionProgressDialog.setWindowTitle(_translate("ExtractionProgressDialog", "Finishing data file import"))
+        self.label.setText(_translate("ExtractionProgressDialog", "Extracting metadata from images..."))

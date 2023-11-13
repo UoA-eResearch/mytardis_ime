@@ -22,7 +22,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Extracting instrument metadata from files...</string>
+        <string>Extracting metadata from images...</string>
        </property>
       </widget>
      </item>
