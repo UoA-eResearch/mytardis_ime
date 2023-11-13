@@ -93,24 +93,21 @@ class MyTardisMetadataEditor(QMainWindow):
         item = self.ui.datasetTreeWidget.itemAt(point)
         if item is None:
             return
-        item_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         menu = QMenu()
         if not index.isValid() or index.parent().isValid(): # if the item is not a dataset
             delete_action = menu.addAction("Remove this File")
-            for datafile in self.metadata.datafiles:
-                if datafile.filename == item_data:
-                    file = datafile
-                    if file.data_status == DataStatus.INGESTED.value:
-                        delete_action.setEnabled(False)
-                    else:
-                        delete_action.triggered.connect(self.delete_items_datafile)
-        
+            file: Datafile = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+            if file.data_status == DataStatus.INGESTED.value:
+                delete_action.setEnabled(False)
+            else:
+                delete_action.triggered.connect(self.delete_items_datafile)        
         else:
+            dataset: Dataset = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
             action = menu.addAction("Add New Files...")
             action.triggered.connect(self.openWizardWindowSkipDataset)
             delete_action = menu.addAction("Remove this Dataset")
             # disable delete action if dataset has been ingested in MyTardis
-            if item_data.data_status == DataStatus.INGESTED.value:
+            if dataset.data_status == DataStatus.INGESTED.value:
                 delete_action.setEnabled(False)  
             else:
                 delete_action.triggered.connect(self.delete_items_dataset)
@@ -190,13 +187,8 @@ class MyTardisMetadataEditor(QMainWindow):
             if res == QMessageBox.StandardButton.Cancel:
                 # If user did not want to proceed, then exit.
                 return
-            file_name = selected_item.text(0)
-            for datafile in self.metadata.datafiles:
-                if datafile.filename == file_name:
-                    self.metadata.datafiles.remove(datafile)
-                    break
-                else:
-                    pass
+            datafile: Datafile = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+            self.metadata.datafiles.remove(datafile)
         
         # clear the tree and re-populate it
         self.ui.datasetTreeWidget.clear()
@@ -423,46 +415,32 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         self.ui.datasetProperties.set_dataset(dataset)
 
-    def onSelectDatafile(self, dataset: Dataset, file_name: str) -> None:  
+    def onSelectDatafile(self, file: Datafile) -> None:  
         """
         Updates the property editor with the properties of the selected datafile.
 
         Args:
-            dataset: A Dataset object representing the selected dataset.
-            file_name: A string representing the name of the selected datafile.
+            file: The Datafile object representing the selected datafile.
         """
-        datafiles = self.metadata.get_files_by_dataset(dataset)
-        # Next, look up FileInfo
-        datafile_lookup = [
-            fileinfo
-            for fileinfo in datafiles
-            if fileinfo.filename == file_name
-        ]
-        if (len(datafile_lookup) != 1):
-            logging.warning("Datafile name %s could not be found or there are " + 
-            "more than one entries.", file_name)
-        fileinfo = datafile_lookup[0]
-        # Set controls with value
-        self.ui.datafileProperties.set_datafile(fileinfo)  
+        self.ui.datafileProperties.set_datafile(file)  
     
     def onClickedDataset(self) -> None:
         """
         Handles the click event on the dataset tree widget, updates the property editor accordingly.
         """
         item: QTreeWidgetItem = self.ui.datasetTreeWidget.currentItem()
-        item_data = item.data(0, Qt.ItemDataRole.UserRole)
         props_widget : QStackedWidget = self.ui.datasetTabProps
         if item.parent() is None:
+            item_data: Dataset = item.data(0, Qt.ItemDataRole.UserRole)
             # This indicates we are looking at a dataset,
             # change stacked widget to show dataset properties
             props_widget.setCurrentIndex(0)
             self.onSelectDataset(item_data)
         else:
-            ### this indicates we are looking at a datafile
-            parent = item.parent()
-            dataset = parent.data(0, Qt.ItemDataRole.UserRole)
+            # this indicates we are looking at a datafile
+            datafile: Datafile = item.data(0, Qt.ItemDataRole.UserRole)
             props_widget.setCurrentIndex(1)
-            self.onSelectDatafile(dataset, item_data)
+            self.onSelectDatafile(datafile)
 
     def onClickedExperiment(self) -> None:
         """
@@ -652,7 +630,7 @@ class MyTardisMetadataEditor(QMainWindow):
         file_name = datafile.filename
         file_size = file_size_to_str(datafile.size)
         l1_child = QTreeWidgetItem([file_name,file_size,""])
-        l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, file_name)
+        l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, datafile)
         ds_item.addChild(l1_child)
 
     def reFresh(self,result: AddFilesWizardResult) -> None:
