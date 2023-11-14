@@ -114,7 +114,7 @@ class MyTardisMetadataEditor(QMainWindow):
                 delete_action.setEnabled(False)  
             else:
                 delete_action.triggered.connect(self.delete_items_dataset)
-        menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))     
+        menu.exec(self.ui.datasetTreeWidget.mapToGlobal(point))     
     
     def openWizardWindowSkipDataset (self) -> None:
         """
@@ -328,7 +328,7 @@ class MyTardisMetadataEditor(QMainWindow):
             delete_action.setEnabled(False)
         else:
             delete_action.triggered.connect(self.delete_items_project)
-        menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
+        menu.exec(self.ui.projectTreeWidget.mapToGlobal(point))
 
     def delete_items_project(self) -> None:
         """
