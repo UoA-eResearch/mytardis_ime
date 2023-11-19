@@ -3,7 +3,6 @@ from ime.parser.image_parser import ImageProcessor
 from pathlib import Path
 import logging
 
-import imagej
 import jpype
 import scyjava
 import jpype.imports
