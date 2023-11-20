@@ -1,6 +1,5 @@
 from typing import Dict, List, Optional, cast
 from pathlib import Path
-import hashlib
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QValidator
@@ -9,8 +8,8 @@ from ime.blueprints.custom_data_types import Username
 from ime.models import Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
-from ime.widgets.add_files_wizard.included_files_page import IncludedFilesPage
-from ime.parser.image_parser import ImageProcessor
+from ime.widgets.add_files_wizard.extraction_progress_dialog import ExtractionProgressDialog
+from ime.parser.qt_extraction_worker import MetadataExtractionWorkerThread
 from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
 
 class AddFilesWizardResult:
@@ -361,20 +360,37 @@ class AddFilesWizard(QWizard):
         result.file_list = []
         ### Create new Datafile object and append to result.datafile.files
         table = self.ui.datafiletableWidget
-        image_processor = ImageProcessor()
         for row in range(table.rowCount()):
+            # Creates datafile based on each row's data.
             datafile = Datafile()
             datafile._store = self.metadataModel.metadata
             datafile.dataset = result.dataset.identifiers_delegate.first()
             file_name = table.item(row,0).text()
             file_size: int = table.item(row,1).data(QtCore.Qt.ItemDataRole.UserRole)
             dir_path = Path(table.item(row, 2).text())
-            #md5sum = self._calculate_md5(dir_path)
             datafile.filename = file_name
             datafile.size = file_size
             datafile.path_abs = dir_path
-            # get image metadata and attach to datafile's metadata
-            image_metadata = image_processor.get_metadata(dir_path.as_posix())
-            datafile.metadata = image_metadata
             result.file_list.append(datafile)
+        # get image metadata and attach to datafile's metadata
+        self.extract_metadata(result.file_list)
         self.submitted.emit(result)
+
+
+    def extract_metadata(self, datafiles: list[Datafile]) -> None:
+        """Starts a thread to extract metadata from images, and displays
+        a dialog to show progress.
+
+        Args:
+            datafiles (list[Datafile]): The files to extract metadata from.
+        """
+        worker_thread = MetadataExtractionWorkerThread(datafiles, self)
+        progress_dialog = ExtractionProgressDialog()
+        progress_dialog.setNumFiles(len(datafiles))
+        # Display the file being processed as it changes.
+        worker_thread.processedImageChanged.connect(progress_dialog.progressChanged)
+        # When finished, close the dialog.
+        worker_thread.finished.connect(progress_dialog.extractionFinished)
+        worker_thread.start()
+        progress_dialog.exec()
+
