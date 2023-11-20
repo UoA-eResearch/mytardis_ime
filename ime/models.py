@@ -4,7 +4,7 @@ models.py - Instrument Data Wizard dataclass models.
 # pylint: skip-file
 import logging
 import os
-from typing import List, Dict, Any, Optional, Sequence, Type
+from typing import List, Dict, Any, Optional, Sequence, Type, TypeAlias
 from dataclasses import dataclass, field, fields, is_dataclass
 from enum import Enum
 import yaml
@@ -53,7 +53,6 @@ class YAMLDataclass(yaml.YAMLObject):
             for field in fields(self) 
             if field.repr is True # Only include repr=True fields
         }
-
 
 @dataclass
 class UserACL(YAMLDataclass):
@@ -232,19 +231,10 @@ class IDataStatus:
     data_status: Optional[DataStatus] = None
 
 
-@dataclass
-class IMetadata:
-    """
-    A class representing fields related to schema parameters.
-    """
-
-    # change to Optional[]
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    object_schema: str = ""
 
 @dataclass
 class Project(
-    YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus
+    YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
 ):
     """
     A class representing MyTardis Project objects.
@@ -265,6 +255,8 @@ class Project(
         default=Username(), metadata={"label": "Username"}
     )
     identifiers: list[str] = field(default_factory=list)
+    metadata: Optional[Dict[str, Any]] = None
+    object_schema: str = ""
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
@@ -367,7 +359,7 @@ class ProjectIdentifiers(IIdentifiers):
 
 @dataclass
 class Experiment(
-    YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus
+    YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
 ):
     """
     A class representing MyTardis Experiment objects.
@@ -379,6 +371,8 @@ class Experiment(
     projects: List[str] = field(default_factory=list)
     description: str = ""
     identifiers: list[str] = field(default_factory=list)
+    metadata: Optional[Dict[str, Any]] = None
+    object_schema: str = ""
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
@@ -477,7 +471,7 @@ class ExperimentIdentifiers(IIdentifiers):
 
 @dataclass
 class Dataset(
-    YAMLDataclass, IAccessControl, IMetadata, IDataClassification, IDataStatus
+    YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
 ):
     """
     A class representing MyTardis Dataset objects.
@@ -489,6 +483,8 @@ class Dataset(
     experiments: List[str] = field(default_factory=list)
     instrument: str = ""
     identifiers: list[str] = field(default_factory=list)
+    metadata: Optional[Dict[str, Any]] = None
+    object_schema: str = ""
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
@@ -585,7 +581,7 @@ class DatasetIdentifiers(IIdentifiers):
 
 
 @dataclass
-class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
+class Datafile(YAMLDataclass, IAccessControl, IDataStatus):
     """
     A class representing MyTardis Datafile objects.
     """
@@ -601,7 +597,24 @@ class Datafile(YAMLDataclass, IAccessControl, IMetadata, IDataStatus):
     md5sum: str = ""
     mimetype: str = ""
     dataset: str = ""
+    metadata: Optional[Dict[str, Any]] = None
+    object_schema: str = ""
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
+
+    def __getstate__(self) -> dict[str, Any]:
+        """Override method for pyyaml's serialisation method,
+        where we check if metadata is empty. If empty, we return
+        None, because the ingestion script expects either a None
+        or a dictionary with entries.
+
+        Returns:
+            dict[str, Any]: The state of the Datafile for serialisation.
+        """
+        file_state = super().__getstate__()
+        if self.metadata is not None and len(self.metadata) == 0:
+            # If metadata is an empty dict, then replace with a None.
+            file_state["metadata"] = None
+        return file_state
 
 
 def Username_yaml_representer(dumper: Dumper, data: "Username") -> ScalarNode:
@@ -679,7 +692,7 @@ class IngestionMetadata:
         if self.file_path is not None:
             return self.file_path.parent
         elif len(self.datafiles) > 0:
-            return self.datafiles[0].path_abs ### change to .path_abs?
+            return self.datafiles[0].path_abs
         else:
             return None
 
@@ -843,6 +856,7 @@ class IngestionMetadata:
                 )
         return metadata
 
+MyTardisObject: TypeAlias = Project | Experiment | Dataset | Datafile
 
 # Initialise the representers and constructors required for
 # loading YAML elements.
