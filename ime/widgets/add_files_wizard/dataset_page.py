@@ -14,6 +14,10 @@ class DatasetPage(QWizardPage):
         return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
+        """Lifecycle method called by Qt when entering this wizard page. 
+        Looks up the associated datasets for the chosen experiment, and displays
+        the options.
+        """
         wizard = self.wizard()
         exp = wizard.selected_existing_experiment
         # Only show datasets under the selected experiment.
@@ -22,10 +26,23 @@ class DatasetPage(QWizardPage):
         self.model.set_read_only(True)
         self.model.set_show_fields(['description'])
         wizard.ui.existingDatasetList.setModel(self.model)
-        self.selected_existing_dataset_changed(wizard.ui.existingDatasetList.currentIndex())
         wizard.ui.existingDatasetList.currentIndexChanged.connect(self.selected_existing_dataset_changed)
+        if self.model.rowCount() == 0:
+            # When there are no datasets in selected experiment, disable
+            # the existing dataset option.
+            self.wizard().ui.existingDatasetRadioButton.setDisabled(True)
+            self.wizard().ui.existingDatasetList.setDisabled(True)
+            self.wizard().ui.newDatasetRadioButton.setChecked(True)
+        else:
+            # Set selected datset to be the first dataset.
+            self.selected_existing_dataset_changed(wizard.ui.existingDatasetList.currentIndex())
 
     def cleanupPage(self) -> None:
+        """Lifecycle method called by Qt when leaving this wizard page. Cleans up
+        signals and resets form controls.
+        """
+        self.wizard().ui.existingDatasetRadioButton.setEnabled(True)
+        self.wizard().ui.existingDatasetList.setEnabled(True)
         self.wizard().ui.existingDatasetList.currentIndexChanged.disconnect()
 
     def nextId(self) -> int:
