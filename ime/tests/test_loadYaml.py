@@ -6,7 +6,7 @@ import yaml
 import logging
 
 def test_loadYaml():
-    fileName = "ime/tests/ingestion.yaml"
+    fileName = "ime/tests/fixtures.yaml"
     metadata = IngestionMetadata()
     metadata.file_path = Path(fileName)
     with open(fileName) as f:

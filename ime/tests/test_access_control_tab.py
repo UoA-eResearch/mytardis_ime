@@ -7,7 +7,6 @@ from ime.blueprints.custom_data_types import Username
 from ime.models import Experiment, IAccessControl, IngestionMetadata, Project, UserACL
 from ime.widgets.access_control_list import AccessControlList
 from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
-from PyQt6.QtQuick import QQuickView
 
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab
 
@@ -27,10 +26,12 @@ def test_show_project_access_control(qtbot: QtBot, projects: List[Project]):
     tab.set_data(project)
     user_model = tab.ui.users.ui.aclTable.model()
     group_model = tab.ui.groups.ui.aclTable.model()
-    assert user_model.rowCount() == 2
-    assert user_model.data(user_model.index(0,0)) == "abcd121"
-    assert group_model.rowCount() == 2
-    assert group_model.data(group_model.index(0,0)) == "test_admin"    
+    assert user_model is not None
+    assert group_model is not None
+    assert user_model.rowCount() == 1
+    assert user_model.data(user_model.index(0,0)) == "xli677"
+    assert group_model.rowCount() == 1
+    assert group_model.data(group_model.index(0,0)) == "biru-group1"
 
 def test_show_overridable_access_control(qtbot: QtBot, experiments: List[Experiment]):
     """Tests access control tab can be created."""
@@ -40,6 +41,8 @@ def test_show_overridable_access_control(qtbot: QtBot, experiments: List[Experim
     tab.set_data(experiment, IAccessControl())
     user_model = tab.ui.users.ui.aclTable.model()
     group_model = tab.ui.groups.ui.aclTable.model()
+    assert user_model is not None
+    assert group_model is not None
     assert user_model.rowCount() == 2
     assert group_model.rowCount() == 2
     test_admin_is_owner = user_model.data(user_model.index(0,1),Qt.ItemDataRole.CheckStateRole)
@@ -65,8 +68,9 @@ def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     model = tab.ui.users.ui.aclTable.model()
+    assert model is not None
     edit_location = model.index(0,0)
-    assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "abcd121"
+    assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "xli677"
     edit_location = model.index(0,0)
     model.setData(edit_location,"Testing editing")
     assert experiment.users is not None
@@ -78,6 +82,7 @@ def test_add_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     model = tab.ui.users.ui.aclTable.model()
+    assert model is not None
     assert model.rowCount() == 2
     tab.ui.users.ui.btnAdd.click()
     qtbot.wait(100)

@@ -23,10 +23,10 @@ def test_create_table_entries(qtbot: QtBot, metadata: IngestionMetadata, widget:
     # Check that displayed table content reflects
     # imported yaml.
     assert table.rowCount() == nrows + 1
-    assert table.item(0,0).text() == "lens"
-    assert table.item(0,1).text() == "4"
-    assert table.item(4,0).text() == ""
-    assert table.item(4,1).text() == ""
+    assert table.item(0,0).text() == "lens" if table.item(0,0) is not None else False
+    assert table.item(0,1).text() == "4" if table.item(0,1) is not None else False
+    assert table.item(4,0).text() == "" if table.item(4,0) is not None else False
+    assert table.item(4,1).text() == "" if table.item(4,1) is not None else False
     
 def test_update_metadata_object_replaces_table_entries(qtbot: QtBot, metadata: IngestionMetadata, widget: MetadataTab, table: QTableWidget):
     exp = metadata.experiments[0]
@@ -36,10 +36,10 @@ def test_update_metadata_object_replaces_table_entries(qtbot: QtBot, metadata: I
     widget.update_metadata_object(proj)
     qtbot.wait_exposed(widget)
     assert table.rowCount() == 4
-    assert table.item(0,0).text() == "startdate"
-    assert table.item(0,1).text() == "2022-08-01"
-    assert table.item(3,0).text() == ""
-    assert table.item(3,1).text() == ""
+    assert table.item(0,0).text() == "startdate" if table.item(0,0) is not None else False
+    assert table.item(0,1).text() == "2022-08-01" if table.item(0,1) is not None else False
+    assert table.item(3,0).text() == "" if table.item(3,0) is not None else False
+    assert table.item(3,1).text() == "" if table.item(3,1) is not None else False
 
 def test_update_metadata_key_changes_object(qtbot: QtBot, metadata: IngestionMetadata, widget: MetadataTab, table: QTableWidget):
     exp = metadata.experiments[0]
@@ -48,12 +48,15 @@ def test_update_metadata_key_changes_object(qtbot: QtBot, metadata: IngestionMet
     widget.show()
     qtbot.wait_exposed(widget)
     field_to_edit = table.item(0,1)
+    assert field_to_edit is not None
     field_to_edit.setText('9')
     assert exp.metadata['lens'] == '9'
     # Test creating a new entry by typing into the key field
     new_key_field = table.item(nrows,0)
+    assert new_key_field is not None
     new_key_field.setText('Sample')
     new_val_field = table.item(nrows, 1)
+    assert new_val_field is not None
     new_val_field.setText('45')
     assert 'Sample' in exp.metadata
     assert exp.metadata['Sample'] == '45'
@@ -69,6 +72,7 @@ def test_update_metadata_object_updates_value(qtbot: QtBot, metadata: IngestionM
     # to the project.
     widget.update_metadata_object(proj)
     field_to_edit = table.item(0,1)
+    assert field_to_edit is not None
     field_to_edit.setText('1992-08-02')
     assert proj.metadata['startdate'] == '1992-08-02'
 
@@ -80,7 +84,7 @@ def test_delete_metadata_rows(qtbot: QtBot, metadata: IngestionMetadata, widget:
     assert not widget.ui.remove_rows_btn.isEnabled()
     # Select the row.
     old_count = table.rowCount()
-    old_text = table.item(2,1).text()
+    old_text = table.item(2,1).text() if table.item(2,1) is not None else ""
     table.selectRow(2)
     assert widget.ui.remove_rows_btn.isEnabled()
     widget.ui.remove_rows_btn.click()

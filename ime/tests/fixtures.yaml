@@ -42,6 +42,11 @@ groups:
   group: biru-group1
   is_owner: true
   see_sensitive: true
+- !GroupACL
+  can_download: true
+  group: biru-group2
+  is_owner: true
+  see_sensitive: true
 identifiers:
 - exp1
 metadata: {}
@@ -50,11 +55,16 @@ projects:
 - p1
 title: biru-exp1
 users:
-- !UserACL
-  can_download: true
-  is_owner: false
-  see_sensitive: true
-  user: !Username 'xli677'
+  - !UserACL
+    can_download: true
+    is_owner: true
+    see_sensitive: true
+    user: !Username 'xli677'
+  - !UserACL
+    is_owner: false
+    can_download: true
+    see_sensitive: false
+    user: !Username awil308
 --- !Experiment
 data_classification: 1
 data_status: null
@@ -81,6 +91,7 @@ projects:
 - p2
 title: biru-exp3
 users: null
+
 --- !Dataset
 data_classification: 1
 data_status: null

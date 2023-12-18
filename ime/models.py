@@ -219,7 +219,7 @@ class DataStatus(Enum):
     status of data that may arise.
     """
 
-    NOT_INGESTED = 1
+    READY_FOR_INGESTION = 1
     INGESTED = 5
 
 
@@ -229,7 +229,7 @@ class IDataStatus:
     Common interface for MyTardis models with data statud labels.
     """
 
-    data_status: Optional[DataStatus] = None
+    data_status: Optional[DataStatus] = DataStatus.READY_FOR_INGESTION
 
 
 @dataclass
