@@ -3,7 +3,7 @@ utils.py - miscellaneous functions.
 """
 
 from pathlib import Path
-from PyQt6.QtWidgets import QHeaderView, QTreeWidget
+from PySide6.QtWidgets import QHeaderView, QTreeWidget
 
 
 def file_size_to_str(size: float) -> str:

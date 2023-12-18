@@ -1,6 +1,6 @@
 from typing import List
-from PyQt6.QtCore import QModelIndex, QUrl, Qt
-from PyQt6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
+from PySide6.QtCore import QModelIndex, QUrl, Qt
+from PySide6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
 from pytestqt.qtbot import QtBot
 import pytest
 from ime.blueprints.custom_data_types import Username

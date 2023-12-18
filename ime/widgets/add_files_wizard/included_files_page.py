@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
 import typing
-from PyQt6 import QtCore
+from PySide6 import QtCore
 
-from PyQt6.QtWidgets import QFileDialog, QMessageBox, QTableWidget, QTableWidgetItem
-from PyQt6.QtWidgets import QWizardPage
+from PySide6.QtWidgets import QFileDialog, QMessageBox, QTableWidget, QTableWidgetItem
+from PySide6.QtWidgets import QWizardPage
 import ime.widgets.add_files_wizard.wizard as afw
 from ime.utils import file_size_to_str, st_dev
 

@@ -1,12 +1,12 @@
 from dataclasses import fields
-from typing import Generic, List, Optional, Type, TypeVar, Union, cast
+from typing import Any, Generic, List, Optional, Type, TypeVar, Union, cast
 import typing
 
-from PyQt6.QtCore import QItemSelection, QModelIndex, QObject, QVariant, Qt
+from PySide6.QtCore import QItemSelection, QModelIndex, QObject, Qt
 from ime.models import GroupACL, UserACL
 from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
+from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 ACL_T = TypeVar('ACL_T', bound=Union[GroupACL, UserACL])
 
@@ -124,7 +124,7 @@ class AccessControlListTableProxy(DataclassTableProxy[ACL_T], Generic[ACL_T]):
                 # this model will only deal with usernames and group IDs.
                 return str(super().data(index, role))
 
-    def setData(self, index: QModelIndex, value: QVariant, role: int = Qt.ItemDataRole.DisplayRole) -> bool:
+    def setData(self, index: QModelIndex, value: Any, role: int = Qt.ItemDataRole.DisplayRole) -> bool:
         """Sets the data for cell at `index`_. Override to set boolean values
         based on check mark state.
 
@@ -137,8 +137,8 @@ class AccessControlListTableProxy(DataclassTableProxy[ACL_T], Generic[ACL_T]):
             bool: Whether updating data was successful.
         """
         field = super().sourceModel().field_for_column(index.column())
-        if field.name in self.boolean_fields:
-            if role == Qt.ItemDataRole.CheckStateRole:
+        if field.name in self.boolean_fields and \
+            role == Qt.ItemDataRole.CheckStateRole:
                 # Convert value to boolean
                 val = value == Qt.CheckState.Checked
                 return super().setData(index, val)

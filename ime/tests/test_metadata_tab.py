@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QTableWidget
+from PySide6.QtWidgets import QTableWidget
 from ime.widgets.metadata_tab import MetadataTab
 from ime.models import IngestionMetadata
 from pytestqt.qtbot import QtBot

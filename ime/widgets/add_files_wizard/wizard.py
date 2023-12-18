@@ -1,10 +1,10 @@
 from typing import Dict, List, Optional, cast
 from pathlib import Path
 import hashlib
-from PyQt6 import QtWidgets, QtCore
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtGui import QValidator
-from PyQt6.QtWidgets import QLineEdit,  QWizard
+from PySide6 import QtWidgets, QtCore
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QValidator
+from PySide6.QtWidgets import QLineEdit,  QWizard
 from ime.blueprints.custom_data_types import Username
 from ime.models import Project, Experiment, Dataset, Datafile
 from ime.qt_models import IngestionMetadataModel
@@ -77,7 +77,7 @@ class AddFilesWizard(QWizard):
     """A wizard for adding data files to a metadata model.
 
     Attributes:
-        submitted (QtCore.pyqtSignal): A signal emitted when the wizard is submitted.
+        submitted (QtCore.Signal): A signal emitted when the wizard is submitted.
         page_ids (Dict[str, int]): A dictionary of page names and their IDs.
         selected_existing_project (Project): The currently selected existing project.
         selected_existing_experiment (Experiment): The currently selected existing experiment.
@@ -91,7 +91,7 @@ class AddFilesWizard(QWizard):
         addFiles_handler(): Handle adding files to the table.
         deleteFiles_handler(): Handle deleting files from the table.
     """
-    submitted = QtCore.pyqtSignal(AddFilesWizardResult)
+    submitted = QtCore.Signal(AddFilesWizardResult)
     page_ids: Dict[str, int] = {}
 
     def _register_project_fields(self) -> None:
@@ -107,7 +107,7 @@ class AddFilesWizard(QWizard):
         proj_new_page.registerField(FieldNames.PROJECT_ID.value + "*", self.ui.projectIDLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_NAME.value + "*", self.ui.projectNameLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_PI.value + "*", self.ui.piLineEdit)
-        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionTextEdit, "plainText", cast(pyqtSignal, self.ui.projectDescriptionTextEdit.textChanged))
+        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionTextEdit, "plainText", cast(Signal, self.ui.projectDescriptionTextEdit.textChanged))
 
     def _register_experiment_fields(self) -> None:
         """Private method that sets up signals and fields for Experiment pages.
@@ -249,7 +249,7 @@ class AddFilesWizard(QWizard):
         the `_register_fields()` method. The `datafileAddPushButton` and `datafileDeletePushButton` buttons are 
         connected to their corresponding handler methods.
         """
-        super(QWizard, self).__init__()
+        super().__init__()
         self.ui = Ui_ImportDataFiles()
         self.metadataModel = metadataModel
         self.ui.setupUi(self)

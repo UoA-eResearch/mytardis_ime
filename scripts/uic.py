@@ -5,7 +5,7 @@ python files.
 """
 import glob
 import os
-from PyQt6 import uic
+import subprocess
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler, FileModifiedEvent, FileCreatedEvent
 
@@ -67,7 +67,8 @@ def compile_ui_file(fpath: str) -> None:
     fname = os.path.splitext(fpath)[0]
     with open(fname + '.py', 'w') as pyfile:
         try:
-            uic.compileUi(fpath, pyfile)
+            subprocess.run(["pyside6-uic", fpath, "-o", fname + '.py'])
+            # uic.compileUi(fpath, pyfile)
         except:
             print("Error generating python file for " + fpath)
 

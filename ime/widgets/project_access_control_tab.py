@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget
 from ime.models import GroupACL, IAccessControl, UserACL
 from ime.qt_models import DataclassTableModel
 from ime.ui.ui_project_access_control_tab import Ui_ProjectAccessControlTab

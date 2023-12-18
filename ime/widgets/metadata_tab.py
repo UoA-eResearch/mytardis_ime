@@ -1,10 +1,10 @@
 from typing import List
-from PyQt6.QtCore import QItemSelection, QLine, QSignalBlocker, pyqtSlot
+from PySide6.QtCore import QItemSelection, QLine, QSignalBlocker
 
 from ime.bindable import IBindableInput
 from ime.ui.ui_metadata_tab import Ui_MetadataTab
-from PyQt6.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget, QLineEdit
-from PyQt6.QtCore import pyqtSignal, Qt
+from PySide6.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget, QLineEdit
+from PySide6.QtCore import Qt
 from ime.models import IMetadata
 import logging
 
@@ -17,7 +17,7 @@ class MetadataTab(QWidget, IBindableInput):
 
     def __init__(self, parent=None):
         """Initializes the metadata tab with the given parent widget."""
-        super(QWidget, self).__init__(parent)
+        super().__init__(parent)
         self.ui = Ui_MetadataTab()
         self.ui.setupUi(self)
         self.ui.metadata_table.cellChanged.connect(self._handle_cell_changed)

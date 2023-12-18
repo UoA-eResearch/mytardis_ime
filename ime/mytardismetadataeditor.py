@@ -1,7 +1,7 @@
 import typing
-from PyQt6 import QtCore
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
+from PySide6 import QtCore
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 import jpype
 from typing import Any, Callable, cast
 
@@ -28,7 +28,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Initializes the GUI, sets up the UI widgets, connects UI events to appropriate event handlers, and shows the GUI.
         """
-        super(QMainWindow, self).__init__()
+        super().__init__()
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -776,7 +776,7 @@ class MyTardisMetadataEditor(QMainWindow):
         to the selected file.
         """
         while True:
-            filename = QFileDialog.getSaveFileName(self,"Save ingestion file",directory = "ingestion.yaml", initialFilter='Yaml File(*.yaml)')[0]
+            filename = QFileDialog.getSaveFileName(self,"Save ingestion file",dir = "ingestion.yaml", filter='Yaml File(*.yaml)')[0]
             if filename == "":
                 # If the user cancelled and did not provide a filename, then do nothing.
                 return

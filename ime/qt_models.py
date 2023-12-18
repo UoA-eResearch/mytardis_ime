@@ -11,7 +11,7 @@ models.
 """
 from typing import Any, Callable, Generic, List, Optional, TypeVar, Type, cast
 import typing
-from PyQt6.QtCore import (
+from PySide6.QtCore import (
     QAbstractListModel,
     QAbstractTableModel,
     QModelIndex,
@@ -26,7 +26,7 @@ from ime.models import (
     Project,
 )
 from dataclasses import Field, fields
-from PyQt6.QtCore import Qt
+from PySide6.QtCore import Qt
 
 T = TypeVar("T")
 
