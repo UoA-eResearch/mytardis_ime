@@ -6,7 +6,9 @@ from PySide6.QtCore import QItemSelection, QModelIndex, QObject, Qt
 from ime.models import GroupACL, UserACL
 from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
+from PySide6.QtWidgets import QAbstractItemView, QApplication, QHeaderView, QWidget
+
+from ime.widgets.centered_box_proxy import CenteredBoxProxy
 
 ACL_T = TypeVar('ACL_T', bound=Union[GroupACL, UserACL])
 
@@ -140,7 +142,7 @@ class AccessControlListTableProxy(DataclassTableProxy[ACL_T], Generic[ACL_T]):
         if field.name in self.boolean_fields and \
             role == Qt.ItemDataRole.CheckStateRole:
                 # Convert value to boolean
-                val = value == Qt.CheckState.Checked
+                val = value == Qt.CheckState.Checked.value
                 return super().setData(index, val)
         else:
             # Deserialise back to original type from string.
@@ -212,6 +214,11 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         self.ui.btnDelete.clicked.connect(self._handle_remove)
         # Disable delete button by default.
         self.ui.btnDelete.setDisabled(True)
+        # Initialise styling for centering checkboxes
+        aclTable = self.ui.aclTable
+        check_style = CenteredBoxProxy(QApplication.style().name())
+        check_style.setParent(aclTable)
+        aclTable.setStyle(check_style)
 
     def set_model(self, model: DataclassTableModel[ACL_T]) -> None:
         """Sets the DataclassTableModel this list will display,

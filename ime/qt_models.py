@@ -342,9 +342,9 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         Returns:
             bool: True if the data was set successfully; otherwise, False.
         """
-        experiment = self.instance_list[index.row()]
+        instance = self.instance_list[index.row()]
         field_name = self.fields[index.column()]
-        setattr(experiment, field_name, value)
+        setattr(instance, field_name, value)
         self.dataChanged.emit(index, index)
         return True
 

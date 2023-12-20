@@ -1,5 +1,5 @@
 from typing import List
-from PySide6.QtCore import QModelIndex, QUrl, Qt
+from PySide6.QtCore import QModelIndex, QPoint, QUrl, Qt
 from PySide6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
 from pytestqt.qtbot import QtBot
 import pytest
@@ -130,7 +130,7 @@ def test_overridable_list_show_inherited_data_if_data_is_none(qtbot: QtBot):
 
 def test_overridable_list_show_data_if_data_is_empty_list(qtbot: QtBot):
     view = QDialog()
-    # An empty list is an override. Distinct from
+    # An empty list is an override. Distinct from None.
     experiment = Experiment(users=[])
     inherited = IAccessControl(
         [UserACL(Username("inherited"), True, False, False)]
@@ -140,3 +140,23 @@ def test_overridable_list_show_data_if_data_is_empty_list(qtbot: QtBot):
     model = tab.ui.users._model 
     assert model.rowCount() == 0
     assert tab.ui.usersOverride.isChecked()
+
+def test_access_control_edit_works(qtbot: QtBot):
+    """Tests whether the access control checkboxes work. """
+    view = QDialog()
+    acl = UserACL(user=Username("szen012"))
+    project = Project(users=[acl])
+    tab = ProjectAccessControlTab(view)
+    tab.set_data(project)
+    qtbot.add_widget(view)
+    view.show()
+    qtbot.wait_exposed(view)
+    # Find the coordinate of the checkmark for is owner and click it.
+    user_table = tab.ui.users.ui.aclTable
+    is_owner_checkbox = user_table.visualRect(user_table.model().index(0,1)).center()
+    viewport = user_table.viewport()
+    qtbot.mouseClick(viewport, Qt.MouseButton.LeftButton, pos=is_owner_checkbox)
+    qtbot.wait(100)
+    qtbot.stop()
+    # New check the underlying access control property is changed.
+    assert acl.is_owner is True
