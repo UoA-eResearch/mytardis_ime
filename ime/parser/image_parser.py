@@ -6,7 +6,7 @@ from pathlib import Path
 
 loci = jpype.JPackage("loci")
 if not jpype.isJVMStarted(): # type: ignore
-    jpype.startJVM(classpath="ime/tests/testdata/bioformats_package.jar", convertStrings=True) # type: ignore
+    jpype.startJVM(classpath="resources/bioformats_package.jar", convertStrings=True) # type: ignore
 
 from loci import *
 from loci.formats import ImageReader

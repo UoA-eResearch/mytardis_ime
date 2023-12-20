@@ -1,6 +1,6 @@
 """Module for a Qt-based thread metadata extraction worker.
 """
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PySide6.QtCore import QObject, QThread, Signal
 from ime.models import Datafile
 
 from ime.parser.image_parser import ImageProcessor
@@ -13,7 +13,7 @@ class MetadataExtractionWorkerThread(QThread):
     """
 
     # Qt Signal for when there's a change in the image being processed.
-    processedImageChanged = pyqtSignal(str)
+    processedImageChanged = Signal(str)
     
     def __init__(self, files: list[Datafile], parent: QObject | None = None) -> None:
         """Constructor method that creates the worker thread. Includes an
