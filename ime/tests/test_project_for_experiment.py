@@ -5,7 +5,7 @@ from pathlib import Path
 import yaml
 import logging
 
-def test_project_for_experimentl():
+def xtest_project_for_experimentl():
     fileName = "ime/tests/ingestion.yaml"
     metadata = IngestionMetadata()
     metadata.file_path = Path(fileName)

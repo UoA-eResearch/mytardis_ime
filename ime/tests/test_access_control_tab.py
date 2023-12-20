@@ -157,6 +157,5 @@ def test_access_control_edit_works(qtbot: QtBot):
     viewport = user_table.viewport()
     qtbot.mouseClick(viewport, Qt.MouseButton.LeftButton, pos=is_owner_checkbox)
     qtbot.wait(100)
-    qtbot.stop()
     # New check the underlying access control property is changed.
     assert acl.is_owner is True
