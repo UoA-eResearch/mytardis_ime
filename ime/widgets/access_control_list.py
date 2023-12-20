@@ -8,7 +8,7 @@ from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.ui.ui_access_control_list import Ui_AccessControlList
 from PySide6.QtWidgets import QAbstractItemView, QApplication, QHeaderView, QWidget
 
-from ime.widgets.centered_box_proxy import CenteredBoxProxy
+from ime.widgets.qt_styles import CenteredCheckboxInViewItemStyle
 
 ACL_T = TypeVar('ACL_T', bound=Union[GroupACL, UserACL])
 
@@ -216,7 +216,7 @@ class AccessControlList(QWidget, Generic[ACL_T]):
         self.ui.btnDelete.setDisabled(True)
         # Initialise styling for centering checkboxes
         aclTable = self.ui.aclTable
-        check_style = CenteredBoxProxy(QApplication.style().name())
+        check_style = CenteredCheckboxInViewItemStyle(QApplication.style().name())
         check_style.setParent(aclTable)
         aclTable.setStyle(check_style)
 
