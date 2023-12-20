@@ -1,5 +1,5 @@
 # Instrument Data Wizard
-A metadata editor for files being ingested into MyTardis. Written with PyQt and PyYAML.
+A metadata editor for files being ingested into MyTardis. Written with PySide6 and PyYAML.
 
 # Folder structure
 ```
@@ -28,15 +28,6 @@ This will install all the project dependencies, then run the app in the Python v
 
 If you need to run a command in the created virtual environment, you need to prepend the command with `poetry run`. Or, you can run `poetry shell` to spawn a shell with the virtual environment activated. This means all subsequent commands will be run in the virtual environment.
 
-Note:
-If you are using an M1 Macbook, you need to install PyQt5 by using Rosetta Terminal.
-To enable Rosetta on Terminal, the link might be useful: https://vineethbharadwaj.medium.com/m1-mac-switching-terminal-between-x86-64-and-arm64-e45f324184d9
-
-```
-env /usr/bin/arch -x86_64 /bin/zsh --login
-arch
-```
-Then you can: 
 Set up Poetry, and run:
 ```
 poetry install
@@ -45,7 +36,7 @@ python -m app
 ``` 
 
 # UI files
-You can automate the generation of PyQt Python files from `.ui` files by running:
+You can automate the generation of PySide6 UI Python files from `.ui` files by running:
 ```
 ./scripts/uic.py
 ```  

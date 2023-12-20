@@ -1,7 +1,7 @@
 import typing
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
+from PySide6 import QtCore
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 import jpype
 from typing import Any, Callable, cast
 
@@ -28,7 +28,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Initializes the GUI, sets up the UI widgets, connects UI events to appropriate event handlers, and shows the GUI.
         """
-        super(QMainWindow, self).__init__()
+        super().__init__()
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -114,7 +114,7 @@ class MyTardisMetadataEditor(QMainWindow):
                 delete_action.setEnabled(False)  
             else:
                 delete_action.triggered.connect(self.delete_items_dataset)
-        menu.exec_(self.ui.datasetTreeWidget.mapToGlobal(point))     
+        menu.exec(self.ui.datasetTreeWidget.mapToGlobal(point))     
     
     def openWizardWindowSkipDataset (self) -> None:
         """
@@ -335,7 +335,7 @@ class MyTardisMetadataEditor(QMainWindow):
             delete_action.setEnabled(False)
         else:
             delete_action.triggered.connect(self.delete_items_project)
-        menu.exec_(self.ui.projectTreeWidget.mapToGlobal(point))
+        menu.exec(self.ui.projectTreeWidget.mapToGlobal(point))
 
     def delete_items_project(self) -> None:
         """
@@ -787,7 +787,7 @@ class MyTardisMetadataEditor(QMainWindow):
         to the selected file.
         """
         while True:
-            filename = QFileDialog.getSaveFileName(self,"Save ingestion file",directory = "ingestion.yaml", initialFilter='Yaml File(*.yaml)')[0]
+            filename = QFileDialog.getSaveFileName(self,"Save ingestion file",dir = "ingestion.yaml", filter='Yaml File(*.yaml)')[0]
             if filename == "":
                 # If the user cancelled and did not provide a filename, then do nothing.
                 return
@@ -815,7 +815,7 @@ class MyTardisMetadataEditor(QMainWindow):
                 if res == QMessageBox.StandardButton.Retry:
                     # If retrying, restart the loop.
                     continue
-            except Exception:
+            except Exception as e:
                 error_msg = QMessageBox()
                 error_msg.setWindowTitle("Can't save ingestion file")
                 error_msg.setText("An error occurred when saving the ingestion file.")

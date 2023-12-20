@@ -1,6 +1,6 @@
 from typing import cast
-from PyQt5.QtCore import QSignalBlocker
-from PyQt5.QtWidgets import QCheckBox, QMessageBox, QWidget
+from PySide6.QtCore import QSignalBlocker
+from PySide6.QtWidgets import QCheckBox, QDialogButtonBox, QMessageBox, QWidget
 from ime.qt_models import DataclassTableModel
 from ime.ui.ui_overridable_access_control_tab import Ui_OverridableAccessControlTab
 from ime.models import GroupACL, IAccessControl, UserACL
@@ -96,7 +96,7 @@ class OverridableAccessControlTab(QWidget):
         msg.setWindowTitle("Use inherited value instead?")
         msg.setText("Are you sure you want to remove all users/groups from this field?")
         msg.setInformativeText("Inherited values will apply instead.")
-        msg.setStandardButtons(cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
         res = msg.exec()
         return res == QMessageBox.StandardButton.Ok
     

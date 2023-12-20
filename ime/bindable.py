@@ -1,8 +1,8 @@
 from dataclasses import field
 from typing import Any, Callable, Dict, List, Optional, TypeVar, Generic, Union
 import typing
-from PyQt5.QtCore import QLine, QObject, QSignalBlocker, pyqtBoundSignal, pyqtSignal
-from PyQt5.QtWidgets import QLineEdit, QPlainTextEdit, QWidget
+from PySide6.QtCore import QLine, QObject, QSignalBlocker, Signal
+from PySide6.QtWidgets import QLineEdit, QPlainTextEdit, QWidget
 
 T = TypeVar('T')
 
@@ -11,7 +11,7 @@ class IBindableInput:
     Interface for a bindable input. Subclasses must implement `set_input_value` and `get_input_value`.
     """
     _value_changed_slot: Optional[Callable]
-    value_changed: Optional[pyqtBoundSignal]
+    value_changed: Optional[Signal]
     def set_input_value(self, value: str) -> None:
         """Abstract function for setting the input value.
 
@@ -34,7 +34,7 @@ class QLineEditInput(IBindableInput):
     """
     def __init__(self, widget: QLineEdit) -> None:
         self.widget = widget
-        self.value_changed = typing.cast(pyqtBoundSignal, widget.editingFinished)
+        self.value_changed = typing.cast(Signal, widget.editingFinished)
 
     def set_input_value(self, value:str) -> None:
         """Concrete function that sets the value of the line edit widget.
@@ -59,7 +59,7 @@ class QPlainTextEditInput(IBindableInput):
     """
     def __init__(self, widget: QPlainTextEdit):
         self.widget = widget
-        self.value_changed = typing.cast(pyqtBoundSignal, widget.textChanged)
+        self.value_changed = typing.cast(Signal, widget.textChanged)
     
     def set_input_value(self, value:str) -> None:
         """Concrete function that sets the value of the plain text edit widget.
@@ -85,7 +85,7 @@ class BoundObject(QObject, Generic[T]):
     """
     _bound_object: T
     _bound_inputs: Dict[str, List[IBindableInput]]
-    bound_object_changed = pyqtSignal(object, object)
+    bound_object_changed = Signal(object, object)
 
     def __init__(self) -> None:
         super().__init__()

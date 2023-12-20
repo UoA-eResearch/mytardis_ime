@@ -1,6 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtWidgets import QTableWidget, QUndoStack
+from PySide6.QtWidgets import QTableWidget
 from ime.widgets.metadata_tab import MetadataTab
 from ime.models import IngestionMetadata
 from pytestqt.qtbot import QtBot
@@ -74,6 +72,7 @@ def test_update_metadata_object_updates_value(qtbot: QtBot, metadata: IngestionM
     # to the project.
     widget.update_metadata_object(proj)
     field_to_edit = table.item(0,1)
+    assert field_to_edit is not None
     field_to_edit.setText('1992-08-02')
     assert proj.metadata['startdate'] == '1992-08-02'
 
@@ -86,7 +85,7 @@ def test_delete_metadata_rows(qtbot: QtBot, metadata: IngestionMetadata, widget:
     assert not widget.ui.remove_rows_btn.isEnabled()
     # Select the row.
     old_count = table.rowCount()
-    old_text = table.item(2,1).text()
+    old_text = table.item(2,1).text() if table.item(2,1) is not None else ""
     table.selectRow(2)
     assert widget.ui.remove_rows_btn.isEnabled()
     widget.ui.remove_rows_btn.click()

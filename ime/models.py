@@ -218,7 +218,7 @@ class DataStatus(Enum):
     status of data that may arise.
     """
 
-    NOT_INGESTED = 1
+    READY_FOR_INGESTION = 1
     INGESTED = 5
 
 

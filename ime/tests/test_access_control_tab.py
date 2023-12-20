@@ -1,13 +1,12 @@
 from typing import List
-from PyQt5.QtCore import QModelIndex, QUrl, Qt
-from PyQt5.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
+from PySide6.QtCore import QModelIndex, QPoint, QUrl, Qt
+from PySide6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
 from pytestqt.qtbot import QtBot
 import pytest
 from ime.blueprints.custom_data_types import Username
 from ime.models import Experiment, IAccessControl, IngestionMetadata, Project, UserACL
 from ime.widgets.access_control_list import AccessControlList
 from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
-from PyQt5.QtQuick import QQuickView
 
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab
 
@@ -27,10 +26,12 @@ def test_show_project_access_control(qtbot: QtBot, projects: List[Project]):
     tab.set_data(project)
     user_model = tab.ui.users.ui.aclTable.model()
     group_model = tab.ui.groups.ui.aclTable.model()
-    assert user_model.rowCount() == 2
-    assert user_model.data(user_model.index(0,0)) == "abcd121"
-    assert group_model.rowCount() == 2
-    assert group_model.data(group_model.index(0,0)) == "test_admin"    
+    assert user_model is not None
+    assert group_model is not None
+    assert user_model.rowCount() == 1
+    assert user_model.data(user_model.index(0,0)) == "xli677"
+    assert group_model.rowCount() == 1
+    assert group_model.data(group_model.index(0,0)) == "biru-group1"
 
 def test_show_overridable_access_control(qtbot: QtBot, experiments: List[Experiment]):
     """Tests access control tab can be created."""
@@ -40,6 +41,8 @@ def test_show_overridable_access_control(qtbot: QtBot, experiments: List[Experim
     tab.set_data(experiment, IAccessControl())
     user_model = tab.ui.users.ui.aclTable.model()
     group_model = tab.ui.groups.ui.aclTable.model()
+    assert user_model is not None
+    assert group_model is not None
     assert user_model.rowCount() == 2
     assert group_model.rowCount() == 2
     test_admin_is_owner = user_model.data(user_model.index(0,1),Qt.ItemDataRole.CheckStateRole)
@@ -65,8 +68,9 @@ def test_edit_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     model = tab.ui.users.ui.aclTable.model()
+    assert model is not None
     edit_location = model.index(0,0)
-    assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "abcd121"
+    assert model.data(edit_location, Qt.ItemDataRole.DisplayRole) == "xli677"
     edit_location = model.index(0,0)
     model.setData(edit_location,"Testing editing")
     assert experiment.users is not None
@@ -78,6 +82,7 @@ def test_add_access_control_tab(qtbot: QtBot, experiments: List[Experiment]):
     tab = OverridableAccessControlTab(view)
     tab.set_data(experiment, IAccessControl())
     model = tab.ui.users.ui.aclTable.model()
+    assert model is not None
     assert model.rowCount() == 2
     tab.ui.users.ui.btnAdd.click()
     qtbot.wait(100)
@@ -125,7 +130,7 @@ def test_overridable_list_show_inherited_data_if_data_is_none(qtbot: QtBot):
 
 def test_overridable_list_show_data_if_data_is_empty_list(qtbot: QtBot):
     view = QDialog()
-    # An empty list is an override. Distinct from
+    # An empty list is an override. Distinct from None.
     experiment = Experiment(users=[])
     inherited = IAccessControl(
         [UserACL(Username("inherited"), True, False, False)]
@@ -135,3 +140,22 @@ def test_overridable_list_show_data_if_data_is_empty_list(qtbot: QtBot):
     model = tab.ui.users._model 
     assert model.rowCount() == 0
     assert tab.ui.usersOverride.isChecked()
+
+def test_access_control_edit_works(qtbot: QtBot):
+    """Tests whether the access control checkboxes work. """
+    view = QDialog()
+    acl = UserACL(user=Username("szen012"))
+    project = Project(users=[acl])
+    tab = ProjectAccessControlTab(view)
+    tab.set_data(project)
+    qtbot.add_widget(view)
+    view.show()
+    qtbot.wait_exposed(view)
+    # Find the coordinate of the checkmark for is owner and click it.
+    user_table = tab.ui.users.ui.aclTable
+    is_owner_checkbox = user_table.visualRect(user_table.model().index(0,1)).center()
+    viewport = user_table.viewport()
+    qtbot.mouseClick(viewport, Qt.MouseButton.LeftButton, pos=is_owner_checkbox)
+    qtbot.wait(100)
+    # New check the underlying access control property is changed.
+    assert acl.is_owner is True

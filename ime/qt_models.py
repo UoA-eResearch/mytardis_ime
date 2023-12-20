@@ -11,7 +11,7 @@ models.
 """
 from typing import Any, Callable, Generic, List, Optional, TypeVar, Type, cast
 import typing
-from PyQt5.QtCore import (
+from PySide6.QtCore import (
     QAbstractListModel,
     QAbstractTableModel,
     QModelIndex,
@@ -26,7 +26,7 @@ from ime.models import (
     Project,
 )
 from dataclasses import Field, fields
-from PyQt5.QtCore import Qt
+from PySide6.QtCore import Qt
 
 T = TypeVar("T")
 
@@ -79,10 +79,10 @@ class PythonListModel(QAbstractListModel):
             return 0
         return len(self.list)
 
-    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+    def flags(self, index: QModelIndex) -> Qt.ItemFlag:
         """Returns the flags associated with the given index."""
         flags = Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
-        return typing.cast(Qt.ItemFlags, flags)
+        return typing.cast(Qt.ItemFlag, flags)
 
     def setData(self, index: QModelIndex, value: typing.Any, role: int = ...) -> bool:
         """Sets the data at the given index to the given value."""
@@ -342,9 +342,9 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         Returns:
             bool: True if the data was set successfully; otherwise, False.
         """
-        experiment = self.instance_list[index.row()]
+        instance = self.instance_list[index.row()]
         field_name = self.fields[index.column()]
-        setattr(experiment, field_name, value)
+        setattr(instance, field_name, value)
         self.dataChanged.emit(index, index)
         return True
 

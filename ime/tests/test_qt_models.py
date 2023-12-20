@@ -1,6 +1,6 @@
 from typing import List
-from PyQt5.QtCore import QModelIndex, Qt
-from PyQt5.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView
+from PySide6.QtCore import QModelIndex, Qt
+from PySide6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView
 from pytestqt.qtbot import QtBot
 import pytest
 from ime.qt_models import DataclassTableModel, DataclassTableProxy
@@ -16,7 +16,7 @@ def experiments(metadata: IngestionMetadata):
 
 def test_show_experiment_table(qtbot: QtBot, experiments: DataclassTableModel[Experiment]):
     view = QTableView()
-    model = experiments.proxy(["experiments", "title"])
+    model = experiments.proxy(["title"])
     model.set_read_only(True)
     view.setModel(model)
     # view.setColumnHidden(model.column_for_field("project_id"), True)
@@ -25,13 +25,12 @@ def test_show_experiment_table(qtbot: QtBot, experiments: DataclassTableModel[Ex
     qtbot.wait_exposed(view)
     # Assert that the proxy model shows the correct data in the first row, second column.
     assert model.rowCount() == 3
-    assert model.data(model.index(0,1), Qt.ItemDataRole.DisplayRole) == "BIRU lungcancer1_NoTreatment"
+    assert model.data(model.index(0,0), Qt.ItemDataRole.DisplayRole) == "biru-exp1"
 
 def test_retrieve_instance(qtbot: QtBot, experiments: DataclassTableModel[Experiment]):
-    view = QTableView()
-    model = experiments.proxy(['identifiers', 'title'])
+    model = experiments.proxy(['title'])
     instance = model.instance(0)
-    assert instance.title == "BIRU lungcancer1_NoTreatment"
+    assert instance.title == "biru-exp1"
 
 # def test_simple_edit_experiment_table(qtbot: QtBot, experiments: List[Experiment]):
 #     view = QDialog()

@@ -17,7 +17,7 @@ jsonschema = "^4.17.3"
 pyimagej = "^1.4.1"
 scyjava = "^1.9.1"
 jpype1 = "^1.4.1"
-pyqt5 = "^5.15.10"
+pyside6 = "^6.6.1"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.13.9"

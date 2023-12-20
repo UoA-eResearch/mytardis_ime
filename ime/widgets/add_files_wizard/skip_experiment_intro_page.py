@@ -1,5 +1,5 @@
 import typing
-from PyQt5.QtWidgets import QWizardPage
+from PySide6.QtWidgets import QWizardPage
 import ime.widgets.add_files_wizard.wizard as afw
 
 class SkipExperimentIntroPage(QWizardPage):
