@@ -38,6 +38,27 @@ class MetadataExtractor:
         return schema
     
     @staticmethod
+    def create_schema_tiff() -> dict[str, Any]:
+        """Create a schema for tiff metadata.
+
+        Returns:
+            dict: The schema for tiff metadata.
+        """
+        schema = {
+            'Image':{
+                "Pixels": {
+                    'SignificantBits': None,
+                    "DimensionOrder": "string",
+                    "SizeX": "integer",
+                    "SizeY": "integer",
+                    'Type': None,
+                    'Channel': None
+                }
+            }
+        }
+        return schema
+
+    @staticmethod
     def create_schema_test() -> dict[str, Any]:
         """Create a test schema.
 

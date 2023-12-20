@@ -5,14 +5,14 @@ from ime.bindable import IBindableInput
 from ime.ui.ui_metadata_tab import Ui_MetadataTab
 from PySide6.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget, QLineEdit
 from PySide6.QtCore import Qt
-from ime.models import IMetadata
+from ime.models import MyTardisObject
 import logging
 
 from ime.utils import setup_header_layout
 
 class MetadataTab(QWidget, IBindableInput):
     """A tab widget for displaying and editing metadata information for an object."""
-    metadata_object: IMetadata
+    metadata_object: MyTardisObject
     ui: Ui_MetadataTab
 
     def __init__(self, parent=None):
@@ -34,6 +34,8 @@ class MetadataTab(QWidget, IBindableInput):
 
     def handleNotes_changed(self) -> None:
         """Handler method for notes changed."""
+        if self.metadata_object.metadata is None:
+            self.metadata_object.metadata = {}
         self.metadata_object.metadata['Notes'] = self.ui.notes_textedit.toPlainText()
 
     def add_insert_metadata_row(self) -> None:
@@ -96,6 +98,8 @@ class MetadataTab(QWidget, IBindableInput):
             col (int): The column index of the changed cell.
         """
         table = self.ui.metadata_table
+        if self.metadata_object.metadata is None:
+            self.metadata_object.metadata = {}
         metadata = self.metadata_object.metadata
         cell = table.item(row, col)
         cell_val = cell.text()
@@ -156,14 +160,15 @@ class MetadataTab(QWidget, IBindableInput):
                 # Skip deleting the empty row.
                 continue
             key = table.item(row, 0).text()
-            self.metadata_object.metadata.pop(key)
+            if self.metadata_object.metadata is not None:
+                self.metadata_object.metadata.pop(key)
             table.removeRow(row)
 
-    def update_metadata_object(self, metadata_obj: IMetadata) -> None:
+    def update_metadata_object(self, metadata_obj: MyTardisObject) -> None:
         """Updates the object this tab is modifying.
 
         Args:
-            metadata_obj (IMetadata): The metadata object to update the tab with.
+            metadata_obj (MyTardisObject): The metadata object to update the tab with.
         """
         # Block table change signals while object is being updated.
         with QSignalBlocker(self.ui.metadata_table):
@@ -173,6 +178,8 @@ class MetadataTab(QWidget, IBindableInput):
             table.clearContents()
             table.setRowCount(0)
             # Then, populate table with new items 
+            if metadata_obj.metadata is None:
+                return
             metadata = metadata_obj.metadata
             num_new = len(metadata)
             if "Notes" in metadata:

@@ -41,22 +41,35 @@ class ImageProcessor():
             Otherwise, returns a nempty dictionary.
 
         """
+        # Define the suffixes for supported file types
+        supported_suffix = ['.czi', '.oib', '.tif']
+
+        # Get the suffix of the file
         suffix = Path(inf).suffix
-        suffix_available = ['.czi', '.oib']
-        if suffix not in suffix_available:
-            return dict()
-        else:
-            # get xml string
+
+        # check if the file is a supported file type
+        if suffix in supported_suffix:
+        
+            # get xml string and convert it to a dictoionary
             xml_string = self.get_omexml_metadata(inf)
-            # convert xml string to dictionary
             my_dict = MetadataExtractor.xml_to_dict(xml_string)
-            # create schema
-            schema_czi = MetadataExtractor.create_schema_czi() # type: ignore
-            # clean the raw dictionary to remove the first layer and @ symbol from the keys
+
+            # create the appropriate schema
+            if suffix in ['.czi', '.oib']:
+                schema = MetadataExtractor.create_schema_czi()
+                
+            else:
+                schema = MetadataExtractor.create_schema_tiff()
+        
+                # clean the raw dictionary to remove the first layer and @ symbol from the keys
             updated_dict = MetadataExtractor.remove_at_symbol(my_dict)
+        
             # extract metadata that matchs schema
-            metadata = extract_metadata(updated_dict, schema_czi)
+            metadata = extract_metadata(updated_dict, schema)
+
             return flatten_dict_keys_unique_id(metadata)
+        
+        return {} # Return an empty dictionary for unsupported file types
           
     def get_omexml_metadata(self, inf: str):
         '''Read the OME metadata from a file using Bio-formats

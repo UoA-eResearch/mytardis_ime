@@ -35,3 +35,28 @@ def test_loadYaml():
                     obj,
                 )
     assert len(metadata.projects) == 2
+
+def test_datafile_metadata_saved_as_none_if_empty(tmp_path: Path) -> None:
+    """Tests whether for datafile, if there is no metadata, it is saved as a None, rather 
+    than an empty dict. This is expected by the ingestion script.
+
+    Args:
+        metadata (IngestionMetadata): The ingestion metadata.
+    """
+    # Create a datafile in the same tmp path.
+    tmp_datafile = tmp_path / "data.txt"
+    tmp_datafile.touch()
+    # Create a new metadata collection, with the datafile.
+    metadata = IngestionMetadata()
+    df = Datafile()
+    df.path_abs = tmp_datafile
+    df.metadata = {}
+    metadata.datafiles.append(df)
+    new_path = str(tmp_path / "new.yaml")
+    # Save the ingestion file.
+    metadata.to_file(new_path)
+    # Load the newly saved ingestion file and find the datafile again.
+    new_metadata = IngestionMetadata.from_file(new_path)
+    assert len(new_metadata.datafiles) == 1
+    # Check that the metadata is now None.
+    assert new_metadata.datafiles[0].metadata is None

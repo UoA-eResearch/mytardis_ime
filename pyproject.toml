@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ime"
+name = "mytardis-ime"
 version = "0.1.0"
 description = "An ingestion metadata editor for MyTardis"
 authors = ["Noel <noel.zeng@auckland.ac.nz>", "Libby Li <libby.li@auckland.ac.nz>"]

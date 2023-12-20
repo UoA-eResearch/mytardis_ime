@@ -156,7 +156,7 @@ class MyTardisMetadataEditor(QMainWindow):
         confirm_msg = QMessageBox()
         confirm_msg.setWindowTitle("Remove this dataset?")
         confirm_msg.setText('Remove this dataset?')
-        confirm_msg.setInformativeText("You will have to add this dataset again once you remove it.")
+        confirm_msg.setInformativeText("Metadata you've entered will also be removed. Files in this dataset will be kept on your drive.")
         confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
         res = confirm_msg.exec()
         if res == QMessageBox.StandardButton.Cancel:
@@ -167,6 +167,8 @@ class MyTardisMetadataEditor(QMainWindow):
         self.metadata.datasets.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
         for file in datafiles_impacted:
             self.metadata.datafiles.remove(file)
+        # Finally, change property editor to no longer show dataset properties.
+        self.ui.datasetTabProps.setCurrentIndex(2)
 
     def delete_items_datafile(self) -> None:
         """
@@ -184,7 +186,7 @@ class MyTardisMetadataEditor(QMainWindow):
             confirm_msg = QMessageBox()
             confirm_msg.setWindowTitle("Remove this file?")
             confirm_msg.setText('Remove this file?')
-            confirm_msg.setInformativeText("You will have to add this file again once removed.")
+            confirm_msg.setInformativeText("Metadata you've entered or extracted will also be removed. The file will be kept on your drive.")
             confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
@@ -204,6 +206,8 @@ class MyTardisMetadataEditor(QMainWindow):
             self.add_dataset_to_tree(ds)
         for file in self.metadata.datafiles:
             self.add_datafile_to_tree(file)
+        # Finally, change property editor to no longer show datafile properties.
+        self.ui.datasetTabProps.setCurrentIndex(2)
 
     def experimentMenuTreeWidget(self, point) -> None:
         """
@@ -246,7 +250,7 @@ class MyTardisMetadataEditor(QMainWindow):
         confirm_msg = QMessageBox()
         confirm_msg.setWindowTitle("Remove this experiment?")
         confirm_msg.setText('Remove this experiment?')
-        confirm_msg.setInformativeText("You will have to add this experiment again once you remove it.")
+        confirm_msg.setInformativeText("Metadata you've entered will also be removed. Files in this experiment will be kept on your drive.")
         confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
         res = confirm_msg.exec()
         if res == QMessageBox.StandardButton.Cancel:
@@ -283,6 +287,9 @@ class MyTardisMetadataEditor(QMainWindow):
                 self.add_datafile_to_tree(file)
             else:
                 pass
+        # Finally, change property editor to no longer show dataset properties.
+        self.ui.experimentTabProps.setCurrentIndex(1)
+        self.ui.datasetTabProps.setCurrentIndex(2)
         
     def openWizardWindowSkipExperiment(self) -> None:
         """
@@ -345,7 +352,7 @@ class MyTardisMetadataEditor(QMainWindow):
         confirm_msg = QMessageBox()
         confirm_msg.setWindowTitle("Remove this project?")
         confirm_msg.setText('Remove this project?')
-        confirm_msg.setInformativeText("You will have to add this project again once you remove it.")
+        confirm_msg.setInformativeText("Metadata you've entered will also be removed. Files in this project will be kept on your drive.")
         confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
         res = confirm_msg.exec()
         if res == QMessageBox.StandardButton.Cancel:
@@ -395,6 +402,10 @@ class MyTardisMetadataEditor(QMainWindow):
                 self.add_datafile_to_tree(file)
             else:
                 pass
+        # Finally, change property editor to no longer show dataset properties.
+        self.ui.projectTabProps.setCurrentIndex(1)
+        self.ui.experimentTabProps.setCurrentIndex(1)
+        self.ui.datasetTabProps.setCurrentIndex(2)
         
     def openWizardWindowSkipProject(self) -> None:  
         """
