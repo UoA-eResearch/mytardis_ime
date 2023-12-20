@@ -229,7 +229,7 @@ class IDataStatus:
     Common interface for MyTardis models with data statud labels.
     """
 
-    data_status: Optional[DataStatus] = DataStatus.READY_FOR_INGESTION
+    data_status: Optional[DataStatus] = None
 
 
 @dataclass
