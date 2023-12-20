@@ -3,8 +3,7 @@ on:
   push:
     branches: 
       - main
-      - IDS-135_prepare-user-testing
-      - biru-user-testing-dev
+      - IDS-358-add-bioformats-jar-in-installer
 jobs:
   ci:
     strategy:
@@ -25,7 +24,7 @@ jobs:
       - name: Install poetry
         run: poetry install
       - name: Build executable
-        run: poetry run pyinstaller --noconsole --onefile --windowed app.py
+        run: poetry run pyinstaller pyinstaller.spec
       - name: Upload artifact to make it available
         uses: actions/upload-artifact@v3
         with:

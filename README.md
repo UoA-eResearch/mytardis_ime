@@ -42,6 +42,13 @@ You can automate the generation of PySide6 UI Python files from `.ui` files by r
 ```  
 The script will watch `.ui` files and regenerate Python files when changed.
 
+# Adding graphics
+If you need to include graphics and images, you need to add them into the resource file (default.qrc) using Qt Designer. Then, run:
+```
+./scripts/rcc.sh
+```
+The script will run `pyside6-rcc` and store the generated Python resource file in `ime/default_qrc.py`. 
+
 # Tests
 This project uses [Pytest](https://www.pytest.org/). Run tests using:
 ```
@@ -60,5 +67,5 @@ The resulting HTML documentation is available in the `docs/_build/html` director
 # Generating executables
 This project uses [pyinstaller](https://pypi.org/project/pyinstaller/) to generate a compiled executable. To use, run:
 ```
-poetry run pyinstaller app.py
+poetry run pyinstaller pyinstaller.spec
 ```
