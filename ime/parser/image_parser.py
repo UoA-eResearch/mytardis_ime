@@ -4,16 +4,21 @@ from jpype.types import *
 from ime.parser.parsers import MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
 from pathlib import Path
 
-loci = jpype.JPackage("loci")
 if not jpype.isJVMStarted(): # type: ignore
     jpype.startJVM(classpath="resources/bioformats_package.jar", convertStrings=True) # type: ignore
+loci = jpype.JPackage("loci")
 
-from loci import *
-from loci.formats import ImageReader
-from loci.common.services import ServiceFactory
-from loci.formats.services import OMEXMLService
-from loci.formats.in_ import DefaultMetadataOptions
-from loci.formats.in_ import MetadataLevel
+try:
+    # pylint: disable=import-error
+    from loci import *  
+    from loci.formats import ImageReader
+    from loci.common.services import ServiceFactory
+    from loci.formats.services import OMEXMLService
+    from loci.formats.in_ import DefaultMetadataOptions, MetadataLevel
+except ImportError:
+    pass
+
+
 loci.common.DebugTools.setRootLevel("ERROR")
 
 class ImageProcessor():
