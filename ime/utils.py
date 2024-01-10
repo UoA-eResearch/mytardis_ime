@@ -61,11 +61,13 @@ def path_for_asset(pth: Path) -> Path:
         Path: An absolute path for the asset.
     """
     try:
-    # Check for Pyinstaller bundle path. Return relative to it if possible.
+        # Check for Pyinstaller bundle path. Return relative to it if possible.
+        # https://pyinstaller.org/en/stable/runtime-information.html#run-time-
+        # information
         bundle_dir = Path(getattr(sys, '_MEIPASS'))
         return bundle_dir / pth
     except AttributeError:
-        # If sys._MEIPASS is not set, we're not running in a Pyinstaller bundle, 
+        # If sys._MEIPASS is not set, we're not running in a Pyinstaller bundle,
         # so try to resolve the path based on current working directory instead.
         return pth.resolve()
 

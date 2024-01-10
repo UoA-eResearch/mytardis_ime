@@ -3,7 +3,6 @@ on:
   push:
     branches: 
       - main
-      - IDS-358-add-bioformats-jar-in-installer
 jobs:
   ci:
     strategy:
@@ -22,9 +21,9 @@ jobs:
         run: poetry install
       - name: Build executable
         run: poetry run pyinstaller pyinstaller.spec
-      - name: Pack in tarball to prevent macOS and linux permission loss
+      - name: Pack in tarball to prevent macOS and Linux permission loss
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
-        run: tar -cvf dist.tar dist
+        run: tar -cvf wizard.tar dist/*
       - name: Upload artifact to make it available (Windows)
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v3
@@ -32,7 +31,8 @@ jobs:
           name: binary-${{matrix.os}}
           path: dist/*
       - name: Upload artifact to make it available (macOS and Linux)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v3
         with:
           name: binary-${{matrix.os}}
-          path: dist.tar
+          path: wizard.tar
