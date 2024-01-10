@@ -4,6 +4,7 @@ pyinstaller pyinstaller.spec
 """
 # -*- mode: python ; coding: utf-8 -*-
 
+
 block_cipher = None
 
 
@@ -11,7 +12,7 @@ a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[('resources/bioformats_package.jar', 'resources/bioformats_package.jar')],
+    datas=[('resources/bioformats_package.jar', 'resources')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

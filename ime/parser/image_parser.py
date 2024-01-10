@@ -1,25 +1,28 @@
+"""image_parser.py - Metadata extractor using bioformats."""
+from pathlib import Path
 import jpype
 import jpype.imports
 from jpype.types import *
 from ime.parser.parsers import MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
-from pathlib import Path
+from ime.utils import path_for_asset
+import logging
 
-if not jpype.isJVMStarted(): # type: ignore
-    jpype.startJVM(classpath="resources/bioformats_package.jar", convertStrings=True) # type: ignore
-loci = jpype.JPackage("loci")
+logger = logging.getLogger(__name__)
 
 try:
-    # pylint: disable=import-error
-    from loci import *  
+    # Try to start the JVM and import Java Bioformats classes
+    bioformats_jar_path = path_for_asset(Path("resources/bioformats_package.jar"))
+    if not jpype.isJVMStarted(): # type: ignore
+        jpype.startJVM(classpath=[str(bioformats_jar_path)], convertStrings=True) # type: ignore
+    import loci.common
     from loci.formats import ImageReader
     from loci.common.services import ServiceFactory
     from loci.formats.services import OMEXMLService
     from loci.formats.in_ import DefaultMetadataOptions, MetadataLevel
+    # Set output to be less verbose.
+    loci.common.DebugTools.setRootLevel("ERROR")
 except ImportError:
-    pass
-
-
-loci.common.DebugTools.setRootLevel("ERROR")
+    logger.error("Unable to import Bioformats classes.")
 
 class ImageProcessor():
     """
