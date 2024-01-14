@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="resources/">
+    <file>noun-empty-2900960.svg</file>
+    <file>text66-1-7.png</file>
+    <file>noun-file-4877058.svg</file>
+    <file>noun-folder-open-4877102.svg</file>
+    <file>noun-file-add-4877075.svg</file>
+  </qresource>
+</RCC>

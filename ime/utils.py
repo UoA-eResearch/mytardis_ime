@@ -4,7 +4,7 @@ utils.py - miscellaneous functions.
 
 from pathlib import Path
 from PySide6.QtWidgets import QHeaderView, QTreeWidget
-
+import sys
 
 def file_size_to_str(size: float) -> str:
     """
@@ -47,6 +47,30 @@ def setup_header_layout(header: QHeaderView) -> None:
     header.resizeSections(QHeaderView.ResizeMode.Stretch)
     for i in range(1, header.model().columnCount()):
         header.setSectionResizeMode(i, QHeaderView.ResizeMode.ResizeToContents)
+
+def path_for_asset(pth: Path) -> Path:
+    """Returns the absolute path for an asset that should be loaded.
+    If this code is running as part of a pyinstaller bundle, return
+    the absolute path relative to the bundle location. If not, return
+    the absolute path relative to current working directory.
+
+    Args:
+        pth (Path): The asset relative path.
+
+    Returns:
+        Path: An absolute path for the asset.
+    """
+    try:
+        # Check for Pyinstaller bundle path. Return relative to it if possible.
+        # https://pyinstaller.org/en/stable/runtime-information.html#run-time-
+        # information
+        bundle_dir = Path(getattr(sys, '_MEIPASS'))
+        return bundle_dir / pth
+    except AttributeError:
+        # If sys._MEIPASS is not set, we're not running in a Pyinstaller bundle,
+        # so try to resolve the path based on current working directory instead.
+        return pth.resolve()
+
 
 def st_dev(path: Path) -> int:
     """Returns the device that the file

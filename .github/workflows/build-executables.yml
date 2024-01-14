@@ -3,14 +3,11 @@ on:
   push:
     branches: 
       - main
-      - IDS-135_prepare-user-testing
-      - biru-user-testing-dev
 jobs:
   ci:
     strategy:
       matrix:
         python-version: ["3.10"]
-        poetry-version: ["1.4.1"]
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -20,14 +17,22 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Run image
         uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: ${{ matrix.poetry-version }}
       - name: Install poetry
         run: poetry install
       - name: Build executable
-        run: poetry run pyinstaller --noconsole --onefile --windowed app.py
-      - name: Upload artifact to make it available
+        run: poetry run pyinstaller pyinstaller.spec
+      - name: Pack in tarball to prevent macOS and Linux permission loss
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+        run: tar -cvf wizard.tar dist/*
+      - name: Upload artifact to make it available (Windows)
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v3
         with:
           name: binary-${{matrix.os}}
           path: dist/*
+      - name: Upload artifact to make it available (macOS and Linux)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: binary-${{matrix.os}}
+          path: wizard.tar
