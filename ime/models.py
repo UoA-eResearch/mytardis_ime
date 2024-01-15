@@ -257,13 +257,15 @@ class Project(
     identifiers: list[str] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
     object_schema: str = ""
+    delete_in_days: int = -1
+    archive_in_days: int = 365
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
         self.identifiers_delegate = ProjectIdentifiers(self)
 
 
-class ProjectIdentifiers(IIdentifiers):
+class ProjectIdentifiers(IIdentifiers): 
     """Project-specific methods related to identifiers."""
 
     def __init__(self, project: Project):
