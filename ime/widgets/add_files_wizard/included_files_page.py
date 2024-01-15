@@ -55,12 +55,13 @@ class IncludedFilesPage(QWizardPage):
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.FileMode.Directory)
         file_dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
-        dir = file_dialog.getExistingDirectory()
-        if dir == '':
+        options = QFileDialog.Option.DontUseNativeDialog
+        dir_to_add = file_dialog.getExistingDirectory(options=options)
+        if dir_to_add == '':
             # If user didn't choose a folder, exit.
             return
         filepaths: list[Path] = []
-        for root, _, files in os.walk(dir):
+        for root, _, files in os.walk(dir_to_add):
             # Go through all the nested subdirectories. 
             for file in files:
                 # Go through file in each nested directory.
@@ -119,7 +120,8 @@ class IncludedFilesPage(QWizardPage):
         """
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.FileMode.ExistingFiles)
-        filename = file_dialog.getOpenFileNames()  
+        options = QFileDialog.Option.DontUseNativeDialog
+        filename = file_dialog.getOpenFileNames(options=options)
         fpath = filename[0]
 
         new_files = []
