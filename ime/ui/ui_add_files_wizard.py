@@ -205,6 +205,7 @@ class Ui_ImportDataFiles(object):
 
         self.projectDescriptionTextEdit = QTextEdit(self.newProjectForm)
         self.projectDescriptionTextEdit.setObjectName(u"projectDescriptionTextEdit")
+        self.projectDescriptionTextEdit.setTabChangesFocus(True)
 
         self._3.setWidget(5, QFormLayout.FieldRole, self.projectDescriptionTextEdit)
 
@@ -320,6 +321,7 @@ class Ui_ImportDataFiles(object):
 
         self.experimentDescriptionLineEdit = QTextEdit(self.newExperimentForm)
         self.experimentDescriptionLineEdit.setObjectName(u"experimentDescriptionLineEdit")
+        self.experimentDescriptionLineEdit.setTabChangesFocus(True)
 
         self._2.setWidget(3, QFormLayout.FieldRole, self.experimentDescriptionLineEdit)
 

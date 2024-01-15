@@ -292,6 +292,9 @@
        </item>
        <item row="5" column="1">
         <widget class="QTextEdit" name="projectDescriptionTextEdit">
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
          <property name="placeholderText">
           <string>Description of your project to differentiate it from others</string>
          </property>
@@ -472,6 +475,9 @@
        </item>
        <item row="3" column="1">
         <widget class="QTextEdit" name="experimentDescriptionLineEdit">
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
          <property name="placeholderText">
           <string>Optional description of the experiment</string>
          </property>
