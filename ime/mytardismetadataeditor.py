@@ -58,6 +58,9 @@ class MyTardisMetadataEditor(QMainWindow):
         setup_section_autoresize(self.ui.experimentTreeWidget)
         setup_section_autoresize(self.ui.datasetTreeWidget)
 
+        # Prevent context menu that enables hiding toolbar from showing
+        self.ui.toolBar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
+
         self.show()
 
     def closeEvent(self, event):
