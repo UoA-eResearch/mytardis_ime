@@ -269,13 +269,6 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="projectDescriptionLabel">
-         <property name="text">
-          <string>Description</string>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="0">
         <widget class="QLabel" name="piLabel">
          <property name="text">
@@ -290,29 +283,20 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="5" column="0">
+        <widget class="QLabel" name="projectDescriptionLabel">
+         <property name="text">
+          <string>Description</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
         <widget class="QTextEdit" name="projectDescriptionTextEdit">
          <property name="tabChangesFocus">
           <bool>true</bool>
          </property>
          <property name="placeholderText">
-          <string>Description of your project to differentiate it from others</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLabel" name="label_40">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>The Principal Investigator will be able to access all data stored in this Project.</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
+          <string>Optional description of your project</string>
          </property>
         </widget>
        </item>
@@ -1125,7 +1109,7 @@
   <include location="../../resources/default.qrc"/>
   <include location="../../resources/default.qrc"/>
   <include location="../../resources/default.qrc"/>
-  <include location="../../default.qrc"/>
+  <include location="../../resources/default.qrc"/>
  </resources>
  <connections/>
 </ui>
