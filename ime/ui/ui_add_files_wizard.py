@@ -30,10 +30,6 @@ from ime.widgets.add_files_wizard.skip_dataset_intro_page import SkipDatasetIntr
 from ime.widgets.add_files_wizard.skip_experiment_intro_page import SkipExperimentIntroPage
 from ime.widgets.add_files_wizard.skip_project_intro_page import SkipProjectIntroPage
 import default_rc
-import default_rc
-import default_rc
-import default_rc
-import default_rc
 
 class Ui_ImportDataFiles(object):
     def setupUi(self, ImportDataFiles):
