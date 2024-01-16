@@ -191,7 +191,7 @@ class Ui_ImportDataFiles(object):
         self.projectDescriptionLabel = QLabel(self.newProjectForm)
         self.projectDescriptionLabel.setObjectName(u"projectDescriptionLabel")
 
-        self._3.setWidget(5, QFormLayout.LabelRole, self.projectDescriptionLabel)
+        self._3.setWidget(6, QFormLayout.LabelRole, self.projectDescriptionLabel)
 
         self.piLabel = QLabel(self.newProjectForm)
         self.piLabel.setObjectName(u"piLabel")
@@ -207,7 +207,18 @@ class Ui_ImportDataFiles(object):
         self.projectDescriptionTextEdit.setObjectName(u"projectDescriptionTextEdit")
         self.projectDescriptionTextEdit.setTabChangesFocus(True)
 
-        self._3.setWidget(5, QFormLayout.FieldRole, self.projectDescriptionTextEdit)
+        self._3.setWidget(6, QFormLayout.FieldRole, self.projectDescriptionTextEdit)
+
+        self.label_40 = QLabel(self.newProjectForm)
+        self.label_40.setObjectName(u"label_40")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_40.sizePolicy().hasHeightForWidth())
+        self.label_40.setSizePolicy(sizePolicy)
+        self.label_40.setWordWrap(True)
+
+        self._3.setWidget(5, QFormLayout.FieldRole, self.label_40)
 
 
         self.gridLayout_10.addWidget(self.newProjectForm, 2, 0, 1, 1)
@@ -720,6 +731,7 @@ class Ui_ImportDataFiles(object):
         self.piLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Principal Investigator", None))
         self.piLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"Username of the researcher primarily responsible for this project.", None))
         self.projectDescriptionTextEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"Description of your project to differentiate it from others", None))
+        self.label_40.setText(QCoreApplication.translate("ImportDataFiles", u"The Principal Investigator will be able to access all data stored in this Project.", None))
         self.label_15.setText(QCoreApplication.translate("ImportDataFiles", u"You can add more metadata and access controls for the project later.", None))
         self.label_2.setText(QCoreApplication.translate("ImportDataFiles", u"New Project", None))
         self.label_18.setText(QCoreApplication.translate("ImportDataFiles", u"Experiment", None))
@@ -749,7 +761,7 @@ class Ui_ImportDataFiles(object):
         self.label_26.setText(QCoreApplication.translate("ImportDataFiles", u"<a href=\"https://uoa-eresearch.github.io/mytardis_ime/user/identifiers.html\">What should I use as an identifier?</a>", None))
         self.datasetInstrumentLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"A unique identifier to the instrument that the data was generated on. Currently there is no standard persistent identifier that has widespread community adoption (DOIs are the most likely candidate).", None))
         self.datasetInstrumentLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Instrument identifier", None))
-        self.label_39.setText(QCoreApplication.translate("ImportDataFiles", u"<html><head/><body><p><a href=\"https://uoa-eresearch.github.io/mytardis_ime/user/finding-instrument-id.html\"><span style=\" text-decoration: underline; color:#1b6acb;\">How do I find my instrument's identifier (PID)?</span></a></p></body></html>", None))
+        self.label_39.setText(QCoreApplication.translate("ImportDataFiles", u"<a href=\"https://uoa-eresearch.github.io/mytardis_ime/user/finding-instrument-id.html\">How do I find my instrument's identifier (PID)?</a>", None))
         self.label_6.setText(QCoreApplication.translate("ImportDataFiles", u"You can add more metadata and access controls for the dataset later.", None))
         self.label_28.setText(QCoreApplication.translate("ImportDataFiles", u"Add an Experiment to a Project", None))
         self.label_27.setText(QCoreApplication.translate("ImportDataFiles", u"You will be adding a new Experiment into the following Project:", None))
