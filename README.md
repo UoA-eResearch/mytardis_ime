@@ -15,7 +15,8 @@ A metadata editor for files being ingested into MyTardis. Written with PySide6 a
 
 
 # Set up for development
-In order to run the image metadata extraction scripts, your device needs JAVA installed. Download [Java JDK](https://www.oracle.com/nz/java/technologies/downloads/#jdk20-linux)
+
+Your device needs Java installed for the automated metadata extraction feature to work. Please ensure a Java JDK is installed on your system, such as the [Adoptium Java JDK](https://adoptium.net/).
 
 This project uses [poetry](https://python-poetry.org/).
 Set up Poetry, then run:

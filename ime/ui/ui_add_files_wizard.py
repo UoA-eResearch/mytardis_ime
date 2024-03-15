@@ -30,15 +30,12 @@ from ime.widgets.add_files_wizard.skip_dataset_intro_page import SkipDatasetIntr
 from ime.widgets.add_files_wizard.skip_experiment_intro_page import SkipExperimentIntroPage
 from ime.widgets.add_files_wizard.skip_project_intro_page import SkipProjectIntroPage
 import default_rc
-import default_rc
-import default_rc
-import default_rc
 
 class Ui_ImportDataFiles(object):
     def setupUi(self, ImportDataFiles):
         if not ImportDataFiles.objectName():
             ImportDataFiles.setObjectName(u"ImportDataFiles")
-        ImportDataFiles.resize(863, 510)
+        ImportDataFiles.resize(862, 510)
         self.introductionPage = QWizardPage()
         self.introductionPage.setObjectName(u"introductionPage")
         self.gridLayout_4 = QGridLayout(self.introductionPage)
@@ -187,11 +184,6 @@ class Ui_ImportDataFiles(object):
 
         self._3.setWidget(3, QFormLayout.FieldRole, self.label_24)
 
-        self.projectDescriptionLabel = QLabel(self.newProjectForm)
-        self.projectDescriptionLabel.setObjectName(u"projectDescriptionLabel")
-
-        self._3.setWidget(5, QFormLayout.LabelRole, self.projectDescriptionLabel)
-
         self.piLabel = QLabel(self.newProjectForm)
         self.piLabel.setObjectName(u"piLabel")
 
@@ -202,8 +194,14 @@ class Ui_ImportDataFiles(object):
 
         self._3.setWidget(4, QFormLayout.FieldRole, self.piLineEdit)
 
+        self.projectDescriptionLabel = QLabel(self.newProjectForm)
+        self.projectDescriptionLabel.setObjectName(u"projectDescriptionLabel")
+
+        self._3.setWidget(5, QFormLayout.LabelRole, self.projectDescriptionLabel)
+
         self.projectDescriptionTextEdit = QTextEdit(self.newProjectForm)
         self.projectDescriptionTextEdit.setObjectName(u"projectDescriptionTextEdit")
+        self.projectDescriptionTextEdit.setTabChangesFocus(True)
 
         self._3.setWidget(5, QFormLayout.FieldRole, self.projectDescriptionTextEdit)
 
@@ -319,6 +317,7 @@ class Ui_ImportDataFiles(object):
 
         self.experimentDescriptionLineEdit = QTextEdit(self.newExperimentForm)
         self.experimentDescriptionLineEdit.setObjectName(u"experimentDescriptionLineEdit")
+        self.experimentDescriptionLineEdit.setTabChangesFocus(True)
 
         self._2.setWidget(3, QFormLayout.FieldRole, self.experimentDescriptionLineEdit)
 
@@ -423,6 +422,7 @@ class Ui_ImportDataFiles(object):
 
         self.datasetInstrumentLineEdit = QLineEdit(self.newDatasetForm_2)
         self.datasetInstrumentLineEdit.setObjectName(u"datasetInstrumentLineEdit")
+        self.datasetInstrumentLineEdit.setFocusPolicy(Qt.StrongFocus)
 
         self._6.setWidget(3, QFormLayout.FieldRole, self.datasetInstrumentLineEdit)
 
@@ -673,21 +673,22 @@ class Ui_ImportDataFiles(object):
         QWidget.setTabOrder(self.projectNameLineEdit, self.projectIDLineEdit)
         QWidget.setTabOrder(self.projectIDLineEdit, self.piLineEdit)
         QWidget.setTabOrder(self.piLineEdit, self.projectDescriptionTextEdit)
-        QWidget.setTabOrder(self.projectDescriptionTextEdit, self.existingExperimentList)
-        QWidget.setTabOrder(self.existingExperimentList, self.newExperimentRadioButton)
-        QWidget.setTabOrder(self.newExperimentRadioButton, self.experimentNameLineEdit)
+        QWidget.setTabOrder(self.projectDescriptionTextEdit, self.existingExperimentRadioButton)
+        QWidget.setTabOrder(self.existingExperimentRadioButton, self.newExperimentRadioButton)
+        QWidget.setTabOrder(self.newExperimentRadioButton, self.existingExperimentList)
+        QWidget.setTabOrder(self.existingExperimentList, self.experimentNameLineEdit)
         QWidget.setTabOrder(self.experimentNameLineEdit, self.experimentIDLineEdit)
         QWidget.setTabOrder(self.experimentIDLineEdit, self.experimentDescriptionLineEdit)
         QWidget.setTabOrder(self.experimentDescriptionLineEdit, self.existingDatasetRadioButton)
-        QWidget.setTabOrder(self.existingDatasetRadioButton, self.existingDatasetList)
-        QWidget.setTabOrder(self.existingDatasetList, self.newDatasetRadioButton)
-        QWidget.setTabOrder(self.newDatasetRadioButton, self.datasetNameLineEdit)
+        QWidget.setTabOrder(self.existingDatasetRadioButton, self.newDatasetRadioButton)
+        QWidget.setTabOrder(self.newDatasetRadioButton, self.existingDatasetList)
+        QWidget.setTabOrder(self.existingDatasetList, self.datasetNameLineEdit)
         QWidget.setTabOrder(self.datasetNameLineEdit, self.datasetIDLineEdit)
-        QWidget.setTabOrder(self.datasetIDLineEdit, self.datafiletableWidget)
-        QWidget.setTabOrder(self.datafiletableWidget, self.dirAddPushButton)
+        QWidget.setTabOrder(self.datasetIDLineEdit, self.datasetInstrumentLineEdit)
+        QWidget.setTabOrder(self.datasetInstrumentLineEdit, self.dirAddPushButton)
         QWidget.setTabOrder(self.dirAddPushButton, self.datafileAddPushButton)
         QWidget.setTabOrder(self.datafileAddPushButton, self.datafileDeletePushButton)
-        QWidget.setTabOrder(self.datafileDeletePushButton, self.existingExperimentRadioButton)
+        QWidget.setTabOrder(self.datafileDeletePushButton, self.datafiletableWidget)
 
         self.retranslateUi(ImportDataFiles)
 
@@ -702,7 +703,7 @@ class Ui_ImportDataFiles(object):
         self.label_10.setText(QCoreApplication.translate("ImportDataFiles", u"In MyTardis, data are organised in a hierarchy. Files are grouped into Datasets. Datasets are organised into Experiments. Experiments belong to a Project. You can attach metadata at each level to make it easier for you and your collaborators to find and reuse your data. ", None))
         self.label_11.setText(QCoreApplication.translate("ImportDataFiles", u"This dialog will help you create the Project, Experiment and Dataset to put your files under. You can re-run this dialog for other files that need to be organised separately.", None))
         self.label_4.setText(QCoreApplication.translate("ImportDataFiles", u"Project", None))
-        self.label.setText(QCoreApplication.translate("ImportDataFiles", u"First, let's find or create the project you are adding the data files to.", None))
+        self.label.setText(QCoreApplication.translate("ImportDataFiles", u"Find or create the project you are adding the data files to.", None))
         self.existingProjectRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Add this data into an existing project.", None))
         self.newProjectRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Create a new project for this data.", None))
         self.label_13.setText(QCoreApplication.translate("ImportDataFiles", u"Enter some basic details for the new project, then click next.", None))
@@ -711,14 +712,14 @@ class Ui_ImportDataFiles(object):
         self.projectIDLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Project identifier", None))
         self.projectIDLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"A label for the Project, must be unique across Projects. Use letters and numbers.", None))
         self.label_24.setText(QCoreApplication.translate("ImportDataFiles", u"<a href=\"https://uoa-eresearch.github.io/mytardis_ime/user/identifiers.html\">What should I use as an identifier?</a>", None))
-        self.projectDescriptionLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Description", None))
         self.piLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Principal Investigator", None))
         self.piLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"Username of the researcher primarily responsible for this project.", None))
-        self.projectDescriptionTextEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"Description of your project to differentiate it from others", None))
+        self.projectDescriptionLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Description", None))
+        self.projectDescriptionTextEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"Optional description of your project", None))
         self.label_15.setText(QCoreApplication.translate("ImportDataFiles", u"You can add more metadata and access controls for the project later.", None))
         self.label_2.setText(QCoreApplication.translate("ImportDataFiles", u"New Project", None))
         self.label_18.setText(QCoreApplication.translate("ImportDataFiles", u"Experiment", None))
-        self.label_3.setText(QCoreApplication.translate("ImportDataFiles", u"Now, let's find or create the experiment the data files fits under.", None))
+        self.label_3.setText(QCoreApplication.translate("ImportDataFiles", u"Find or create the experiment the data files fits under.", None))
         self.existingExperimentRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Add this data to an existing experiment.", None))
         self.newExperimentRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Create a new experiment for this data.", None))
         self.label_20.setText(QCoreApplication.translate("ImportDataFiles", u"New Experiment", None))
@@ -732,7 +733,7 @@ class Ui_ImportDataFiles(object):
         self.experimentDescriptionLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"Optional description of the experiment", None))
         self.label_17.setText(QCoreApplication.translate("ImportDataFiles", u"You can add more metadata and access controls for the experiment later.", None))
         self.label_21.setText(QCoreApplication.translate("ImportDataFiles", u"Dataset", None))
-        self.label_5.setText(QCoreApplication.translate("ImportDataFiles", u"Nearly there! Let's find or create the dataset for your data files.", None))
+        self.label_5.setText(QCoreApplication.translate("ImportDataFiles", u"Find or create the dataset for your data files.", None))
         self.existingDatasetRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Add this data to an existing dataset.", None))
         self.newDatasetRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Create a new dataset for this data.", None))
         self.label_22.setText(QCoreApplication.translate("ImportDataFiles", u"New Dataset", None))
@@ -744,7 +745,7 @@ class Ui_ImportDataFiles(object):
         self.label_26.setText(QCoreApplication.translate("ImportDataFiles", u"<a href=\"https://uoa-eresearch.github.io/mytardis_ime/user/identifiers.html\">What should I use as an identifier?</a>", None))
         self.datasetInstrumentLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"A unique identifier to the instrument that the data was generated on. Currently there is no standard persistent identifier that has widespread community adoption (DOIs are the most likely candidate).", None))
         self.datasetInstrumentLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Instrument identifier", None))
-        self.label_39.setText(QCoreApplication.translate("ImportDataFiles", u"<a href=\"https://uoa-eresearch.github.io/mytardis_ime/user/finding-instrument-id.html\">How to find my instrument's persistent identifier(PID)?", None))
+        self.label_39.setText(QCoreApplication.translate("ImportDataFiles", u"<a href=\"https://uoa-eresearch.github.io/mytardis_ime/user/finding-instrument-id.html\">How do I find my instrument's identifier (PID)?</a>", None))
         self.label_6.setText(QCoreApplication.translate("ImportDataFiles", u"You can add more metadata and access controls for the dataset later.", None))
         self.label_28.setText(QCoreApplication.translate("ImportDataFiles", u"Add an Experiment to a Project", None))
         self.label_27.setText(QCoreApplication.translate("ImportDataFiles", u"You will be adding a new Experiment into the following Project:", None))
@@ -765,7 +766,7 @@ class Ui_ImportDataFiles(object):
         self.skipDataset_existingProjectName.setText("")
         self.skipDataset_existingDatasetName.setText("")
         self.label_23.setText(QCoreApplication.translate("ImportDataFiles", u"Datafiles", None))
-        self.label_7.setText(QCoreApplication.translate("ImportDataFiles", u"Finally, choose the files you wish to include in this dataset.", None))
+        self.label_7.setText(QCoreApplication.translate("ImportDataFiles", u"Choose the files you wish to include in this dataset.", None))
         ___qtablewidgetitem = self.datafiletableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("ImportDataFiles", u"Name", None));
         ___qtablewidgetitem1 = self.datafiletableWidget.horizontalHeaderItem(1)
