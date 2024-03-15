@@ -257,18 +257,17 @@ class Project(
     )
     identifiers: list[str] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = ""
+    object_schema: str = "" # MTUrl in ingestion script
     # fields to add for updated data status
     created_by: Optional[str] = None
     institution: Optional[List[str]] = None
     start_time: Optional[datetime | str] = None
     end_time: Optional[datetime | str] = None
     embargo_until: Optional[datetime | str] = None
-    active_stores: Optional[str] = None # List[ProjectStorageBox]
     archives: Optional[str] = None
     delete_in_days: int = -1
     archive_in_days: int = 365
-    url: Optional[str] = None # URLField
+    url: Optional[str] = None
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
@@ -384,11 +383,11 @@ class Experiment(
     description: str = ""
     identifiers: list[str] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = ""
+    object_schema: str = "" # MTUrl in ingestion script
     # fields to add for updated data status
     institution_name: Optional[str] = None
     created_by: Optional[str] = None
-    url: Optional[str] = None # URLField
+    url: Optional[str] = None # MTUrl in ingestion script
     locked: bool = False
     start_time: Optional[datetime | str] = None
     end_time: Optional[datetime | str] = None
@@ -506,7 +505,7 @@ class Dataset(
     instrument: str = ""
     identifiers: list[str] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = ""
+    object_schema: str = "" # MTUrl in ingestion script
     # fields to add for updated data status
     directory: Optional[Path] = None
     immutable: bool = False
@@ -625,7 +624,7 @@ class Datafile(YAMLDataclass, IAccessControl, IDataStatus):
     mimetype: str = ""
     dataset: str = ""
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = ""
+    object_schema: str = "" # MTUrl in ingestion script
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __getstate__(self) -> dict[str, Any]:
