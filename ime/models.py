@@ -264,7 +264,6 @@ class Project(
     start_time: Optional[datetime | str] = None
     end_time: Optional[datetime | str] = None
     embargo_until: Optional[datetime | str] = None
-    archives: Optional[str] = None
     delete_in_days: int = -1
     archive_in_days: int = 365
     url: Optional[str] = None
