@@ -57,14 +57,16 @@ class ImageProcessor():
 
         # check if the file is a supported file type
         if suffix in supported_suffix:
-        
             # get xml string and convert it to a dictoionary
             xml_string = self.get_omexml_metadata(inf)
             my_dict = MetadataExtractor.xml_to_dict(xml_string)
 
+            # remove unnecessary item with the key "StructuredAnnotations"
+            my_dict.pop('StructuredAnnotations')
+
             # create the appropriate schema
             if suffix in ['.czi', '.oib']:
-                schema = MetadataExtractor.create_schema_czi()
+                schema = MetadataExtractor.create_schema_develop_czi()
                 
             else:
                 schema = MetadataExtractor.create_schema_tiff()

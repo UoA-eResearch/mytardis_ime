@@ -3,6 +3,7 @@ import xmltodict
 
 
 class MetadataExtractor:
+    """A class for extracting metadata from XML strings."""
     @staticmethod
     def create_schema_czi() -> dict:
         """Create a schema for CZI metadata.
@@ -57,27 +58,55 @@ class MetadataExtractor:
             }
         }
         return schema
-
+    
     @staticmethod
-    def create_schema_test() -> dict[str, Any]:
+    def create_schema_develop_czi() -> dict[str, Any]:
         """Create a test schema.
 
         Returns:
             dict: The test schema.
         """
         schema = {
-            'Experimentor': {
-                'Username': 'string', 
+            'Experimenter': {
+                'UserName': None
             },
-            'Image':{
+            'Instrument': {
+                'Detector': [
+                    {
+                        'ID': None
+                    }
+                ],
+                'Objective': {
+                    'Immersion': None,
+                    'LensNA': None,
+                    'Model': None,
+                    'NominalMagnification': None
+                }
+            },
+            'Image': {
+                'Name': None,
                 'AcquisitionDate': None,
                 'Pixels': {
                     'DimensionOrder': None,
+                    'PhysicalSizeX': None,
+                    'PhysicalSizeXUnit': None,
+                    'PhysicalSizeY': None,
+                    'PhysicalSizeYUnit': None,
+                    'SignificantBits': None,
+                    'SizeC': None,
+                    'SizeT': None,
                     'SizeX': None,
                     'SizeY': None,
+                    'SizeZ': None,
+                    'Channel': [
+                        {
+                            'ID': None,
+                            'Fluor': None
+                        }
+                    ]
                 }
             }
-        }         
+        }
         return schema
 
     @staticmethod  
@@ -110,35 +139,12 @@ class MetadataExtractor:
                 # Filter out items with value None
                 filtered_dict = {key.replace('@', ''): remove_at_recursive(value) for key, value in obj.items() if value is not None}
                 return {k: v for k, v in filtered_dict.items() if v is not None}
-            elif isinstance(obj, list):
+            if isinstance(obj, list):
                 return [remove_at_recursive(element) for element in obj if element is not None]
-            else:
-                return obj
-            
+            return obj
+           
         return remove_at_recursive(raw_dict) # type: ignore
-    
-def extract_metadata(dictionary: dict, schema: dict) -> dict:
-    """Extract metadata from the dictionary based on the schema.
 
-    Args:
-        dictionary (dict): The dictionary containing the metadata.
-        schema (dict): The schema to match the metadata.
-
-    Returns:
-        dict: The extracted metadata.
-    """
-    extracted_metadata = {}
-    for key, value in schema.items():
-        if key in dictionary:
-            if isinstance(value, dict) and isinstance(dictionary[key], dict):
-                extracted_metadata[key] = extract_metadata(dictionary[key], value)
-            else:
-                extracted_metadata[key] = dictionary[key]
-    #extracted_metadata_yaml = yaml.dump(extracted_metadata)
-    #extracted_metadata_flattened = flatten_dict_keys(extract_metadata, separator='|')
-    return extracted_metadata
-
-@staticmethod
 def flatten_dict_keys_unique_id(dictionary: dict, separator: str ='|', prefix: str='', id_key: str='ID') -> dict:
     """
     Flatten the keys of a nested dictionary while incorporating the 'ID' value as part of the key.
@@ -166,3 +172,32 @@ def flatten_dict_keys_unique_id(dictionary: dict, separator: str ='|', prefix: s
         else:
             flattened_dict[new_key] = value
     return flattened_dict
+
+def extract_metadata(data: dict, schema: dict) -> dict:
+    """Extract metadata from the dictionary based on the schema.
+
+    Args:
+        dictionary (dict): The dictionary containing the metadata.
+        schema (dict): The schema to match the metadata.
+
+    Returns:
+        dict: The extracted metadata.
+    """
+    result = {}
+    for key, value in schema.items():
+        if isinstance(value, dict):
+            if key in data:
+                result[key] = extract_metadata(data[key], value)
+        elif isinstance(value, list):
+            if key in data:
+                result[key] = []
+                for item in data[key]:
+                    #str if has only one channel, dict if has multiple channels
+                    if isinstance(item, dict): 
+                        result[key].append(extract_metadata(item, value[0]))
+                    if isinstance(item, str):
+                        result[key].append(extract_metadata(data[key], value[0]))
+        else:
+            if key in data:
+                result[key] = data[key]
+    return result
