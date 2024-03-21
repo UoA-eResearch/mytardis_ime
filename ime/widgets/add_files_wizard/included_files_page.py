@@ -60,6 +60,7 @@ class IncludedFilesPage(QWizardPage):
             return
         filepaths: list[Path] = []
         for root, _, files in os.walk(dir):
+            # Go through all the nested subdirectories. 
             for file in files:
                 # Go through file in each nested directory.
                 path = Path(os.path.join(root, file))
