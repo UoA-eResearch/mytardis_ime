@@ -69,9 +69,9 @@ class ImageProcessor():
             else:
                 schema = MetadataExtractor.create_schema_tiff()
         
-                # clean the raw dictionary to remove the first layer and @ symbol from the keys
+            # clean the raw dictionary to remove the first layer and @ symbol from the keys
             updated_dict = MetadataExtractor.remove_at_symbol(my_dict)
-        
+
             # extract metadata that matchs schema
             metadata = extract_metadata(updated_dict, schema)
 

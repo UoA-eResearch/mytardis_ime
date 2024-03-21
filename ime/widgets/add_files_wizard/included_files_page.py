@@ -55,13 +55,11 @@ class IncludedFilesPage(QWizardPage):
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.FileMode.Directory)
         file_dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
-        options = QFileDialog.Option.DontUseNativeDialog
-        dir_to_add = file_dialog.getExistingDirectory(options=options)
-        if dir_to_add == '':
-            # If user didn't choose a folder, exit.
+        dir = file_dialog.getExistingDirectory()
+        if dir == '':
             return
         filepaths: list[Path] = []
-        for root, _, files in os.walk(dir_to_add):
+        for root, _, files in os.walk(dir):
             # Go through all the nested subdirectories. 
             for file in files:
                 # Go through file in each nested directory.
@@ -120,8 +118,7 @@ class IncludedFilesPage(QWizardPage):
         """
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.FileMode.ExistingFiles)
-        options = QFileDialog.Option.DontUseNativeDialog
-        filename = file_dialog.getOpenFileNames(options=options)
+        filename = file_dialog.getOpenFileNames()
         fpath = filename[0]
 
         new_files = []
@@ -265,7 +262,6 @@ class IncludedFilesPage(QWizardPage):
             name_cell = QTableWidgetItem(file.name)
             size = file.stat().st_size
             size_str = file_size_to_str(size)
-            #md5sum = self._calculate_md5(file)
             size_cell = QTableWidgetItem(size_str)
             # Store actual size value in cell. 
             size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
