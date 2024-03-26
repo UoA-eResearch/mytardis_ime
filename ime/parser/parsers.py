@@ -47,12 +47,20 @@ class MetadataExtractor:
         """
         schema = {
             'Image':{
+                'Name': None,
+                'AcquisitionDate': None,
                 "Pixels": {
+                    'DimensionOrder': None,
+                    'PhysicalSizeX': None,
+                    'PhysicalSizeXUnit': None,
+                    'PhysicalSizeY': None,
+                    'PhysicalSizeYUnit': None,
                     'SignificantBits': None,
-                    "DimensionOrder": "string",
-                    "SizeX": "integer",
-                    "SizeY": "integer",
-                    'Type': None,
+                    'SizeC': None,
+                    'SizeT': None,
+                    'SizeX': None,
+                    'SizeY': None,
+                    'SizeZ': None,
                     'Channel': None
                 }
             }
