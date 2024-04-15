@@ -3,7 +3,7 @@ from pathlib import Path
 import jpype
 import jpype.imports
 from jpype.types import *
-from ime.parser.parsers import MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
+from ime.parser.parsers import SCHEMA_CARL_ZEISS, MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
 from ime.utils import path_for_asset
 import logging
 
@@ -56,30 +56,24 @@ class ImageProcessor():
         suffix = Path(inf).suffix
 
         # check if the file is a supported file type
-        if suffix in supported_suffix:
-            # get xml string and convert it to a dictoionary
-            xml_string = self.get_omexml_metadata(inf)
-            my_dict = MetadataExtractor.xml_to_dict(xml_string)
-
-            # remove unnecessary item with the key "StructuredAnnotations"
-            my_dict.pop('StructuredAnnotations')
-
-            # create the appropriate schema
-            if suffix in ['.czi', '.oib']:
-                schema = MetadataExtractor.create_schema_czi_oib()
-                
-            else:
-                schema = MetadataExtractor.create_schema_tiff()
+        if suffix not in supported_suffix:
+            logger.error("Unsupported file type: %s", suffix)
+            return {} # Return an empty dictionary for unsupported file types
         
-            # clean the raw dictionary to remove the first layer and @ symbol from the keys
-            updated_dict = MetadataExtractor.remove_at_symbol(my_dict)
+        # get xml string and convert it to a dictoionary
+        xml_string = self.get_omexml_metadata(inf)
+        my_dict = MetadataExtractor.xml_to_dict(xml_string)
 
-            # extract metadata that matchs schema
-            metadata = extract_metadata(updated_dict, schema)
+        # remove unnecessary item with the key "StructuredAnnotations"
+        my_dict.pop('StructuredAnnotations')
+    
+        # clean the raw dictionary to remove the first layer and @ symbol from the keys
+        updated_dict = MetadataExtractor.remove_at_symbol(my_dict)
 
-            return flatten_dict_keys_unique_id(metadata)
-        
-        return {} # Return an empty dictionary for unsupported file types
+        # extract metadata that matchs schema
+        metadata = extract_metadata(updated_dict, SCHEMA_CARL_ZEISS)
+
+        return flatten_dict_keys_unique_id(metadata)
           
     def get_omexml_metadata(self, inf: str):
         '''Read the OME metadata from a file using Bio-formats

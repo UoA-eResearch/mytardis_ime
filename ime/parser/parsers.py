@@ -1,88 +1,52 @@
+"""parsers.py - Metadata extraction utilities."""
 from typing import Any
-import xmltodict
 
+xmltodict: Any = __import__('xmltodict')
+
+SCHEMA_CARL_ZEISS = {
+    'Experimenter': {
+        'UserName': None
+    },
+    'Instrument': {
+        'Detector': [
+            {
+                'ID': None
+            }
+        ],
+        'Objective': {
+            'Immersion': None,
+            'LensNA': None,
+            'Model': None,
+            'NominalMagnification': None
+        }
+    },
+    'Image': {
+        'Name': None,
+        'AcquisitionDate': None,
+        'Pixels': {
+            'DimensionOrder': None,
+            'PhysicalSizeX': None,
+            'PhysicalSizeXUnit': None,
+            'PhysicalSizeY': None,
+            'PhysicalSizeYUnit': None,
+            'SignificantBits': None,
+            'SizeC': None,
+            'SizeT': None,
+            'SizeX': None,
+            'SizeY': None,
+            'SizeZ': None,
+            'Channel': [
+                {
+                    'ID': None,
+                    'Fluor': None
+                }
+            ]
+        }
+    }
+}
 
 class MetadataExtractor:
-    """A class for extracting metadata from XML strings."""
-    @staticmethod
-    def create_schema_tiff() -> dict[str, Any]:
-        """Create a schema for tiff metadata.
-
-        Returns:
-            dict: The schema for tiff metadata.
-        """
-        schema = {
-            'Image':{
-                'Name': None,
-                'AcquisitionDate': None,
-                "Pixels": {
-                    'DimensionOrder': None,
-                    'PhysicalSizeX': None,
-                    'PhysicalSizeXUnit': None,
-                    'PhysicalSizeY': None,
-                    'PhysicalSizeYUnit': None,
-                    'SignificantBits': None,
-                    'SizeC': None,
-                    'SizeT': None,
-                    'SizeX': None,
-                    'SizeY': None,
-                    'SizeZ': None,
-                    'Channel': None
-                }
-            }
-        }
-        return schema
-    
-    @staticmethod
-    def create_schema_czi_oib() -> dict[str, Any]:
-        """Create a test schema.
-
-        Returns:
-            dict: The test schema.
-        """
-        schema = {
-            'Experimenter': {
-                'UserName': None
-            },
-            'Instrument': {
-                'Detector': [
-                    {
-                        'ID': None
-                    }
-                ],
-                'Objective': {
-                    'Immersion': None,
-                    'LensNA': None,
-                    'Model': None,
-                    'NominalMagnification': None
-                }
-            },
-            'Image': {
-                'Name': None,
-                'AcquisitionDate': None,
-                'Pixels': {
-                    'DimensionOrder': None,
-                    'PhysicalSizeX': None,
-                    'PhysicalSizeXUnit': None,
-                    'PhysicalSizeY': None,
-                    'PhysicalSizeYUnit': None,
-                    'SignificantBits': None,
-                    'SizeC': None,
-                    'SizeT': None,
-                    'SizeX': None,
-                    'SizeY': None,
-                    'SizeZ': None,
-                    'Channel': [
-                        {
-                            'ID': None,
-                            'Fluor': None
-                        }
-                    ]
-                }
-            }
-        }
-        return schema
-
+    """A class for extracting metadata from XML strings."""   
     @staticmethod  
     def xml_to_dict(xml_string: str) -> dict:
         """Convert XML string to a dictionary.
@@ -119,7 +83,12 @@ class MetadataExtractor:
            
         return remove_at_recursive(raw_dict) # type: ignore
 
-def flatten_dict_keys_unique_id(dictionary: dict, separator: str ='|', prefix: str='', id_key: str='ID') -> dict:
+def flatten_dict_keys_unique_id(
+        dictionary: dict,
+        separator: str ='|',
+        prefix: str='',
+        id_key: str='ID'
+    ) -> dict:
     """
     Flatten the keys of a nested dictionary while incorporating the 'ID' value as part of the key.
 
