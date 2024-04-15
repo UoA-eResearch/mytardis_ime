@@ -5,40 +5,6 @@ import xmltodict
 class MetadataExtractor:
     """A class for extracting metadata from XML strings."""
     @staticmethod
-    def create_schema_czi() -> dict:
-        """Create a schema for CZI metadata.
-
-        Returns:
-            dict: The schema for CZI metadata.
-        """
-        schema = {
-            'Instrument': {
-                'Detector': None,
-                'Objective': {
-                    'ID': 'string',
-                    'Model': None,
-                    'Immersion': None,
-                    'NominalMagnification': None,
-                    'WorkingDistance': None,
-                    'WorkingDistanceUnit': None
-                },
-            },
-            'Experimenter': {
-                'UserName': 'string', 
-            },
-            'Image':{
-                'AcquisitionDate': 'string',
-                'Pixels': {
-                    'DimensionOrder': 'string',
-                    'SizeX': 'integer',
-                    'SizeY': 'integer',
-                    'Channel': None
-                }
-            }
-        }         
-        return schema
-    
-    @staticmethod
     def create_schema_tiff() -> dict[str, Any]:
         """Create a schema for tiff metadata.
 
@@ -68,7 +34,7 @@ class MetadataExtractor:
         return schema
     
     @staticmethod
-    def create_schema_develop_czi() -> dict[str, Any]:
+    def create_schema_czi_oib() -> dict[str, Any]:
         """Create a test schema.
 
         Returns:

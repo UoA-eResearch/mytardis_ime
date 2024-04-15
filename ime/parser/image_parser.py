@@ -66,7 +66,7 @@ class ImageProcessor():
 
             # create the appropriate schema
             if suffix in ['.czi', '.oib']:
-                schema = MetadataExtractor.create_schema_develop_czi()
+                schema = MetadataExtractor.create_schema_czi_oib()
                 
             else:
                 schema = MetadataExtractor.create_schema_tiff()
