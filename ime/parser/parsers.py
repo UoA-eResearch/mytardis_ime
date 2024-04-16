@@ -1,85 +1,52 @@
+"""parsers.py - Metadata extraction utilities."""
 from typing import Any
-import xmltodict
 
+xmltodict: Any = __import__('xmltodict')
+
+SCHEMA_CARL_ZEISS = {
+    'Experimenter': {
+        'UserName': None
+    },
+    'Instrument': {
+        'Detector': [
+            {
+                'ID': None
+            }
+        ],
+        'Objective': {
+            'Immersion': None,
+            'LensNA': None,
+            'Model': None,
+            'NominalMagnification': None
+        }
+    },
+    'Image': {
+        'Name': None,
+        'AcquisitionDate': None,
+        'Pixels': {
+            'DimensionOrder': None,
+            'PhysicalSizeX': None,
+            'PhysicalSizeXUnit': None,
+            'PhysicalSizeY': None,
+            'PhysicalSizeYUnit': None,
+            'SignificantBits': None,
+            'SizeC': None,
+            'SizeT': None,
+            'SizeX': None,
+            'SizeY': None,
+            'SizeZ': None,
+            'Channel': [
+                {
+                    'ID': None,
+                    'Fluor': None
+                }
+            ]
+        }
+    }
+}
 
 class MetadataExtractor:
-    @staticmethod
-    def create_schema_czi() -> dict:
-        """Create a schema for CZI metadata.
-
-        Returns:
-            dict: The schema for CZI metadata.
-        """
-        schema = {
-            'Instrument': {
-                'Detector': None,
-                'Objective': {
-                    'ID': 'string',
-                    'Model': None,
-                    'Immersion': None,
-                    'NominalMagnification': None,
-                    'WorkingDistance': None,
-                    'WorkingDistanceUnit': None
-                },
-            },
-            'Experimenter': {
-                'UserName': 'string', 
-            },
-            'Image':{
-                'AcquisitionDate': 'string',
-                'Pixels': {
-                    'DimensionOrder': 'string',
-                    'SizeX': 'integer',
-                    'SizeY': 'integer',
-                    'Channel': None
-                }
-            }
-        }         
-        return schema
-    
-    @staticmethod
-    def create_schema_tiff() -> dict[str, Any]:
-        """Create a schema for tiff metadata.
-
-        Returns:
-            dict: The schema for tiff metadata.
-        """
-        schema = {
-            'Image':{
-                "Pixels": {
-                    'SignificantBits': None,
-                    "DimensionOrder": "string",
-                    "SizeX": "integer",
-                    "SizeY": "integer",
-                    'Type': None,
-                    'Channel': None
-                }
-            }
-        }
-        return schema
-
-    @staticmethod
-    def create_schema_test() -> dict[str, Any]:
-        """Create a test schema.
-
-        Returns:
-            dict: The test schema.
-        """
-        schema = {
-            'Experimentor': {
-                'Username': 'string', 
-            },
-            'Image':{
-                'AcquisitionDate': None,
-                'Pixels': {
-                    'DimensionOrder': None,
-                    'SizeX': None,
-                    'SizeY': None,
-                }
-            }
-        }         
-        return schema
-
+    """A class for extracting metadata from XML strings."""   
     @staticmethod  
     def xml_to_dict(xml_string: str) -> dict:
         """Convert XML string to a dictionary.
@@ -110,36 +77,18 @@ class MetadataExtractor:
                 # Filter out items with value None
                 filtered_dict = {key.replace('@', ''): remove_at_recursive(value) for key, value in obj.items() if value is not None}
                 return {k: v for k, v in filtered_dict.items() if v is not None}
-            elif isinstance(obj, list):
+            if isinstance(obj, list):
                 return [remove_at_recursive(element) for element in obj if element is not None]
-            else:
-                return obj
-            
+            return obj
+           
         return remove_at_recursive(raw_dict) # type: ignore
-    
-def extract_metadata(dictionary: dict, schema: dict) -> dict:
-    """Extract metadata from the dictionary based on the schema.
 
-    Args:
-        dictionary (dict): The dictionary containing the metadata.
-        schema (dict): The schema to match the metadata.
-
-    Returns:
-        dict: The extracted metadata.
-    """
-    extracted_metadata = {}
-    for key, value in schema.items():
-        if key in dictionary:
-            if isinstance(value, dict) and isinstance(dictionary[key], dict):
-                extracted_metadata[key] = extract_metadata(dictionary[key], value)
-            else:
-                extracted_metadata[key] = dictionary[key]
-    #extracted_metadata_yaml = yaml.dump(extracted_metadata)
-    #extracted_metadata_flattened = flatten_dict_keys(extract_metadata, separator='|')
-    return extracted_metadata
-
-@staticmethod
-def flatten_dict_keys_unique_id(dictionary: dict, separator: str ='|', prefix: str='', id_key: str='ID') -> dict:
+def flatten_dict_keys_unique_id(
+        dictionary: dict,
+        separator: str ='|',
+        prefix: str='',
+        id_key: str='ID'
+    ) -> dict:
     """
     Flatten the keys of a nested dictionary while incorporating the 'ID' value as part of the key.
 
@@ -166,3 +115,32 @@ def flatten_dict_keys_unique_id(dictionary: dict, separator: str ='|', prefix: s
         else:
             flattened_dict[new_key] = value
     return flattened_dict
+
+def extract_metadata(data: dict, schema: dict) -> dict:
+    """Extract metadata from the dictionary based on the schema.
+
+    Args:
+        dictionary (dict): The dictionary containing the metadata.
+        schema (dict): The schema to match the metadata.
+
+    Returns:
+        dict: The extracted metadata.
+    """
+    result = {}
+    for key, value in schema.items():
+        if isinstance(value, dict):
+            if key in data:
+                result[key] = extract_metadata(data[key], value)
+        elif isinstance(value, list):
+            if key in data:
+                result[key] = []
+                for item in data[key]:
+                    #str if has only one channel, dict if has multiple channels
+                    if isinstance(item, dict): 
+                        result[key].append(extract_metadata(item, value[0]))
+                    if isinstance(item, str):
+                        result[key].append(extract_metadata(data[key], value[0]))
+        else:
+            if key in data:
+                result[key] = data[key]
+    return result
