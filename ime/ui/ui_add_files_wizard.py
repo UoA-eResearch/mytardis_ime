@@ -30,6 +30,10 @@ from ime.widgets.add_files_wizard.skip_dataset_intro_page import SkipDatasetIntr
 from ime.widgets.add_files_wizard.skip_experiment_intro_page import SkipExperimentIntroPage
 from ime.widgets.add_files_wizard.skip_project_intro_page import SkipProjectIntroPage
 import default_rc
+import default_rc
+import default_rc
+import default_rc
+import default_rc
 
 class Ui_ImportDataFiles(object):
     def setupUi(self, ImportDataFiles):
@@ -433,6 +437,7 @@ class Ui_ImportDataFiles(object):
 
         self.label_39 = QLabel(self.newDatasetForm_2)
         self.label_39.setObjectName(u"label_39")
+        self.label_39.setOpenExternalLinks(True)
 
         self._6.setWidget(4, QFormLayout.FieldRole, self.label_39)
 
@@ -623,7 +628,7 @@ class Ui_ImportDataFiles(object):
         self.datafiletableWidget.setHorizontalHeaderItem(2, __qtablewidgetitem2)
         self.datafiletableWidget.setObjectName(u"datafiletableWidget")
         self.datafiletableWidget.setMinimumSize(QSize(540, 0))
-        self.datafiletableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.datafiletableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustIgnored)
         self.datafiletableWidget.setAutoScroll(True)
         self.datafiletableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.datafiletableWidget.horizontalHeader().setVisible(False)
@@ -706,7 +711,7 @@ class Ui_ImportDataFiles(object):
         self.label.setText(QCoreApplication.translate("ImportDataFiles", u"Find or create the project you are adding the data files to.", None))
         self.existingProjectRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Add this data into an existing project.", None))
         self.newProjectRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Create a new project for this data.", None))
-        self.label_13.setText(QCoreApplication.translate("ImportDataFiles", u"Enter some basic details for the new project, then click next.", None))
+        self.label_13.setText(QCoreApplication.translate("ImportDataFiles", u"Enter some basic details for the new project.", None))
         self.projectNameLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Project name", None))
         self.projectNameLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"A human-readable name for your project", None))
         self.projectIDLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Project identifier", None))
@@ -723,7 +728,7 @@ class Ui_ImportDataFiles(object):
         self.existingExperimentRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Add this data to an existing experiment.", None))
         self.newExperimentRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Create a new experiment for this data.", None))
         self.label_20.setText(QCoreApplication.translate("ImportDataFiles", u"New Experiment", None))
-        self.label_16.setText(QCoreApplication.translate("ImportDataFiles", u"Enter some basic details for the new experiment, then click next.", None))
+        self.label_16.setText(QCoreApplication.translate("ImportDataFiles", u"Enter some basic details for the new experiment.", None))
         self.experimentNameLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Experiment name", None))
         self.experimentNameLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"A human-readable name for your experiment", None))
         self.experimentIDLabel.setText(QCoreApplication.translate("ImportDataFiles", u"Experiment identifier", None))
@@ -737,7 +742,7 @@ class Ui_ImportDataFiles(object):
         self.existingDatasetRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Add this data to an existing dataset.", None))
         self.newDatasetRadioButton.setText(QCoreApplication.translate("ImportDataFiles", u"Create a new dataset for this data.", None))
         self.label_22.setText(QCoreApplication.translate("ImportDataFiles", u"New Dataset", None))
-        self.label_19.setText(QCoreApplication.translate("ImportDataFiles", u"Enter some basic details for the new dataset, then click next.", None))
+        self.label_19.setText(QCoreApplication.translate("ImportDataFiles", u"Enter some basic details for the new dataset.", None))
         self.datasetNameLabel_2.setText(QCoreApplication.translate("ImportDataFiles", u"Dataset name", None))
         self.datasetNameLineEdit.setPlaceholderText(QCoreApplication.translate("ImportDataFiles", u"A human-readable name for your dataset", None))
         self.datasetIDLabel_2.setText(QCoreApplication.translate("ImportDataFiles", u"Dataset identifier", None))

@@ -224,7 +224,7 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label_13">
       <property name="text">
-       <string>Enter some basic details for the new project, then click next.</string>
+       <string>Enter some basic details for the new project.</string>
       </property>
      </widget>
     </item>
@@ -421,7 +421,7 @@
     <item>
      <widget class="QLabel" name="label_16">
       <property name="text">
-       <string>Enter some basic details for the new experiment, then click next.</string>
+       <string>Enter some basic details for the new experiment.</string>
       </property>
      </widget>
     </item>
@@ -590,7 +590,7 @@
     <item>
      <widget class="QLabel" name="label_19">
       <property name="text">
-       <string>Enter some basic details for the new dataset, then click next.</string>
+       <string>Enter some basic details for the new dataset.</string>
       </property>
      </widget>
     </item>
@@ -656,6 +656,9 @@
         <widget class="QLabel" name="label_39">
          <property name="text">
           <string>&lt;a href=&quot;https://uoa-eresearch.github.io/mytardis_ime/user/finding-instrument-id.html&quot;&gt;How do I find my instrument's identifier (PID)?&lt;/a&gt;</string>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -946,7 +949,7 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustToContents</enum>
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
         </property>
         <property name="autoScroll">
          <bool>true</bool>
