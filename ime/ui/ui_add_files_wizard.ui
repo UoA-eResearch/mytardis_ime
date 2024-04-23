@@ -949,7 +949,7 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustIgnored</enum>
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
         </property>
         <property name="autoScroll">
          <bool>true</bool>

@@ -628,7 +628,7 @@ class Ui_ImportDataFiles(object):
         self.datafiletableWidget.setHorizontalHeaderItem(2, __qtablewidgetitem2)
         self.datafiletableWidget.setObjectName(u"datafiletableWidget")
         self.datafiletableWidget.setMinimumSize(QSize(540, 0))
-        self.datafiletableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustIgnored)
+        self.datafiletableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
         self.datafiletableWidget.setAutoScroll(True)
         self.datafiletableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.datafiletableWidget.horizontalHeader().setVisible(False)
