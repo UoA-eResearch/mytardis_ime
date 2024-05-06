@@ -33,6 +33,15 @@ class Ui_ProjectAccessControlTab(object):
         ProjectAccessControlTab.setMinimumSize(QSize(400, 500))
         self.verticalLayout = QVBoxLayout(ProjectAccessControlTab)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.label_6 = QLabel(ProjectAccessControlTab)
+        self.label_6.setObjectName(u"label_6")
+        font = QFont()
+        font.setPointSize(17)
+        font.setBold(True)
+        self.label_6.setFont(font)
+
+        self.verticalLayout.addWidget(self.label_6)
+
         self.label_3 = QLabel(ProjectAccessControlTab)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setMinimumSize(QSize(0, 0))

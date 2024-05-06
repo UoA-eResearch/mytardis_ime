@@ -33,6 +33,15 @@ class Ui_OverridableAccessControlTab(object):
         OverridableAccessControlTab.setMinimumSize(QSize(400, 500))
         self.verticalLayout = QVBoxLayout(OverridableAccessControlTab)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.label_5 = QLabel(OverridableAccessControlTab)
+        self.label_5.setObjectName(u"label_5")
+        font = QFont()
+        font.setPointSize(17)
+        font.setBold(True)
+        self.label_5.setFont(font)
+
+        self.verticalLayout.addWidget(self.label_5)
+
         self.label_3 = QLabel(OverridableAccessControlTab)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setWordWrap(True)

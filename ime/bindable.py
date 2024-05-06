@@ -102,8 +102,8 @@ class BoundObject(QObject, Generic[T]):
         self._bound_object = obj
         self.bound_object_changed.emit(old_obj, obj)
         for field_name in self._bound_inputs:
-            for input in self._bound_inputs[field_name]:
-                self._set_initial_val_and_connect(field_name, input)
+            for input_field in self._bound_inputs[field_name]:
+                self._set_initial_val_and_connect(field_name, input_field)
 
     
     def bind_input(self, field_name: str, input: Union[IBindableInput, QWidget]) -> None:
@@ -133,13 +133,13 @@ class BoundObject(QObject, Generic[T]):
             Nothing.
         """
         for field_name in self._bound_inputs:
-            for input in self._bound_inputs[field_name]:
-                if input.value_changed is None or getattr(input, "_value_changed_slot", None) is None:
+            for input_field in self._bound_inputs[field_name]:
+                if input_field.value_changed is None or getattr(input, "_value_changed_slot", None) is None:
                     continue
                 # Disconnect the slot we've created
-                assert input._value_changed_slot is not None
-                input.value_changed.disconnect(input._value_changed_slot)
-                input._value_changed_slot = None
+                assert input_field._value_changed_slot is not None
+                input_field.value_changed.disconnect(input_field._value_changed_slot)
+                input_field._value_changed_slot = None
 
     def _bind_field_with_default(self, field_name: str, input: QWidget) -> None:
         """

@@ -107,7 +107,7 @@ class AddFilesWizard(QWizard):
         proj_new_page.registerField(FieldNames.PROJECT_ID.value + "*", self.ui.projectIDLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_NAME.value + "*", self.ui.projectNameLineEdit)
         proj_new_page.registerField(FieldNames.PROJECT_PI.value + "*", self.ui.piLineEdit)
-        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value + "*", self.ui.projectDescriptionTextEdit, "plainText", cast(Signal, self.ui.projectDescriptionTextEdit.textChanged))
+        proj_new_page.registerField(FieldNames.PROJECT_DESCRIPTION.value, self.ui.projectDescriptionTextEdit, "plainText")
 
     def _register_experiment_fields(self) -> None:
         """Private method that sets up signals and fields for Experiment pages.
@@ -371,6 +371,7 @@ class AddFilesWizard(QWizard):
             dir_path = Path(table.item(row, 2).text())
             datafile.filename = file_name
             datafile.size = file_size
+            datafile.directory = dir_path.parent
             datafile.path_abs = dir_path
             result.file_list.append(datafile)
         # get image metadata and attach to datafile's metadata
