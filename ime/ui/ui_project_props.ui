@@ -23,7 +23,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_7">
       <property name="geometry">
@@ -97,12 +97,12 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>98</width>
-        <height>34</height>
+        <width>500</width>
+        <height>427</height>
        </rect>
       </property>
       <attribute name="label">
-       <string>User and group access</string>
+       <string>Group access</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
@@ -136,15 +136,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ProjectAccessControlTab</class>
-   <extends>QWidget</extends>
-   <header>ime.widgets.project_access_control_tab</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>IdentifierList</class>
    <extends>QWidget</extends>
    <header>ime.widgets.identifier_list</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProjectAccessControlTab</class>
+   <extends>QWidget</extends>
+   <header>ime.widgets.project_access_control_tab</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

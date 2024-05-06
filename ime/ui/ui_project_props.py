@@ -90,7 +90,7 @@ class Ui_ProjectPropertyEditor(object):
         self.toolBox_3.addItem(self.page_7, u"General")
         self.page_8 = QWidget()
         self.page_8.setObjectName(u"page_8")
-        self.page_8.setGeometry(QRect(0, 0, 98, 34))
+        self.page_8.setGeometry(QRect(0, 0, 500, 427))
         self.gridLayout_4 = QGridLayout(self.page_8)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.accessControlTab = ProjectAccessControlTab(self.page_8)
@@ -98,7 +98,7 @@ class Ui_ProjectPropertyEditor(object):
 
         self.gridLayout_4.addWidget(self.accessControlTab, 0, 0, 1, 1)
 
-        self.toolBox_3.addItem(self.page_8, u"User and group access")
+        self.toolBox_3.addItem(self.page_8, u"Group access")
         self.metadata_tab = MetadataTab()
         self.metadata_tab.setObjectName(u"metadata_tab")
         self.metadata_tab.setGeometry(QRect(0, 0, 98, 28))
@@ -111,7 +111,7 @@ class Ui_ProjectPropertyEditor(object):
 
         self.retranslateUi(ProjectPropertyEditor)
 
-        self.toolBox_3.setCurrentIndex(0)
+        self.toolBox_3.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(ProjectPropertyEditor)
@@ -124,7 +124,7 @@ class Ui_ProjectPropertyEditor(object):
         self.label_27.setText(QCoreApplication.translate("ProjectPropertyEditor", u"Description", None))
         self.leadResearcherLabel.setText(QCoreApplication.translate("ProjectPropertyEditor", u"Principal Investigator", None))
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_7), QCoreApplication.translate("ProjectPropertyEditor", u"General", None))
-        self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_8), QCoreApplication.translate("ProjectPropertyEditor", u"User and group access", None))
+        self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.page_8), QCoreApplication.translate("ProjectPropertyEditor", u"Group access", None))
         self.toolBox_3.setItemText(self.toolBox_3.indexOf(self.metadata_tab), QCoreApplication.translate("ProjectPropertyEditor", u"Metadata", None))
     # retranslateUi
 

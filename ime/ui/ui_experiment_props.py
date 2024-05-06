@@ -27,7 +27,7 @@ class Ui_ExperimentPropertyEditor(object):
     def setupUi(self, ExperimentPropertyEditor):
         if not ExperimentPropertyEditor.objectName():
             ExperimentPropertyEditor.setObjectName(u"ExperimentPropertyEditor")
-        ExperimentPropertyEditor.resize(518, 487)
+        ExperimentPropertyEditor.resize(524, 487)
         self.gridLayout = QGridLayout(ExperimentPropertyEditor)
         self.gridLayout.setObjectName(u"gridLayout")
         self.toolBox_2 = QToolBox(ExperimentPropertyEditor)
@@ -35,7 +35,7 @@ class Ui_ExperimentPropertyEditor(object):
         self.toolBox_2.setMinimumSize(QSize(500, 0))
         self.page_4 = QWidget()
         self.page_4.setObjectName(u"page_4")
-        self.page_4.setGeometry(QRect(0, 0, 506, 367))
+        self.page_4.setGeometry(QRect(0, 0, 500, 361))
         self.gridLayout_3 = QGridLayout(self.page_4)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.label_18 = QLabel(self.page_4)
@@ -71,7 +71,7 @@ class Ui_ExperimentPropertyEditor(object):
         self.toolBox_2.addItem(self.page_4, u"General")
         self.page_5 = QWidget()
         self.page_5.setObjectName(u"page_5")
-        self.page_5.setGeometry(QRect(0, 0, 506, 367))
+        self.page_5.setGeometry(QRect(0, 0, 500, 361))
         self.verticalLayout_4 = QVBoxLayout(self.page_5)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.accessControlTab = OverridableAccessControlTab(self.page_5)
@@ -79,10 +79,10 @@ class Ui_ExperimentPropertyEditor(object):
 
         self.verticalLayout_4.addWidget(self.accessControlTab)
 
-        self.toolBox_2.addItem(self.page_5, u"User and group access")
+        self.toolBox_2.addItem(self.page_5, u"Group access")
         self.metadata_tab = MetadataTab()
         self.metadata_tab.setObjectName(u"metadata_tab")
-        self.metadata_tab.setGeometry(QRect(0, 0, 506, 367))
+        self.metadata_tab.setGeometry(QRect(0, 0, 500, 361))
         self.gridLayout_13 = QGridLayout(self.metadata_tab)
         self.gridLayout_13.setObjectName(u"gridLayout_13")
         self.toolBox_2.addItem(self.metadata_tab, u"Metadata")
@@ -92,7 +92,7 @@ class Ui_ExperimentPropertyEditor(object):
 
         self.retranslateUi(ExperimentPropertyEditor)
 
-        self.toolBox_2.setCurrentIndex(0)
+        self.toolBox_2.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(ExperimentPropertyEditor)
@@ -104,7 +104,7 @@ class Ui_ExperimentPropertyEditor(object):
         self.label_19.setText(QCoreApplication.translate("ExperimentPropertyEditor", u"Description", None))
         self.label_15.setText(QCoreApplication.translate("ExperimentPropertyEditor", u"Experiment name", None))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_4), QCoreApplication.translate("ExperimentPropertyEditor", u"General", None))
-        self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), QCoreApplication.translate("ExperimentPropertyEditor", u"User and group access", None))
+        self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), QCoreApplication.translate("ExperimentPropertyEditor", u"Group access", None))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.metadata_tab), QCoreApplication.translate("ExperimentPropertyEditor", u"Metadata", None))
     # retranslateUi
 

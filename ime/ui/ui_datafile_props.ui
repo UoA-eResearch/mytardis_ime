@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>300</height>
+    <width>1205</width>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,15 +23,15 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="fileinfoDescription">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>506</width>
-        <height>180</height>
+        <width>1181</width>
+        <height>484</height>
        </rect>
       </property>
       <attribute name="label">
@@ -63,12 +63,12 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>96</width>
-        <height>26</height>
+        <width>1181</width>
+        <height>484</height>
        </rect>
       </property>
       <attribute name="label">
-       <string>User and group access</string>
+       <string>Group access</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
@@ -81,8 +81,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>96</width>
-        <height>26</height>
+        <width>1181</width>
+        <height>484</height>
        </rect>
       </property>
       <attribute name="label">

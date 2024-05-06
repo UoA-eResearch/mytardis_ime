@@ -19,7 +19,6 @@ class OverridableAccessControlTab(QWidget):
     """
     _data: IAccessControl
     _inherited_data: IAccessControl
-    _user_model: DataclassTableModel[UserACL]
     _group_model: DataclassTableModel[GroupACL]
 
     def __init__(self, parent = None) -> None:
@@ -29,16 +28,11 @@ class OverridableAccessControlTab(QWidget):
         ui.setupUi(self)
         self.ui = ui
         # Set up handling overrides.
-        ui.usersOverride.toggled.connect(
-            self._handle_users_override_toggled
-        )
         ui.groupsOverride.toggled.connect(
             self._handle_groups_override_toggled
         )
         # Set up the AccessControlLists.
-        self._user_model = DataclassTableModel(UserACL)
         self._group_model = DataclassTableModel(GroupACL)
-        ui.users.set_model(self._user_model)
         ui.groups.set_model(self._group_model)
         
     def _reset_checkbox(self, check_box: QCheckBox, value: bool) -> None:
@@ -63,26 +57,18 @@ class OverridableAccessControlTab(QWidget):
         self._inherited_data = inherited_data
         ui = self.ui
         # Check if there is override access control values.
-        has_users_override = data.users is not None
         has_groups_override = data.groups is not None
         # Reset checkbox states.
-        self._reset_checkbox(ui.usersOverride, has_users_override)
         self._reset_checkbox(ui.groupsOverride, has_groups_override)
         # Reset whether the access control lists can be changed.
-        ui.users.set_disabled(not has_users_override)
         ui.groups.set_disabled(not has_groups_override)
         # Show override user/group access control if it exists,
         # otherwise show inherited access control.
-        if data.users is not None:
-            user_ac = data.users
-        else:
-            user_ac = inherited_data.users or []
         if data.groups is not None:
             group_ac = data.groups
         else:
             group_ac = inherited_data.groups or []
         # Set data for the AccessControlList widgets.
-        self._user_model.set_instance_list(user_ac)
         self._group_model.set_instance_list(group_ac)
 
     def _display_confirm_reset_override_dialog(self) -> bool:
@@ -99,31 +85,6 @@ class OverridableAccessControlTab(QWidget):
         msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
         res = msg.exec()
         return res == QMessageBox.StandardButton.Ok
-    
-    def _handle_users_override_toggled(self, enabled: bool) -> None:
-        """Private method for handling when the override checkbox
-        is checked.
-
-        Args:
-            enabled (bool): Whether the override checkbox is checked.
-        """
-        if enabled:
-            # Add an empty array in the field, which represents overriding the
-            # inherited field.
-            ac_list = []
-            setattr(self._data, "users", ac_list)
-            self._user_model.set_instance_list(ac_list)
-            self.ui.users.set_disabled(False)
-        else:
-            # Only confirm unchecking this checkbox if user confirms.
-            is_confirmed = self._display_confirm_reset_override_dialog()
-            if not is_confirmed:
-                # Reset the checkbox so it still shows overriding.
-                self._reset_checkbox(self.ui.usersOverride, True)
-            else:
-                setattr(self._data, "users", None)
-                self._user_model.set_instance_list(self._inherited_data.users or [])
-                self.ui.users.set_disabled(True)
 
     def _handle_groups_override_toggled(self, enabled: bool) -> None:
         if enabled:
