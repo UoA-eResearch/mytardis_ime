@@ -726,7 +726,6 @@ class MyTardisMetadataEditor(QMainWindow):
             return
         try:
             data_yaml = IngestionMetadata.from_file(fileName)
-            print(data_yaml)
             self.display_load_data(data_yaml)
         except Exception as e:
             msg_box = QMessageBox()

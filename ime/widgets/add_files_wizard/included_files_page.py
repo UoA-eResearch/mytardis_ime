@@ -3,7 +3,7 @@ from pathlib import Path
 import typing
 from PySide6 import QtCore
 
-from PySide6.QtWidgets import QFileDialog, QMessageBox, QTableWidget, QTableWidgetItem
+from PySide6.QtWidgets import QFileDialog, QMessageBox, QTableWidgetItem
 from PySide6.QtWidgets import QWizardPage
 import ime.widgets.add_files_wizard.wizard as afw
 from ime.utils import file_size_to_str, st_dev
@@ -116,7 +116,7 @@ class IncludedFilesPage(QWizardPage):
         Returns:
             A list of QFileInfo objects for the selected files.
         """
-        file_dialog = QFileDialog()
+        file_dialog = QFileDialog(self)
         file_dialog.setFileMode(QFileDialog.FileMode.ExistingFiles)
         filename = file_dialog.getOpenFileNames()
         fpath = filename[0]
