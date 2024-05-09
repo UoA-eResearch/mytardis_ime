@@ -1,9 +1,11 @@
 Tutorial: Annotating your first dataset
 #######################################
 
-Welcome! This tutorial will help you annotate a dataset using the Instrument Data Wizard, in preparation for ingestion into |service_name|.
+Welcome to our tutorial! Here, we'll guide you through the process of annotating a dataset using the Instrument Data Wizard, getting it ready for ingestion into |service_name|.
 
-This tutorial will follow a fictional scenario. You are Sarah, a PhD student collecting data for your cancer genomics research, and you would like to store that data in your University's instrument data repository.
+Imagine yourself in a fictional scenario: You're Sarah, a PhD student collecting data for your cancer genomics research, and you would like to store that data in your University's instrument data repository.
+
+In this tutorial, we'll provide step-by-step instructions to help you annotate your dataset effectively, whether you're starting from scratch or using a template YAML file downloaded from |service_name|.
 
 .. admonition:: What is Instrument Data Wizard?
    
