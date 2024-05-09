@@ -748,8 +748,8 @@ class IngestionMetadata:
             data_dev = st_dev(self.data_path)
             if new_path_dev != data_dev:
                 raise DifferentDeviceException()
+        self._relativise_file_paths(path.parent)
         with open(path, "w") as file:
-            self._relativise_file_paths(path.parent)
             file.write(self._to_yaml())
         self.file_path = path
 

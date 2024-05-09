@@ -797,6 +797,7 @@ class MyTardisMetadataEditor(QMainWindow):
                     # If retrying, restart the loop.
                     continue
             except Exception as e:
+                logging.error(e)
                 error_msg = QMessageBox()
                 error_msg.setWindowTitle("Can't save ingestion file")
                 error_msg.setText("An error occurred when saving the ingestion file.")
