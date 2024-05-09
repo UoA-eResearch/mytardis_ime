@@ -371,6 +371,7 @@ class AddFilesWizard(QWizard):
             dir_path = Path(table.item(row, 2).text())
             datafile.filename = file_name
             datafile.size = file_size
+            datafile.directory = dir_path.parent
             datafile.path_abs = dir_path
             result.file_list.append(datafile)
         # get image metadata and attach to datafile's metadata
