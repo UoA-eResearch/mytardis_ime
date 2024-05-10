@@ -10,7 +10,8 @@ Welcome to Instrument Data Wizard's documentation!
    :maxdepth: 2
    :caption: Tutorials
    
-   user/tutorial-first-dataset/index
+   user/tutorial-first-dataset-from-scratch/index
+   user/tutorial-new-dataset-for-existing-projects/index
 
 .. toctree::
    :maxdepth: 2

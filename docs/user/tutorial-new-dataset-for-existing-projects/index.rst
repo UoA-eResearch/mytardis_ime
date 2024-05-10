@@ -1,11 +1,11 @@
-Tutorial: Annotating your first dataset
-#######################################
+Tutorial: Annotating your new dataset for existing projects
+#############################################################
 
 Welcome to our tutorial! Here, we'll guide you through the process of annotating a dataset using the Instrument Data Wizard, getting it ready for ingestion into |service_name|.
 
 Imagine yourself in a fictional scenario: You're Sarah, a PhD student collecting data for your cancer genomics research, and you would like to store that data in your University's instrument data repository.
 
-In this tutorial, we'll provide step-by-step instructions to help you annotate your dataset effectively, whether you're starting from scratch or using a template YAML file downloaded from |service_name|.
+In this tutorial, we'll provide step-by-step instructions to help you annotate your dataset effectively by **using a template YAML file downloaded from Instrument Data Service for existing projects**.
 
 .. admonition:: What is Instrument Data Wizard?
    
@@ -16,7 +16,6 @@ In this tutorial, we'll provide step-by-step instructions to help you annotate y
    :caption: Table of Content
    :hidden:
    
-   decide-structure
    import-data
    metadata
    access-control
@@ -24,7 +23,7 @@ In this tutorial, we'll provide step-by-step instructions to help you annotate y
 
 By the end of this tutorial, you will learn about the Instrument Data Wizard and |service_name|, and how to:
 
-* decide on a structure for your data for |service_name|.
+* download a template YAML file for existing projects from |service_name|.
 * import data files into the Instrument Data Wizard and add structure to it.
 * annotate your data with metadata 
 * restrict access to your data or subset of the data
