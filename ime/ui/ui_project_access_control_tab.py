@@ -67,16 +67,6 @@ class Ui_ProjectAccessControlTab(object):
 
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
 
-        self.label_2 = QLabel(ProjectAccessControlTab)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
-
-        self.users = AccessControlList(ProjectAccessControlTab)
-        self.users.setObjectName(u"users")
-
-        self.gridLayout.addWidget(self.users, 2, 1, 1, 1)
-
 
         self.verticalLayout.addLayout(self.gridLayout)
 
@@ -93,9 +83,8 @@ class Ui_ProjectAccessControlTab(object):
     def retranslateUi(self, ProjectAccessControlTab):
         ProjectAccessControlTab.setWindowTitle(QCoreApplication.translate("ProjectAccessControlTab", u"Form", None))
         self.label_6.setText(QCoreApplication.translate("ProjectAccessControlTab", u"Access Control", None))
-        self.label_3.setText(QCoreApplication.translate("ProjectAccessControlTab", u"You can control the users and groups who can access data in this Project. By default, the Principal Investigator is the only person who is able to access all data stored in this Project.", None))
-        self.label_4.setText(QCoreApplication.translate("ProjectAccessControlTab", u"Groups and users added here will have access to data in this Project. You can grant additional rights like ownership, ability to download data and see sensitive metadata.", None))
+        self.label_3.setText(QCoreApplication.translate("ProjectAccessControlTab", u"You can control the groups who can access this project. These settings apply to all data in the Project, unless overridden.", None))
+        self.label_4.setText(QCoreApplication.translate("ProjectAccessControlTab", u"Groups added here will have access to data in this Project. You can grant additional rights like ownership, ability to download data, and see sensitive metadata.", None))
         self.label.setText(QCoreApplication.translate("ProjectAccessControlTab", u"Groups", None))
-        self.label_2.setText(QCoreApplication.translate("ProjectAccessControlTab", u"Users", None))
     # retranslateUi
 

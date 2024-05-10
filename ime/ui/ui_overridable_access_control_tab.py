@@ -56,35 +56,20 @@ class Ui_OverridableAccessControlTab(object):
 
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.usersOverride = QCheckBox(OverridableAccessControlTab)
-        self.usersOverride.setObjectName(u"usersOverride")
+        self.label = QLabel(OverridableAccessControlTab)
+        self.label.setObjectName(u"label")
 
-        self.gridLayout.addWidget(self.usersOverride, 2, 1, 1, 1)
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
 
         self.groupsOverride = QCheckBox(OverridableAccessControlTab)
         self.groupsOverride.setObjectName(u"groupsOverride")
 
         self.gridLayout.addWidget(self.groupsOverride, 0, 1, 1, 1)
 
-        self.users = AccessControlList(OverridableAccessControlTab)
-        self.users.setObjectName(u"users")
-
-        self.gridLayout.addWidget(self.users, 3, 1, 1, 1)
-
         self.groups = AccessControlList(OverridableAccessControlTab)
         self.groups.setObjectName(u"groups")
 
         self.gridLayout.addWidget(self.groups, 1, 1, 1, 1)
-
-        self.label_2 = QLabel(OverridableAccessControlTab)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
-
-        self.label = QLabel(OverridableAccessControlTab)
-        self.label.setObjectName(u"label")
-
-        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
 
 
         self.verticalLayout.addLayout(self.gridLayout)
@@ -102,11 +87,9 @@ class Ui_OverridableAccessControlTab(object):
     def retranslateUi(self, OverridableAccessControlTab):
         OverridableAccessControlTab.setWindowTitle(QCoreApplication.translate("OverridableAccessControlTab", u"Form", None))
         self.label_5.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Access Control", None))
-        self.label_3.setText(QCoreApplication.translate("OverridableAccessControlTab", u"You can control the users and groups who can access data. These settings apply to all data in this object, unless overridden.", None))
-        self.label_4.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Groups and users added here will have access to data in this object. You can grant additional rights like ownership, ability to download and see sensitive metadata.", None))
-        self.usersOverride.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Override", None))
-        self.groupsOverride.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Override", None))
-        self.label_2.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Users", None))
+        self.label_3.setText(QCoreApplication.translate("OverridableAccessControlTab", u"You can control the groups who can access this object. These settings apply to all data in this object, unless overridden.", None))
+        self.label_4.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Groups added here will have access to data in this object. You can grant additional rights like ownership, download and see sensitive metadata.", None))
         self.label.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Groups", None))
+        self.groupsOverride.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Override", None))
     # retranslateUi
 

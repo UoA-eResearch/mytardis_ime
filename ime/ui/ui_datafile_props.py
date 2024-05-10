@@ -25,7 +25,7 @@ class Ui_DatafilePropertyEditor(object):
     def setupUi(self, DatafilePropertyEditor):
         if not DatafilePropertyEditor.objectName():
             DatafilePropertyEditor.setObjectName(u"DatafilePropertyEditor")
-        DatafilePropertyEditor.resize(518, 300)
+        DatafilePropertyEditor.resize(1205, 610)
         self.gridLayout = QGridLayout(DatafilePropertyEditor)
         self.gridLayout.setObjectName(u"gridLayout")
         self.toolBox_4 = QToolBox(DatafilePropertyEditor)
@@ -33,7 +33,7 @@ class Ui_DatafilePropertyEditor(object):
         self.toolBox_4.setMinimumSize(QSize(500, 0))
         self.fileinfoDescription = QWidget()
         self.fileinfoDescription.setObjectName(u"fileinfoDescription")
-        self.fileinfoDescription.setGeometry(QRect(0, 0, 506, 180))
+        self.fileinfoDescription.setGeometry(QRect(0, 0, 1181, 484))
         self.gridLayout_7 = QGridLayout(self.fileinfoDescription)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
         self.formLayout_7 = QFormLayout()
@@ -55,7 +55,7 @@ class Ui_DatafilePropertyEditor(object):
         self.toolBox_4.addItem(self.fileinfoDescription, u"General")
         self.page_10 = QWidget()
         self.page_10.setObjectName(u"page_10")
-        self.page_10.setGeometry(QRect(0, 0, 96, 26))
+        self.page_10.setGeometry(QRect(0, 0, 1181, 484))
         self.gridLayout_2 = QGridLayout(self.page_10)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.accessControlTab = OverridableAccessControlTab(self.page_10)
@@ -63,10 +63,10 @@ class Ui_DatafilePropertyEditor(object):
 
         self.gridLayout_2.addWidget(self.accessControlTab, 0, 0, 1, 1)
 
-        self.toolBox_4.addItem(self.page_10, u"User and group access")
+        self.toolBox_4.addItem(self.page_10, u"Group access")
         self.metadata_tab = MetadataTab()
         self.metadata_tab.setObjectName(u"metadata_tab")
-        self.metadata_tab.setGeometry(QRect(0, 0, 96, 26))
+        self.metadata_tab.setGeometry(QRect(0, 0, 1181, 484))
         self.toolBox_4.addItem(self.metadata_tab, u"Metadata")
 
         self.gridLayout.addWidget(self.toolBox_4, 0, 0, 1, 1)
@@ -74,7 +74,7 @@ class Ui_DatafilePropertyEditor(object):
 
         self.retranslateUi(DatafilePropertyEditor)
 
-        self.toolBox_4.setCurrentIndex(0)
+        self.toolBox_4.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(DatafilePropertyEditor)
@@ -84,7 +84,7 @@ class Ui_DatafilePropertyEditor(object):
         DatafilePropertyEditor.setWindowTitle(QCoreApplication.translate("DatafilePropertyEditor", u"Form", None))
         self.fileInfoFilenameLabel.setText(QCoreApplication.translate("DatafilePropertyEditor", u"Filename", None))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.fileinfoDescription), QCoreApplication.translate("DatafilePropertyEditor", u"General", None))
-        self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_10), QCoreApplication.translate("DatafilePropertyEditor", u"User and group access", None))
+        self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.page_10), QCoreApplication.translate("DatafilePropertyEditor", u"Group access", None))
         self.toolBox_4.setItemText(self.toolBox_4.indexOf(self.metadata_tab), QCoreApplication.translate("DatafilePropertyEditor", u"Metadata", None))
     # retranslateUi
 

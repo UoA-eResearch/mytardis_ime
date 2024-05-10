@@ -1,7 +1,5 @@
 """parsers.py - Metadata extraction utilities."""
-from typing import Any
-
-xmltodict: Any = __import__('xmltodict')
+import xmltodict
 
 SCHEMA_CARL_ZEISS = {
     'Experimenter': {

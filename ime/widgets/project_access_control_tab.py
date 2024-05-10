@@ -8,7 +8,6 @@ class ProjectAccessControlTab(QWidget):
     """
     Project-specific widget for access control tab.
     """
-    _user_model: DataclassTableModel[UserACL]
     _group_model: DataclassTableModel[GroupACL]
 
     def __init__(self, parent = None) -> None:
@@ -17,9 +16,7 @@ class ProjectAccessControlTab(QWidget):
         ui.setupUi(self)
         self.ui = ui
         # Set up the AccessControlLists.
-        self._user_model = DataclassTableModel(UserACL)
         self._group_model = DataclassTableModel(GroupACL)
-        ui.users.set_model(self._user_model)
         ui.groups.set_model(self._group_model)
 
     def set_data(self, data: IAccessControl) -> None:
@@ -33,5 +30,4 @@ class ProjectAccessControlTab(QWidget):
             data.users = []
         if data.groups == None:
             data.groups = []
-        self._user_model.set_instance_list(data.users)
         self._group_model.set_instance_list(data.groups)

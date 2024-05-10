@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
+    <width>524</width>
     <height>487</height>
    </rect>
   </property>
@@ -23,15 +23,15 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_4">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>506</width>
-        <height>367</height>
+        <width>500</width>
+        <height>361</height>
        </rect>
       </property>
       <attribute name="label">
@@ -75,12 +75,12 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>506</width>
-        <height>367</height>
+        <width>500</width>
+        <height>361</height>
        </rect>
       </property>
       <attribute name="label">
-       <string>User and group access</string>
+       <string>Group access</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
@@ -93,8 +93,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>506</width>
-        <height>367</height>
+        <width>500</width>
+        <height>361</height>
        </rect>
       </property>
       <attribute name="label">
