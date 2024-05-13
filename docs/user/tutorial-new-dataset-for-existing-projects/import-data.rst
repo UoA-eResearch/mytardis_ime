@@ -1,12 +1,12 @@
 Import your data into the Instrument Data Wizard
 ================================================
 
-To access your existing Projects, Experiments, and Datasets in |service_name|, you need to first create a YAML file that will be used for the connection. This YAML file will contain the necessary information for the projects and list your projects.
+To add new objects to your existing Projects, Experiments, and Datasets in |service_name|, you need to first download a YAML file from |service_name|. This YAML file will contain the necessary information for the existing objects and list your projects.
 
 * Log in to the `Instrument Data Service <https://instruments.nectar.auckland.ac.nz/>`_ with 2 factor auth (2FA).
 * Point to this `download link <https://test-instruments.nectar.auckland.ac.nz/yaml/idw-yaml>`_. You will get a Template 'ingestion.yaml' dowloaded.
 
-To import your data into the Instrument Data Wizard, open the Wizard and click the `Open` button. Your projects from |service_name| will be listed.
+Open the Wizard and click the `Open` button, choose the downloaded YAML file. Your projects from |service_name| will be listed.
 
 .. image:: import-1.png
 

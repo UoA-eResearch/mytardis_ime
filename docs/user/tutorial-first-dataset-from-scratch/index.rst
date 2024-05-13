@@ -1,5 +1,5 @@
 Tutorial: Annotating your first dataset from scratch
-#####################################################
+####################################################
 
 Welcome to our tutorial! Here, we'll guide you through the process of annotating a dataset using the Instrument Data Wizard, getting it ready for ingestion into |service_name|.
 
