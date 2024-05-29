@@ -8,7 +8,7 @@ To add new objects to your existing Projects, Experiments, and Datasets in |serv
 
 Open the Wizard and click the `Open` button, choose the downloaded YAML file. Your projects from |service_name| will be listed.
 
-.. image:: import-1.png
+.. image:: metadata-4.png
 
 You can click the `Import data files` button, and the step-by-step wizard will prompt you to add files and ask how you would like to organise them.
 
