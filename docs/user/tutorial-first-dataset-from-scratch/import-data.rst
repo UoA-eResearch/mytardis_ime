@@ -67,7 +67,7 @@ Save your progress
 ------------------
 Instrument Data Wizard keeps all your data structure and annotations in an YAML-formatted ingestion file. This file is read by the |service_name| ingestion process to find all your data files. It needs to be saved in the root folder of your data.
 
-Click the `Save` button, and save your ingestion file under the tutorial data folder. Name it "ingestion.yaml". 
+Click the `Save` button, and save your ingestion file under the tutorial data folder. Name it :code:`ingestion.yaml`. 
 
 .. admonition:: Save as you go!
     
@@ -81,4 +81,3 @@ Try to re-create the hierarchy in the Instrument Data Wizard as described in the
 Once finished, your editor should look like this.
 
 .. image:: import-exercise.png
-

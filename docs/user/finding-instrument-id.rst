@@ -3,7 +3,7 @@
 Finding my instrument's persistent identifier (PID)
 ###################################################
 
-.. list-table::
+.. list-table:: The Biomedical Imaging Research Unit (BIRU) Instruments
     :widths: 25 25
     :header-rows: 1
 
