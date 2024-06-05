@@ -278,7 +278,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
         for file in self.metadata.datafiles:
             if file.dataset in ds_id: 
-                #print(file)
                 self.add_datafile_to_tree(file)
             else:
                 pass
@@ -393,7 +392,6 @@ class MyTardisMetadataEditor(QMainWindow):
 
         for file in self.metadata.datafiles:
             if file.dataset in ds_id: 
-                #print(file)
                 self.add_datafile_to_tree(file)
             else:
                 pass
