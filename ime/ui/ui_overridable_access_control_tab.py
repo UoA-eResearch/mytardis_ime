@@ -86,6 +86,7 @@ class Ui_OverridableAccessControlTab(object):
 
     def retranslateUi(self, OverridableAccessControlTab):
         OverridableAccessControlTab.setWindowTitle(QCoreApplication.translate("OverridableAccessControlTab", u"Form", None))
+        self.label_5.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Access Control", None))
         self.label_3.setText(QCoreApplication.translate("OverridableAccessControlTab", u"You can control the groups who can access this object. These settings apply to all data in this object, unless overridden.", None))
         self.label_4.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Groups added here will have access to data in this object. You can grant additional rights like ownership, download and see sensitive metadata.", None))
         self.label.setText(QCoreApplication.translate("OverridableAccessControlTab", u"Groups", None))
