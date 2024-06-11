@@ -4,8 +4,9 @@ Import your data into the Instrument Data Wizard
 To add new data to your existing Projects, Experiments, and Datasets in |service_name|, you need to first download a YAML file from |service_name|. This YAML file will contain the necessary information for the existing objects and list your projects.
 
 * Log in to the `Instrument Data Service <https://test-instruments.nectar.auckland.ac.nz/>`_ with 2 factor auth (2FA).
-* Click your username on top right and go to "Get Instrument Data Wizard" page. You will find the starter Yaml file :code:`ingestion.yaml` dowload link.
+* Click your username on top right and go to "Get Instrument Data Wizard" page. Head to the 'Starter file' session and download the starter file :code:`ingestion.yaml`.
 
+.. image:: import-00.png
 .. image:: import-0.png
 
 * Move the :code:`ingestion.yaml` file to the root folder of your data in the BIRU share drive.
@@ -15,7 +16,6 @@ In this tutorial, we have prepared the :code:`ingestion.yaml` for you in the tut
 To get started, open the Wizard and click the `Open` button. Select the provided YAML file. Your projects from |service_name| will be listed.
 
 .. image:: metadata-4.png
-
 The file includes one project called “Breast Cancer Drug Treatment Genomics” with ID “BREAST04”, one experiment named “Keytruda” with ID “Keytruda”, and one dataset named "Raw" with ID “Keytruda-Raw”.
 
 To add new data, you can click the `Import data files` button, and the step-by-step wizard will prompt you to add files and ask how you would like to organise them.
