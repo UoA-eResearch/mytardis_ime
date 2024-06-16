@@ -70,7 +70,6 @@ def Username_yaml_representer(dumper: Dumper, data: Username) -> ScalarNode:
 def Username_yaml_constructor(
     loader: Loader | FullLoader | UnsafeLoader, node: Node
 ) -> Username:
-
     """Function for deserialising a node from YAML.
     When parsing YAML that contains Username instances, you'll
     need to add this function as a constructor.
