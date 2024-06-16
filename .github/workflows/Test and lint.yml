@@ -31,7 +31,7 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
 
     - name: isort - check import formatting
-      run: PYTHONPATH=src/ poetry run python -m isort --check --diff --profile black --skip=ime/ui/* ime
+      run: PYTHONPATH=src/ poetry run python -m isort --check --diff --profile black --skip=ime/ui/ ime
 
     - name: Black - check code formatting
       run: PYTHONPATH=src/ poetry run python -m black --check --diff --extend-exclude ime/ui/ ime
