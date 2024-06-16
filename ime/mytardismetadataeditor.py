@@ -5,22 +5,33 @@ from typing import Any, Callable, cast
 import jpype
 from PySide6 import QtCore
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QFileDialog, QHeaderView, QMainWindow, QMenu,
-                               QMessageBox, QStackedWidget, QTreeWidget,
-                               QTreeWidgetItem)
+from PySide6.QtWidgets import (
+    QFileDialog,
+    QHeaderView,
+    QMainWindow,
+    QMenu,
+    QMessageBox,
+    QStackedWidget,
+    QTreeWidget,
+    QTreeWidgetItem,
+)
 
 # Import the resources file
 import default_rc
-from ime.models import (Datafile, Dataset, DataStatus,
-                        DifferentDeviceException, Experiment,
-                        IngestionMetadata, Project)
+from ime.models import (
+    Datafile,
+    Dataset,
+    DataStatus,
+    DifferentDeviceException,
+    Experiment,
+    IngestionMetadata,
+    Project,
+)
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_main_window import Ui_MainWindow
-from ime.widgets.add_files_wizard.wizard import (AddFilesWizard,
-                                                 AddFilesWizardResult)
+from ime.widgets.add_files_wizard.wizard import AddFilesWizard, AddFilesWizardResult
 
-from .utils import (file_size_to_str, setup_header_layout,
-                    setup_section_autoresize)
+from .utils import file_size_to_str, setup_header_layout, setup_section_autoresize
 
 
 class MyTardisMetadataEditor(QMainWindow):
@@ -55,12 +66,24 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTreeWidget.itemClicked.connect(self.onClickedExperiment)
         self.ui.projectTreeWidget.itemClicked.connect(self.onClickedProject)
 
-        self.ui.datasetTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.ui.datasetTreeWidget.customContextMenuRequested.connect(self.datasetMenuContextTree)
-        self.ui.experimentTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.ui.experimentTreeWidget.customContextMenuRequested.connect(self.experimentMenuTreeWidget)
-        self.ui.projectTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.ui.projectTreeWidget.customContextMenuRequested.connect(self.projectMenuTreeWidget)
+        self.ui.datasetTreeWidget.setContextMenuPolicy(
+            Qt.ContextMenuPolicy.CustomContextMenu
+        )
+        self.ui.datasetTreeWidget.customContextMenuRequested.connect(
+            self.datasetMenuContextTree
+        )
+        self.ui.experimentTreeWidget.setContextMenuPolicy(
+            Qt.ContextMenuPolicy.CustomContextMenu
+        )
+        self.ui.experimentTreeWidget.customContextMenuRequested.connect(
+            self.experimentMenuTreeWidget
+        )
+        self.ui.projectTreeWidget.setContextMenuPolicy(
+            Qt.ContextMenuPolicy.CustomContextMenu
+        )
+        self.ui.projectTreeWidget.customContextMenuRequested.connect(
+            self.projectMenuTreeWidget
+        )
 
         setup_section_autoresize(self.ui.projectTreeWidget)
         setup_section_autoresize(self.ui.experimentTreeWidget)
@@ -76,10 +99,10 @@ class MyTardisMetadataEditor(QMainWindow):
         jpype.shutdownJVM()
         event.accept()
 
-    def openWizardWindow(self) -> None:  
+    def openWizardWindow(self) -> None:
         """
-        Displays a wizard window to add new files to an existing experiment. 
-        This method extracts the relevant metadata from the currently selected item in the 
+        Displays a wizard window to add new files to an existing experiment.
+        This method extracts the relevant metadata from the currently selected item in the
         experiment tree widget and passes it to the AddFilesWizardSkipExperiment object.
 
         Args: None
@@ -105,13 +128,15 @@ class MyTardisMetadataEditor(QMainWindow):
         if item is None:
             return
         menu = QMenu()
-        if not index.isValid() or index.parent().isValid(): # if the item is not a dataset
+        if (
+            not index.isValid() or index.parent().isValid()
+        ):  # if the item is not a dataset
             delete_action = menu.addAction("Remove this File")
             file: Datafile = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
             if file.data_status == DataStatus.INGESTED.value:
                 delete_action.setEnabled(False)
             else:
-                delete_action.triggered.connect(self.delete_items_datafile)        
+                delete_action.triggered.connect(self.delete_items_datafile)
         else:
             dataset: Dataset = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
             action = menu.addAction("Add New Files...")
@@ -119,12 +144,12 @@ class MyTardisMetadataEditor(QMainWindow):
             delete_action = menu.addAction("Remove this Dataset")
             # disable delete action if dataset has been ingested in MyTardis
             if dataset.data_status == DataStatus.INGESTED.value:
-                delete_action.setEnabled(False)  
+                delete_action.setEnabled(False)
             else:
                 delete_action.triggered.connect(self.delete_items_dataset)
-        menu.exec(self.ui.datasetTreeWidget.mapToGlobal(point))     
-    
-    def openWizardWindowSkipDataset (self) -> None:
+        menu.exec(self.ui.datasetTreeWidget.mapToGlobal(point))
+
+    def openWizardWindowSkipDataset(self) -> None:
         """
         Event handler for the "Add New File..." action triggered in the context menu of the datasetTreeWidget.
 
@@ -134,7 +159,7 @@ class MyTardisMetadataEditor(QMainWindow):
         Args: None
 
         Returns: None
-        """  
+        """
         model = IngestionMetadataModel(self.metadata)
         item = self.ui.datasetTreeWidget.currentItem()
         ds_data = cast(Dataset, item.data(0, QtCore.Qt.ItemDataRole.UserRole))
@@ -145,7 +170,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.import_wizard_ui = AddFilesWizard(model, pro_data, exp_data, ds_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
-    
+
     def delete_items_dataset(self) -> None:
         """
         Deletes the selected dataset and its associated files from the dataset tree.
@@ -158,21 +183,34 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns:
             None
         """
-        selected_item = self.ui.datasetTreeWidget.currentItem() ## it's the Dataset
+        selected_item = self.ui.datasetTreeWidget.currentItem()  ## it's the Dataset
         if not selected_item:
             return
         confirm_msg = QMessageBox()
         confirm_msg.setWindowTitle("Remove this dataset?")
-        confirm_msg.setText('Remove this dataset?')
-        confirm_msg.setInformativeText("Metadata you've entered will also be removed. Files in this dataset will be kept on your drive.")
-        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        confirm_msg.setText("Remove this dataset?")
+        confirm_msg.setInformativeText(
+            "Metadata you've entered will also be removed. Files in this dataset will be kept on your drive."
+        )
+        confirm_msg.setStandardButtons(
+            typing.cast(
+                QMessageBox.StandardButtons,
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+            )
+        )
         res = confirm_msg.exec()
         if res == QMessageBox.StandardButton.Cancel:
             # If user did not want to proceed, then exit.
             return
-        self.ui.datasetTreeWidget.takeTopLevelItem(self.ui.datasetTreeWidget.indexOfTopLevelItem(selected_item))
-        datafiles_impacted = self.metadata.get_files_by_dataset(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
-        self.metadata.datasets.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
+        self.ui.datasetTreeWidget.takeTopLevelItem(
+            self.ui.datasetTreeWidget.indexOfTopLevelItem(selected_item)
+        )
+        datafiles_impacted = self.metadata.get_files_by_dataset(
+            selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        )
+        self.metadata.datasets.remove(
+            selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        )
         for file in datafiles_impacted:
             self.metadata.datafiles.remove(file)
         # Finally, change property editor to no longer show dataset properties.
@@ -189,20 +227,27 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns: None
         """
-        selected_item = self.ui.datasetTreeWidget.currentItem() ### it's the file name
+        selected_item = self.ui.datasetTreeWidget.currentItem()  ### it's the file name
         if selected_item:
             confirm_msg = QMessageBox()
             confirm_msg.setWindowTitle("Remove this file?")
-            confirm_msg.setText('Remove this file?')
-            confirm_msg.setInformativeText("Metadata you've entered or extracted will also be removed. The file will be kept on your drive.")
-            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+            confirm_msg.setText("Remove this file?")
+            confirm_msg.setInformativeText(
+                "Metadata you've entered or extracted will also be removed. The file will be kept on your drive."
+            )
+            confirm_msg.setStandardButtons(
+                typing.cast(
+                    QMessageBox.StandardButtons,
+                    QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+                )
+            )
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
                 # If user did not want to proceed, then exit.
                 return
             datafile: Datafile = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
             self.metadata.datafiles.remove(datafile)
-        
+
         # clear the tree and re-populate it
         self.ui.datasetTreeWidget.clear()
         for ds in self.metadata.datasets:
@@ -247,36 +292,51 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns: None
         """
-        selected_item = self.ui.experimentTreeWidget.currentItem() ## it's the Experiment
+        selected_item = (
+            self.ui.experimentTreeWidget.currentItem()
+        )  ## it's the Experiment
         if not selected_item:
             return
         confirm_msg = QMessageBox()
         confirm_msg.setWindowTitle("Remove this experiment?")
-        confirm_msg.setText('Remove this experiment?')
-        confirm_msg.setInformativeText("Metadata you've entered will also be removed. Files in this experiment will be kept on your drive.")
-        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        confirm_msg.setText("Remove this experiment?")
+        confirm_msg.setInformativeText(
+            "Metadata you've entered will also be removed. Files in this experiment will be kept on your drive."
+        )
+        confirm_msg.setStandardButtons(
+            typing.cast(
+                QMessageBox.StandardButtons,
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+            )
+        )
         res = confirm_msg.exec()
         if res == QMessageBox.StandardButton.Cancel:
             # If user did not want to proceed, then exit.
             return
-        self.ui.experimentTreeWidget.takeTopLevelItem(self.ui.experimentTreeWidget.indexOfTopLevelItem(selected_item))
+        self.ui.experimentTreeWidget.takeTopLevelItem(
+            self.ui.experimentTreeWidget.indexOfTopLevelItem(selected_item)
+        )
         experiment = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         datasets_impacted = self.metadata.get_datasets_by_experiment(experiment)
 
-        datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
+        datafiles_impacted = (
+            []
+        )  # the full list of datafiles impacted by the deletion of the datasets
         for dataset in datasets_impacted:
             datafiles_related = self.metadata.get_files_by_dataset(dataset)
             datafiles_impacted.extend(datafiles_related)
             self.metadata.datasets.remove(dataset)
 
-        self.metadata.experiments.remove(selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole))
+        self.metadata.experiments.remove(
+            selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
+        )
 
         for file in datafiles_impacted:
             self.metadata.datafiles.remove(file)
-        
+
         # clear the dataset tree widget and repopulate it with the remaining datasets/datafiles
         self.ui.datasetTreeWidget.clear()
-        for ds in self.metadata.datasets:    
+        for ds in self.metadata.datasets:
             self.add_dataset_to_tree(ds)
 
         # Build a list of all dataset identifiers
@@ -285,19 +345,19 @@ class MyTardisMetadataEditor(QMainWindow):
             ds_id += ds.identifiers
 
         for file in self.metadata.datafiles:
-            if file.dataset in ds_id: 
-                #print(file)
+            if file.dataset in ds_id:
+                # print(file)
                 self.add_datafile_to_tree(file)
             else:
                 pass
         # Finally, change property editor to no longer show dataset properties.
         self.ui.experimentTabProps.setCurrentIndex(1)
         self.ui.datasetTabProps.setCurrentIndex(2)
-        
+
     def openWizardWindowSkipExperiment(self) -> None:
         """
-        Displays a wizard window to add new files to an existing experiment. 
-        This method extracts the relevant metadata from the currently selected item in the 
+        Displays a wizard window to add new files to an existing experiment.
+        This method extracts the relevant metadata from the currently selected item in the
         experiment tree widget and passes it to the AddFilesWizardSkipExperiment object.
 
         Args: None
@@ -309,7 +369,7 @@ class MyTardisMetadataEditor(QMainWindow):
         exp_data = cast(Experiment, item.data(0, QtCore.Qt.ItemDataRole.UserRole))
         pro_data = self.project_for_experiment(exp_data)
 
-        self.import_wizard_ui = AddFilesWizard(model,pro_data, exp_data)
+        self.import_wizard_ui = AddFilesWizard(model, pro_data, exp_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
 
@@ -322,7 +382,7 @@ class MyTardisMetadataEditor(QMainWindow):
         - point: QPoint object indicating the position where the context menu was requested.
 
         Returns: None
-        """    
+        """
         # We build the menu.
         index = self.ui.projectTreeWidget.indexAt(point)
         item = self.ui.projectTreeWidget.itemAt(point)
@@ -354,24 +414,37 @@ class MyTardisMetadataEditor(QMainWindow):
             return
         confirm_msg = QMessageBox()
         confirm_msg.setWindowTitle("Remove this project?")
-        confirm_msg.setText('Remove this project?')
-        confirm_msg.setInformativeText("Metadata you've entered will also be removed. Files in this project will be kept on your drive.")
-        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        confirm_msg.setText("Remove this project?")
+        confirm_msg.setInformativeText(
+            "Metadata you've entered will also be removed. Files in this project will be kept on your drive."
+        )
+        confirm_msg.setStandardButtons(
+            typing.cast(
+                QMessageBox.StandardButtons,
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+            )
+        )
         res = confirm_msg.exec()
         if res == QMessageBox.StandardButton.Cancel:
             # If user did not want to proceed, then exit.
             return
-        self.ui.projectTreeWidget.takeTopLevelItem(self.ui.projectTreeWidget.indexOfTopLevelItem(selected_item)) # remove the project from the project tree widget
+        self.ui.projectTreeWidget.takeTopLevelItem(
+            self.ui.projectTreeWidget.indexOfTopLevelItem(selected_item)
+        )  # remove the project from the project tree widget
         # get the experiments and datasets impacted by the deletion of the project
         project = selected_item.data(0, QtCore.Qt.ItemDataRole.UserRole)
         experiments_impacted = self.metadata.get_experiments_by_project(project)
-        datasets_impacted = [] # the full list of datasets impacted by the deletion of the experiments
+        datasets_impacted = (
+            []
+        )  # the full list of datasets impacted by the deletion of the experiments
         for experiment in experiments_impacted:
             dataset_related = self.metadata.get_datasets_by_experiment(experiment)
             datasets_impacted.extend(dataset_related)
             self.metadata.experiments.remove(experiment)
 
-        datafiles_impacted = [] # the full list of datafiles impacted by the deletion of the datasets
+        datafiles_impacted = (
+            []
+        )  # the full list of datafiles impacted by the deletion of the datasets
         for dataset in datasets_impacted:
             datafiles_related = self.metadata.get_files_by_dataset(dataset)
             datafiles_impacted.extend(datafiles_related)
@@ -392,7 +465,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.datasetTreeWidget.clear()
         for ds in self.metadata.datasets:
             self.add_dataset_to_tree(ds)
-        
+
         # clear the datafile tree widget and repopulate it with the remaining datafiles
         # Build a list of all dataset identifiers
         ds_id = []
@@ -400,8 +473,8 @@ class MyTardisMetadataEditor(QMainWindow):
             ds_id += ds.identifiers
 
         for file in self.metadata.datafiles:
-            if file.dataset in ds_id: 
-                #print(file)
+            if file.dataset in ds_id:
+                # print(file)
                 self.add_datafile_to_tree(file)
             else:
                 pass
@@ -409,11 +482,11 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.projectTabProps.setCurrentIndex(1)
         self.ui.experimentTabProps.setCurrentIndex(1)
         self.ui.datasetTabProps.setCurrentIndex(2)
-        
-    def openWizardWindowSkipProject(self) -> None:  
+
+    def openWizardWindowSkipProject(self) -> None:
         """
         Displays a wizard window to add new files to a new experiment in an existing project.
-        This method extracts the relevant metadata from the currently selected item in the 
+        This method extracts the relevant metadata from the currently selected item in the
         project tree widget and passes it to the AddFilesWizardSkipProject object.
 
         Args: None
@@ -424,10 +497,10 @@ class MyTardisMetadataEditor(QMainWindow):
         item = self.ui.projectTreeWidget.currentItem()
         pro_data = item.data(0, QtCore.Qt.ItemDataRole.UserRole)
 
-        self.import_wizard_ui = AddFilesWizard(model,pro_data)
+        self.import_wizard_ui = AddFilesWizard(model, pro_data)
         self.import_wizard_ui.submitted.connect(self.reFresh)
         self.import_wizard_ui.show()
-    
+
     def onSelectDataset(self, dataset: Dataset) -> None:
         """
         Updates the property editor with the properties of the selected dataset.
@@ -437,21 +510,21 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         self.ui.datasetProperties.set_dataset(dataset)
 
-    def onSelectDatafile(self, file: Datafile) -> None:  
+    def onSelectDatafile(self, file: Datafile) -> None:
         """
         Updates the property editor with the properties of the selected datafile.
 
         Args:
             file: The Datafile object representing the selected datafile.
         """
-        self.ui.datafileProperties.set_datafile(file)  
-    
+        self.ui.datafileProperties.set_datafile(file)
+
     def onClickedDataset(self) -> None:
         """
         Handles the click event on the dataset tree widget, updates the property editor accordingly.
         """
         item: QTreeWidgetItem = self.ui.datasetTreeWidget.currentItem()
-        props_widget : QStackedWidget = self.ui.datasetTabProps
+        props_widget: QStackedWidget = self.ui.datasetTabProps
         if item.parent() is None:
             item_data: Dataset = item.data(0, Qt.ItemDataRole.UserRole)
             # This indicates we are looking at a dataset,
@@ -470,7 +543,7 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         item = self.ui.experimentTreeWidget.currentItem()
         exp = item.data(0, Qt.ItemDataRole.UserRole)
-        props_widget : QStackedWidget = self.ui.experimentTabProps
+        props_widget: QStackedWidget = self.ui.experimentTabProps
         props_widget.setCurrentIndex(0)
         self.ui.expProperties.set_experiment(exp)
 
@@ -480,7 +553,7 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         item = self.ui.projectTreeWidget.currentItem()
         project: Project = item.data(0, Qt.ItemDataRole.UserRole)
-        props_widget : QStackedWidget = self.ui.projectTabProps
+        props_widget: QStackedWidget = self.ui.projectTabProps
         props_widget.setCurrentIndex(0)
         self.ui.projectProperties.set_project(project)
 
@@ -523,7 +596,7 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         proj_exps = self.metadata.get_experiments_by_project(project)
         return sum([self.experiment_size(exp) for exp in proj_exps])
-    
+
     def project_for_experiment(self, experiment: Experiment) -> Project:
         """
         Retrieves the project object that the given experiment belongs to.
@@ -533,7 +606,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
         Returns:
         - A `Project` object representing the project.
-    
+
         Raises:
         - ValueError: If the experiment does not belong to any project.
         """
@@ -562,7 +635,7 @@ class MyTardisMetadataEditor(QMainWindow):
 
     def dataset_for_datafile(self, datafile: Datafile) -> Dataset:
         """Return the Dataset object that corresponds to the given Datafile.
-        This method searches for the Dataset object in the metadata attribute of the current object (which should be a class that contains metadata about one or more datasets), 
+        This method searches for the Dataset object in the metadata attribute of the current object (which should be a class that contains metadata about one or more datasets),
         by comparing the dataset_id attribute of each Dataset object to the dataset attribute of the given Datafile object. If a match is found, the corresponding Dataset object is returned.
 
         Args:
@@ -576,9 +649,10 @@ class MyTardisMetadataEditor(QMainWindow):
             if dataset.identifiers_delegate.has(datafile.dataset):
                 return dataset
         raise ValueError()
-    
 
-    def find_item_in_tree(self, treeWidget: QTreeWidget, predicate: Callable[[Any],bool]) -> QTreeWidgetItem:
+    def find_item_in_tree(
+        self, treeWidget: QTreeWidget, predicate: Callable[[Any], bool]
+    ) -> QTreeWidgetItem:
         """
         Finds and returns the first top-level item in the specified QTreeWidget for which the given predicate function returns True.
 
@@ -607,7 +681,7 @@ class MyTardisMetadataEditor(QMainWindow):
             project (Project): The project object to be added to the tree.
         """
         proj_size = file_size_to_str(self.project_size(project))
-        l3 = QTreeWidgetItem([project.name,proj_size])
+        l3 = QTreeWidgetItem([project.name, proj_size])
         l3.setData(0, QtCore.Qt.ItemDataRole.UserRole, project)
         self.ui.projectTreeWidget.addTopLevelItem(l3)
 
@@ -619,23 +693,23 @@ class MyTardisMetadataEditor(QMainWindow):
         """
         exp_size = file_size_to_str(self.experiment_size(experiment))
         project = self.project_for_experiment(experiment)
-        l2 = QTreeWidgetItem([experiment.title,exp_size,project.name])
+        l2 = QTreeWidgetItem([experiment.title, exp_size, project.name])
         l2.setData(0, QtCore.Qt.ItemDataRole.UserRole, experiment)
         self.ui.experimentTreeWidget.addTopLevelItem(l2)
 
     def add_dataset_to_tree(self, dataset: Dataset) -> None:
         """
         Adds a dataset to the dataset tree widget.
-        
+
         Args:
             dataset (Dataset): The dataset object to be added to the tree.
         """
         dataset_size = file_size_to_str(self.dataset_size(dataset))
         experiment = self.experiment_for_dataset(dataset)
-        ds_item = QTreeWidgetItem([dataset.description, dataset_size,experiment.title])
+        ds_item = QTreeWidgetItem([dataset.description, dataset_size, experiment.title])
         ds_item.setData(0, QtCore.Qt.ItemDataRole.UserRole, dataset)
         self.ui.datasetTreeWidget.addTopLevelItem(ds_item)
-    
+
     def add_datafile_to_tree(self, datafile: Datafile) -> None:
         """
         Adds a new child item to the QTreeWidget for the dataset that contains the specified Datafile.
@@ -646,16 +720,17 @@ class MyTardisMetadataEditor(QMainWindow):
         Returns:
             None
         """
-        ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda ds: 
-            cast(Dataset, ds).identifiers_delegate.has(datafile.dataset)
+        ds_item = self.find_item_in_tree(
+            self.ui.datasetTreeWidget,
+            lambda ds: cast(Dataset, ds).identifiers_delegate.has(datafile.dataset),
         )
         file_name = datafile.filename
         file_size = file_size_to_str(datafile.size)
-        l1_child = QTreeWidgetItem([file_name,file_size,""])
+        l1_child = QTreeWidgetItem([file_name, file_size, ""])
         l1_child.setData(0, QtCore.Qt.ItemDataRole.UserRole, datafile)
         ds_item.addChild(l1_child)
 
-    def reFresh(self,result: AddFilesWizardResult) -> None:
+    def reFresh(self, result: AddFilesWizardResult) -> None:
         """
         Method for adding the newly created classes from the wizard into IngestionMetadata,
         and refreshing the project/experiment/dataset/datafile widgets with the new data.
@@ -684,10 +759,15 @@ class MyTardisMetadataEditor(QMainWindow):
         else:
             # Update dataset size.
             dataset_size = file_size_to_str(self.dataset_size(result.dataset))
-            ds_item = self.find_item_in_tree(self.ui.datasetTreeWidget, lambda data: (
-                result.dataset.identifiers_delegate.has(cast(Dataset, data).identifiers or [])
-            ))
-            ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)        
+            ds_item = self.find_item_in_tree(
+                self.ui.datasetTreeWidget,
+                lambda data: (
+                    result.dataset.identifiers_delegate.has(
+                        cast(Dataset, data).identifiers or []
+                    )
+                ),
+            )
+            ds_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, dataset_size)
         # Add datafile under dataset
         for new_file in result.file_list:
             self.add_datafile_to_tree(new_file)
@@ -696,18 +776,28 @@ class MyTardisMetadataEditor(QMainWindow):
             self.add_experiment_to_tree(result.experiment)
         else:
             exp_size = file_size_to_str(self.experiment_size(result.experiment))
-            exp_item = self.find_item_in_tree(self.ui.experimentTreeWidget, lambda data:(
-                result.experiment.identifiers_delegate.has(cast(Experiment, data).identifiers or [])
-            ))
+            exp_item = self.find_item_in_tree(
+                self.ui.experimentTreeWidget,
+                lambda data: (
+                    result.experiment.identifiers_delegate.has(
+                        cast(Experiment, data).identifiers or []
+                    )
+                ),
+            )
             exp_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, exp_size)
         # Create tree widget item for the project, or find existing and update size.
         if result.is_new_project:
             self.add_project_to_tree(result.project)
         else:
             proj_size = file_size_to_str(self.project_size(result.project))
-            proj_item = self.find_item_in_tree(self.ui.projectTreeWidget, lambda data:(
-                cast(Project, data).identifiers_delegate.has(result.project.identifiers or [])
-            ))
+            proj_item = self.find_item_in_tree(
+                self.ui.projectTreeWidget,
+                lambda data: (
+                    cast(Project, data).identifiers_delegate.has(
+                        result.project.identifiers or []
+                    )
+                ),
+            )
             proj_item.setData(1, QtCore.Qt.ItemDataRole.DisplayRole, proj_size)
 
     def loadYaml(self) -> None:
@@ -721,15 +811,24 @@ class MyTardisMetadataEditor(QMainWindow):
             # Check user is OK with opening another file
             confirm_msg = QMessageBox()
             confirm_msg.setWindowTitle("Open another file?")
-            confirm_msg.setText('Discard unsaved changes and open another file?')
-            confirm_msg.setInformativeText("Unsaved changes in the current file will be lost.")
-            confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+            confirm_msg.setText("Discard unsaved changes and open another file?")
+            confirm_msg.setInformativeText(
+                "Unsaved changes in the current file will be lost."
+            )
+            confirm_msg.setStandardButtons(
+                typing.cast(
+                    QMessageBox.StandardButtons,
+                    QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+                )
+            )
             res = confirm_msg.exec()
             if res == QMessageBox.StandardButton.Cancel:
                 # If user did not want to proceed, then exit.
                 return
-        fileName = QFileDialog.getOpenFileName(self, "Open File",'', "Yaml(*.yaml);;AllFiles(*.*)")[0]
-        if fileName == '':
+        fileName = QFileDialog.getOpenFileName(
+            self, "Open File", "", "Yaml(*.yaml);;AllFiles(*.*)"
+        )[0]
+        if fileName == "":
             # If user dismissed the Open File dialog, then exit.
             return
         try:
@@ -738,11 +837,13 @@ class MyTardisMetadataEditor(QMainWindow):
         except Exception as e:
             msg_box = QMessageBox()
             msg_box.setWindowTitle("Error loading file")
-            msg_box.setText("There was an error loading the metadata file. Please check to ensure it's valid.")
+            msg_box.setText(
+                "There was an error loading the metadata file. Please check to ensure it's valid."
+            )
             msg_box.exec()
             self.display_load_data(IngestionMetadata())
 
-    def display_load_data(self,data_loaded: IngestionMetadata) -> None:
+    def display_load_data(self, data_loaded: IngestionMetadata) -> None:
         """
         Displays the loaded metadata in the GUI. It clears the existing metadata, then adds the loaded metadata to the
         appropriate tree widgets.
@@ -776,7 +877,12 @@ class MyTardisMetadataEditor(QMainWindow):
         to the selected file.
         """
         while True:
-            filename = QFileDialog.getSaveFileName(self,"Save ingestion file",dir = "ingestion.yaml", filter='Yaml File(*.yaml)')[0]
+            filename = QFileDialog.getSaveFileName(
+                self,
+                "Save ingestion file",
+                dir="ingestion.yaml",
+                filter="Yaml File(*.yaml)",
+            )[0]
             if filename == "":
                 # If the user cancelled and did not provide a filename, then do nothing.
                 return
@@ -786,17 +892,26 @@ class MyTardisMetadataEditor(QMainWindow):
             except DifferentDeviceException:
                 # User is trying to save ingestion file into a different device.
                 # Reject and ask if they want to try another path.
-                drive_msg = "the same drive" 
+                drive_msg = "the same drive"
                 if self.metadata.file_path is not None:
                     drive = self.metadata.file_path.drive
                     if drive != "":
                         drive_msg = f"the {drive} drive"
                 retry_msg = QMessageBox()
                 retry_msg.setWindowTitle("Can't save ingestion file in this location")
-                retry_msg.setText("Please save the ingestion file in the same drive as your data.")
-                retry_msg.setInformativeText(f'The ingestion file needs to be saved in the same mapped drive as your data in order to be found by the ingestion process. Please save the ingestion file in {drive_msg}.')
+                retry_msg.setText(
+                    "Please save the ingestion file in the same drive as your data."
+                )
+                retry_msg.setInformativeText(
+                    f"The ingestion file needs to be saved in the same mapped drive as your data in order to be found by the ingestion process. Please save the ingestion file in {drive_msg}."
+                )
                 retry_msg.setStandardButtons(
-                    typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Retry | QMessageBox.StandardButton.Cancel))
+                    typing.cast(
+                        QMessageBox.StandardButtons,
+                        QMessageBox.StandardButton.Retry
+                        | QMessageBox.StandardButton.Cancel,
+                    )
+                )
                 res = retry_msg.exec()
                 if res == QMessageBox.StandardButton.Cancel:
                     # If user did not want to proceed, then exit.
@@ -813,5 +928,3 @@ class MyTardisMetadataEditor(QMainWindow):
                 error_msg.setStandardButtons(QMessageBox.StandardButton.Ok)
                 error_msg.exec()
                 break
-
-

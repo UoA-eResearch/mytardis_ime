@@ -17,7 +17,7 @@ def Path_yaml_representer(dumper: Dumper, data: Path) -> ScalarNode:
     is required.
 
     `yaml.add_multi_representer(Path, Path_yaml_representer)`_
-    
+
     Args:
         dumper (Dumper): The pyyaml dumper.
         data (Path): The Path to dump.
@@ -25,13 +25,16 @@ def Path_yaml_representer(dumper: Dumper, data: Path) -> ScalarNode:
     Returns:
         ScalarNode: A serialised yaml Node.
     """
-    return dumper.represent_scalar(u"!Path", str(data))
+    return dumper.represent_scalar("!Path", str(data))
 
-def Path_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: Node) -> Path:
+
+def Path_yaml_constructor(
+    loader: Loader | FullLoader | UnsafeLoader, node: Node
+) -> Path:
     """Function for deserialising a node from YAML.
     When parsing YAML that contains Path instances, you'll
     need to add this function as a constructor.
-    
+
     `yaml.add_constructor('!Path', Path_yaml_constructor)`_
 
     Args:
@@ -46,13 +49,14 @@ def Path_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: Node
     assert type(value) is str
     return Path(value)
 
+
 def Username_yaml_representer(dumper: Dumper, data: Username) -> ScalarNode:
     """Function for representing this Username in YAML.
     When serialising to YAML that contains Username instances, you'll
     need to add this function as a representer.
 
     `yaml.add_representer(Username, Username.yaml_representer)`_
-    
+
     Args:
         dumper (Dumper): The pyyaml dumper.
         data (Username): The Username to dump.
@@ -60,14 +64,17 @@ def Username_yaml_representer(dumper: Dumper, data: Username) -> ScalarNode:
     Returns:
         ScalarNode: A serialised yaml Node.
     """
-    return dumper.represent_scalar(u"!Username", str(data))
+    return dumper.represent_scalar("!Username", str(data))
 
-def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: Node) -> Username:
+
+def Username_yaml_constructor(
+    loader: Loader | FullLoader | UnsafeLoader, node: Node
+) -> Username:
 
     """Function for deserialising a node from YAML.
     When parsing YAML that contains Username instances, you'll
     need to add this function as a constructor.
-    
+
     `yaml.add_constructor('!Username', Username.yaml_constructor)`_
 
     Args:
@@ -81,12 +88,13 @@ def Username_yaml_constructor(loader: Loader | FullLoader | UnsafeLoader, node: 
     value = loader.construct_scalar(node)
     return Username(value)
 
+
 def initialise_yaml_helpers() -> None:
     """Initialises YAML constructor and representer required to parse
-    and serialise MyTardis model data. This is called when the ime.models 
+    and serialise MyTardis model data. This is called when the ime.models
     module is loaded and do not need a separate call.
     """
-    yaml.SafeLoader.add_constructor('!Username', Username_yaml_constructor)
+    yaml.SafeLoader.add_constructor("!Username", Username_yaml_constructor)
     yaml.add_representer(Username, Username_yaml_representer)
-    yaml.SafeLoader.add_constructor('!Path', Path_yaml_constructor)
+    yaml.SafeLoader.add_constructor("!Path", Path_yaml_constructor)
     yaml.add_multi_representer(Path, Path_yaml_representer)

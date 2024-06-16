@@ -5,14 +5,17 @@ from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
 from PySide6.QtCore import QLine, QObject, QSignalBlocker, Signal
 from PySide6.QtWidgets import QLineEdit, QPlainTextEdit, QWidget
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 class IBindableInput:
     """
     Interface for a bindable input. Subclasses must implement `set_input_value` and `get_input_value`.
     """
+
     _value_changed_slot: Optional[Callable]
     value_changed: Optional[Signal]
+
     def set_input_value(self, value: str) -> None:
         """Abstract function for setting the input value.
 
@@ -29,15 +32,17 @@ class IBindableInput:
         """
         return ""
 
+
 class QLineEditInput(IBindableInput):
     """
     A bindable input for QLineEdit widgets.
     """
+
     def __init__(self, widget: QLineEdit) -> None:
         self.widget = widget
         self.value_changed = typing.cast(Signal, widget.editingFinished)
 
-    def set_input_value(self, value:str) -> None:
+    def set_input_value(self, value: str) -> None:
         """Concrete function that sets the value of the line edit widget.
 
         Args:
@@ -54,15 +59,17 @@ class QLineEditInput(IBindableInput):
         """
         return self.widget.text()
 
+
 class QPlainTextEditInput(IBindableInput):
     """
     A bindable input for QPlainTextEdit widgets.
     """
+
     def __init__(self, widget: QPlainTextEdit):
         self.widget = widget
         self.value_changed = typing.cast(Signal, widget.textChanged)
-    
-    def set_input_value(self, value:str) -> None:
+
+    def set_input_value(self, value: str) -> None:
         """Concrete function that sets the value of the plain text edit widget.
 
         Args:
@@ -79,11 +86,13 @@ class QPlainTextEditInput(IBindableInput):
         """
         return self.widget.toPlainText()
 
+
 # Binder
 class BoundObject(QObject, Generic[T]):
     """
     Binds a QObject to a Python object. Allows binding of input widgets to object attributes.
     """
+
     _bound_object: T
     _bound_inputs: Dict[str, List[IBindableInput]]
     bound_object_changed = Signal(object, object)
@@ -106,15 +115,16 @@ class BoundObject(QObject, Generic[T]):
             for input_field in self._bound_inputs[field_name]:
                 self._set_initial_val_and_connect(field_name, input_field)
 
-    
-    def bind_input(self, field_name: str, input: Union[IBindableInput, QWidget]) -> None:
+    def bind_input(
+        self, field_name: str, input: Union[IBindableInput, QWidget]
+    ) -> None:
         """
         Binds the given input to the given field of the bound object.
 
         Args:
             field_name: The name of the field to bind the input to.
             input: The input to bind.
-        
+
         Returns:
             Nothing.
         """
@@ -122,20 +132,23 @@ class BoundObject(QObject, Generic[T]):
             return self._bind_field(field_name, input)
         else:
             return self._bind_field_with_default(field_name, input)
-    
+
     def unbind(self) -> None:
         """
         Unbinds all input widgets from their bound object attributes.
 
         Args:
             None.
-        
+
         Returns:
             Nothing.
         """
         for field_name in self._bound_inputs:
             for input_field in self._bound_inputs[field_name]:
-                if input_field.value_changed is None or getattr(input, "_value_changed_slot", None) is None:
+                if (
+                    input_field.value_changed is None
+                    or getattr(input, "_value_changed_slot", None) is None
+                ):
                     continue
                 # Disconnect the slot we've created
                 assert input_field._value_changed_slot is not None
@@ -159,8 +172,10 @@ class BoundObject(QObject, Generic[T]):
             return self._bind_field(field_name, QPlainTextEditInput(input))
         else:
             raise ValueError(f"Unsupported input {input}")
-    
-    def _set_initial_val_and_connect(self, field_name: str, input: IBindableInput) -> None:
+
+    def _set_initial_val_and_connect(
+        self, field_name: str, input: IBindableInput
+    ) -> None:
         """
         Sets the initial value for the input widget and connects it to its value_changed signal.
 
@@ -172,9 +187,15 @@ class BoundObject(QObject, Generic[T]):
         val = getattr(self._bound_object, field_name)
         input.set_input_value(val)
         # Connect to signal for value changes.
-        if hasattr(input, 'value_changed') and input.value_changed is not None and not hasattr(input, '_value_changed_slot'):
+        if (
+            hasattr(input, "value_changed")
+            and input.value_changed is not None
+            and not hasattr(input, "_value_changed_slot")
+        ):
             # Save the slot lambda we've created, so we can disconnect signal later.
-            input._value_changed_slot = lambda: self._handle_input_change(input, field_name, input.get_input_value())
+            input._value_changed_slot = lambda: self._handle_input_change(
+                input, field_name, input.get_input_value()
+            )
             a = input.value_changed.connect(input._value_changed_slot)
 
     def _bind_field(self, field_name: str, input: IBindableInput) -> None:
@@ -198,7 +219,9 @@ class BoundObject(QObject, Generic[T]):
         """Destructor method to unbind all inputs."""
         self.unbind()
 
-    def _handle_input_change(self, source: IBindableInput, field_name: str, newval: str) -> None:
+    def _handle_input_change(
+        self, source: IBindableInput, field_name: str, newval: str
+    ) -> None:
         """
         Handle changes to an input field and propagate the change to other bound input fields.
 
@@ -206,7 +229,7 @@ class BoundObject(QObject, Generic[T]):
         :param field_name: The name of the Python object field to update.
         :param newval: The new value of the input field.
         """
-        setattr(self._bound_object,field_name, newval)
+        setattr(self._bound_object, field_name, newval)
         for input in self._bound_inputs[field_name]:
             if input is source:
                 continue

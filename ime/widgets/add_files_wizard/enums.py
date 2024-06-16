@@ -5,8 +5,9 @@ from enum import Enum
 
 class FieldNames(Enum):
     """Enum for wizard field names. These names are used in QWizard and QWizardPages
-    for registering fields, and getting and setting values. 
+    for registering fields, and getting and setting values.
     """
+
     IS_NEW_PROJECT = "isNewProject"
     IS_EXISTING_PROJECT = "isExistingProject"
     EXISTING_PROJECT = "existingProject"
@@ -26,9 +27,11 @@ class FieldNames(Enum):
     DESCRIPTION = "datasetNameLineEdit"
     DATASET_INSTRUMENT_IDENTIFIER = "datasetInstrumentLineEdit"
 
+
 class PageNames(Enum):
     """Enum for wizard page names. These names are used to refer to specific wizard pages.
     They are also specified in ui/ui_add_files_wizard.ui."""
+
     INTRODUCTION = "introductionPage"
     PROJECT = "projectPage"
     EXPERIMENT = "experimentPage"

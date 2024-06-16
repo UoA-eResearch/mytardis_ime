@@ -1,8 +1,14 @@
 from PySide6.QtWidgets import QLineEdit, QWidget
 
 from ime.bindable import BoundObject
-from ime.models import (Datafile, Dataset, DataStatus, Experiment,
-                        IAccessControl, Project)
+from ime.models import (
+    Datafile,
+    Dataset,
+    DataStatus,
+    Experiment,
+    IAccessControl,
+    Project,
+)
 from ime.qt_models import PythonListModel
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
 from ime.ui.ui_dataset_props import Ui_DatasetProps
@@ -20,7 +26,7 @@ class DatasetPropertyEditor(QWidget):
     def __init__(self, parent=None):
         """
         Constructs a new instance of the DatasetPropertyEditor class.
-        
+
         Args:
         parent: Optional parent widget of this widget.
         """
@@ -29,11 +35,11 @@ class DatasetPropertyEditor(QWidget):
         self.ui.setupUi(self)
         self.metadata_tab = self.ui.page_3
         self._set_bound_dataset(BoundObject())
-    
+
     def set_dataset(self, dataset: Dataset) -> None:
         """
         Sets the current `Dataset` to edit in this widget.
-        
+
         Args:
         dataset: The `Dataset` to edit.
         """
@@ -49,13 +55,13 @@ class DatasetPropertyEditor(QWidget):
             self.ui.page_2.setEnabled(True)
             self.ui.page_3.setEnabled(True)
         self.metadata_tab.update_metadata_object(dataset)
-        inherited_acl = IAccessControl() # Stub - empty list.
+        inherited_acl = IAccessControl()  # Stub - empty list.
         self.ui.accessControlTab.set_data(dataset, inherited_acl)
-        
+
     def _set_bound_dataset(self, dataset: BoundObject[Dataset]) -> None:
         """
         Binds a `BoundObject` to this editor to keep its properties synchronized with the UI.
-        
+
         Args:
         dataset: The `BoundObject` to bind to this editor.
         """
@@ -63,14 +69,15 @@ class DatasetPropertyEditor(QWidget):
         self.dataset.bind_input("description", self.ui.datasetNameLineEdit)
         self.dataset.bind_input("instrument", self.ui.instrumentIDLineEdit)
 
+
 class DatafilePropertyEditor(QWidget):
-    df:BoundObject[Datafile]
+    df: BoundObject[Datafile]
     metadata_tab: MetadataTab
 
     def __init__(self, parent=None) -> None:
         """
         Constructs a new instance of the DatafilePropertyEditor class.
-        
+
         Args:
         parent: Optional parent widget of this widget.
         """
@@ -79,11 +86,12 @@ class DatafilePropertyEditor(QWidget):
         self.ui.setupUi(self)
         self.metadata_tab = self.ui.metadata_tab
         self._set_bound_file(BoundObject())
+
     ### create new Datafile
     def set_datafile(self, datafile: Datafile) -> None:
         """
         Sets the current `Datafile` to edit in this widget.
-        
+
         Args:
         datafile: The `Datafile` to edit.
         """
@@ -97,13 +105,13 @@ class DatafilePropertyEditor(QWidget):
             self.ui.page_10.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
         self.metadata_tab.update_metadata_object(datafile)
-        inherited_acl = IAccessControl() # Stub - empty list.
+        inherited_acl = IAccessControl()  # Stub - empty list.
         self.ui.accessControlTab.set_data(datafile, inherited_acl)
-    
+
     def _set_bound_file(self, datafile: BoundObject[Datafile]) -> None:
         """
         Binds a `BoundObject` to this editor to keep its properties synchronized with the UI.
-        
+
         Args:
         datafile: The `BoundObject` to bind to this editor.
         """
@@ -144,7 +152,7 @@ class ExperimentPropertyEditor(QWidget):
             self.ui.page_5.setEnabled(True)
             self.ui.metadata_tab.setEnabled(True)
         self.metadata_tab.update_metadata_object(experiment)
-        inherited_acl = IAccessControl() # Stub - empty list.
+        inherited_acl = IAccessControl()  # Stub - empty list.
         self.ui.accessControlTab.set_data(experiment, inherited_acl)
 
     def _set_bound_experiment(self, experiment: BoundObject[Experiment]) -> None:
@@ -156,6 +164,7 @@ class ExperimentPropertyEditor(QWidget):
         self.exp = experiment
         self.exp.bind_input("title", self.ui.experimentNameLineEdit)
         self.exp.bind_input("description", self.ui.experimentDescriptionLineEdit)
+
 
 class ProjectPropertyEditor(QWidget):
     project: BoundObject[Project]
@@ -204,4 +213,6 @@ class ProjectPropertyEditor(QWidget):
         self.project = project
         self.project.bind_input("name", self.ui.projectNameLineEdit)
         self.project.bind_input("description", self.ui.projectDescriptionLineEdit)
-        self.project.bind_input("principal_investigator", self.ui.leadResearcherLineEdit)
+        self.project.bind_input(
+            "principal_investigator", self.ui.leadResearcherLineEdit
+        )

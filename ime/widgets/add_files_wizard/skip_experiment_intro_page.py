@@ -7,8 +7,8 @@ import ime.widgets.add_files_wizard.wizard as afw
 
 class SkipExperimentIntroPage(QWizardPage):
     """A wizard page for selecting an existing project and experiment or creating a new one."""
-    
-    def wizard(self) -> 'afw.AddFilesWizard':
+
+    def wizard(self) -> "afw.AddFilesWizard":
         # Add type cast so type checker isn't annoyed below.
         """
         Return the wizard object with type casting.

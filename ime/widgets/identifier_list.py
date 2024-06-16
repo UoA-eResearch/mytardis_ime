@@ -8,11 +8,12 @@ from ime.ui.ui_identifier_list import Ui_IdentifierList
 
 class IdentifierListModel(PythonListModel):
     """Custom Qt View Model for identifiers."""
+
     object_with_ids: IIdentifiers
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        
+
     def set_object_with_ids(self, obj: IIdentifiers) -> None:
         """Set the backing model this list is used for.
 
@@ -26,7 +27,9 @@ class IdentifierListModel(PythonListModel):
         self.setStringList(obj.identifiers)
         self.endResetModel()
 
-    def setData(self, index: QModelIndex, value: str, role = Qt.ItemDataRole.DisplayRole) -> bool:
+    def setData(
+        self, index: QModelIndex, value: str, role=Qt.ItemDataRole.DisplayRole
+    ) -> bool:
         """Override method for setData in the Qt Model. This is the function
         for updating an identifier.
 
@@ -50,26 +53,31 @@ class IdentifierListModel(PythonListModel):
             row (int): The row number.
             count (int): How many to remove.
             parent (QModelIndex, optional): The parent cell if any.
-            Defaults to an invalid QModelIndex(). 
+            Defaults to an invalid QModelIndex().
 
         Returns:
             bool: Whether removing rows was successful or not.
         """
         if self.object_with_ids.identifiers is None:
             return False
-        self.beginRemoveRows(QModelIndex(), row, row+count-1)
+        self.beginRemoveRows(QModelIndex(), row, row + count - 1)
         for i in range(0, count):
             # Remove rows from largest index first
             # to avoid being affected by reassigned indices.
-            idx = row+count-1-i
+            idx = row + count - 1 - i
             value = self.object_with_ids.identifiers[idx]
             self.object_with_ids.delete(value)
         self.endRemoveRows()
         return True
 
+
 class IdentifierList(QWidget):
     """Business logic for identifiers list widget."""
-    def __init__(self, parent: QWidget | None = None,) -> None:
+
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(parent)
         self.ui = Ui_IdentifierList()
         self.ui.setupUi(self)
@@ -79,7 +87,9 @@ class IdentifierList(QWidget):
         self.ui.identifierList.setModel(self._model)
         # Make Delete button disabled by default, enable when selecting something.
         self.ui.btnDelete.setDisabled(True)
-        self.ui.identifierList.selectionModel().selectionChanged.connect(self._handle_select_change)
+        self.ui.identifierList.selectionModel().selectionChanged.connect(
+            self._handle_select_change
+        )
 
     def set_data(self, data: IIdentifiers) -> None:
         """Sets the identifiers to display by the widget.
@@ -93,8 +103,7 @@ class IdentifierList(QWidget):
         self._model.set_object_with_ids(data)
 
     def _handle_insert_new(self) -> None:
-        """Private method for handling Add button clicked.
-        """
+        """Private method for handling Add button clicked."""
         idx = self._model.rowCount()
         self._model.insertRow(idx)
         model_idx = self._model.index(idx, 0)
@@ -102,18 +111,19 @@ class IdentifierList(QWidget):
         self.ui.identifierList.edit(model_idx)
 
     def _handle_remove_from_list(self) -> None:
-        """Private method for handling remove button clicked.
-        """
+        """Private method for handling remove button clicked."""
         idx_list = self.ui.identifierList.selectedIndexes()
         rows_to_remove = [idx.row() for idx in idx_list]
         # Reverse sort the rows to remove, so we're not affected
         # by row index changes.
         rows_to_remove.sort(reverse=True)
-        # Check if 
+        # Check if
         for row in rows_to_remove:
             self._model.removeRow(row)
 
-    def _handle_select_change(self, selected: QItemSelection, deselected: QItemSelection) -> None:
+    def _handle_select_change(
+        self, selected: QItemSelection, deselected: QItemSelection
+    ) -> None:
         """Private method for handling selection changed. Determines whether the Remove button is enabled.
 
         Args:

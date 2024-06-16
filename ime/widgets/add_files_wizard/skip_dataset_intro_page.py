@@ -12,7 +12,8 @@ class SkipDatasetIntroPage(QWizardPage):
     Args:
         QWizardPage (_type_): The type of the parent class.
     """
-    def wizard(self) -> 'afw.AddFilesWizard':
+
+    def wizard(self) -> "afw.AddFilesWizard":
         """Returns the wizard object.
 
         Returns:

@@ -4,9 +4,15 @@ from pathlib import Path
 
 import yaml
 
-from ime.models import (Datafile, Dataset, DataStatus,
-                        DifferentDeviceException, Experiment,
-                        IngestionMetadata, Project)
+from ime.models import (
+    Datafile,
+    Dataset,
+    DataStatus,
+    DifferentDeviceException,
+    Experiment,
+    IngestionMetadata,
+    Project,
+)
 from ime.qt_models import IngestionMetadataModel
 
 

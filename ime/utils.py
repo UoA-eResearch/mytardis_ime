@@ -19,7 +19,7 @@ def file_size_to_str(size: float) -> str:
         str: Human-friendly string representation of the file size.
     """
     """Given a file size, return a human-friendly string."""
-    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+    for x in ["bytes", "KB", "MB", "GB", "TB"]:
         if size < 1024.0:
             return "%3.1f %s" % (size, x)
         size /= 1024.0
@@ -33,9 +33,12 @@ def setup_section_autoresize(widget: QTreeWidget) -> None:
     Args:
         widget (QTreeWidget): The tree widget to resize.
     """
+
     def _handle_new_rows_inserted():
         widget.resizeColumnToContents(0)
+
     widget.itemChanged.connect(_handle_new_rows_inserted)
+
 
 def setup_header_layout(header: QHeaderView) -> None:
     """Given a QHeaderView from a table or tree widget,
@@ -49,6 +52,7 @@ def setup_header_layout(header: QHeaderView) -> None:
     header.resizeSections(QHeaderView.ResizeMode.Stretch)
     for i in range(1, header.model().columnCount()):
         header.setSectionResizeMode(i, QHeaderView.ResizeMode.ResizeToContents)
+
 
 def path_for_asset(pth: Path) -> Path:
     """Returns the absolute path for an asset that should be loaded.
@@ -66,7 +70,7 @@ def path_for_asset(pth: Path) -> Path:
         # Check for Pyinstaller bundle path. Return relative to it if possible.
         # https://pyinstaller.org/en/stable/runtime-information.html#run-time-
         # information
-        bundle_dir = Path(getattr(sys, '_MEIPASS'))
+        bundle_dir = Path(getattr(sys, "_MEIPASS"))
         return bundle_dir / pth
     except AttributeError:
         # If sys._MEIPASS is not set, we're not running in a Pyinstaller bundle,

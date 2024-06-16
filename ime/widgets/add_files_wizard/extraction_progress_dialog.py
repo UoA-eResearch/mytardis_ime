@@ -9,6 +9,7 @@ class ExtractionProgressDialog(QDialog):
     """
     Class for the metadata extraction progress dialog.
     """
+
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.ui = Ui_ExtractionProgressDialog()
@@ -19,7 +20,7 @@ class ExtractionProgressDialog(QDialog):
         finished. This will exit the dialog.
         """
         self.accept()
-    
+
     def setNumFiles(self, num_files: int) -> None:
         """Sets the total number of files to perform extraction on.
         This will determine the progress bar calculation and reset any

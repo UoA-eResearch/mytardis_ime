@@ -10,9 +10,10 @@ class ProjectAccessControlTab(QWidget):
     """
     Project-specific widget for access control tab.
     """
+
     _group_model: DataclassTableModel[GroupACL]
 
-    def __init__(self, parent = None) -> None:
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         ui = Ui_ProjectAccessControlTab()
         ui.setupUi(self)

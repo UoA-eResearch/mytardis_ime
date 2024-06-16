@@ -4,9 +4,15 @@ from pathlib import Path
 
 import yaml
 
-from ime.models import (Datafile, Dataset, DataStatus,
-                        DifferentDeviceException, Experiment,
-                        IngestionMetadata, Project)
+from ime.models import (
+    Datafile,
+    Dataset,
+    DataStatus,
+    DifferentDeviceException,
+    Experiment,
+    IngestionMetadata,
+    Project,
+)
 from ime.qt_models import IngestionMetadataModel
 
 
@@ -41,8 +47,9 @@ def test_loadYaml():
                 )
     assert len(metadata.projects) == 2
 
+
 def test_datafile_metadata_saved_as_none_if_empty(tmp_path: Path) -> None:
-    """Tests whether for datafile, if there is no metadata, it is saved as a None, rather 
+    """Tests whether for datafile, if there is no metadata, it is saved as a None, rather
     than an empty dict. This is expected by the ingestion script.
 
     Args:

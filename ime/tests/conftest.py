@@ -11,4 +11,4 @@ from ime.models import IngestionMetadata
 def metadata(request):
     # This path is relative to where pytest is run.
     # So run pytest at the root directory.
-    return IngestionMetadata.from_file('ime/tests/fixtures.yaml')
+    return IngestionMetadata.from_file("ime/tests/fixtures.yaml")

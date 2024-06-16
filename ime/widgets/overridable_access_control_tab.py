@@ -5,8 +5,7 @@ from PySide6.QtWidgets import QCheckBox, QDialogButtonBox, QMessageBox, QWidget
 
 from ime.models import GroupACL, IAccessControl, UserACL
 from ime.qt_models import DataclassTableModel
-from ime.ui.ui_overridable_access_control_tab import \
-    Ui_OverridableAccessControlTab
+from ime.ui.ui_overridable_access_control_tab import Ui_OverridableAccessControlTab
 from ime.widgets.access_control_list import AccessControlList
 
 
@@ -19,24 +18,23 @@ class OverridableAccessControlTab(QWidget):
     - display_confirm_reset_override_dialog(self) -> bool: Displays a message box asking the user to confirm resetting the override, and returns True if the user clicks "Ok".
     - handle_override_toggled(self, field: str, enabled: bool): Handles the "override_inherited_toggled" signal from the list views, and updates the corresponding access control field accordingly.
     """
+
     _data: IAccessControl
     _inherited_data: IAccessControl
     _group_model: DataclassTableModel[GroupACL]
 
-    def __init__(self, parent = None) -> None:
+    def __init__(self, parent=None) -> None:
         """Initializes the widget with the given parent and sets up the user interface."""
         super().__init__(parent)
         ui = Ui_OverridableAccessControlTab()
         ui.setupUi(self)
         self.ui = ui
         # Set up handling overrides.
-        ui.groupsOverride.toggled.connect(
-            self._handle_groups_override_toggled
-        )
+        ui.groupsOverride.toggled.connect(self._handle_groups_override_toggled)
         # Set up the AccessControlLists.
         self._group_model = DataclassTableModel(GroupACL)
         ui.groups.set_model(self._group_model)
-        
+
     def _reset_checkbox(self, check_box: QCheckBox, value: bool) -> None:
         """A private method for resetting checkbox state without triggering any signals
 
@@ -46,7 +44,7 @@ class OverridableAccessControlTab(QWidget):
         """
         with QSignalBlocker(check_box):
             check_box.setChecked(value)
-    
+
     def set_data(self, data: IAccessControl, inherited_data: IAccessControl) -> None:
         """Sets the MyTardis object which has access control fields `data`_ to display,
         and resets the AccessControlTab to display it.
@@ -78,13 +76,15 @@ class OverridableAccessControlTab(QWidget):
         access control to use inherited values, losing all custom values.
 
         Returns:
-            bool: True if the user wishes to reset access control, False if not. 
+            bool: True if the user wishes to reset access control, False if not.
         """
         msg = QMessageBox()
         msg.setWindowTitle("Use inherited value instead?")
         msg.setText("Are you sure you want to remove all users/groups from this field?")
         msg.setInformativeText("Inherited values will apply instead.")
-        msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+        msg.setStandardButtons(
+            QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel
+        )
         res = msg.exec()
         return res == QMessageBox.StandardButton.Ok
 
