@@ -2,7 +2,9 @@
 Classes for styles.
 """
 from PySide6.QtCore import QPoint, QRect, Qt
-from PySide6.QtWidgets import QProxyStyle, QStyleOptionViewItem, QStyleOption, QWidget
+from PySide6.QtWidgets import (QProxyStyle, QStyleOption, QStyleOptionViewItem,
+                               QWidget)
+
 
 class CenteredCheckboxInViewItemStyle(QProxyStyle):
     """

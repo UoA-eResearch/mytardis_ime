@@ -1,12 +1,14 @@
 from typing import cast
+
 from PySide6.QtCore import QSignalBlocker
 from PySide6.QtWidgets import QCheckBox, QDialogButtonBox, QMessageBox, QWidget
-from ime.qt_models import DataclassTableModel
-from ime.ui.ui_overridable_access_control_tab import Ui_OverridableAccessControlTab
+
 from ime.models import GroupACL, IAccessControl, UserACL
-
-
+from ime.qt_models import DataclassTableModel
+from ime.ui.ui_overridable_access_control_tab import \
+    Ui_OverridableAccessControlTab
 from ime.widgets.access_control_list import AccessControlList
+
 
 class OverridableAccessControlTab(QWidget):
     """

@@ -1,11 +1,13 @@
 """YAML representers and constructors required for working with model data.
 This is used by `ime.models`_ .
 """
-from yaml import Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 from pathlib import Path
 
 import yaml
+from yaml import Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
+
 from ime.blueprints.custom_data_types import Username
+
 
 def Path_yaml_representer(dumper: Dumper, data: Path) -> ScalarNode:
     """Function for representing this Path in YAML.

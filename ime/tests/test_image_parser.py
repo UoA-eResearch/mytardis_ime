@@ -1,11 +1,14 @@
-from ime.parser.parsers import MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
-from ime.parser.image_parser import ImageProcessor
-from pathlib import Path
 import logging
+from pathlib import Path
 
 import jpype
-import scyjava
 import jpype.imports
+import scyjava
+
+from ime.parser.image_parser import ImageProcessor
+from ime.parser.parsers import (MetadataExtractor, extract_metadata,
+                                flatten_dict_keys_unique_id)
+
 
 def test_get_metadata():
     from ime.parser.image_parser import ImageProcessor

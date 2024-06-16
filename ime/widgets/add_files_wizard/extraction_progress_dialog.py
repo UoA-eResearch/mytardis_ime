@@ -1,7 +1,9 @@
 """extraction_progress_dialog.py - Module for dialog to show progress in metadata extraction.
 """
 from PySide6.QtWidgets import QDialog, QWidget
+
 from ime.ui.ui_extraction_progress_dialog import Ui_ExtractionProgressDialog
+
 
 class ExtractionProgressDialog(QDialog):
     """

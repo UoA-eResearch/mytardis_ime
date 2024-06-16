@@ -1,10 +1,14 @@
 from typing import List
-from PySide6.QtCore import QModelIndex, Qt
-from PySide6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView
-from pytestqt.qtbot import QtBot
+
 import pytest
-from ime.qt_models import DataclassTableModel, DataclassTableProxy
+from PySide6.QtCore import QModelIndex, Qt
+from PySide6.QtWidgets import (QDataWidgetMapper, QDialog, QHeaderView, QLabel,
+                               QLineEdit, QListView, QTableView)
+from pytestqt.qtbot import QtBot
+
 from ime.models import Experiment, IngestionMetadata
+from ime.qt_models import DataclassTableModel, DataclassTableProxy
+
 
 @pytest.fixture
 def experiments(metadata: IngestionMetadata):

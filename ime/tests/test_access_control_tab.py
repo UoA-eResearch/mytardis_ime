@@ -1,13 +1,18 @@
 from typing import List
-from PySide6.QtCore import QModelIndex, QPoint, QUrl, Qt
-from PySide6.QtWidgets import QDataWidgetMapper, QDialog, QHeaderView, QLabel, QLineEdit, QListView, QTableView, QVBoxLayout, QWidget
-from pytestqt.qtbot import QtBot
-import pytest
-from ime.blueprints.custom_data_types import Username
-from ime.models import Experiment, IAccessControl, IngestionMetadata, Project, UserACL
-from ime.widgets.access_control_list import AccessControlList
-from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 
+import pytest
+from PySide6.QtCore import QModelIndex, QPoint, Qt, QUrl
+from PySide6.QtWidgets import (QDataWidgetMapper, QDialog, QHeaderView, QLabel,
+                               QLineEdit, QListView, QTableView, QVBoxLayout,
+                               QWidget)
+from pytestqt.qtbot import QtBot
+
+from ime.blueprints.custom_data_types import Username
+from ime.models import (Experiment, IAccessControl, IngestionMetadata, Project,
+                        UserACL)
+from ime.widgets.access_control_list import AccessControlList
+from ime.widgets.overridable_access_control_tab import \
+    OverridableAccessControlTab
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab
 
 

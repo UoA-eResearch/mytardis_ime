@@ -1,17 +1,21 @@
-from typing import Dict, List, Optional, cast
-from pathlib import Path
 import hashlib
-from PySide6 import QtWidgets, QtCore
+from pathlib import Path
+from typing import Dict, List, Optional, cast
+
+from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QValidator
-from PySide6.QtWidgets import QLineEdit,  QWizard
+from PySide6.QtWidgets import QLineEdit, QWizard
+
 from ime.blueprints.custom_data_types import Username
-from ime.models import Project, Experiment, Dataset, Datafile
+from ime.models import Datafile, Dataset, Experiment, Project
+from ime.parser.qt_extraction_worker import MetadataExtractionWorkerThread
 from ime.qt_models import IngestionMetadataModel
 from ime.ui.ui_add_files_wizard import Ui_ImportDataFiles
-from ime.widgets.add_files_wizard.extraction_progress_dialog import ExtractionProgressDialog
-from ime.parser.qt_extraction_worker import MetadataExtractionWorkerThread
 from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
+from ime.widgets.add_files_wizard.extraction_progress_dialog import \
+    ExtractionProgressDialog
+
 
 class AddFilesWizardResult:
     """

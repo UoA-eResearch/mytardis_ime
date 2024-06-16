@@ -1,8 +1,10 @@
-from PySide6.QtWidgets import QTableWidget
-from ime.widgets.metadata_tab import MetadataTab
-from ime.models import IngestionMetadata
-from pytestqt.qtbot import QtBot
 import pytest
+from PySide6.QtWidgets import QTableWidget
+from pytestqt.qtbot import QtBot
+
+from ime.models import IngestionMetadata
+from ime.widgets.metadata_tab import MetadataTab
+
 
 @pytest.fixture
 def widget():

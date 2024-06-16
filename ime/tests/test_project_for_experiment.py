@@ -1,9 +1,14 @@
-from ime.models import DifferentDeviceException, IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
-import typing
-from ime.qt_models import IngestionMetadataModel
-from pathlib import Path
-import yaml
 import logging
+import typing
+from pathlib import Path
+
+import yaml
+
+from ime.models import (Datafile, Dataset, DataStatus,
+                        DifferentDeviceException, Experiment,
+                        IngestionMetadata, Project)
+from ime.qt_models import IngestionMetadataModel
+
 
 def xtest_project_for_experimentl():
     fileName = "ime/tests/ingestion.yaml"

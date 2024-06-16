@@ -1,13 +1,14 @@
+import typing
 from dataclasses import fields
 from typing import Any, Generic, List, Optional, Type, TypeVar, Union, cast
-import typing
 
 from PySide6.QtCore import QItemSelection, QModelIndex, QObject, Qt
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHeaderView,
+                               QWidget)
+
 from ime.models import GroupACL, UserACL
 from ime.qt_models import DataclassTableModel, DataclassTableProxy
 from ime.ui.ui_access_control_list import Ui_AccessControlList
-from PySide6.QtWidgets import QAbstractItemView, QApplication, QHeaderView, QWidget
-
 from ime.widgets.qt_styles import CenteredCheckboxInViewItemStyle
 
 ACL_T = TypeVar('ACL_T', bound=Union[GroupACL, UserACL])

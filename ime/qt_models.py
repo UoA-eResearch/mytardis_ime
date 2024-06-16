@@ -9,24 +9,14 @@ which implement/extend Qt model and proxy interfaces; and an IngestionMetadataMo
 model which adapts IngestionMetadata from models.py for Qt, using the two other
 models.
 """
-from typing import Any, Callable, Generic, List, Optional, TypeVar, Type, cast
 import typing
-from PySide6.QtCore import (
-    QAbstractListModel,
-    QAbstractTableModel,
-    QModelIndex,
-    QObject,
-    QSortFilterProxyModel
-)
-
-from ime.models import (
-    Dataset,
-    Experiment,
-    IngestionMetadata,
-    Project,
-)
 from dataclasses import Field, fields
-from PySide6.QtCore import Qt
+from typing import Any, Callable, Generic, List, Optional, Type, TypeVar, cast
+
+from PySide6.QtCore import (QAbstractListModel, QAbstractTableModel,
+                            QModelIndex, QObject, QSortFilterProxyModel, Qt)
+
+from ime.models import Dataset, Experiment, IngestionMetadata, Project
 
 T = TypeVar("T")
 

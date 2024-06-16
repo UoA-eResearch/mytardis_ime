@@ -1,8 +1,8 @@
 """Module for a Qt-based thread metadata extraction worker.
 """
 from PySide6.QtCore import QObject, QThread, Signal
-from ime.models import Datafile
 
+from ime.models import Datafile
 from ime.parser.image_parser import ImageProcessor
 
 

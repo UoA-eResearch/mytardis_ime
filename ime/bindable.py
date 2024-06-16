@@ -1,6 +1,7 @@
-from dataclasses import field
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Generic, Union
 import typing
+from dataclasses import field
+from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+
 from PySide6.QtCore import QLine, QObject, QSignalBlocker, Signal
 from PySide6.QtWidgets import QLineEdit, QPlainTextEdit, QWidget
 

@@ -1,14 +1,14 @@
+import logging
 from typing import List
-from PySide6.QtCore import QItemSelection, QLine, QSignalBlocker
+
+from PySide6.QtCore import QItemSelection, QLine, QSignalBlocker, Qt
+from PySide6.QtWidgets import QHBoxLayout, QLineEdit, QTableWidgetItem, QWidget
 
 from ime.bindable import IBindableInput
-from ime.ui.ui_metadata_tab import Ui_MetadataTab
-from PySide6.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget, QLineEdit
-from PySide6.QtCore import Qt
 from ime.models import MyTardisObject
-import logging
-
+from ime.ui.ui_metadata_tab import Ui_MetadataTab
 from ime.utils import setup_header_layout
+
 
 class MetadataTab(QWidget, IBindableInput):
     """A tab widget for displaying and editing metadata information for an object."""

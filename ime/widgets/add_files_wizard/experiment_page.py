@@ -1,7 +1,10 @@
 import typing
+
 from PySide6.QtWidgets import QWizardPage
-from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
+
 import ime.widgets.add_files_wizard.wizard as afw
+from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
+
 
 class ExperimentPage(QWizardPage):
     def selected_existing_exp_changed(self,idx: int) -> None:

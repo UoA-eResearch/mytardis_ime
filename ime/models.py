@@ -4,20 +4,22 @@ models.py - Instrument Data Wizard dataclass models.
 # pylint: skip-file
 import logging
 import os
-from typing import List, Dict, Any, Optional, Sequence, Type, TypeAlias
 from dataclasses import dataclass, field, fields, is_dataclass
+from datetime import datetime
 from enum import Enum
-import yaml
-from yaml.loader import Loader
-from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
-import logging
 from os.path import relpath
 from pathlib import Path
-from datetime import datetime
+from typing import Any, Dict, List, Optional, Sequence, Type, TypeAlias
+
+import yaml
+from yaml import (Dumper, FullLoader, Loader, MappingNode, Node, ScalarNode,
+                  UnsafeLoader)
+from yaml.loader import Loader
+
+from ime.blueprints.custom_data_types import Username
 from ime.utils import st_dev
 from ime.yaml_helpers import initialise_yaml_helpers
 
-from ime.blueprints.custom_data_types import Username
 
 class YAMLDataclass(yaml.YAMLObject):
     """A metaclass for dataclass objects to be serialised and deserialised by pyyaml."""

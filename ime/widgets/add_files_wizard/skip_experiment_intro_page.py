@@ -1,6 +1,9 @@
 import typing
+
 from PySide6.QtWidgets import QWizardPage
+
 import ime.widgets.add_files_wizard.wizard as afw
+
 
 class SkipExperimentIntroPage(QWizardPage):
     """A wizard page for selecting an existing project and experiment or creating a new one."""

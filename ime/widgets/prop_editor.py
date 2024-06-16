@@ -1,13 +1,16 @@
-from PySide6.QtWidgets import QWidget, QLineEdit
+from PySide6.QtWidgets import QLineEdit, QWidget
+
 from ime.bindable import BoundObject
-from ime.models import Dataset, Experiment, Datafile, IAccessControl, Project, DataStatus
+from ime.models import (Datafile, Dataset, DataStatus, Experiment,
+                        IAccessControl, Project)
 from ime.qt_models import PythonListModel
-from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
+from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
-from ime.ui.ui_project_props import Ui_ProjectPropertyEditor
 from ime.ui.ui_metadata_tab import Ui_MetadataTab
+from ime.ui.ui_project_props import Ui_ProjectPropertyEditor
 from ime.widgets.metadata_tab import MetadataTab
+
 
 class DatasetPropertyEditor(QWidget):
     dataset: BoundObject[Dataset]

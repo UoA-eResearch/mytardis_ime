@@ -1,11 +1,14 @@
 """image_parser.py - Metadata extractor using bioformats."""
+import logging
 from pathlib import Path
+
 import jpype
 import jpype.imports
 from jpype.types import *
-from ime.parser.parsers import SCHEMA_CARL_ZEISS, MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
+
+from ime.parser.parsers import (SCHEMA_CARL_ZEISS, MetadataExtractor,
+                                extract_metadata, flatten_dict_keys_unique_id)
 from ime.utils import path_for_asset
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +18,11 @@ try:
     if not jpype.isJVMStarted(): # type: ignore
         jpype.startJVM(classpath=[str(bioformats_jar_path)], convertStrings=True) # type: ignore
     import loci.common
-    from loci.formats import ImageReader
     from loci.common.services import ServiceFactory
-    from loci.formats.services import OMEXMLService
+    from loci.formats import ImageReader
     from loci.formats.in_ import DefaultMetadataOptions, MetadataLevel
+    from loci.formats.services import OMEXMLService
+
     # Set output to be less verbose.
     loci.common.DebugTools.setRootLevel("ERROR")
 except ImportError:

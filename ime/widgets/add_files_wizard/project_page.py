@@ -1,8 +1,11 @@
 "project_page.py - wizard page for existing project."
 import typing
+
 from PySide6.QtWidgets import QWizardPage
-from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
+
 import ime.widgets.add_files_wizard.wizard as afw
+from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
+
 
 class ProjectPage(QWizardPage):
     """Module for wizard project page - gives user a choice to create 
