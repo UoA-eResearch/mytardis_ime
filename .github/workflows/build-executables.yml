@@ -19,6 +19,9 @@ jobs:
         uses: abatilo/actions-poetry@v2
       - name: Install poetry
         run: poetry install
+      - name: Update Poetry lock file
+        run: poetry lock
+        if: steps.cache.outputs.cache-hit != 'true'
       - name: Build executable
         run: poetry run pyinstaller pyinstaller.spec
       - name: Pack in tarball to prevent macOS and Linux permission loss
