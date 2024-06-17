@@ -44,4 +44,5 @@ jobs:
       run: PYTHONPATH=src/ poetry run python -m mypy
 
     - name: pytest - run the tests
+      if: always()
       run: PYTHONPATH=src/ poetry run python -m pytest -v --cov=ime/ tests/
