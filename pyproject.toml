@@ -19,7 +19,6 @@ scyjava = "^1.9.1"
 jpype1 = "^1.4.1"
 pyside6 = "^6.6.1"
 stubgenj = "^0.2.12"
-mypy = "^1.10.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.0.3"
@@ -31,6 +30,7 @@ pyinstaller = "^5.3"
 watchdog = "^2.1.9"
 sphinx = "^6.2.1"
 sphinx-rtd-theme = "^1.2.0"
+mypy = "^1.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
