@@ -19,6 +19,7 @@ scyjava = "^1.9.1"
 jpype1 = "^1.4.1"
 pyside6 = "^6.6.1"
 stubgenj = "^0.2.12"
+mypy = "^1.10.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.0.3"
