@@ -32,21 +32,21 @@ jobs:
 
     - name: isort - check import formatting
       if: always()
-      run: PYTHONPATH=src/ poetry run python -m isort --check --diff --profile black --skip=ime/ui/ ime
+      run: PYTHONPATH=ime/ poetry run python -m isort --check --diff --profile black --skip=ime/ui/ ime
 
     - name: Black - check code formatting
       if: always()
-      run: PYTHONPATH=src/ poetry run python -m black --check --diff --extend-exclude ime/ui/ ime
+      run: PYTHONPATH=ime/ poetry run python -m black --check --diff --extend-exclude ime/ui/ ime
 
     - name: pylint - static code analysis
       if: always()
-      run: PYTHONPATH=src/ poetry run python -m pylint ime/ --rcfile .pylintrc
+      run: PYTHONPATH=ime/ poetry run python -m pylint ime/ --rcfile .pylintrc
 
     - name: mypy - static type checking
       if: always()
       # Takes configuration from pyproject.toml
-      run: PYTHONPATH=src/ poetry run python -m mypy
+      run: PYTHONPATH=ime/ poetry run python -m mypy
 
     - name: pytest - run the tests
       if: always()
-      run: PYTHONPATH=src/ poetry run python -m pytest -v --cov=ime/ tests/
+      run: PYTHONPATH=ime/ poetry run python -m pytest -v ime/tests/
