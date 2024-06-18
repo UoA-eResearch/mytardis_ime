@@ -20,13 +20,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: setup OS
       run: |
-          sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils
+          sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils qt6-base qt6-base-dev
           /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
-    
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: "6.2"
 
     - name: Install Poetry
       uses: snok/install-poetry@v1
