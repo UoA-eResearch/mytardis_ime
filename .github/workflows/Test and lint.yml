@@ -17,7 +17,7 @@ jobs:
     name: Python ${{ matrix.python-version }}
     env:
       DISPLAY: ':99.0'
-      JAVA_OPTS: "-Xmx4g"
+      JAVA_OPTS: "-Xmx8g"
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
