@@ -65,4 +65,4 @@ jobs:
 
     - name: pytest - run the tests
       if: always()
-      run: poetry run python -m pytest -vvv ime/tests/ -X faulthandler
+      run: poetry run python -X faulthandler -m pytest -vvv ime/tests/ 
