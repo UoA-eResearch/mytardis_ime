@@ -32,7 +32,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin' # See 'Supported distributions' for available options
-        java-version: '21'
+        java-version: '8'
     
     - name: Install Poetry
       uses: snok/install-poetry@v1
