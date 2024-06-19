@@ -64,4 +64,4 @@ jobs:
 
     - name: pytest - run the tests
       if: always()
-      run: PYTHONPATH=ime/ poetry run python -m pytest -v ime/tests/
+      run: poetry run python -m pytest -vvv ime/tests/
