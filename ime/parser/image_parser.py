@@ -100,7 +100,7 @@ class ImageProcessor:
         reader.setGroupFiles(False)
         reader.setOriginalMetadataPopulated(True)
         service = ServiceFactory().getInstance(OMEXMLService)
-        # metadata = service.createOMEXMLMetadata()
+        metadata = service.createOMEXMLMetadata()
         metadata = ""
         reader.setMetadataStore(metadata)
         default_metadata_options = DefaultMetadataOptions(MetadataLevel.ALL)
