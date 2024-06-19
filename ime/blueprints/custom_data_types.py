@@ -55,7 +55,7 @@ class Username(str):
     """
 
     @classmethod
-    def __get_validators__(cls: Type['Username']) -> Generator:
+    def __get_validators__(cls: Type["Username"]) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -63,7 +63,7 @@ class Username(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls: Type['Username'], value: str) -> 'Username':
+    def validate(cls: Type["Username"], value: str) -> "Username":
         """Custom validator to ensure that the value is a string object and that it matches
         the regex defined for users"""
         if not isinstance(value, str):
@@ -84,7 +84,7 @@ class URI(str):
     """Defines a MyTardis URI as a subclass of the string class"""
 
     @classmethod
-    def __get_validators__(cls: Type['URI']) -> Generator:
+    def __get_validators__(cls: Type["URI"]) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -92,7 +92,7 @@ class URI(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls: Type['URI'], value: str) -> 'URI':
+    def validate(cls: Type["URI"], value: str) -> "URI":
         """Custom validator to ensure that the value is a string object and that it matches
         the regex defined for users"""
         if not isinstance(value, str):
@@ -120,7 +120,7 @@ class ISODateTime(str):
     """
 
     @classmethod
-    def __get_validators__(cls:Type['ISODateTime']) -> Generator:
+    def __get_validators__(cls: Type["ISODateTime"]) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -128,7 +128,7 @@ class ISODateTime(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls: Type['ISODateTime'], value: str) -> 'ISODateTime':
+    def validate(cls: Type["ISODateTime"], value: str) -> "ISODateTime":
         """Custom validator to ensure that the value is a string object and that it matches
         the regex defined for an ISO 8601 formated datestime string"""
         if not isinstance(value, str):
@@ -165,7 +165,7 @@ class BaseObjectType(str):
     ]
 
     @classmethod
-    def __get_validators__(cls: Type['BaseObjectType']) -> Generator:
+    def __get_validators__(cls: Type["BaseObjectType"]) -> Generator:
         """One or more validators may be yieled which will be called in order to validate the
         input. Each validator will receive as an input the value returned from the previous
         validator. (As per the Pydantic help manual).
@@ -173,7 +173,7 @@ class BaseObjectType(str):
         yield cls.validate
 
     @classmethod
-    def validate(cls: Type['BaseObjectType'], value: str) -> 'BaseObjectType':
+    def validate(cls: Type["BaseObjectType"], value: str) -> "BaseObjectType":
         """Custom validator to ensure that the string is one of the known objects in
         MyTardis."""
         if not isinstance(value, str):

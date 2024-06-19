@@ -1,16 +1,19 @@
 from PySide6.QtWidgets import QWidget
+
 from ime.models import GroupACL, IAccessControl, UserACL
 from ime.qt_models import DataclassTableModel
 from ime.ui.ui_project_access_control_tab import Ui_ProjectAccessControlTab
 from ime.widgets.access_control_list import AccessControlList
 
+
 class ProjectAccessControlTab(QWidget):
     """
     Project-specific widget for access control tab.
     """
+
     _group_model: DataclassTableModel[GroupACL]
 
-    def __init__(self, parent = None) -> None:
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         ui = Ui_ProjectAccessControlTab()
         ui.setupUi(self)

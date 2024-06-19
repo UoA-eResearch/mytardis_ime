@@ -1,16 +1,16 @@
 import os
-from pathlib import Path
 import typing
-from PySide6 import QtCore
+from pathlib import Path
 
-from PySide6.QtWidgets import QFileDialog, QMessageBox, QTableWidgetItem
-from PySide6.QtWidgets import QWizardPage
+from PySide6 import QtCore
+from PySide6.QtWidgets import QFileDialog, QMessageBox, QTableWidgetItem, QWizardPage
+
 import ime.widgets.add_files_wizard.wizard as afw
 from ime.utils import file_size_to_str, st_dev
 
 
 class IncludedFilesPage(QWizardPage):
-    def wizard(self) -> 'afw.AddFilesWizard':
+    def wizard(self) -> "afw.AddFilesWizard":
         return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
@@ -22,7 +22,9 @@ class IncludedFilesPage(QWizardPage):
         wizard = self.wizard()
         wizard.ui.datafileAddPushButton.clicked.connect(self._handle_add_files_clicked)
         wizard.ui.dirAddPushButton.clicked.connect(self._handle_add_directory_clicked)
-        wizard.ui.datafileDeletePushButton.clicked.connect(self._handle_delete_files_clicked)
+        wizard.ui.datafileDeletePushButton.clicked.connect(
+            self._handle_delete_files_clicked
+        )
 
     def cleanupPage(self) -> None:
         """Reimplementation of Qt QWizardPage method for cleaning up the page.
@@ -30,9 +32,15 @@ class IncludedFilesPage(QWizardPage):
             None.
         """
         wizard = self.wizard()
-        wizard.ui.datafileAddPushButton.clicked.disconnect(self._handle_add_files_clicked)
-        wizard.ui.dirAddPushButton.clicked.disconnect(self._handle_add_directory_clicked)
-        wizard.ui.datafileDeletePushButton.clicked.disconnect(self._handle_delete_files_clicked)    
+        wizard.ui.datafileAddPushButton.clicked.disconnect(
+            self._handle_add_files_clicked
+        )
+        wizard.ui.dirAddPushButton.clicked.disconnect(
+            self._handle_add_directory_clicked
+        )
+        wizard.ui.datafileDeletePushButton.clicked.disconnect(
+            self._handle_delete_files_clicked
+        )
 
     def isComplete(self) -> bool:
         """Reimplementation of Qt QWizardPage method for checking if a
@@ -56,11 +64,11 @@ class IncludedFilesPage(QWizardPage):
         file_dialog.setFileMode(QFileDialog.FileMode.Directory)
         file_dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
         dir = file_dialog.getExistingDirectory()
-        if dir == '':
+        if dir == "":
             return
         filepaths: list[Path] = []
         for root, _, files in os.walk(dir):
-            # Go through all the nested subdirectories. 
+            # Go through all the nested subdirectories.
             for file in files:
                 # Go through file in each nested directory.
                 path = Path(os.path.join(root, file))
@@ -86,7 +94,9 @@ class IncludedFilesPage(QWizardPage):
             None.
         """
         index_list = []
-        for model_index in self.wizard().ui.datafiletableWidget.selectionModel().selectedRows():
+        for model_index in (
+            self.wizard().ui.datafiletableWidget.selectionModel().selectedRows()
+        ):
             index = QtCore.QPersistentModelIndex(model_index)
             index_list.append(index)
         for index in index_list:
@@ -145,29 +155,40 @@ class IncludedFilesPage(QWizardPage):
         confirm_msg = QMessageBox()
         confirm_msg.setWindowTitle("Confirm import folder of files")
         confirm_msg.setText(f"Import {num_files} file{'s' if num_files > 1 else ''}?")
-        confirm_msg.setInformativeText("All files in this folder and sub-folders will be imported, with folder structure preserved.")
-        confirm_msg.setStandardButtons(typing.cast(QMessageBox.StandardButtons, QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel))
+        confirm_msg.setInformativeText(
+            "All files in this folder and sub-folders will be imported, with folder structure preserved."
+        )
+        confirm_msg.setStandardButtons(
+            typing.cast(
+                QMessageBox.StandardButtons,
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+            )
+        )
         res = confirm_msg.exec()
         return res == QMessageBox.StandardButton.Ok
 
     def _display_add_files_failed_error(self, correct_drive_path: Path) -> None:
         """Private method that displays an error dialog for failure to import data
-        files due to files being stored in a different drive. 
+        files due to files being stored in a different drive.
 
         Args:
             correct_drive_path (Path): The path that files should be located at.
         """
-        drive_msg = f"the drive for {correct_drive_path}" 
+        drive_msg = f"the drive for {correct_drive_path}"
         drive = correct_drive_path.drive
         if drive != "":
             drive_msg = f"the {drive} drive"
         error_msg = QMessageBox()
         error_msg.setWindowTitle("Can't import data files")
-        error_msg.setText("Your data can\'t be imported. Previously imported data "
+        error_msg.setText(
+            "Your data can't be imported. Previously imported data "
             f"were stored on {drive_msg}, but the selected data files are "
             "stored in a different drive. All your data needs to be on "
-            "the same drive to be found by the ingestion process.")
-        error_msg.setInformativeText(f"Please move your data to {drive_msg}, then try again.")
+            "the same drive to be found by the ingestion process."
+        )
+        error_msg.setInformativeText(
+            f"Please move your data to {drive_msg}, then try again."
+        )
         error_msg.setStandardButtons(QMessageBox.StandardButton.Ok)
         error_msg.exec()
 
@@ -182,9 +203,9 @@ class IncludedFilesPage(QWizardPage):
         Returns:
             bool: Whether these files are valid to add
         """
-        # Figure out the workspace path. 
-        # If there isn't any yet, we use the first file 
-        # from the currently selected list. 
+        # Figure out the workspace path.
+        # If there isn't any yet, we use the first file
+        # from the currently selected list.
         first_file_path = files_to_add[0].parent
         workspace_path = self._workspace_path() or first_file_path
         workspace_device_id = st_dev(workspace_path)
@@ -220,9 +241,9 @@ class IncludedFilesPage(QWizardPage):
                 # If there are already other files the user has
                 # imported in this dialog, we use the first file's
                 # drive.
-                data_path = Path(table.item(0,2).text()).parent
+                data_path = Path(table.item(0, 2).text()).parent
                 return data_path
-        
+
     def _add_files_to_table(self, files_to_add: list[Path]) -> None:
         """Private method to add files to the included files table.
 
@@ -263,7 +284,7 @@ class IncludedFilesPage(QWizardPage):
             size = file.stat().st_size
             size_str = file_size_to_str(size)
             size_cell = QTableWidgetItem(size_str)
-            # Store actual size value in cell. 
+            # Store actual size value in cell.
             size_cell.setData(QtCore.Qt.ItemDataRole.UserRole, size)
             fpath_cell = QTableWidgetItem(str(file))
             # Insert cells into the table.

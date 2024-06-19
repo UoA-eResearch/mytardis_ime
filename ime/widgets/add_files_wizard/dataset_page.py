@@ -1,8 +1,10 @@
-
 import typing
-from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
-import ime.widgets.add_files_wizard.wizard as afw
+
 from PySide6.QtWidgets import QWizardPage
+
+import ime.widgets.add_files_wizard.wizard as afw
+from ime.widgets.add_files_wizard.enums import FieldNames, PageNames
+
 
 class DatasetPage(QWizardPage):
     def selected_existing_dataset_changed(self, idx: int) -> None:
@@ -14,7 +16,7 @@ class DatasetPage(QWizardPage):
         return typing.cast(afw.AddFilesWizard, super().wizard())
 
     def initializePage(self) -> None:
-        """Lifecycle method called by Qt when entering this wizard page. 
+        """Lifecycle method called by Qt when entering this wizard page.
         Looks up the associated datasets for the chosen experiment, and displays
         the options.
         """
@@ -24,9 +26,11 @@ class DatasetPage(QWizardPage):
         assert exp is not None
         self.model = wizard.metadataModel.datasets_for_experiment(exp)
         self.model.set_read_only(True)
-        self.model.set_show_fields(['description'])
+        self.model.set_show_fields(["description"])
         wizard.ui.existingDatasetList.setModel(self.model)
-        wizard.ui.existingDatasetList.currentIndexChanged.connect(self.selected_existing_dataset_changed)
+        wizard.ui.existingDatasetList.currentIndexChanged.connect(
+            self.selected_existing_dataset_changed
+        )
         if self.model.rowCount() == 0:
             # When there are no datasets in selected experiment, disable
             # the existing dataset option.
@@ -35,7 +39,9 @@ class DatasetPage(QWizardPage):
             self.wizard().ui.newDatasetRadioButton.setChecked(True)
         else:
             # Set selected datset to be the first dataset.
-            self.selected_existing_dataset_changed(wizard.ui.existingDatasetList.currentIndex())
+            self.selected_existing_dataset_changed(
+                wizard.ui.existingDatasetList.currentIndex()
+            )
 
     def cleanupPage(self) -> None:
         """Lifecycle method called by Qt when leaving this wizard page. Cleans up
@@ -54,4 +60,7 @@ class DatasetPage(QWizardPage):
             return wizard.page_ids[PageNames.INCLUDED_FILES.value]
 
     def isComplete(self) -> bool:
-        return self.field(FieldNames.IS_NEW_DATASET.value) or (self.field(FieldNames.IS_EXISTING_DATASET.value) and self.field(FieldNames.EXISTING_DATASET.value) is not None)
+        return self.field(FieldNames.IS_NEW_DATASET.value) or (
+            self.field(FieldNames.IS_EXISTING_DATASET.value)
+            and self.field(FieldNames.EXISTING_DATASET.value) is not None
+        )

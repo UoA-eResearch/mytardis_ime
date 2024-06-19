@@ -9,38 +9,37 @@ which implement/extend Qt model and proxy interfaces; and an IngestionMetadataMo
 model which adapts IngestionMetadata from models.py for Qt, using the two other
 models.
 """
-from typing import Any, Callable, Generic, List, Optional, TypeVar, Type, cast
 import typing
+from dataclasses import Field, fields
+from typing import Any, Callable, Generic, List, Optional, Type, TypeVar, cast
+
 from PySide6.QtCore import (
     QAbstractListModel,
     QAbstractTableModel,
     QModelIndex,
     QObject,
-    QSortFilterProxyModel
+    QSortFilterProxyModel,
+    Qt,
 )
 
-from ime.models import (
-    Dataset,
-    Experiment,
-    IngestionMetadata,
-    Project,
-)
-from dataclasses import Field, fields
-from PySide6.QtCore import Qt
+from ime.models import Dataset, Experiment, IngestionMetadata, Project
 
 T = TypeVar("T")
+
 
 class PythonListModel(QAbstractListModel):
     """A basic implementation of a Qt Model that updates a Python list.
     The built-in QStringListModel creates a separate list object, which
     means the original Python list doesn't get updated.
     """
+
     list: List[str]
-    def __init__(self, parent:Optional[QObject] = None) -> None:
+
+    def __init__(self, parent: Optional[QObject] = None) -> None:
         super().__init__(parent)
 
     def setStringList(self, sourceList: List[str]) -> None:
-        """Sets the source Python string list that will be updated by 
+        """Sets the source Python string list that will be updated by
         this Model.
 
         Args:
@@ -73,15 +72,19 @@ class PythonListModel(QAbstractListModel):
     # Documentation about these methods can be found in:
     # https://doc.qt.io/qt-6/qabstractlistmodel.html
 
-    def rowCount(self, parent = QModelIndex()) -> int:
+    def rowCount(self, parent=QModelIndex()) -> int:
         """Returns the number of rows in the model."""
-        if not hasattr(self, 'list'):
+        if not hasattr(self, "list"):
             return 0
         return len(self.list)
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlag:
         """Returns the flags associated with the given index."""
-        flags = Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
+        flags = (
+            Qt.ItemFlag.ItemIsEditable
+            | Qt.ItemFlag.ItemIsEnabled
+            | Qt.ItemFlag.ItemIsSelectable
+        )
         return typing.cast(Qt.ItemFlag, flags)
 
     def setData(self, index: QModelIndex, value: typing.Any, role: int = ...) -> bool:
@@ -90,26 +93,26 @@ class PythonListModel(QAbstractListModel):
         self.dataChanged.emit(index, index)
         return True
 
-    def data(self, index: QModelIndex, role = Qt.ItemDataRole.DisplayRole) -> typing.Any:
+    def data(self, index: QModelIndex, role=Qt.ItemDataRole.DisplayRole) -> typing.Any:
         """Returns the data stored under the given role for the item referred to by the index."""
         if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
             return self.list[index.row()]
 
-    def insertRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+    def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
         """Inserts rows into the model."""
-        self.beginInsertRows(QModelIndex(), row, row+count-1)
-        for i in range(row, row+count):
+        self.beginInsertRows(QModelIndex(), row, row + count - 1)
+        for i in range(row, row + count):
             self.list.insert(i, "")
         self.endInsertRows()
         return True
 
-    def removeRows(self, row: int, count: int, parent = QModelIndex()) -> bool:
+    def removeRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
         """Removes rows from the model."""
-        self.beginRemoveRows(QModelIndex(), row, row+count-1)
+        self.beginRemoveRows(QModelIndex(), row, row + count - 1)
         for i in range(0, count):
             # Remove rows from largest index first
             # to avoid being affected by reassigned indices.
-            idx = row+count-1-i
+            idx = row + count - 1 - i
             self.list.pop(idx)
         self.endRemoveRows()
         return True
@@ -123,12 +126,13 @@ class IngestionMetadataModel:
     also derive read-only or filtered versions of each model using
     DataclassTableProxy - see below.
     """
-    def __init__(self, metadata = IngestionMetadata()) -> None:
+
+    def __init__(self, metadata=IngestionMetadata()) -> None:
         """
         Initializes an instance of the IngestionMetadataModel class.
 
         Args:
-            metadata: An instance of the IngestionMetadata class from models.py. 
+            metadata: An instance of the IngestionMetadata class from models.py.
                 Defaults to an empty instance.
         """
         self.metadata = metadata
@@ -139,10 +143,10 @@ class IngestionMetadataModel:
         self.datasets = DataclassTableModel(Dataset)
         self.datasets.set_instance_list(metadata.datasets)
 
-    def experiments_for_project(self, project: Project) -> 'DataclassTableProxy':
+    def experiments_for_project(self, project: Project) -> "DataclassTableProxy":
         """
-        Returns a filtered data model of all Experiments that belong 
-        to a Project in this model. 
+        Returns a filtered data model of all Experiments that belong
+        to a Project in this model.
 
         Args:
             project (Project): The project to look up experiments for.
@@ -152,12 +156,12 @@ class IngestionMetadataModel:
                 has.
         """
         proxy = self.experiments.proxy()
-        proxy.set_filter_by_instance(lambda exp: 
-            project.identifiers_delegate.has(cast(Experiment, exp).projects)
+        proxy.set_filter_by_instance(
+            lambda exp: project.identifiers_delegate.has(cast(Experiment, exp).projects)
         )
         return proxy
 
-    def datasets_for_experiment(self, experiment: Experiment) -> 'DataclassTableProxy':
+    def datasets_for_experiment(self, experiment: Experiment) -> "DataclassTableProxy":
         """
         Returns a filtered data model of all Datasets that belong to an
         Experiment in this model.
@@ -172,12 +176,14 @@ class IngestionMetadataModel:
         proxy = self.datasets.proxy()
         # Since the experiments field is a list, we add
         # a filter function to go through the list.
-        proxy.set_filter_by_instance(lambda dataset:
-            experiment.identifiers_delegate.has(cast(Dataset, dataset).experiments)
+        proxy.set_filter_by_instance(
+            lambda dataset: experiment.identifiers_delegate.has(
+                cast(Dataset, dataset).experiments
+            )
         )
         return proxy
-    
-    def project_for_experiment(self, experiment: Experiment) -> 'DataclassTableProxy':
+
+    def project_for_experiment(self, experiment: Experiment) -> "DataclassTableProxy":
         """Returns a DataclassTableProxy of projects that have a given experiment as a part.
         Args:
             experiment (Experiment): The experiment to look up project for
@@ -187,18 +193,22 @@ class IngestionMetadataModel:
             belongs to.
         """
         proxy = self.projects.proxy()
-        proxy.set_filter_by_instance(lambda proj: 
-            any(project_id in cast(Experiment, proj).project_id for project_id in experiment.projects)
-            #cast(Project, proj).identifiers_delegate.has(experiment.project_id)
+        proxy.set_filter_by_instance(
+            lambda proj: any(
+                project_id in cast(Experiment, proj).project_id
+                for project_id in experiment.projects
+            )
+            # cast(Project, proj).identifiers_delegate.has(experiment.project_id)
         )
         return proxy
+
 
 class DataclassTableModel(QAbstractTableModel, Generic[T]):
     """
     An Qt Model adaptor class for a Python list of dataclasses, implemented as a
-    TableModel. Each row represents an "instance" of dataclass in the list, and each 
-    column represents a "field" in the instance. 
-    Field name and its column order are determined by the name and order of dataclasses 
+    TableModel. Each row represents an "instance" of dataclass in the list, and each
+    column represents a "field" in the instance.
+    Field name and its column order are determined by the name and order of dataclasses
     fields returned by the fields() function.
     To instantiate the class:
     ```
@@ -221,7 +231,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             field (str): The field name to look up column index for.
 
         Returns:
-            int: The column index. 
+            int: The column index.
 
         """
         for i, key in enumerate(self.fields):
@@ -241,21 +251,21 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         """
         return fields(self.type)[column]
 
-    def proxy(self, fields: List[str] = []) -> 'DataclassTableProxy':
+    def proxy(self, fields: List[str] = []) -> "DataclassTableProxy":
         """
-        Convenience function that returns a proxy model of the whole model, 
+        Convenience function that returns a proxy model of the whole model,
         useful for a filtered view or displaying in a View.
         Optionally you may specify a list of `fields` to show in this table. Fields will
         be ordered in the proxy model according to the order of the list.
 
         Args:
-            fields (List[str]): Fields in the model that should be visible. 
+            fields (List[str]): Fields in the model that should be visible.
                 Defaults to an empty list, which shows all fields.
 
         Returns:
             DataclassTableProxy: A proxy view that shows all rows in this model.
                 If fields is specified, only specified fields will be visible
-                when a Qt widget is using the proxy. 
+                when a Qt widget is using the proxy.
 
         """
         instance_type = self.type
@@ -388,6 +398,7 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
             and role == Qt.ItemDataRole.DisplayRole
         ):
             return self.fields[section]
+
     def data(
         self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole
     ) -> typing.Any:
@@ -401,22 +412,22 @@ class DataclassTableModel(QAbstractTableModel, Generic[T]):
         Returns:
             typing.Any: The data for the given model index and role.
         """
-        if (role == Qt.ItemDataRole.DisplayRole or
-            role == Qt.ItemDataRole.EditRole):
+        if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
             instance = self.instance_list[index.row()]
             field = getattr(instance, self.fields[index.column()])
             return field
+
 
 class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     """
     A class that extends the QSortFilterProxyModel with dataclass-specific and other
     utility functions.
-    
+
     In Qt, a ProxyModel class is a copy of a Model that is synced up with the Model's
-    changes. A Proxy can filter out some of the data or add different ways of displaying things. 
-    A ProxyModel can be used in any Qt View in the same way as Models. They are useful for 
+    changes. A Proxy can filter out some of the data or add different ways of displaying things.
+    A ProxyModel can be used in any Qt View in the same way as Models. They are useful for
     showing the same data in different ways, for example a list view and a detail view.
-    
+
     Usually, you create an instance using the DataclassTableModel.proxy() method.
     To directly instantiate the class:
     ```
@@ -426,6 +437,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
     ```
 
     """
+
     read_only: bool = False
     show_fields: List[str] = []
 
@@ -434,7 +446,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
 
     def set_show_fields(self, show_fields: List[str]) -> None:
         """
-        Given a list of field names, sets which dataclass fields should be 
+        Given a list of field names, sets which dataclass fields should be
         shown by the proxy model. If show_fields is an empty list, then all fields
         will be shown.
 
@@ -445,7 +457,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
 
     def set_read_only(self, read_only: bool) -> None:
         """
-        Sets whether the proxy model should use read-only flags. 
+        Sets whether the proxy model should use read-only flags.
         This primarily affects native Qt View widgets, which shows an editing widget or
         a plain label for each item depending on the flags.
 
@@ -458,13 +470,13 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         """
         Applies a predicate (a function that takes an argument and returns
         True or False) to each dataclass instance in the model, and filter out
-        instances that predicate returns False on. 
+        instances that predicate returns False on.
 
         Note, if a predicate is set, then QSortFilterProxyModel's built-in filters
         (e.g. filterFixedString()) will not be applied even if set.
 
         Args:
-            predicate (Callable[[T], bool]): A function that should take an 
+            predicate (Callable[[T], bool]): A function that should take an
             instance of the dataclass T, and return True or False by
             whether it should be included.
 
@@ -479,11 +491,11 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
 
         Args:
             row (int): The row index
-        
+
         Returns:
             T: The dataclass instance.
         """
-        source_row = self.mapToSource(self.index(row,0)).row()
+        source_row = self.mapToSource(self.index(row, 0)).row()
         return self.sourceModel().instance(source_row)
 
     # Implementations and overrides of QAbstractTableModel methods follow.
@@ -528,7 +540,9 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         if len(self.show_fields) == 0:
             # If no restrictions on what fields to show, return true for all columns.
             return True
-        return self.sourceModel().field_for_column(source_column).name in self.show_fields
+        return (
+            self.sourceModel().field_for_column(source_column).name in self.show_fields
+        )
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
         """
@@ -563,7 +577,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
             flags |= Qt.ItemFlag.ItemIsEditable
         return typing.cast(Qt.ItemFlag, flags)
 
-    def columnCount(self, parent = QModelIndex()) -> int:
+    def columnCount(self, parent=QModelIndex()) -> int:
         """
         Return the number of columns in the model.
 
@@ -595,8 +609,8 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
             typing.Any: The header data.
         """
         if (
-            len(self.show_fields) > 0 and
-            orientation == Qt.Orientation.Horizontal
+            len(self.show_fields) > 0
+            and orientation == Qt.Orientation.Horizontal
             and role == Qt.ItemDataRole.DisplayRole
         ):
             return self.show_fields[section]
@@ -615,10 +629,7 @@ class DataclassTableProxy(QSortFilterProxyModel, Generic[T]):
         Returns:
             typing.Any: The data stored under the given role for the item referred to by the index.
         """
-        if (
-            len(self.show_fields) > 0 and
-            role == Qt.ItemDataRole.DisplayRole
-        ):
+        if len(self.show_fields) > 0 and role == Qt.ItemDataRole.DisplayRole:
             instance = self.instance(index.row())
             field = getattr(instance, self.show_fields[index.column()])
             return field

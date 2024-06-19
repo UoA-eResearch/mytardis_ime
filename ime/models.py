@@ -4,20 +4,21 @@ models.py - Instrument Data Wizard dataclass models.
 # pylint: skip-file
 import logging
 import os
-from typing import List, Dict, Any, Optional, Sequence, Type, TypeAlias
 from dataclasses import dataclass, field, fields, is_dataclass
+from datetime import datetime
 from enum import Enum
-import yaml
-from yaml.loader import Loader
-from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
-import logging
 from os.path import relpath
 from pathlib import Path
-from datetime import datetime
+from typing import Any, Dict, List, Optional, Sequence, Type, TypeAlias
+
+import yaml
+from yaml import Dumper, FullLoader, Loader, MappingNode, Node, ScalarNode, UnsafeLoader
+from yaml.loader import Loader
+
+from ime.blueprints.custom_data_types import Username
 from ime.utils import st_dev
 from ime.yaml_helpers import initialise_yaml_helpers
 
-from ime.blueprints.custom_data_types import Username
 
 class YAMLDataclass(yaml.YAMLObject):
     """A metaclass for dataclass objects to be serialised and deserialised by pyyaml."""
@@ -50,10 +51,11 @@ class YAMLDataclass(yaml.YAMLObject):
         """
         assert is_dataclass(self)
         return {
-            field.name: getattr(self, field.name) 
-            for field in fields(self) 
-            if field.repr is True # Only include repr=True fields
+            field.name: getattr(self, field.name)
+            for field in fields(self)
+            if field.repr is True  # Only include repr=True fields
         }
+
 
 @dataclass
 class UserACL(YAMLDataclass):
@@ -106,7 +108,7 @@ class IIdentifiers:
 
     def __init__(self, identifiers: Optional[List[str]]) -> None:
         self.identifiers = identifiers
-    
+
     def first(self) -> str:
         """Returns the first identifier in the list, if any.
         Otherwise return an empty string.
@@ -114,8 +116,7 @@ class IIdentifiers:
         Returns:
             str: The value of the ID.
         """
-        if (self.identifiers is not None and 
-            len(self.identifiers) > 0):
+        if self.identifiers is not None and len(self.identifiers) > 0:
             return self.identifiers[0]
         else:
             return ""
@@ -232,11 +233,8 @@ class IDataStatus:
     data_status: Optional[DataStatus] = None
 
 
-
 @dataclass
-class Project(
-    YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
-):
+class Project(YAMLDataclass, IAccessControl, IDataClassification, IDataStatus):
     """
     A class representing MyTardis Project objects.
 
@@ -257,7 +255,7 @@ class Project(
     )
     identifiers: list[str] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = "" # MTUrl in ingestion script
+    object_schema: str = ""  # MTUrl in ingestion script
     # fields to add for updated data status
     created_by: Optional[str] = None
     institution: Optional[List[str]] = None
@@ -368,9 +366,7 @@ class ProjectIdentifiers(IIdentifiers):
 
 
 @dataclass
-class Experiment(
-    YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
-):
+class Experiment(YAMLDataclass, IAccessControl, IDataClassification, IDataStatus):
     """
     A class representing MyTardis Experiment objects.
     """
@@ -382,11 +378,11 @@ class Experiment(
     description: str = ""
     identifiers: list[str] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = "" # MTUrl in ingestion script
+    object_schema: str = ""  # MTUrl in ingestion script
     # fields to add for updated data status
     institution_name: Optional[str] = None
     created_by: Optional[str] = None
-    url: Optional[str] = None # MTUrl in ingestion script
+    url: Optional[str] = None  # MTUrl in ingestion script
     locked: bool = False
     start_time: Optional[datetime | str] = None
     end_time: Optional[datetime | str] = None
@@ -490,9 +486,7 @@ class ExperimentIdentifiers(IIdentifiers):
 
 
 @dataclass
-class Dataset(
-    YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
-):
+class Dataset(YAMLDataclass, IAccessControl, IDataClassification, IDataStatus):
     """
     A class representing MyTardis Dataset objects.
     """
@@ -504,7 +498,7 @@ class Dataset(
     instrument: str = ""
     identifiers: list[str] = field(default_factory=list)
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = "" # MTUrl in ingestion script
+    object_schema: str = ""  # MTUrl in ingestion script
     # fields to add for updated data status
     directory: Optional[Path] = None
     immutable: bool = False
@@ -513,7 +507,7 @@ class Dataset(
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __post_init__(self) -> None:
-        """Dataclass lifecycle method that runs after an object is initialised. 
+        """Dataclass lifecycle method that runs after an object is initialised.
         This method initialises the identifier delegate class for this model."""
         self.identifiers_delegate = DatasetIdentifiers(self)
 
@@ -623,7 +617,7 @@ class Datafile(YAMLDataclass, IAccessControl, IDataStatus):
     mimetype: str = ""
     dataset: str = ""
     metadata: Optional[Dict[str, Any]] = None
-    object_schema: str = "" # MTUrl in ingestion script
+    object_schema: str = ""  # MTUrl in ingestion script
     _store: Optional["IngestionMetadata"] = field(repr=False, default=None)
 
     def __getstate__(self) -> dict[str, Any]:
@@ -683,6 +677,7 @@ def Username_yaml_constructor(
 class DifferentDeviceException(Exception):
     """Exception that is thrown if ingestion metadata is
     saved in different device from the data."""
+
     pass
 
 
@@ -723,7 +718,7 @@ class IngestionMetadata:
 
     def is_empty(self) -> bool:
         """Returns whether there are any projects, experiments,
-        datasets and datafiles. 
+        datasets and datafiles.
 
         Returns:
             bool: True if there are, False if not.
@@ -777,7 +772,6 @@ class IngestionMetadata:
             for file in self.datafiles:
                 curr_path = file.path_abs.parent
                 file.directory = curr_path.relative_to(relative_to_dir)
-                
 
     def _to_yaml(self) -> str:
         """
@@ -880,6 +874,7 @@ class IngestionMetadata:
                     obj,
                 )
         return metadata
+
 
 MyTardisObject: TypeAlias = Project | Experiment | Dataset | Datafile
 

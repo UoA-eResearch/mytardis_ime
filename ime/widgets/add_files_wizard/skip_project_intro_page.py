@@ -1,15 +1,19 @@
 import typing
+
 from PySide6.QtWidgets import QWizardPage
-from ime.widgets.add_files_wizard.enums import PageNames
+
 import ime.widgets.add_files_wizard.wizard as afw
+from ime.widgets.add_files_wizard.enums import PageNames
+
 
 class SkipProjectIntroPage(QWizardPage):
-    """ A wizard page for selecting an existing project or creating a new one.
+    """A wizard page for selecting an existing project or creating a new one.
 
     Args:
         QWizardPage (_type_):  The type of the parent class.
     """
-    def wizard(self) -> 'afw.AddFilesWizard':
+
+    def wizard(self) -> "afw.AddFilesWizard":
         # Add type cast so type checker isn't annoyed below.
         """Return the wizard object with type cast.
 
