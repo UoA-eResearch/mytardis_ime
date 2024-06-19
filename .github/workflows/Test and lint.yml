@@ -17,7 +17,7 @@ jobs:
     name: Python ${{ matrix.python-version }}
     env:
       DISPLAY: ':99.0'
-      JAVA_OPTS: "-Xmx8g"
+      JAVA_OPTS: "-Xmx4g"
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -65,4 +65,4 @@ jobs:
 
     - name: pytest - run the tests
       if: always()
-      run: poetry run python -m pytest -vvv ime/tests/
+      run: poetry run python -m pytest -vvv ime/tests/ -X faulthandler
