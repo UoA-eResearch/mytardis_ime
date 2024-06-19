@@ -45,6 +45,9 @@ jobs:
       run: poetry install
       if: steps.cache.outputs.cache-hit != 'true'
 
+    - name: Install pytest-xcfb
+      run: poetry add pytest-xcfb
+
     - name: isort - check import formatting
       if: always()
       run: PYTHONPATH=ime/ poetry run python -m isort --check --diff --profile black --skip=ime/ui/ ime
