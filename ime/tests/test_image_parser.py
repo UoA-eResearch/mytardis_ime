@@ -13,7 +13,7 @@ from ime.parser.parsers import (
 )
 
 
-@pytest.mark.skip("Seg faulting?")
+@pytest.mark.skip(reason="Seg faulting?")
 def test_get_metadata():
     from ime.parser.image_parser import ImageProcessor
 
