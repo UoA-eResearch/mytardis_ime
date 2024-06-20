@@ -67,6 +67,5 @@ jobs:
     - name: pytest - run the tests
       if: always()
       run: |
-        gdb 
-        poetry run python -m pytest -vvv ime/tests/ 
+        gdb -ex r --args poetry run python -m pytest -vvv ime/tests/ 
    
