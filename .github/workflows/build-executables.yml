@@ -22,6 +22,8 @@ jobs:
       - name: Update Poetry lock file
         run: poetry lock
         if: steps.cache.outputs.cache-hit != 'true'
+      - name: Run tests
+        run: poetry run pytest
       - name: Build executable
         run: poetry run pyinstaller pyinstaller.spec
       - name: Pack in tarball to prevent macOS and Linux permission loss
