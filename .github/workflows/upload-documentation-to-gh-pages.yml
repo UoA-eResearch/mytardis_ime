@@ -36,6 +36,9 @@ jobs:
           poetry-version: ${{ matrix.poetry-version }}
       - name: Install poetry
         run: poetry install --only=dev
+      - name: Update Poetry lock file
+        run: poetry lock
+        if: steps.cache.outputs.cache-hit != 'true'
       - name: Build documentation
         run: | 
           poetry run make clean
