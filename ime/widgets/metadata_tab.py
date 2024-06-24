@@ -3,7 +3,7 @@ from PySide6.QtCore import QItemSelection, QLine, QSignalBlocker
 
 from ime.bindable import IBindableInput
 from ime.ui.ui_metadata_tab import Ui_MetadataTab
-from PySide6.QtWidgets import QHBoxLayout, QTableWidgetItem, QWidget, QLineEdit
+from PySide6.QtWidgets import QTableWidgetItem, QWidget, QLineEdit
 from PySide6.QtCore import Qt
 from ime.models import MyTardisObject
 import logging
@@ -25,14 +25,15 @@ class MetadataTab(QWidget, IBindableInput):
         self.ui.metadata_table.selectionModel().selectionChanged.connect(self.handle_selection_changed)
         self.ui.add_row_btn.clicked.connect(self._handle_add_row_click)
         self.ui.remove_rows_btn.clicked.connect(self.handle_remove_rows_click)
-        self.ui.notes_textedit.textChanged.connect(self.handleNotes_changed)
+        self.ui.notes_textedit.textChanged.connect(self.handle_Notes_changed)
         setup_header_layout(self.ui.metadata_table.horizontalHeader())
+        print("MetadataTab initialized")
 
     def handle_schema_changed(self, schema: str) -> None:
         """Handles the schema text box changing."""
         self.metadata_object.object_schema = self.ui.schemaLineEdit.text()
 
-    def handleNotes_changed(self) -> None:
+    def handle_Notes_changed(self) -> None:
         """Handler method for notes changed."""
         if self.metadata_object.metadata is None:
             self.metadata_object.metadata = {}
@@ -41,13 +42,19 @@ class MetadataTab(QWidget, IBindableInput):
     def add_insert_metadata_row(self) -> None:
         """Adds an empty row to the metadata table."""
         table = self.ui.metadata_table
-        # key_item, val_item = self.get_metadata_row("", "")
+    
+        # Create empty items for key and value
         key_item = QTableWidgetItem("")
         val_item = QTableWidgetItem("")
+    
+        # Get the current row count and insert a new row at the end
         row_idx = table.rowCount()
-        table.setRowCount(row_idx + 1)
+        table.insertRow(row_idx)
+    
+        # Set the empty items in the new row
         table.setItem(row_idx, 0, key_item)
         table.setItem(row_idx, 1, val_item)
+        print(f"Row added at index {row_idx}")
     
     def get_metadata_row(self, key: str, val: str) -> tuple[QTableWidgetItem, QTableWidgetItem]:
         """Returns a key-value metadata row as QTableWidgetItem objects.
@@ -83,11 +90,6 @@ class MetadataTab(QWidget, IBindableInput):
         """
         table = self.ui.metadata_table
         selected_rows = table.selectionModel().selectedRows()
-        if (len(selected_rows) == 1 and 
-            selected_rows[0].row() == table.rowCount() - 1):
-            # If only the empty row is selected, do not enable.
-            self.ui.remove_rows_btn.setEnabled(False)
-            return
         self.ui.remove_rows_btn.setEnabled(len(selected_rows) > 0)
 
     def _handle_cell_changed(self, row: int, col: int) -> None:
@@ -146,23 +148,29 @@ class MetadataTab(QWidget, IBindableInput):
         clicked. Focuses the editing on the new edit row.
         """
         table = self.ui.metadata_table
-        edit_row_name_cell = table.model().index(table.rowCount() - 1, 0)
-        self.ui.metadata_table.edit(edit_row_name_cell)
+        print("Add button clicked")
+
+        with QSignalBlocker(table):
+            self.add_insert_metadata_row()
+
+        new_row_index = table.rowCount() - 1
+        # Focus the editing on the first cell of the new row
+        edit_row_name_cell = table.model().index(new_row_index, 0)
+        table.edit(edit_row_name_cell)
+        print(f"Editing focused on row {new_row_index}")
 
     def handle_remove_rows_click(self) -> None:
         """Handles the click event for the Remove Rows button."""
         table = self.ui.metadata_table
-        items = table.selectedItems()
-        # Extract the rows that need to be deleted.
-        rows = set([item.row() for item in items])
-        for row in rows:
-            if row == table.rowCount() - 1:
-                # Skip deleting the empty row.
-                continue
-            key = table.item(row, 0).text()
-            if self.metadata_object.metadata is not None:
-                self.metadata_object.metadata.pop(key)
-            table.removeRow(row)
+        #items = table.selectedItems()
+        selected_rows = table.selectionModel().selectedRows()
+        # Sort rows in descending order to avoid index shifting issues
+        sorted_rows = sorted(selected_rows, key=lambda index: index.row(), reverse=True)
+        
+        with QSignalBlocker(table):
+            for index in sorted_rows:
+                table.removeRow(index.row())
+        print("Selected rows removed")
 
     def update_metadata_object(self, metadata_obj: MyTardisObject) -> None:
         """Updates the object this tab is modifying.
@@ -170,24 +178,25 @@ class MetadataTab(QWidget, IBindableInput):
         Args:
             metadata_obj (MyTardisObject): The metadata object to update the tab with.
         """
+        self.metadata_object = metadata_obj  # Update the metadata object first
+
         # Block table change signals while object is being updated.
         with QSignalBlocker(self.ui.metadata_table):
             table = self.ui.metadata_table
-            # First, clear all existing rows (if any) that's already
+            # Clear all existing rows (if any) that's already
             # in the tab.
             table.clearContents()
             table.setRowCount(0)
-            # Then, populate table with new items 
-            if metadata_obj.metadata is None:
-                return
-            metadata = metadata_obj.metadata
-            num_new = len(metadata)
-            if "Notes" in metadata:
-                # Remove a line if there are Notes.
-                num_new = num_new - 1
+            
+            # Populate table with new items 
+            metadata = metadata_obj.metadata or {}
+
+            # Set the row count, excluding "Notes" if present
+            num_new = len(metadata) - ('Notes' in metadata)
             table.setRowCount(num_new)
+
             row_idx = 0
-            for key,val in metadata.items():
+            for key, val in metadata.items():
                 if key == "Notes":
                     # Skip the notes field. Display it in the separate notes
                     # section instead
@@ -196,15 +205,13 @@ class MetadataTab(QWidget, IBindableInput):
                 table.setItem(row_idx, 0, key_item)
                 table.setItem(row_idx, 1, val_item)
                 row_idx += 1
-            self.add_insert_metadata_row()
-            self.metadata_object = metadata_obj
+
         # Update schema
         object_schema_value = metadata_obj.object_schema
         self.ui.schemaLineEdit.setText(str(object_schema_value))
+
         # Update notes section
-        if 'Notes' in metadata_obj.metadata:
-            notes = metadata_obj.metadata['Notes']
-        else:
-            notes = ""
+        #metadata = metadata_obj.metadata
+        notes = metadata.get('Notes', '')
         with QSignalBlocker(self.ui.notes_textedit):
             self.ui.notes_textedit.setText(notes)

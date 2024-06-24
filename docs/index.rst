@@ -10,14 +10,14 @@ Welcome to Instrument Data Wizard's documentation!
    :maxdepth: 2
    :caption: Tutorials
    
-   user/tutorial-first-dataset/index
+   user/tutorial-first-dataset-from-scratch/index
+   user/tutorial-new-dataset-for-existing-projects/index
 
 .. toctree::
    :maxdepth: 2
    :caption: Reference for Users
 
    user/what-is-wizard
-   user/adding-to-existing-structure
    user/data-dictionary
    user/finding-instrument-id
    user/identifiers

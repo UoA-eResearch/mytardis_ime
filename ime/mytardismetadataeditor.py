@@ -1,7 +1,7 @@
 import typing
 from PySide6 import QtCore
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
+from PySide6.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QTreeWidget,QTreeWidgetItem, QMenu
 import jpype
 from typing import Any, Callable, cast
 
@@ -13,7 +13,7 @@ from ime.qt_models import IngestionMetadataModel
 
 # Import the resources file
 import default_rc
-from .utils import file_size_to_str, setup_header_layout, setup_section_autoresize
+from .utils import file_size_to_str, setup_section_autoresize
 
 class MyTardisMetadataEditor(QMainWindow):
     """
@@ -402,7 +402,7 @@ class MyTardisMetadataEditor(QMainWindow):
         self.ui.experimentTabProps.setCurrentIndex(1)
         self.ui.datasetTabProps.setCurrentIndex(2)
         
-    def openWizardWindowSkipProject(self) -> None:  
+    def openWizardWindowSkipProject(self) -> None:
         """
         Displays a wizard window to add new files to a new experiment in an existing project.
         This method extracts the relevant metadata from the currently selected item in the 

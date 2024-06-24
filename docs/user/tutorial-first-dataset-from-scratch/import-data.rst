@@ -2,6 +2,14 @@ Import your data into the Instrument Data Wizard
 ================================================
 To import your data into the Instrument Data Wizard, open the Wizard and click the `Import data files` button.
 
+.. **Option 1**: Use a Template YAML file: If you already have a template YAML file downloaded from the `link <https://test-instruments.nectar.auckland.ac.nz/yaml/idw-yaml>`_ in |service_name| after logging in with 2FA, you can use it as a starting point for structuring your data.
+
+.. Open the Wizard and click the `Open` button, select the downloaded YAML file, and click `Open`. Your projects from |service_name| will be listed.
+
+.. **Option 2**: Start from scratch in IDW: Alternatively, you can create a new YAML file directly in the Instrument Data Wizard.
+
+.. Open the Wizard and click the `Import data files` button.
+
 .. image:: import-1.png
 
 A step-by-step wizard will show up, with the first page giving a brief introduction to the |service_name| hierarchy.
@@ -25,7 +33,9 @@ Once finished, your editor should look like this.
 
 .. admonition:: What if I want to add data into an existing `Project` in the repository?
 
-    If there is already a Project for your data in the data repository, you need to import it into the Instrument Data Wizard before you can start adding files to it. You can follow the instructions for :doc:`Adding data to existing Projects, Experiments or Datasets in the data repository <../adding-to-existing-structure>`.
+    If there is already a Project for your data in the data repository, you need to import it into the Instrument Data Wizard before you can start adding files to it. You can follow the instructions for :doc:`Adding data to existing Projects, Experiments or Datasets in the data repository <../tutorial-new-dataset-for-existing-projects/import-data>`.
+
+.. _add-more-data:
 
 Add more data
 -------------
@@ -57,7 +67,7 @@ Save your progress
 ------------------
 Instrument Data Wizard keeps all your data structure and annotations in an YAML-formatted ingestion file. This file is read by the |service_name| ingestion process to find all your data files. It needs to be saved in the root folder of your data.
 
-Click the `Save` button, and save your ingestion file under the tutorial data folder. Name it "ingestion.yaml". 
+Click the `Save` button, and save your ingestion file under the tutorial data folder. Name it :code:`ingestion.yaml`. 
 
 .. admonition:: Save as you go!
     
@@ -71,4 +81,3 @@ Try to re-create the hierarchy in the Instrument Data Wizard as described in the
 Once finished, your editor should look like this.
 
 .. image:: import-exercise.png
-
