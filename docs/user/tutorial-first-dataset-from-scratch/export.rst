@@ -1,6 +1,6 @@
 Save the ingestion file
 =======================
-Once you are finished organising and annotating your data, you can save the ingestion file for the last time. Ensure to save the ingestion file in the root of your data folder.
+Once you are finished organising and annotating your data, you can save the ingestion file for the last time. Ensure to save the ingestion file in the **root** of your data folder.
 
 Your data folder should look like this.
 
