@@ -3,9 +3,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog
 from pytestqt.qtbot import QtBot
 import pytest
-from ime.blueprints.custom_data_types import Username
 from ime.models import Experiment, IAccessControl, IngestionMetadata, Project, GroupACL
-from ime.widgets.access_control_list import AccessControlList
 from ime.widgets.overridable_access_control_tab import OverridableAccessControlTab
 
 from ime.widgets.project_access_control_tab import ProjectAccessControlTab

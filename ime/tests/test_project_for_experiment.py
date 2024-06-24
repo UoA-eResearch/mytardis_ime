@@ -1,6 +1,4 @@
-from ime.models import DifferentDeviceException, IngestionMetadata, Project, Experiment, Dataset, Datafile, DataStatus
-import typing
-from ime.qt_models import IngestionMetadataModel
+from ime.models import IngestionMetadata, Project, Experiment, Dataset, Datafile
 from pathlib import Path
 import yaml
 import logging
