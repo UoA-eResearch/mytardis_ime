@@ -1,0 +1,72 @@
+name: Test and Lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    name: Python ${{ matrix.python-version }}
+    env:
+      DISPLAY: ':99.0'
+      JAVA_OPTS: "-Xmx4g"
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: setup OS
+      run: |
+          sudo apt update
+          sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils libgl1 libegl1 libdbus-1-3 libxcb-cursor-dev python3.10-dbg
+          /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
+
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin' # See 'Supported distributions' for available options
+        java-version: '8'
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+
+    - name: Update Poetry lock file
+      run: poetry lock
+      if: steps.cache.outputs.cache-hit != 'true'
+
+    - name: Install Dependencies
+      run: poetry install
+      if: steps.cache.outputs.cache-hit != 'true'
+
+    # - name: isort - check import formatting
+    #   if: always()
+    #   run: PYTHONPATH=ime/ poetry run python -m isort --check --diff --profile black --skip=ime/ui/ ime
+
+    # - name: Black - check code formatting
+    #   if: always()
+    #   run: PYTHONPATH=ime/ poetry run python -m black --check --diff --extend-exclude ime/ui/ ime
+
+    # - name: pylint - static code analysis
+    #   if: always()
+    #   run: PYTHONPATH=ime/ poetry run python -m pylint ime/ --rcfile .pylintrc
+
+    # - name: mypy - static type checking
+    #   if: always()
+    #   # Takes configuration from pyproject.toml
+    #   run: PYTHONPATH=ime/ poetry run python -m mypy
+
+    - name: pytest - run the tests
+      if: always()
+      run: |
+        poetry run python -m pytest -vvv ime/tests/ 
+   

@@ -18,7 +18,6 @@ Welcome to Instrument Data Wizard's documentation!
    :caption: Reference for Users
 
    user/what-is-wizard
-   user/adding-to-existing-structure
    user/data-dictionary
    user/finding-instrument-id
    user/identifiers
