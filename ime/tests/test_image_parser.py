@@ -1,7 +1,6 @@
 from ime.parser.image_parser import ImageProcessor
 
 def test_get_metadata():
-    from ime.parser.image_parser import ImageProcessor
     file_name = 'ime/tests/testdata/good image 02.oib'
     image_processor = ImageProcessor()
     metadata = image_processor.get_metadata(file_name)
