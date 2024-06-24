@@ -1,4 +1,3 @@
-from ime.parser.parsers import MetadataExtractor, extract_metadata, flatten_dict_keys_unique_id
 from ime.parser.image_parser import ImageProcessor
 
 def test_get_metadata():
