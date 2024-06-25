@@ -6,7 +6,6 @@ from ime.ui.ui_dataset_props import Ui_DatasetProps
 from ime.ui.ui_datafile_props import Ui_DatafilePropertyEditor
 from ime.ui.ui_experiment_props import Ui_ExperimentPropertyEditor
 from ime.ui.ui_project_props import Ui_ProjectPropertyEditor
-from ime.ui.ui_metadata_tab import Ui_MetadataTab
 from ime.widgets.metadata_tab import MetadataTab
 
 class DatasetPropertyEditor(QWidget):
@@ -106,7 +105,6 @@ class DatafilePropertyEditor(QWidget):
         """
         self.df = datafile
         self.df.bind_input("filename", self.ui.fileInfoFilenameLineEdit)
-
 
 class ExperimentPropertyEditor(QWidget):
     exp: BoundObject[Experiment]
