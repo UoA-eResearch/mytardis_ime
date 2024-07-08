@@ -1,12 +1,11 @@
-from PySide6.QtCore import QItemSelection, QSignalBlocker
+from PySide6.QtCore import QItemSelection, QSignalBlocker, Qt
+from PySide6.QtWidgets import QLineEdit, QTableWidgetItem, QWidget
 
 from ime.bindable import IBindableInput
-from ime.ui.ui_metadata_tab import Ui_MetadataTab
-from PySide6.QtWidgets import QTableWidgetItem, QWidget, QLineEdit
-from PySide6.QtCore import Qt
 from ime.models import MyTardisObject
-
+from ime.ui.ui_metadata_tab import Ui_MetadataTab
 from ime.utils import setup_header_layout
+
 
 class MetadataTab(QWidget, IBindableInput):
     """A tab widget for displaying and editing metadata information for an object."""
@@ -39,19 +38,19 @@ class MetadataTab(QWidget, IBindableInput):
     def add_insert_metadata_row(self) -> None:
         """Adds an empty row to the metadata table."""
         table = self.ui.metadata_table
-    
+
         # Create empty items for key and value
         key_item = QTableWidgetItem("")
         val_item = QTableWidgetItem("")
-    
+
         # Get the current row count and insert a new row at the end
         row_idx = table.rowCount()
         table.insertRow(row_idx)
-    
+
         # Set the empty items in the new row
         table.setItem(row_idx, 0, key_item)
         table.setItem(row_idx, 1, val_item)
-    
+
     def get_metadata_row(self, key: str, val: str) -> tuple[QTableWidgetItem, QTableWidgetItem]:
         """Returns a key-value metadata row as QTableWidgetItem objects.
 
@@ -111,8 +110,10 @@ class MetadataTab(QWidget, IBindableInput):
                         cell.setText(old_name)
                         return
                     if cell_val == '':
-                        del metadata[old_name]
-                        cell.setData(Qt.ItemDataRole.UserRole, None)
+                        # User has cleared the key, leaving an orphan value.
+                        # Revert to old edit.
+                        cell.setText(old_name)
+                        return
                     else:
                         metadata[cell_val] = metadata.pop(old_name)
                         cell.setData(Qt.ItemDataRole.UserRole, cell_val)
@@ -145,6 +146,7 @@ class MetadataTab(QWidget, IBindableInput):
         new_row_index = table.rowCount() - 1
         # Focus the editing on the first cell of the new row
         edit_row_name_cell = table.model().index(new_row_index, 0)
+        table.selectRow(new_row_index)
         table.edit(edit_row_name_cell)
 
     def handle_remove_rows_click(self) -> None:
@@ -153,12 +155,12 @@ class MetadataTab(QWidget, IBindableInput):
         selected_rows = table.selectionModel().selectedRows()
         # Sort rows in descending order to avoid index shifting issues
         sorted_rows = sorted(selected_rows, key=lambda index: index.row(), reverse=True)
-        
+
         with QSignalBlocker(table):
             for index in sorted_rows:
                 row = index.row()
                 key_item = table.item(row, 0)
-                if key_item:
+                if key_item and self.metadata_object.metadata is not None:
                     key = key_item.text().strip()
                     if key in self.metadata_object.metadata:
                         del self.metadata_object.metadata[key]
@@ -179,7 +181,7 @@ class MetadataTab(QWidget, IBindableInput):
             # in the tab.
             table.clearContents()
             table.setRowCount(0)
-            # Populate table with new items 
+            # Populate table with new items
             metadata = metadata_obj.metadata or {}
             # Set the row count, excluding "Notes" if present
             num_new = len(metadata) - ('Notes' in metadata)
