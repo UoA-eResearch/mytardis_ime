@@ -97,4 +97,4 @@ def test_delete_metadata_rows(qtbot: QtBot, metadata: IngestionMetadata, widget:
     widget.ui.remove_rows_btn.click()
     assert table.rowCount() == old_count - 1
     assert table.item(2,1).text() is not old_text
-    assert "resolution" in exp.metadata
+    assert "resolution" not in exp.metadata

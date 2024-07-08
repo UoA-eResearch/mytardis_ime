@@ -11,7 +11,6 @@ import yaml
 from yaml.loader import Loader
 from yaml import MappingNode, Dumper, FullLoader, Loader, Node, ScalarNode, UnsafeLoader
 import logging
-from os.path import relpath
 from pathlib import Path
 from datetime import datetime
 from ime.utils import st_dev
@@ -60,7 +59,6 @@ class UserACL(YAMLDataclass):
     """Model to define user access control. This differs from the group
     access control in that it validates the username against a known regex.
     """
-
     yaml_tag = "!UserACL"
     yaml_loader = yaml.SafeLoader
     user: Username = field(default=Username(), metadata={"label": "Username"})
@@ -68,18 +66,15 @@ class UserACL(YAMLDataclass):
     can_download: bool = field(default=False, metadata={"label": "Can download?"})
     see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
 
-
 @dataclass
 class GroupACL(YAMLDataclass):
     """Model to define group access control."""
-
     yaml_tag = "!GroupACL"
     yaml_loader = yaml.SafeLoader
     group: str = field(default="", metadata={"label": "Group ID"})
     is_owner: bool = field(default=False, metadata={"label": "Is owner?"})
     can_download: bool = field(default=False, metadata={"label": "Can download?"})
     see_sensitive: bool = field(default=False, metadata={"label": "See sensitive?"})
-
 
 @dataclass
 class IAccessControl:
@@ -90,10 +85,8 @@ class IAccessControl:
     access control fields from the Project, Experiment or Dataset higher up
     in the hierarchy.
     """
-
     users: Optional[List[UserACL]] = None
     groups: Optional[List[GroupACL]] = None
-
 
 class IIdentifiers:
     """An abstract class for methods working with identifiers,
@@ -101,7 +94,6 @@ class IIdentifiers:
     override with specific constraints, for example to enforce
     uniqueness.
     """
-
     identifiers: Optional[List[str]]
 
     def __init__(self, identifiers: Optional[List[str]]) -> None:
@@ -190,48 +182,38 @@ class IIdentifiers:
         self.identifiers.remove(id_to_delete)
         return True
 
-
 class DataClassification(Enum):
     """An enumerator for data classification.
     Gaps have been left deliberately in the enumeration to allow for intermediate
     classifications of data that may arise. The larger the integer that the classification
     resolves to, the less sensitive the data is.
     """
-
     RESTRICTED = 1
     SENSITIVE = 25
     INTERNAL = 100
     PUBLIC = 100
-
 
 @dataclass
 class IDataClassification:
     """
     Common interface for MyTardis models with data classification labels.
     """
-
     data_classification: Optional[DataClassification] = None
-
 
 class DataStatus(Enum):
     """An enumerator for data status.
     Gaps have been left deliberately in the enumeration to allow for intermediate
     status of data that may arise.
     """
-
     READY_FOR_INGESTION = 1
     INGESTED = 5
-
 
 @dataclass
 class IDataStatus:
     """
     Common interface for MyTardis models with data statud labels.
     """
-
     data_status: Optional[DataStatus] = None
-
-
 
 @dataclass
 class Project(
@@ -247,7 +229,6 @@ class Project(
         data_classification (DataClassification): The data classification of the project.
         principal_investigator (str): The name of the principal investigator for the project.
     """
-
     yaml_tag = "!Project"
     yaml_loader = yaml.SafeLoader
     description: str = ""
@@ -272,10 +253,8 @@ class Project(
     def __post_init__(self) -> None:
         self.identifiers_delegate = ProjectIdentifiers(self)
 
-
 class ProjectIdentifiers(IIdentifiers):
     """Project-specific methods related to identifiers."""
-
     def __init__(self, project: Project):
         self.project = project
         super().__init__(project.identifiers)
@@ -366,7 +345,6 @@ class ProjectIdentifiers(IIdentifiers):
                 experiment.projects.append(new_id)
         return True
 
-
 @dataclass
 class Experiment(
     YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
@@ -374,7 +352,6 @@ class Experiment(
     """
     A class representing MyTardis Experiment objects.
     """
-
     yaml_tag = "!Experiment"
     yaml_loader = yaml.SafeLoader
     title: str = ""
@@ -398,10 +375,8 @@ class Experiment(
     def __post_init__(self) -> None:
         self.identifiers_delegate = ExperimentIdentifiers(self)
 
-
 class ExperimentIdentifiers(IIdentifiers):
     """Experiment-specific methods related to identifiers."""
-
     def __init__(self, experiment: Experiment):
         self.experiment = experiment
         super().__init__(experiment.identifiers)
@@ -488,7 +463,6 @@ class ExperimentIdentifiers(IIdentifiers):
                 dataset.experiments.append(new_id)
         return True
 
-
 @dataclass
 class Dataset(
     YAMLDataclass, IAccessControl, IDataClassification, IDataStatus
@@ -496,7 +470,6 @@ class Dataset(
     """
     A class representing MyTardis Dataset objects.
     """
-
     yaml_tag = "!Dataset"
     yaml_loader = yaml.SafeLoader
     description: str = ""
@@ -517,10 +490,8 @@ class Dataset(
         This method initialises the identifier delegate class for this model."""
         self.identifiers_delegate = DatasetIdentifiers(self)
 
-
 class DatasetIdentifiers(IIdentifiers):
     """Dataset-specific methods related to identifiers."""
-
     def __init__(self, dataset: Dataset):
         self.dataset = dataset
         super().__init__(dataset.identifiers)
@@ -604,13 +575,11 @@ class DatasetIdentifiers(IIdentifiers):
                 datafile.dataset = new_id
         return True
 
-
 @dataclass
 class Datafile(YAMLDataclass, IAccessControl, IDataStatus):
     """
     A class representing MyTardis Datafile objects.
     """
-
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
     filename: str = ""
@@ -641,7 +610,6 @@ class Datafile(YAMLDataclass, IAccessControl, IDataStatus):
             file_state["metadata"] = None
         return file_state
 
-
 def Username_yaml_representer(dumper: Dumper, data: "Username") -> ScalarNode:
     """Function for representing this Username in YAML.
     When serialising to YAML that contains Username instances, you'll
@@ -657,7 +625,6 @@ def Username_yaml_representer(dumper: Dumper, data: "Username") -> ScalarNode:
         ScalarNode: A serialised yaml Node.
     """
     return dumper.represent_scalar("!Username", str(data))
-
 
 def Username_yaml_constructor(
     loader: Loader | FullLoader | UnsafeLoader, node: Node
@@ -679,12 +646,10 @@ def Username_yaml_constructor(
     value = loader.construct_scalar(node)
     return Username(value)
 
-
 class DifferentDeviceException(Exception):
     """Exception that is thrown if ingestion metadata is
     saved in different device from the data."""
     pass
-
 
 @dataclass
 class IngestionMetadata:
@@ -693,7 +658,6 @@ class IngestionMetadata:
     objects of different MyTardis types. It can be serialised
     to become a YAML file for ingestion into MyTardis.
     """
-
     # A list of objects of each type.
     projects: List[Project] = field(default_factory=list)
     experiments: List[Experiment] = field(default_factory=list)
@@ -778,7 +742,6 @@ class IngestionMetadata:
                 curr_path = file.path_abs.parent
                 file.directory = curr_path.relative_to(relative_to_dir)
                 
-
     def _to_yaml(self) -> str:
         """
         Returns a string of the YAML representation of the metadata.
