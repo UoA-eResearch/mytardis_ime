@@ -583,7 +583,7 @@ class Datafile(YAMLDataclass, IAccessControl, IDataStatus):
     yaml_tag = "!Datafile"
     yaml_loader = yaml.SafeLoader
     filename: str = ""
-    directory: Path = field(default_factory=Path)
+    directory: Optional[Path] = field(default_factory=Path)
     # This is for temporarily storing the absolute path,
     # required for generating relative path when saving.
     path_abs: Path = field(repr=False, default_factory=Path)
@@ -732,16 +732,18 @@ class IngestionMetadata:
             # then join the previous metadata file path with the relative path
             # in file.directory, then relativise to the new path.
             for file in self.datafiles:
-                curr_path = self.file_path.parent.joinpath(file.directory)
+                curr_path = self.file_path.parent.joinpath(file.directory) if file.directory is not None else self.file_path.parent
                 new_path = curr_path.relative_to(relative_to_dir)
-                file.directory = new_path
+                file.directory = None if new_path == Path(".") else new_path
         else:
             # If this file is not previously saved, then use the absolute path for this
             # file.
             for file in self.datafiles:
                 curr_path = file.path_abs.parent
-                file.directory = curr_path.relative_to(relative_to_dir)
-                
+                new_path = curr_path.relative_to(relative_to_dir)
+                # Check if the new path is '.', set to '' if true
+                file.directory = None if new_path == Path(".") else new_path
+            
     def _to_yaml(self) -> str:
         """
         Returns a string of the YAML representation of the metadata.
