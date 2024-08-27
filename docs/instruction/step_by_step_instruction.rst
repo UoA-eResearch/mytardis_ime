@@ -57,7 +57,7 @@ Log in to the Test IDS
       Ensure you "**Verify and save**" the token.
 
 Set up New Groups
----------------------
+-----------------
 
 - **Step 1:** Once logged in, click your username in the top-right corner and select "**Group Management**", or go directly to the `Group Management page <https://test-instruments.nectar.auckland.ac.nz/group/groups/>`_ to set up new groups.
 

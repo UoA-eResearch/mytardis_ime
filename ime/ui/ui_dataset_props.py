@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_dataset_props.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -45,7 +45,7 @@ class Ui_DatasetProps(object):
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.toolBox = QToolBox(self.datasetProperties)
         self.toolBox.setObjectName(u"toolBox")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.toolBox.sizePolicy().hasHeightForWidth())
@@ -88,7 +88,7 @@ class Ui_DatasetProps(object):
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.identifierList)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.formLayout.setItem(3, QFormLayout.FieldRole, self.verticalSpacer_3)
 
@@ -253,7 +253,7 @@ class Ui_DatasetProps(object):
         self.gridLayout_8.setObjectName(u"gridLayout_8")
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
 
@@ -294,7 +294,7 @@ class Ui_DatasetProps(object):
 
         self.verticalLayout_3.addWidget(self.label_45)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer_2)
 

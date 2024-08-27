@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_extraction_progress_dialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -42,7 +42,7 @@ class Ui_ExtractionProgressDialog(object):
 
         self.fileName = QLabel(ExtractionProgressDialog)
         self.fileName.setObjectName(u"fileName")
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fileName.sizePolicy().hasHeightForWidth())
@@ -51,7 +51,7 @@ class Ui_ExtractionProgressDialog(object):
 
         self.verticalLayout.addWidget(self.fileName)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
 

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_add_files_wizard.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -61,7 +61,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout.addWidget(self.label_9)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Preferred)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
 
         self.verticalLayout.addItem(self.verticalSpacer)
 
@@ -89,7 +89,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout.addWidget(self.mytardisdatamodelexplanation)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Preferred)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
 
         self.verticalLayout.addItem(self.verticalSpacer_2)
 
@@ -144,7 +144,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout_2.addWidget(self.newProjectRadioButton)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_2.addItem(self.verticalSpacer_3)
 
@@ -264,7 +264,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout_3.addWidget(self.newExperimentRadioButton)
 
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer_4)
 
@@ -374,7 +374,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout_4.addWidget(self.newDatasetRadioButton)
 
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_4.addItem(self.verticalSpacer_5)
 
@@ -444,7 +444,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout_8.addWidget(self.newDatasetForm_2)
 
-        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_8.addItem(self.verticalSpacer_6)
 
@@ -491,7 +491,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout_7.addWidget(self.existingProjectForm_3)
 
-        self.verticalSpacer_7 = QSpacerItem(20, 305, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_7 = QSpacerItem(20, 305, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_7.addItem(self.verticalSpacer_7)
 
@@ -538,7 +538,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout_9.addWidget(self.existingProjectForm_4)
 
-        self.verticalSpacer_8 = QSpacerItem(20, 281, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_8 = QSpacerItem(20, 281, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_9.addItem(self.verticalSpacer_8)
 
@@ -595,7 +595,7 @@ class Ui_ImportDataFiles(object):
 
         self.verticalLayout_10.addWidget(self.existingDatasetForm_2)
 
-        self.verticalSpacer_9 = QSpacerItem(20, 253, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_9 = QSpacerItem(20, 253, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_10.addItem(self.verticalSpacer_9)
 

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_overridable_access_control_tab.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,7 +25,7 @@ class Ui_OverridableAccessControlTab(object):
         if not OverridableAccessControlTab.objectName():
             OverridableAccessControlTab.setObjectName(u"OverridableAccessControlTab")
         OverridableAccessControlTab.resize(725, 1080)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(OverridableAccessControlTab.sizePolicy().hasHeightForWidth())
@@ -74,7 +74,7 @@ class Ui_OverridableAccessControlTab(object):
 
         self.verticalLayout.addLayout(self.gridLayout)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
 
