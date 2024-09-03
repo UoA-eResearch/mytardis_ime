@@ -1,12 +1,17 @@
-Instructions for Using the Instrument Data Service (IDS)
-==============================================================
+Instructions for Using the Instrument Data Service (IDS) and Instrument Data Wizard (IDW)
+=========================================================================================
 
-This document provides step-by-step instructions for using Instrument Data Service (IDS) and Instrument Data Wizard (IDW).
+This document provides step-by-step instructions for using `Instrument Data Service (IDS) <https://instruments.nectar.auckland.ac.nz/>`_ and Instrument Data Wizard (IDW), including:
+
+* :ref:`Log in to IDS`
+* :ref:`Set up New Groups`
+* :ref:`Download and Install IDW`
+* :ref:`Organize Your Data`
+* :ref:`Save Your Data`
+* :ref:`Notify Us`
 
 Log in to IDS
----------------------------------------------------
-
-`Instrument Data Service (IDS) <https://instruments.nectar.auckland.ac.nz/>`_
+----------------------------------------------------------------------------------------
 
 - **Step 1:** Click "**Log In**" on the login page.
 
@@ -17,6 +22,7 @@ Log in to IDS
 .. image:: instruction2.png
 
 .. image:: instruction3.png
+
 
 
 Set up New Groups
@@ -43,7 +49,7 @@ Set up New Groups
 .. image:: instruction7.png
 
 
-Download and Install the App
+Download and Install IDW
 --------------------------------
 
 - **Step 1:** Click your username in the top-right corner and select "**Get Instrument Data Wizard**".
@@ -62,6 +68,7 @@ Download and Install the App
   .. note::
 
     Admin rights are not required.
+
 
 
 Organize Your Data
@@ -85,6 +92,7 @@ Organize Your Data
 .. image:: instruction11.png
 
 
+
 Save Your Data
 ------------------
 
@@ -95,14 +103,15 @@ Save Your Data
 .. image:: instruction13.png
 
 
+
 Notify Us
 -------------
 
-- **Step 1:** Inform us and provide the data location via email to |service_contact|.
+- **Step 1:** Inform us and provide the data location via email to |service_contact|_.
   
   **Example of the data location:**
 
   - **For Windows:** ``\\files.auckland.ac.nz\research\resmed202000005-biru-shared-drive\<your-root-folder>``
   - **For Linux and Mac:** ``//files.auckland.ac.nz/research/resmed202000005-biru-shared-drive/<your-root-folder>``
   
-- **Contact:** |service_contact| for assistance with IDS setup.
+- **Contact:** |service_contact|_ for assistance with IDS setup.

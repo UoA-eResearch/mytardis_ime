@@ -1,6 +1,9 @@
 Tutotial
 ######################################
 
+Before the tutorial
+===================
+
 Here, we'll guide you through the process of annotating a dataset using the Instrument Data Wizard, getting it ready for ingestion into |service_name|.
 
 Imagine yourself in a fictional scenario: You're Sarah, a PhD student collecting data for your cancer genomics research, and you want to store this data in your University's instrument data repository.
@@ -14,6 +17,17 @@ By the end of this tutorial, you will learn about the Instrument Data Wizard and
 * annotate your data with metadata 
 * restrict access to your data or subset of the data
 * export the metadata
+
+If you want to follow along on your computer, please install Instrument Data Wizard, download the tutorial data, and unzip it on your desktop. This data will be used in the rest of the tutorial.
+
+:download:`Tutorial data for importing your first dataset into IDW <tutorial/tutorial-data-from-scratch.zip>`
+
+:download:`Tutorial data for importing new datasets to your existing projects into IDW <tutorial/tutorial-data-existing-projects.zip>`
+
+Contact |service_contact|_ if you need assistance getting set up on |service_name|.
+
+Ready? Let's begin!
+
 
 (Option 1) Import your first dataset into the Instrument Data Wizard
 ====================================================================
