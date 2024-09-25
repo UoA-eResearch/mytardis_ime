@@ -11,11 +11,11 @@ Instrument Data Wizard Documentation
    :caption: Contents
    
    overview
-   prerequisites
    download_and_run
+   instruction/step_by_step_instruction
    structure_your_data
    tutorial
-   instruction/step_by_step_instruction
+
 
 .. toctree::
    :maxdepth: 2

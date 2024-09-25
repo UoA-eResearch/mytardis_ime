@@ -1,7 +1,7 @@
-Instructions for Using the Instrument Data Service (IDS) and Instrument Data Wizard (IDW)
+How to Get Your Data into IDS
 =========================================================================================
 
-This document provides step-by-step instructions for using `Instrument Data Service (IDS) <https://instruments.nectar.auckland.ac.nz/>`_ and Instrument Data Wizard (IDW), including:
+This document provides step-by-step instructions to get your data into `Instrument Data Service (IDS) <https://instruments.nectar.auckland.ac.nz/>`_ using Instrument Data Wizard (IDW), including:
 
 * :ref:`Log in to IDS`
 * :ref:`Set up New Groups`
@@ -52,23 +52,7 @@ Set up New Groups
 Download and Install IDW
 --------------------------------
 
-- **Step 1:** Click your username in the top-right corner and select "**Get Instrument Data Wizard**".
-
-.. image:: instruction8.png
-
-- **Step 2:** Download the app for your operating system.
-
-.. image:: instruction9.png
-
-- **Step 3:** Run the app.
-  
-  - Unzip the downloaded file.
-  - Put the `.exe` in a convenient location where you can easily find it, such as "My Documents".
-  
-  .. note::
-
-    Admin rights are not required.
-
+Find instructions here: :ref:`download and run <download_and_run>`.
 
 
 Organize Your Data
@@ -87,7 +71,7 @@ Organize Your Data
 
   .. note::
 
-    If you are not familiar with Instrument Data Wizard, please follow the :ref: `../tutorial` for guidance.
+    If you are not familiar with Instrument Data Wizard, please follow the :ref:`tutorial <tutorial>` for guidance.
 
 .. image:: instruction11.png
 
@@ -96,7 +80,7 @@ Organize Your Data
 Save Your Data
 ------------------
 
-- **Step 1:** Once you have added all your data, save the ingestion file in the root of your data folder on the BIRU shared drive.
+- **Step 1:** Once you have added all your data, save the ingestion file in the **root** of your data folder on the BIRU shared drive.
 
 .. image:: instruction12.png
 
@@ -107,11 +91,11 @@ Save Your Data
 Notify Us
 -------------
 
-- **Step 1:** Inform us and provide the data location via email to |service_contact|_.
+- **Step 1:** Inform us and provide the data location to |service_contact|_ via email .
   
   **Example of the data location:**
 
   - **For Windows:** ``\\files.auckland.ac.nz\research\resmed202000005-biru-shared-drive\<your-root-folder>``
   - **For Linux and Mac:** ``//files.auckland.ac.nz/research/resmed202000005-biru-shared-drive/<your-root-folder>``
   
-- **Contact:** |service_contact|_ for assistance with IDS setup.
+- For assistance with IDS setup and using IDW, please **Contact:** |service_contact|_.
