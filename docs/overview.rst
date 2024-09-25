@@ -14,4 +14,3 @@ Key Features
 * Cross-Platform Compatibility: Available for Windows, macOS, and Linux systems.s
 * Integration with Instrument Data Service (IDS): Seamlessly integrates with the IDS platform for efficient data management and uploading.
 * Automated Metadata Extraction: Supports automated metadata extraction, especially when Java is installed.
-* Standalone Executable: Can be deployed as a standalone executable using PyInstaller, facilitating easy distribution and usage across different systems.
