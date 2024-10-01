@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_access_control_list.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -24,7 +24,7 @@ class Ui_AccessControlList(object):
         if not AccessControlList.objectName():
             AccessControlList.setObjectName(u"AccessControlList")
         AccessControlList.resize(555, 290)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(AccessControlList.sizePolicy().hasHeightForWidth())
@@ -57,7 +57,7 @@ class Ui_AccessControlList(object):
 
         self.verticalLayout_2.addWidget(self.btnDelete)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_2.addItem(self.verticalSpacer)
 

@@ -3,24 +3,28 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Instrument Data Wizard's documentation!
+Instrument Data Wizard Documentation
 ==================================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Tutorials
+   :caption: Contents
    
-   user/tutorial-first-dataset-from-scratch/index
-   user/tutorial-new-dataset-for-existing-projects/index
+   overview
+   download_and_run
+   instruction/step_by_step_instruction
+   structure_your_data
+   tutorial
+
 
 .. toctree::
    :maxdepth: 2
    :caption: Reference for Users
 
-   user/what-is-wizard
-   user/data-dictionary
-   user/finding-instrument-id
-   user/identifiers
+   tutorial/what-is-wizard
+   tutorial/data-dictionary
+   tutorial/finding-instrument-id
+   tutorial/identifiers
    
 .. 
    Indices and tables

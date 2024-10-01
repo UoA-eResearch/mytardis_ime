@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_identifier_list.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -39,7 +39,7 @@ class Ui_IdentifierList(object):
 
         self.identifierList = QListView(IdentifierList)
         self.identifierList.setObjectName(u"identifierList")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.identifierList.sizePolicy().hasHeightForWidth())

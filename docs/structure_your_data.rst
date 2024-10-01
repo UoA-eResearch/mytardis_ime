@@ -1,10 +1,10 @@
-Decide how to describe and structure your data
-##############################################
+Decide how to Describe and Structure your Data
+==============================================
 
 Before you start using the Instrument Data Wizard, it's crucial to plan out and document how your data will be structured for |service_name|. This ensures you and your collaborators (and your future self!) can easily locate and utilize the data within the |service_name| web portal.
 
 How |service_name| structures data
-==================================
+----------------------------------
 |service_name| functions as a database, organizing data into a hierarchical structure, like folders and subfolders. This structure comprises three levels, and it's essential to align your data structure accordingly:
 
 * Data files are grouped into `Datasets`.
@@ -16,7 +16,7 @@ It's noteworthy that a `Dataset` may belong to multiple `Experiments`, and an `E
 .. At each level of the hierarchy and at the individual file level, there are mandatory metadata fields that you can use to describe your data. There is also the ability to associate a custom metadata schema at each level, which allows you to record any relevant domain-specific observations and variables. The |service_name| Search functionality allows you to filter for data based on metadata.
 
 Things to consider
-==================
+------------------
 Here are some things to consider when deciding how your data should fit into this hierarchy:
 
 * Usually, there should be one `Project` that corresponds to the research project or unit of research activity that you are collecting data for.
@@ -26,7 +26,7 @@ Here are some things to consider when deciding how your data should fit into thi
 * Consider whether you need to restrict access for a subset of your data. If so, you can group them as separate `Experiments` or `Datasets`. Later, you can restrict access to them as a whole group.
 
 Sarah's sequencing data
-=======================
+-----------------------
 
 Imagine yourself as Sarah, exploring how breast cancer cells react to different drug treatments. You work closely within a group of three other PhD students led by Dr Charlotte Henare.
 
@@ -56,8 +56,6 @@ Sample data structure plan
     * Clinical details and sequencing instrument configurations are documented as metadata at the Dataset level.
 
 Exercise: How does your own data fit into this hierarchy?
-=========================================================
+---------------------------------------------------------
 
 Think about the data you would like to ingest into |service_name| and discuss with your collaborators. Plan out how you would structure the data. Ask for a consultation with the friendly |service_name| staff if you would like some help!
-
-
